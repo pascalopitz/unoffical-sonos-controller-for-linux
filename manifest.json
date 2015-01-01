@@ -1,0 +1,40 @@
+{
+  "name": "Sonos Controller For Chrome",
+  "description": "Sonos Controller For Chrome",
+  "version": "0.1",
+  "manifest_version": 2,
+  "app": {
+    "background": {
+      "scripts": [
+        "bower_components/underscore/underscore.js",
+        "dist/helpers/htmlEntities.js",
+        "dist/helpers/withinEnvelope.js",
+        "dist/services/Service.js",
+        "dist/services/AVTransport.js",
+        "dist/services/AlarmClock.js",
+        "dist/services/AudioIn.js",
+        "dist/services/ContentDirectory.js",
+        "dist/services/DeviceProperties.js",
+        "dist/services/GroupManagement.js",
+        "dist/services/MusicServices.js",
+        "dist/services/SystemProperties.js",
+        "dist/services/ZoneGroupTopology.js",
+        "dist/sonos/Sonos.js",
+        "dist/sonos/Search.js",
+        "dist/app.js"
+      ]
+    }
+  },
+  "permissions": [
+    "http://*/MediaRenderer/AVTransport/Control",
+    "http://*/MediaRenderer/RenderingControl/Control",
+    "https://*/DeviceProperties/Control"
+  ],
+  "sockets": {
+      "udp": {
+        "send": ["*"],
+        "bind": ["*"]
+      }
+    },
+  "icons": { "16": "sonos-16.png", "128": "sonos-128.png" }
+}

@@ -1,0 +1,11 @@
+body {
+	background: #000000;
+	color: #fff;
+	font-family: Arial, sans-serif;
+	min-width: 800px;
+	overflow: hidden;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	height: 100vh;
+	text-shadow: #111 0px -1px;
+}

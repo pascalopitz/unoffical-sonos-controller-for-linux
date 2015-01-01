@@ -1,0 +1,17 @@
+{
+  "name": "sonos-controller-for-chrome",
+  "version": "0.0.1",
+  "description": "Sonos Controller for Chrome",
+  "main": "dist/background.js",
+  "scripts": {
+    "compile": "node_modules/.bin/6to5 -w src --out-dir=dist -m ignore",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "6to5": "^2.2.0",
+    "6to5ify": "^3.0.0",
+    "browserify": "^8.0.2"
+  }
+}

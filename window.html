@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+
+		<title id="page-title">Sonos Web Controller</title>
+		<link id="favicon" rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	</head>
+<body>
+	<header id="top-control">
+
+		<img  id="master-mute" class="mute-button" src="svg/mute_off.svg" />
+		<div id="master-volume" class="volume-bar" /><img src="images/popover_vol_scrubber_normal.png" /></div>
+		<div id="player-volumes-container">
+			<div id="player-volumes" class="loading"></div>
+		</div>
+		<div id="controls">
+			<img id="prev" src="svg/prev.svg" />
+			<div id="play-pause" class="play">
+				<img id="play" src="svg/play.svg" />
+				<img id="pause" src="svg/pause.svg" />
+			</div>
+			<img id="next" src="svg/next.svg" />
+
+		</div>
+		<div id="position-info">
+			<img class="left" src="images/tc_progress_container_left.png" />
+			<img class="right" src="images/tc_progress_container_right.png" />
+			<div class="content">
+				<img id="repeat" class="playback-mode" src="images/tc_progress_repeat_normal_off.png" />
+				<img id="shuffle"  class="playback-mode" src="images/tc_progress_shuffle_normal_off.png" />
+				<img id="crossfade"  class="playback-mode" src="images/tc_progress_crossfade_normal_off.png" />
+				<span id="countup">0:00</span>
+					<div id="position-info-control">
+						<div id="position-bar">
+							<div id="position-bar-scrubber"></div>
+						</div>
+					</div>
+				<span id="countdown">-0:00</span>
+			</div>
+
+		</div>
+	</header>
+	<div id="column-container">
+		<div id="zone-container">
+			<h4>ROOMS</h4>
+			<div id="zone-wrapper"></div>
+		</div>
+		<div id="status-container">
+			<h4 id="now-playing">NOW PLAYING</h4>
+			<div id="current-track-info">
+				<img id="current-track-art" />
+				<div>
+					<h6>Track</h6>
+					<p id="track"></p>
+					<h6>Artist</h6>
+					<p id="artist"></p>
+					<h6>Album</h6>
+					<p id="album"></p>
+				</div>
+				<h5>Next</h5>
+				<p id="next-track"></p>
+			</div>
+
+			<h4 id="queue">QUEUE</h4>
+			<ul id="queue-container">
+			</ul>
+
+		</div>
+		<div id="music-sources-container">
+			<h4>FAVORITES</h4>
+
+			<ul id="favorites-container"></ul>
+
+		</div>
+	</div>
+</body>
+</html>
