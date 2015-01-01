@@ -37,9 +37,9 @@
       }
     },
   "icons": { 
-    "16": "sonos-16.png",
-    "32": "sonos-32.png",
-    "48": "sonos-48.png",
-    "128": "sonos-128.png"
+    "16": "icons/sonos-16.png",
+    "32": "icons/sonos-32.png",
+    "48": "icons/sonos-48.png",
+    "128": "icons/sonos-128.png"
   }
 }
