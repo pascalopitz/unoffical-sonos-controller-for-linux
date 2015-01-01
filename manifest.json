@@ -36,5 +36,10 @@
         "bind": ["*"]
       }
     },
-  "icons": { "16": "sonos-16.png", "128": "sonos-128.png" }
+  "icons": { 
+    "16": "sonos-16.png",
+    "32": "sonos-32.png",
+    "48": "sonos-48.png",
+    "128": "sonos-128.png"
+  }
 }
