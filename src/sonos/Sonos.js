@@ -1,5 +1,7 @@
 import withinEnvelope from '../helpers/withinEnvelope';
 import htmlEntities from '../helpers/htmlEntities';
+import xml2js from '../helpers/xml2js';
+
 
 /**
  * Constants
@@ -13,20 +15,6 @@ var TRANSPORT_ENDPOINT = '/MediaRenderer/AVTransport/Control',
 var debug = function() {
   console.log(arguments);
 };
-
-// /**
-//  * Dependencies
-//  */
-
-// var util = require('util'),
-//     EventEmitter = require('events').EventEmitter,
-//     dgram = require('dgram'),
-//     request = require('request'),
-//     xml2js = require('xml2js'),
-//     debug = require('debug')('sonos'),
-//     fs = require('fs'),
-//     _ = require('underscore');
-
 
 /**
  * Sonos "Class"
@@ -48,48 +36,27 @@ var Sonos = function Sonos(host, port) {
  */
 Sonos.prototype.request = function(endpoint, action, body, responseTag, callback) {
   debug('Sonos.request(%j, %j, %j, %j, %j)', endpoint, action, body, responseTag, callback);
-  
-  var xhr = new XMLHttpRequest();
+  request({
+    uri: 'http://' + this.host + ':' + this.port + endpoint,
+    method: 'POST',
+    headers: {
+      'SOAPAction': action,
+      'Content-type': 'text/xml; charset=utf8'
+    },
+    body: withinEnvelope(body)
+  }, function(err, res, body) {
+    if (err) return callback(err);
+    if (res.statusCode !== 200) return callback (new Error('HTTP response code ' + res.statusCode + ' for ' + action));
 
-  xhr.open('POST', 'http://' + this.host + ':' + this.port + endpoint, true);
+    (new xml2js.Parser()).parseString(body, function(err, json) {
+      if (err) return callback(err);
 
-  xhr.setRequestHeader('SOAPAction', action);
-  xhr.setRequestHeader('Content-type', 'text/xml; charset=utf8');
+      if(typeof json['s:Envelope']['s:Body'][0]['s:Fault'] !== 'undefined')
+        return callback(json['s:Envelope']['s:Body'][0]['s:Fault']);
 
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4) {
-
-      if (xhr.status !== 200) {
-        return callback (new Error('HTTP response code ' + xhr.status + ' for ' + action));
-      }
-
-      console.log(body);
-    }
-  }
-
-  xhr.send(withinEnvelope(body));
-
-  // request({
-  //   uri: 'http://' + this.host + ':' + this.port + endpoint,
-  //   method: 'POST',
-  //   headers: {
-  //     'SOAPAction': action,
-  //     'Content-type': 'text/xml; charset=utf8'
-  //   },
-  //   body: withinEnvelope(body)
-  // }, function(err, res, body) {
-  //   if (err) return callback(err);
-  //   if (res.statusCode !== 200) return callback (new Error('HTTP response code ' + res.statusCode + ' for ' + action));
-
-  //   (new xml2js.Parser()).parseString(body, function(err, json) {
-  //     if (err) return callback(err);
-
-  //     if(typeof json['s:Envelope']['s:Body'][0]['s:Fault'] !== 'undefined')
-  //       return callback(json['s:Envelope']['s:Body'][0]['s:Fault']);
-
-  //     return callback(null, json['s:Envelope']['s:Body'][0][responseTag]);
-  //   });
-  // });
+      return callback(null, json['s:Envelope']['s:Body'][0][responseTag]);
+    });
+  });
 };
 
 /**
