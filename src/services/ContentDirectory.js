@@ -1,4 +1,6 @@
 import Service from './Service';
+import Services from '../helpers/Services';
+
 
 class ContentDirectory extends Service {
 
@@ -15,5 +17,8 @@ class ContentDirectory extends Service {
 		this._request('Browse', options, callback);
 	}
 };
+
+Services.register("ContentDirectory", ContentDirectory);
+
 
 export default ContentDirectory;

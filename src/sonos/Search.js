@@ -1,5 +1,13 @@
 import Sonos from 'Sonos';
 
+var socketReceive;
+
+chrome.sockets.udp.onReceive.addListener(function () {
+	if(socketReceive) {
+		socketReceive.apply(null, arguments);
+	}
+});
+
 class Search {
 
 	constructor (discoveryCallback) {
@@ -17,6 +25,8 @@ class Search {
 
 		chrome.sockets.udp.create({}, function (info) {
 
+			self.socketId = info.socketId;
+
 			chrome.sockets.udp.bind(info.socketId, "0.0.0.0", 0, function (bindResult) {
 
 				if(bindResult < 0) {
@@ -29,7 +39,7 @@ class Search {
 
 			});
 
-			chrome.sockets.udp.onReceive.addListener(function socketReceive(receiveInfo) {
+			socketReceive = function(receiveInfo) {
 
 				if(receiveInfo.socketId === info.socketId) {
 
@@ -45,8 +55,14 @@ class Search {
 					}
 				}
 
-			});
+			};
 
+		});
+	}
+
+	destroy () {
+		chrome.sockets.udp.close(this.socketId, function () {
+			console.log('socket cleaned up');
 		});
 	}
 };

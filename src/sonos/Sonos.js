@@ -2,6 +2,7 @@ import withinEnvelope from '../helpers/withinEnvelope';
 import htmlEntities from '../helpers/htmlEntities';
 import xml2js from '../helpers/xml2js';
 
+import Services from '../helpers/Services';
 
 /**
  * Constants
@@ -13,7 +14,7 @@ var TRANSPORT_ENDPOINT = '/MediaRenderer/AVTransport/Control',
 
 
 var debug = function() {
-  console.log(arguments);
+  //console.log(arguments);
 };
 
 /**

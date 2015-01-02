@@ -1,4 +1,6 @@
 import Service from './Service';
+import Services from '../helpers/Services';
+
 
 class SystemProperties extends Service {
 
@@ -79,5 +81,8 @@ class SystemProperties extends Service {
 		this._request('ResetThirdPartyCredentials', options, callback);
 	}
 };
+
+Services.register("SystemProperties", SystemProperties);
+
 
 export default SystemProperties;

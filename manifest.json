@@ -8,6 +8,7 @@
       "scripts": [
         "bower_components/jquery-xml2json/src/xml2json.js",
         "bower_components/underscore/underscore.js",
+        "dist/helpers/Services.js",
         "dist/helpers/htmlEntities.js",
         "dist/helpers/withinEnvelope.js",
         "dist/helpers/xml2js.js",

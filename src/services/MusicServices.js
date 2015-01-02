@@ -1,4 +1,6 @@
 import Service from './Service';
+import Services from '../helpers/Services';
+
 
 class MusicServices extends Service {
 
@@ -23,5 +25,8 @@ class MusicServices extends Service {
 		this._request('UpdateAvailableServices', options, callback);
 	}
 };
+
+Services.register("MusicServices", MusicServices);
+
 
 export default MusicServices;

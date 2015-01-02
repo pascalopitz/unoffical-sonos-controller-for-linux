@@ -1,4 +1,6 @@
 import Service from './Service';
+import Services from '../helpers/Services';
+
 
 class AVTransport extends Service {
 
@@ -139,6 +141,8 @@ class AVTransport extends Service {
 		this._request('BecomeGroupCoordinatorAndSource', options, callback);
 	}
 };
+
+Services.register("AVTransport", AVTransport);
 
 
 export default AVTransport;

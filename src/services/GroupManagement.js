@@ -1,4 +1,6 @@
 import Service from './Service';
+import Services from '../helpers/Services';
+
 
 class GroupManagement extends Service {
 
@@ -23,5 +25,8 @@ class GroupManagement extends Service {
 		this._request('ReportTrackBufferingResult', options, callback);
 	}
 };
+
+Services.register("GroupManagement", GroupManagement);
+
 
 export default GroupManagement;

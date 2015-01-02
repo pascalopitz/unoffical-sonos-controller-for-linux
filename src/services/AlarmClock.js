@@ -1,4 +1,6 @@
 import Service from './Service';
+import Services from '../helpers/Services';
+
 
 class AlarmClock extends Service {
 
@@ -79,5 +81,8 @@ class AlarmClock extends Service {
 		this._request('GetDailyIndexRefreshTime', options, callback);
 	}
 }; 
+
+Services.register("AlarmClock", AlarmClock);
+
 
 export default AlarmClock;

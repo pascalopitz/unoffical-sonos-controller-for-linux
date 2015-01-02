@@ -1,8 +1,14 @@
 import Search from 'sonos/Search';
 
+var search;
+
 chrome.app.runtime.onLaunched.addListener(function() {
 
-	var s = new Search(function (sonos) {
+	if(search) {
+		search.destroy();
+	}
+
+	search = new Search(function (sonos) {
 
 		sonos.getVolume(function (err, vol) {
 			console.log(sonos.host, 'Volume', vol);
@@ -10,6 +16,10 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 		sonos.deviceDescription(function (err, desc) {
 			console.log(sonos.host, 'deviceDescription', desc);
+		});
+
+		sonos.getMusicLibrary('artists', {}, function (err, result) {
+			console.log(sonos.host, 'getMusicLibrary', result);
 		});
 
 	});

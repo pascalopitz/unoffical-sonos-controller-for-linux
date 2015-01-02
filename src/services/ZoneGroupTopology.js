@@ -1,4 +1,6 @@
 import Service from './Service';
+import Services from '../helpers/Services';
+
 
 class ZoneGroupTopology extends Service {
 
@@ -39,5 +41,8 @@ class ZoneGroupTopology extends Service {
 		this._request('GetZoneGroupAttributes', options, callback);
 	}
 };
+
+Services.register("ZoneGroupTopology", ZoneGroupTopology);
+
 
 export default ZoneGroupTopology;

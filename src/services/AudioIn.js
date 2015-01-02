@@ -1,4 +1,6 @@
 import Service from './Service';
+import Services from '../helpers/Services';
+
 
 class AudioIn extends Service {
 
@@ -39,5 +41,8 @@ class AudioIn extends Service {
 		this._request('SelectAudio', options, callback);
 	}
 };
+
+Services.register("AudioIn", AudioIn);
+
 
 export default AudioIn;

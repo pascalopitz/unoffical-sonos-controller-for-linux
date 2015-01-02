@@ -1,4 +1,6 @@
 import withinEnvelope from '../helpers/withinEnvelope';
+import Services from '../helpers/Services';
+import xml2js from '../helpers/xml2js';
 
 class Service {
 
@@ -31,7 +33,7 @@ class Service {
     }, function(err, res, body) {
       if (err) return callback(err);
 
-      parseString(body, function(err, json) {
+      (new xml2js.Parser()).parseString(body, function(err, json) {
         if (err) return callback(err);
 
         if(typeof json['s:Envelope']['s:Body'][0]['s:Fault'] !== 'undefined') {

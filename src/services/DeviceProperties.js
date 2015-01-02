@@ -1,4 +1,6 @@
 import Service from './Service';
+import Services from '../helpers/Services';
+
 
 class DeviceProperties extends Service {
 
@@ -103,6 +105,9 @@ class DeviceProperties extends Service {
 		this._request('RemoveHTSatellite', options, callback);
 	}
 };
+
+Services.register("DeviceProperties", DeviceProperties);
+
 
 export default DeviceProperties;
 

@@ -5,7 +5,6 @@ var xml2js = {
 				var json = xml2json(str, {
 					explicitArray: true
 				});
-				console.log('xml', str, json);
 				callback(null, json);
 			}
 		}
