@@ -4,7 +4,7 @@ Tinkering with chrome apps and sonos.
 
 There are two parts to this:
 
-- Porting large parts of https://github.com/bencevans/node-sonos/s so that it works in chrome. 
+- Porting large parts of https://github.com/bencevans/node-sonos/ so that it works in chrome. 
   Also make it into an ES6 code base by large.
 
 - The web interface is poached from https://github.com/jishi/node-sonos-web-controller/
@@ -36,8 +36,9 @@ Now you should be able to run the app, and inspect console messages coming throu
 - [x] Create app shell and manifest
 - [x] Make all ES6 compile into a JS via npm script
 - [ ] Single output JS
-- [x] Port node-sonos discovery message via 
+- [x] Port node-sonos discovery message via
 - [x] Port node-sonos UPNP message
+- [ ] ES6ify the Sonos class 
 - [ ] Port node-sonos UPNP Event Listenes
 - [ ] Port node-sonos-web-controller UI to display rooms/zones UI
 - [ ] Port node-sonos-web-controller UI to control volumes
