@@ -22,6 +22,10 @@ chrome.app.runtime.onLaunched.addListener(function() {
 			console.log(sonos.host, 'getMusicLibrary', result);
 		});
 
+		sonos.getZoneInfo(function (err, result) {
+			console.log(sonos.host, 'getZoneInfo', result);
+		});
+
 	});
 
 	chrome.app.window.create('window.html', {
