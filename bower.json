@@ -1,0 +1,20 @@
+{
+  "name": "sonos-controller-for-chrome",
+  "version": "0.0.0",
+  "authors": [
+    "Pascal Opitz <contact@pascalopitz.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-xml2json": "git@github.com:pascalopitz/jQuery-xml2json.git",
+    "underscore": "~1.7.0"
+  }
+}
