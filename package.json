@@ -11,8 +11,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "6to5": "^2.2.0",
-    "6to5ify": "^3.0.0",
-    "browserify": "^8.0.2"
+    "6to5": "^2.2.0"
   }
 }
