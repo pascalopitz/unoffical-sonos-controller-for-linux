@@ -1,8 +1,10 @@
+var reg = /^(\w+): (.+)/;
+
 var request = function (options, callback) {
 
   var xhr = new XMLHttpRequest();
 
-  xhr.open(options.method || 'GET', options.uri);
+  xhr.open(options.method || 'GET', options.uri || options.url);
 
   if(options.headers) {
 	  for(var k in options.headers) {
@@ -13,9 +15,24 @@ var request = function (options, callback) {
   }
 
   xhr.onreadystatechange = function() {
+    var headers = {};
+
+
     if (xhr.readyState == 4) {
       if (xhr.status === 200) {
-      	callback(null, { statusCode: xhr.status }, xhr.responseText);
+    
+        xhr.getAllResponseHeaders().split('\n').forEach(function (l) {
+          var matches = reg.exec(l);
+
+          if(matches) {
+            headers[String(matches[1]).toLowerCase()] = matches[2];
+          }
+        });
+
+      	callback(null, { 
+          statusCode: xhr.status,
+          headers: headers
+        }, xhr.responseText);
       }
     }
   }

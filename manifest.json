@@ -8,28 +8,14 @@
       "scripts": [
         "bower_components/jquery-xml2json/src/xml2json.js",
         "bower_components/underscore/underscore.js",
-        "dist/helpers/Services.js",
-        "dist/helpers/htmlEntities.js",
-        "dist/helpers/withinEnvelope.js",
-        "dist/helpers/xml2js.js",
-        "dist/helpers/request.js",
-        "dist/services/Service.js",
-        "dist/services/AVTransport.js",
-        "dist/services/AlarmClock.js",
-        "dist/services/AudioIn.js",
-        "dist/services/ContentDirectory.js",
-        "dist/services/DeviceProperties.js",
-        "dist/services/GroupManagement.js",
-        "dist/services/MusicServices.js",
-        "dist/services/SystemProperties.js",
-        "dist/services/ZoneGroupTopology.js",
-        "dist/sonos/Sonos.js",
-        "dist/sonos/Search.js",
-        "dist/app.js"
+        "bower_components/requirejs/require.js",
+        "js/dist.js",
+        "js/wrapper.js"
       ]
     }
   },
   "permissions": [
+    "webRequest",
     "http://*/MediaRenderer/AVTransport/Control",
     "http://*/MediaRenderer/RenderingControl/Control",
     "https://*/DeviceProperties/Control",
@@ -39,7 +25,10 @@
       "udp": {
         "send": ["*"],
         "bind": ["*"]
-      }
+      },
+      "tcpServer": {
+         "listen": ["*:*"]
+       }      
     },
   "icons": { 
     "16": "icons/sonos-16.png",

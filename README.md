@@ -35,11 +35,13 @@ Now you should be able to run the app, and inspect console messages coming throu
 
 - [x] Create app shell and manifest
 - [x] Make all ES6 compile into a JS via npm script
-- [ ] Single output JS
+- [x] Single output JS
 - [x] Port node-sonos discovery message via
 - [x] Port node-sonos UPNP message
 - [ ] ES6ify the Sonos class 
-- [ ] Port node-sonos UPNP Event Listenes
+- [x] Port node-sonos UPNP Event Listener UPNP subscribe messages
+- [ ] Port node-sonos UPNP Event Listener UPNP incoming message handling
+- [ ] ES6ify Event Listener class
 - [ ] Port node-sonos-web-controller UI to display rooms/zones UI
 - [ ] Port node-sonos-web-controller UI to control volumes
 - [ ] Port node-sonos-web-controller UI to  start / stop / skip / rewind

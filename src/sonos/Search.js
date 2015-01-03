@@ -1,4 +1,4 @@
-import Sonos from 'Sonos';
+import Sonos from './Sonos';
 
 var socketReceive;
 
@@ -49,8 +49,6 @@ class Search {
 						var modelCheck = buffer.match(/SERVER.*\((.*)\)/);
 						var model = (modelCheck.length > 1 ? modelCheck[1] : null);
 
-						console.log(model, receiveInfo.remoteAddress);
-
 						discoveryCallback(new Sonos(receiveInfo.remoteAddress))
 					}
 				}
@@ -66,3 +64,5 @@ class Search {
 		});
 	}
 };
+
+export default Search;
