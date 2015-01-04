@@ -1,7 +1,10 @@
-//var http = require('http');
 import xml2js from '../helpers/xml2js';
 import request from '../helpers/request';
 import ip from '../helpers/ip';
+
+import Stream from './IncomingStream';
+
+var listeners = {};
 
 var Listener = function(device) {
   this.device = device;
@@ -10,71 +13,62 @@ var Listener = function(device) {
 };
 
 chrome.sockets.tcpServer.onAccept.addListener(function (info) {
-  console.log('tcpServer.onAccept', info)
+  var stream = new Stream(info.clientSocketId, function (request) {
+
+    if(listeners[info.socketId]) {
+      listeners[info.socketId]._messageHandler(request); 
+    }
+
+  });
 });
+
 
 Listener.prototype._startInternalServer = function(callback) {
   var self = this;
   
 
    chrome.sockets.tcpServer.create(null, function (info) {
-     chrome.sockets.tcpServer.listen(info.socketId, '0.0.0.0', 0, null, function () {
+     chrome.sockets.tcpServer.listen(info.socketId, ip.address(), 0, null, function () {
 
         chrome.sockets.tcpServer.getInfo(info.socketId, function (i) {
-          console.log('tcpServer.getInfo', i);
   
           self.server = true;
           self.port = i.localPort;
+
+          listeners[info.socketId] = self;
           callback();
         });
 
      });  
    });
-
-  // this.server = http.createServer(function(req, res) {
-  //   var buffer = '';
-  //   req.on('data', function(d) {
-  //     buffer += d;
-  //   });
-
-  //   req.on('end', function() {
-  //     req.body = buffer;
-  //     this._messageHandler(req, res);
-
-  //   }.bind(this));
-
-  // }.bind(this)).listen(0, function() {
-  //   var port = this.server.address().port;
-  //   this.port = port;
-  //   callback(null, port);
-
-  // }.bind(this));
-
 };
 
-// Listener.prototype._messageHandler = function(req, res) {
+Listener.prototype._messageHandler = function(req) {
 
-//   if (req.method.toUpperCase() === 'NOTIFY' && req.url.toLowerCase() === '/notify') {
+  if (req.method.toUpperCase() === 'NOTIFY' && req.uri.toLowerCase() === '/notify') {
 
-//     if (!this.services[req.headers.sid])
-//       return;
+    if (!this.services[req.headers.sid])
+      return;
 
-//     var thisService = this.services[req.headers.sid];
+    var thisService = this.services[req.headers.sid];
 
-//     var items = thisService.data || {};
-//     this.parser.parseString(req.body.toString(), function(error, data) {
-//       _.each(data['e:propertyset']['e:property'], function(element) {
-//         _.each(_.keys(element), function(key) {
-//           items[key] = element[key][0];
-//         });
-//       });
+    var items = thisService.data || {};
+    this.parser.parseString(req.body.toString(), function(error, data) {
+      _.each(data['e:propertyset']['e:property'], function(element) {
+        _.each(_.keys(element), function(key) {
+          items[key] = element[key][0];
+        });
+      });
 
-//       this.emit('serviceEvent', thisService.endpoint, req.headers.sid, thisService.data);
-//       res.end();
-//     }.bind(this));
+      this.serviceEventCallback(thisService.endpoint, req.headers.sid, thisService.data);
+    }.bind(this));
 
-//   }
-// };
+  }
+};
+
+Listener.prototype.onServiceEvent = function(f) {
+  this.serviceEventCallback = f;
+};
 
 Listener.prototype.addService = function(serviceEndpoint, callback) {
   if (!this.server) {

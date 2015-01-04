@@ -142,7 +142,4 @@ class AVTransport extends Service {
 	}
 };
 
-Services.register("AVTransport", AVTransport);
-
-
 export default AVTransport;

@@ -26,7 +26,5 @@ class MusicServices extends Service {
 	}
 };
 
-Services.register("MusicServices", MusicServices);
-
 
 export default MusicServices;

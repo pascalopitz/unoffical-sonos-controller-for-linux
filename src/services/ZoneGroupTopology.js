@@ -42,7 +42,5 @@ class ZoneGroupTopology extends Service {
 	}
 };
 
-Services.register("ZoneGroupTopology", ZoneGroupTopology);
-
 
 export default ZoneGroupTopology;

@@ -42,7 +42,5 @@ class AudioIn extends Service {
 	}
 };
 
-Services.register("AudioIn", AudioIn);
-
 
 export default AudioIn;

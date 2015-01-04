@@ -26,7 +26,5 @@ class GroupManagement extends Service {
 	}
 };
 
-Services.register("GroupManagement", GroupManagement);
-
 
 export default GroupManagement;

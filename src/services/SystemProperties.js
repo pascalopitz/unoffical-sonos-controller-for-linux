@@ -82,7 +82,5 @@ class SystemProperties extends Service {
 	}
 };
 
-Services.register("SystemProperties", SystemProperties);
-
 
 export default SystemProperties;

@@ -106,8 +106,6 @@ class DeviceProperties extends Service {
 	}
 };
 
-Services.register("DeviceProperties", DeviceProperties);
-
 
 export default DeviceProperties;
 

@@ -42,20 +42,20 @@ chrome.app.runtime.onLaunched.addListener(function() {
 			    console.log('Successfully subscribed, with subscription id', sid);
 			  });
 
-			  // x.on('serviceEvent', function(endpoint, sid, data) {
-			  //   console.log('Received event from', endpoint, '(' + sid + ') with data:', data, '\n\n');
-			  // });
+			  x.onServiceEvent(function(endpoint, sid, data) {
+			    console.log('Received event from', endpoint, '(' + sid + ') with data:', data, '\n\n');
+			  });
 			});
 		}
 
 
 	});
 
-	chrome.app.window.create('window.html', {
-    	'bounds': {
-    		'width': 800,
-    		'height': 600
-    	}
-	});
+	// chrome.app.window.create('window.html', {
+ //    	'bounds': {
+ //    		'width': 800,
+ //    		'height': 600
+ //    	}
+	// });
 
 });

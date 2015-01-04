@@ -82,7 +82,5 @@ class AlarmClock extends Service {
 	}
 }; 
 
-Services.register("AlarmClock", AlarmClock);
-
 
 export default AlarmClock;

@@ -18,7 +18,5 @@ class ContentDirectory extends Service {
 	}
 };
 
-Services.register("ContentDirectory", ContentDirectory);
-
 
 export default ContentDirectory;
