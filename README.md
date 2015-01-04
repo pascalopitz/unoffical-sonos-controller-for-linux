@@ -1,18 +1,11 @@
 #Sonos Controller for Chrome
 
 Tinkering with chrome apps and sonos.
-
-There are two parts to this:
-
-- Porting large parts of https://github.com/bencevans/node-sonos/ so that it works in chrome. 
-  Also make it into an ES6 code base by large.
-
-- The web interface is poached from https://github.com/jishi/node-sonos-web-controller/
-
+The project is written in ES6 and utilizes angular 1.x to manage the UI
 
 ##State of Affairs
 
-CURRENTLY THERE IS NO WORKING UI, IT'S JUST A FEW CONSOLE MESSAGES HAPPENING
+Currently we can only see the list of rooms/zones, but no interactions are happening yet
 
 ##Install and Run
 
@@ -40,9 +33,20 @@ Now you should be able to run the app, and inspect console messages coming throu
 - [x] Port node-sonos UPNP message
 - [ ] ES6ify the Sonos class 
 - [x] Port node-sonos UPNP Event Listener UPNP subscribe messages
-- [ ] Port node-sonos UPNP Event Listener UPNP incoming message handling
+- [x] Port node-sonos UPNP Event Listener UPNP incoming message handling
+- [x] Make sense of topology messages
 - [ ] ES6ify Event Listener class
-- [ ] Port node-sonos-web-controller UI to display rooms/zones UI
-- [ ] Port node-sonos-web-controller UI to control volumes
-- [ ] Port node-sonos-web-controller UI to  start / stop / skip / rewind
+- [ ] Display and interact with rooms/zones UI
+- [ ] Display and interact with volume control UI
+- [ ] Display and interact with UI to  start / stop / skip / rewind
 - [ ] Implement UI to browse artists / tracks / albums
+
+
+##Thanks to other projects
+
+- I ported nearly all of https://github.com/bencevans/node-sonos/ so that it works in chrome. 
+  Also made it into an ES6 code base where it was easy to do.
+
+- The web interface markup and css is poached from https://github.com/jishi/node-sonos-web-controller/
+
+- Dealing with the UPNP notifications needs a webserver, and https://github.com/kzahel/web-server-chrome provided a good insight and many snippets

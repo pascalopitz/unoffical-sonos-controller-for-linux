@@ -10,7 +10,7 @@
         "bower_components/underscore/underscore.js",
         "bower_components/requirejs/require.js",
         "js/compiled.js",
-        "js/wrapper.js"
+        "js/background_wrapper.js"
       ]
     }
   },

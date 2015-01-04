@@ -1,17 +1,27 @@
 import Search from './sonos/Search';
 import Listener from './events/listener';
 
-var search;
-
 chrome.app.runtime.onLaunched.addListener(function() {
 
 	var firstSonos;
+	var uiPort;
+
+	chrome.runtime.onConnect.addListener(function(port) {
+  		console.log('port open', port);
+
+  		if(port.name === 'ui') {
+  			uiPort = port;
+			port.onMessage.addListener(function(msg) {
+				// handle messages
+			});
+  		}
+	});
 
 	if(search) {
 		search.destroy();
 	}
 
-	search = new Search(function (sonos) {
+	var search = new Search(function (sonos) {
 
 
 		sonos.getVolume(function (err, vol) {
@@ -43,7 +53,14 @@ chrome.app.runtime.onLaunched.addListener(function() {
 			  });
 
 			  x.onServiceEvent(function(endpoint, sid, data) {
-			    console.log('Received event from', endpoint, '(' + sid + ') with data:', data, '\n\n');
+
+				var state = xml2json(data.ZoneGroupState, {
+					explicitArray: true
+				});
+
+				if(uiPort) {
+	 				uiPort.postMessage({ type: 'topology', state: state }); 
+				}
 			  });
 			});
 		}
@@ -51,11 +68,11 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 	});
 
-	// chrome.app.window.create('window.html', {
- //    	'bounds': {
- //    		'width': 800,
- //    		'height': 600
- //    	}
-	// });
+	chrome.app.window.create('window.html', {
+		'bounds': {
+			'width': 800,
+			'height': 600
+		}
+	});
 
 });
