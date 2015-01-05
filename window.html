@@ -53,24 +53,26 @@
 				ng-controller="ZoneListCtrl">
 
 				<ul ng-repeat="group in ZoneGroups"
-					ng-click="select(group)">
+					ng-click="select(group)"
+					ng-class="{ selected : group.$.ID === $parent.selectedGroup.$.ID }">
 					<li ng-repeat="member in group.ZoneGroupMember">
 						<span>{{member.$.ZoneName}}</span>
 					</li>
 				</ul>
+
 			</div>
 		</div>
-		<div id="status-container">
+		<div id="status-container" ng-controller="CurrentTrackCtrl">
 			<h4 id="now-playing">NOW PLAYING</h4>
 			<div id="current-track-info">
-				<img id="current-track-art" />
+				<img id="current-track-art" ng-src="{{track.albumArtURL}}" />
 				<div>
 					<h6>Track</h6>
-					<p id="track"></p>
+					<p id="track">{{track.title}}</p>
 					<h6>Artist</h6>
-					<p id="artist"></p>
+					<p id="artist">{{track.artist}}</p>
 					<h6>Album</h6>
-					<p id="album"></p>
+					<p id="album">{{track.album}}</p>
 				</div>
 				<h5>Next</h5>
 				<p id="next-track"></p>

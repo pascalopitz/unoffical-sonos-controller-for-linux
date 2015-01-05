@@ -1,26 +1,14 @@
-var port = chrome.runtime.connect({name: "ui"});
+import port from './services/port';
+import media from './services/media';
+
+import ZoneListCtrl from './controllers/ZoneListCtrl';
+import CurrentTrackCtrl from './controllers/CurrentTrackCtrl';
 
 var app = angular.module('Sonos', []);
 
-angular.module('Sonos').controller('ZoneListCtrl', function ($scope) {
+angular.module('Sonos').factory('port', port);
 
-	$scope.selectedGroup = null;
-	$scope.ZoneGroups = [];
+angular.module('Sonos').factory('media', media);
 
-	port.onMessage.addListener(function(msg) {
-		if(msg.type === 'topology') {
-			$scope.ZoneGroups = msg.state.ZoneGroups.ZoneGroup;
-
-			if(!$scope.selectedGroup && $scope.ZoneGroups.length) {
-				$scope.selectedGroup = $scope.ZoneGroups[0]
-			}
-
-			$scope.$apply();
-		}
-	});
-
-	$scope.select = function (group) {
-		$scope.selectedGroup = group;
-	};
-
-});
+angular.module('Sonos').controller('ZoneListCtrl', ['$scope', 'port', ZoneListCtrl]);
+angular.module('Sonos').controller('CurrentTrackCtrl', ['$scope', 'port', 'media', CurrentTrackCtrl]);

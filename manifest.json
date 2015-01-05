@@ -19,8 +19,9 @@
     "http://*/MediaRenderer/AVTransport/Control",
     "http://*/MediaRenderer/RenderingControl/Control",
     "https://*/DeviceProperties/Control",
-    "https://*/xml/device_description.xml "
-  ],
+    "https://*/xml/device_description.xml",
+    "http://*/getaa*"
+  ],  
   "sockets": {
       "udp": {
         "send": ["*"],

@@ -145,7 +145,8 @@ Sonos.prototype.currentTrack = function(callback) {
     if (err) return callback(err);
 
     if ((!Array.isArray(data)) || (data.length < 1)) return {};
-    var metadata = data[0].TrackMetaData;
+
+    var metadata = data[0].TrackMetaData[0];
     var position = (parseInt(data[0].RelTime[0].split(':')[0], 10) * 60 * 60) +
                    (parseInt(data[0].RelTime[0].split(':')[1], 10) * 60) +
                    parseInt(data[0].RelTime[0].split(':')[2], 10);
@@ -154,7 +155,7 @@ Sonos.prototype.currentTrack = function(callback) {
                    (parseInt(data[0].TrackDuration[0].split(':')[1], 10) * 60) +
                    parseInt(data[0].TrackDuration[0].split(':')[2], 10);
 
-    if (metadata) {
+    if (metadata && metadata !== 'NOT_IMPLEMENTED') {
       return (new xml2js.Parser()).parseString(metadata, function(err, data) {
         var track;
 
@@ -170,7 +171,7 @@ Sonos.prototype.currentTrack = function(callback) {
         return callback(null, track);
       });
     } else {
-      return callback(null, { position: position, duration: duration });
+      return callback(null, { position: position || 0, duration: duration || 0});
     }
   });
 };

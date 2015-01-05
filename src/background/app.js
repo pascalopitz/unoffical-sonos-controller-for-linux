@@ -6,6 +6,9 @@ chrome.app.runtime.onLaunched.addListener(function() {
 	var firstSonos;
 	var uiPort;
 
+	var deviceSearches = {};
+	var reg = /^http:\/\/([\d\.]+)/; 
+
 	chrome.runtime.onConnect.addListener(function(port) {
   		console.log('port open', port);
 
@@ -13,6 +16,35 @@ chrome.app.runtime.onLaunched.addListener(function() {
   			uiPort = port;
 			port.onMessage.addListener(function(msg) {
 				// handle messages
+				if(msg.type === 'selectZoneGroup') {
+					var l = msg.ZoneGroup.ZoneGroupMember[0].$.Location;
+					var matches = reg.exec(l);
+
+					var sonos = deviceSearches[matches[1]];
+
+					if(sonos) {
+						sonos.getVolume(function (err, vol) {
+			 				uiPort.postMessage({ type: 'volume', state: vol, host: sonos.host }); 
+						});
+
+						sonos.currentTrack(function (err, track) {
+							console.log('currentTrack', track)
+			 				uiPort.postMessage({ type: 'currentTrack', track: track, host: sonos.host }); 
+						});
+
+						// sonos.deviceDescription(function (err, desc) {
+						// 	console.log(sonos.host, 'deviceDescription', desc);
+						// });
+
+						// sonos.getZoneInfo(function (err, result) {
+						// 	console.log(sonos.host, 'getZoneInfo', result);
+						// });
+
+						// sonos.getMusicLibrary('artists', {}, function (err, result) {
+						// 	console.log(sonos.host, 'getMusicLibrary', result);
+						// });						
+					}
+				}
 			});
   		}
 	});
@@ -23,25 +55,11 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 	var search = new Search(function (sonos) {
 
-
-		sonos.getVolume(function (err, vol) {
-			console.log(sonos.host, 'Volume', vol);
-		});
-
-		sonos.deviceDescription(function (err, desc) {
-			console.log(sonos.host, 'deviceDescription', desc);
-		});
-
-		sonos.getZoneInfo(function (err, result) {
-			console.log(sonos.host, 'getZoneInfo', result);
-		});
+		deviceSearches[sonos.host] = sonos;
 
 		if(!firstSonos) {
 			firstSonos = sonos;
 
-			sonos.getMusicLibrary('artists', {}, function (err, result) {
-				console.log(sonos.host, 'getMusicLibrary', result);
-			});
 
 			var x = new Listener(sonos);
 			x.listen(function(err) {
