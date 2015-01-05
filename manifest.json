@@ -15,7 +15,7 @@
     }
   },
   "permissions": [
-    "webRequest",
+    "system.network",
     "http://*/MediaRenderer/AVTransport/Control",
     "http://*/MediaRenderer/RenderingControl/Control",
     "https://*/DeviceProperties/Control",

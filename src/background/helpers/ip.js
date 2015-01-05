@@ -1,7 +1,14 @@
+var firstInterface;
+
+chrome.system.network.getNetworkInterfaces(function(interfaces) {
+	// TODO: don't just get the first one,
+	// but the one that is in the same subnet as the sonos devices
+    firstInterface = interfaces[0];
+});
+
 var ip = {
 	address: function () {
-		// todo, get dynamically
-		return '192.168.1.11';
+		return firstInterface.address;
 	}
 };
 
