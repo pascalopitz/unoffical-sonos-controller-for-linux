@@ -18,13 +18,13 @@
 		<div id="player-volumes-container">
 			<div id="player-volumes" class="loading"></div>
 		</div>
-		<div id="controls">
-			<img id="prev" src="svg/prev.svg" />
-			<div id="play-pause" class="play">
+		<div id="controls" ng-controller="PlayPauseCtrl">
+			<img id="prev" src="svg/prev.svg" ng-click="prev()" />
+			<div id="play-pause" class="play" ng-click="toggle()" >
 				<img id="play" src="svg/play.svg" />
 				<img id="pause" src="svg/pause.svg" />
 			</div>
-			<img id="next" src="svg/next.svg" />
+			<img id="next" src="svg/next.svg" ng-click="next()" />
 
 		</div>
 		<div id="position-info">

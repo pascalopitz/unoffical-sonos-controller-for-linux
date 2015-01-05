@@ -5,7 +5,9 @@ The project is written in ES6 and utilizes angular 1.x to manage the UI
 
 ##State of Affairs
 
-Currently we can only see the list of rooms/zones, but no interactions are happening yet
+	- we can see the list of rooms/zones
+	- the current track info displays
+	- play/pause/prev/next works but the UI is not updating correctly
 
 ##Install and Run
 

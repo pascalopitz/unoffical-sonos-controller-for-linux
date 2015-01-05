@@ -669,6 +669,8 @@ Sonos.prototype.getCurrentState = function(callback) {
       state = 'playing';
     } else if (JSON.stringify(data[0].CurrentTransportState) === '["PAUSED_PLAYBACK"]') {
       state = 'paused';
+    } else if (JSON.stringify(data[0].CurrentTransportState) === '["TRANSITIONING"]') {
+      state = 'transitioning';
     }
     
     return callback(err, state);

@@ -16,6 +16,59 @@ chrome.app.runtime.onLaunched.addListener(function() {
   			uiPort = port;
 			port.onMessage.addListener(function(msg) {
 				// handle messages
+
+				function queryState(sonos) {
+					sonos.getVolume(function (err, vol) {
+		 				uiPort.postMessage({ type: 'volume', state: vol, host: sonos.host }); 
+					});
+
+					sonos.currentTrack(function (err, track) {
+						console.log('currentTrack', track)
+		 				uiPort.postMessage({ type: 'currentTrack', track: track, host: sonos.host }); 
+					});
+
+					sonos.getCurrentState(function (err, state) {
+						console.log('currentState', state)
+		 				uiPort.postMessage({ type: 'currentState', state: state, host: sonos.host }); 
+					});
+				}
+
+				if(msg.type === 'play') {
+					deviceSearches[msg.host].play(function () {
+						queryState(deviceSearches[msg.host]);
+						window.setTimeout(function () {
+							queryState(deviceSearches[msg.host]);
+						}, 500);
+					});
+				}
+
+				if(msg.type === 'pause') {
+					deviceSearches[msg.host].pause(function () {
+						queryState(deviceSearches[msg.host]);
+						window.setTimeout(function () {
+							queryState(deviceSearches[msg.host]);
+						}, 500);
+					});					
+				}
+
+				if(msg.type === 'next') {
+					deviceSearches[msg.host].next(function () {
+						queryState(deviceSearches[msg.host]);
+						window.setTimeout(function () {
+							queryState(deviceSearches[msg.host]);
+						}, 500);
+					});										
+				}
+
+				if(msg.type === 'prev') {
+					deviceSearches[msg.host].previous(function () {
+						queryState(deviceSearches[msg.host]);
+						window.setTimeout(function () {
+							queryState(deviceSearches[msg.host]);
+						}, 500);
+					});					
+				}
+
 				if(msg.type === 'selectZoneGroup') {
 					var l = msg.ZoneGroup.ZoneGroupMember[0].$.Location;
 					var matches = reg.exec(l);
@@ -23,15 +76,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
 					var sonos = deviceSearches[matches[1]];
 
 					if(sonos) {
-						sonos.getVolume(function (err, vol) {
-			 				uiPort.postMessage({ type: 'volume', state: vol, host: sonos.host }); 
-						});
-
-						sonos.currentTrack(function (err, track) {
-							console.log('currentTrack', track)
-			 				uiPort.postMessage({ type: 'currentTrack', track: track, host: sonos.host }); 
-						});
-
+						queryState(sonos);
 						// sonos.deviceDescription(function (err, desc) {
 						// 	console.log(sonos.host, 'deviceDescription', desc);
 						// });
