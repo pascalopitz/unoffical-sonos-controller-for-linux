@@ -8,10 +8,11 @@ The project is written in ES6 and utilizes angular 1.x to manage the UI
 	- we can see the list of rooms/zones
 	- the current track info displays
 	- play/pause/prev/next works but the UI is not updating correctly
+	- queue is displaying, and a double click will jump to that track
 
 ##Install and Run
 
-You will need bower for this.
+You will need node.js and bower for this.
 
 First, initialize the project:
 
@@ -38,10 +39,13 @@ Now you should be able to run the app, and inspect console messages coming throu
 - [x] Port node-sonos UPNP Event Listener UPNP incoming message handling
 - [x] Make sense of topology messages
 - [ ] ES6ify Event Listener class
+- [ ] UPNP subscriptions for selected zone 
 - [ ] Display and interact with rooms/zones UI
 - [ ] Display and interact with volume control UI
+- [ ] Display and interact with queue
 - [ ] Display and interact with UI to  start / stop / skip / rewind
 - [ ] Implement UI to browse artists / tracks / albums
+
 
 
 ##Thanks to other projects
