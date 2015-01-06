@@ -11,6 +11,8 @@ function QueueCtrl ($scope, $rootScope, port, media) {
 
 	$scope.$watch('tracks', function(newValue) {
 
+		var timer;
+
 		if(!newValue || !newValue.length) {
 			return;
 		}
@@ -22,17 +24,24 @@ function QueueCtrl ($scope, $rootScope, port, media) {
 
 			media.urlToData(albumArtURL, function (data) {
 				t.albumArtURL = data;
-				$scope.$apply();	
+
+				if(timer) {
+					window.clearTimeout(timer);
+				}
+
+				timer = window.setTimeout(function () {
+					$scope.$apply();
+				}, 1);	
 			});
 
 		});
 
 	});
 
-	$scope.play = function (item) {
+	$scope.goto = function (item) {
 		port.postMessage({
-			type: 'play',
-			item: item,
+			type: 'goto',
+			target: item,
 			host: $rootScope.host
 		});		
 	}

@@ -37,6 +37,15 @@ chrome.app.runtime.onLaunched.addListener(function() {
 					});
 				}
 
+				if(msg.type === 'goto') {
+					deviceSearches[msg.host].goto(msg.target, function () {
+						queryState(deviceSearches[msg.host]);
+						window.setTimeout(function () {
+							queryState(deviceSearches[msg.host]);
+						}, 500);
+					});
+				}
+
 				if(msg.type === 'play') {
 					if(!msg.item) {
 						deviceSearches[msg.host].play(function () {

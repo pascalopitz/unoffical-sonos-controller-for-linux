@@ -80,7 +80,7 @@
 
 			<h4 id="queue">QUEUE</h4>
 			<ul id="queue-container" ng-controller="QueueCtrl">
-				<li ng-repeat="track in tracks" ng-dblclick="play(track)">
+				<li ng-repeat="track in tracks" ng-dblclick="goto($index+1)">
 					<img  ng-src="{{track.albumArtURL}}" />
 					<div class="trackinfo">
 						<p class="title">{{track.title}}</p>
