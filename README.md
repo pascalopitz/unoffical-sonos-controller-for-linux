@@ -23,7 +23,8 @@ Second, build the compiled files into the js folder:
 
 	npm run-script compile
 
-Third, add the app in the extensions tab of chrome. You will need to check the developer mode checkbox
+Third, add the app in the extensions tab of chrome, via "Load unpacked extension". Select the prject folder.
+You will need to check the developer mode checkbox in order to be able to do that.
 Now you should be able to run the app, and inspect console messages coming through via the background.js inspector.
 
 
@@ -40,6 +41,7 @@ Now you should be able to run the app, and inspect console messages coming throu
 - [x] Make sense of topology messages
 - [ ] ES6ify Event Listener class
 - [ ] UPNP subscriptions for selected zone 
+- [ ] Display Lodaing message if there's no players
 - [ ] Display and interact with rooms/zones UI
 - [ ] Display and interact with volume control UI
 - [ ] Display and interact with queue

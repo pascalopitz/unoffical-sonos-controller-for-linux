@@ -450,7 +450,7 @@ h4 {
 	font-size: 14px;
 }
 
-#favorites-container,
+#browser-container,
 #queue-container {
 	margin: 0;
 	padding: 0;
@@ -460,7 +460,7 @@ h4 {
 	border-top: 1px solid #012947;
 }
 
-#favorites-container li,
+#browser-container li,
 #queue-container li {
 	list-style: none;
 	margin: 0;
@@ -471,13 +471,13 @@ h4 {
 	transition: all 0.15s;
 }
 
-#favorites-container li:hover,
+#browser-container li:hover,
 #queue-container li:hover {
 	background: rgba(255,255,255,0.05);
 	outline: none;
 }
 
-#favorites-container li:focus,
+#browser-container li:focus,
 #queue-container li:focus {
 	background: rgba(255,255,255,0.15);
 	outline: none;
@@ -485,7 +485,7 @@ h4 {
 
 
 
-#favorites-container li img,
+#browser-container li img,
 #queue-container li img {
 	width: 40px;
 	height: 40px;
@@ -494,6 +494,7 @@ h4 {
 	display: inline-block;
 }
 
+#browser-container li div,
 #queue-container li div {
 	display: inline-block;
 	width: calc(100% - 53px);
@@ -508,11 +509,12 @@ h4 {
 	white-space: nowrap;
 }
 
+#browser-container li div p.artist,
 #queue-container li div p.artist {
 	color: #aaa;
 }
 
-#favorites-container li span {
+#browser-container li span {
 	padding: 3px;
 	line-height: 22px;
 }

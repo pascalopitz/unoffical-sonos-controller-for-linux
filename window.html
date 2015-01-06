@@ -90,10 +90,26 @@
 			</ul>
 
 		</div>
-		<div id="music-sources-container">
-			<h4>FAVORITES</h4>
+		<div id="music-sources-container" ng-controller="BrowserCtrl">
+			<h4>{{title}}</h4>
 
-			<ul id="favorites-container"></ul>
+			<ul ng-if="mode === 'sources'" id="browser-container">
+				<li ng-repeat="source in sources" ng-click="setSource(source)">
+					<img>
+					<div>
+						<p>{{source.title}}</p>
+					</div>
+				</li>
+			</ul>
+
+			<ul ng-if="mode === 'library'" id="browser-container">
+				<li ng-if="searchMode === null" ng-repeat="type in searchTypes" ng-click="setSearchType(type)">
+					<img>
+					<div>
+						<p>{{type.title}}</p>
+					</div>
+				</li>
+			</ul>
 
 		</div>
 	</div>

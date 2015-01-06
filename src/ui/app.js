@@ -5,6 +5,7 @@ import ZoneListCtrl from './controllers/ZoneListCtrl';
 import CurrentTrackCtrl from './controllers/CurrentTrackCtrl';
 import PlayPauseCtrl from './controllers/PlayPauseCtrl';
 import QueueCtrl from './controllers/QueueCtrl';
+import BrowserCtrl from './controllers/BrowserCtrl';
 
 var app = angular.module('Sonos', []);
 
@@ -15,3 +16,4 @@ angular.module('Sonos').controller('ZoneListCtrl', ['$scope', '$rootScope', '$fi
 angular.module('Sonos').controller('PlayPauseCtrl', ['$scope', '$rootScope', 'port', PlayPauseCtrl]);
 angular.module('Sonos').controller('CurrentTrackCtrl', ['$scope', '$rootScope', 'port', 'media', CurrentTrackCtrl]);
 angular.module('Sonos').controller('QueueCtrl', ['$scope', '$rootScope', 'port', 'media', QueueCtrl]);
+angular.module('Sonos').controller('BrowserCtrl', ['$scope', '$rootScope', 'port', 'media', BrowserCtrl]);
