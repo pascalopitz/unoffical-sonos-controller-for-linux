@@ -31,6 +31,10 @@ chrome.app.runtime.onLaunched.addListener(function() {
 						console.log('currentState', state)
 		 				uiPort.postMessage({ type: 'currentState', state: state, host: sonos.host }); 
 					});
+
+					sonos.getMusicLibrary('queue', {}, function (err, result) {
+						console.log(sonos.host, 'getMusicLibrary queue', result);
+					});
 				}
 
 				if(msg.type === 'play') {

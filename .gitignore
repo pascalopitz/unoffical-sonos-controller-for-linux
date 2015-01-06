@@ -1,4 +1,4 @@
-js/compiled.js
+js/compiled*.js
 .git
 npm-debug.log
 node_modules

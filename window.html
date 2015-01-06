@@ -79,7 +79,14 @@
 			</div>
 
 			<h4 id="queue">QUEUE</h4>
-			<ul id="queue-container">
+			<ul id="queue-container" ng-controller="QueueCtrl">
+				<li ng-repeat="track in tracks">
+					<img ng-src="{{track.albumArtUR}}" class="loaded" />
+					<div class="trackinfo">
+						<p class="title">{{track.title}}</p>
+						<p class="artist">{{track.artist}}</p>
+					</div>
+				</li>
 			</ul>
 
 		</div>
@@ -91,7 +98,7 @@
 		</div>
 	</div>
 
-	<script type="text/javascript" src="js/compiled.js"></script>
+	<script type="text/javascript" src="js/compiled_ui.js"></script>
 	<script type="text/javascript" src="js/ui_wrapper.js"></script>
 
 </body>

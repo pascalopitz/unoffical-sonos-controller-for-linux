@@ -76,6 +76,7 @@ Sonos.prototype.getMusicLibrary = function(searchType, options, callback){
     'composers': 'A:COMPOSER',
     'tracks': 'A:TRACKS',
     'playlists': 'A:PLAYLISTS',
+    'queue': 'Q:0',
     'share': 'S:'
   };
   
@@ -108,7 +109,7 @@ Sonos.prototype.getMusicLibrary = function(searchType, options, callback){
         callback(new Error('Cannot parse DIDTL result'), data);
       }
       
-      _.each(didl['DIDL-Lite'].container, function(item){
+      _.each(didl['DIDL-Lite'].container || didl['DIDL-Lite'].item, function(item){
         items.push(
           {
             'title': Array.isArray(item['dc:title']) ? item['dc:title'][0]: null,
