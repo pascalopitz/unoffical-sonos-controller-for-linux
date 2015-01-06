@@ -113,6 +113,11 @@ Sonos.prototype.getMusicLibrary = function(searchType, options, callback){
         items.push(
           {
             'title': Array.isArray(item['dc:title']) ? item['dc:title'][0]: null,
+            'creator': Array.isArray(item['dc:creator']) ? item['dc:creator'][0]: null,
+            'album': Array.isArray(item['upnp:album']) ? item['upnp:album'][0]: null,
+            'albumArtURI': Array.isArray(item['upnp:albumArtURI']) ? item['upnp:albumArtURI'][0]: null,
+            'class': Array.isArray(item['upnp:class']) ? item['upnp:class'][0]: null,
+            'originalTrackNumber': Array.isArray(item['upnp:originalTrackNumber']) ? item['upnp:originalTrackNumber'][0]: null,
             'uri': Array.isArray(item.res) ? item.res[0]._: null
           }
         );

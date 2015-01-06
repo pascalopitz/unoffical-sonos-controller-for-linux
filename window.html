@@ -80,8 +80,8 @@
 
 			<h4 id="queue">QUEUE</h4>
 			<ul id="queue-container" ng-controller="QueueCtrl">
-				<li ng-repeat="track in tracks">
-					<img ng-src="{{track.albumArtUR}}" class="loaded" />
+				<li ng-repeat="track in tracks" ng-dblclick="play(track)">
+					<img  ng-src="{{track.albumArtURL}}" />
 					<div class="trackinfo">
 						<p class="title">{{track.title}}</p>
 						<p class="artist">{{track.artist}}</p>

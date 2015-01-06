@@ -1,4 +1,4 @@
-function PlayPauseCtrl ($scope, port) {
+function PlayPauseCtrl ($scope, $rootScope, port) {
 
 	$scope.currentState = null;
 	$scope.host = null;
@@ -7,22 +7,24 @@ function PlayPauseCtrl ($scope, port) {
 		if(msg.type === 'currentState') {
 			console.log('currentState', msg.state);
 			$scope.currentState = msg.state || 'paused';
-			$scope.host = msg.host;
+			$rootScope.host = msg.host;
+			$rootScope.port = msg.port;
 			$scope.$apply();
+			$rootScope.$apply();
 		}
 	});
 
 	$scope.prev = function () {
 		port.postMessage({
 			type: 'prev',
-			host: $scope.host
+			host: $rootScope.host
 		});
 	};
 
 	$scope.next = function () {
 		port.postMessage({
 			type: 'next',
-			host: $scope.host
+			host: $rootScope.host
 		});
 	};
 
@@ -35,8 +37,8 @@ function PlayPauseCtrl ($scope, port) {
 
 		port.postMessage({
 			type: action,
-			host: $scope.host
-		});		
+			host: $rootScope.host
+		});
 	};
 
 }

@@ -19,31 +19,40 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 				function queryState(sonos) {
 					sonos.getVolume(function (err, vol) {
-		 				uiPort.postMessage({ type: 'volume', state: vol, host: sonos.host }); 
+		 				uiPort.postMessage({ type: 'volume', state: vol, host: sonos.host, port: sonos.port }); 
 					});
 
 					sonos.currentTrack(function (err, track) {
 						console.log('currentTrack', track)
-		 				uiPort.postMessage({ type: 'currentTrack', track: track, host: sonos.host }); 
+		 				uiPort.postMessage({ type: 'currentTrack', track: track, host: sonos.host, port: sonos.port }); 
 					});
 
 					sonos.getCurrentState(function (err, state) {
 						console.log('currentState', state)
-		 				uiPort.postMessage({ type: 'currentState', state: state, host: sonos.host }); 
+		 				uiPort.postMessage({ type: 'currentState', state: state, host: sonos.host, port: sonos.port }); 
 					});
 
 					sonos.getMusicLibrary('queue', {}, function (err, result) {
-						console.log(sonos.host, 'getMusicLibrary queue', result);
+		 				uiPort.postMessage({ type: 'queue', result: result, host: sonos.host, port: sonos.port }); 
 					});
 				}
 
 				if(msg.type === 'play') {
-					deviceSearches[msg.host].play(function () {
-						queryState(deviceSearches[msg.host]);
-						window.setTimeout(function () {
+					if(!msg.item) {
+						deviceSearches[msg.host].play(function () {
 							queryState(deviceSearches[msg.host]);
-						}, 500);
-					});
+							window.setTimeout(function () {
+								queryState(deviceSearches[msg.host]);
+							}, 500);
+						});
+					} else {
+						deviceSearches[msg.host].play(msg.item.uri , function () {
+							queryState(deviceSearches[msg.host]);
+							window.setTimeout(function () {
+								queryState(deviceSearches[msg.host]);
+							}, 500);
+						});
+					}
 				}
 
 				if(msg.type === 'pause') {

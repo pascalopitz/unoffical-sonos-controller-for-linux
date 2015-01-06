@@ -11,7 +11,7 @@ var app = angular.module('Sonos', []);
 angular.module('Sonos').factory('port', port);
 angular.module('Sonos').factory('media', media);
 
-angular.module('Sonos').controller('ZoneListCtrl', ['$scope', 'port', ZoneListCtrl]);
-angular.module('Sonos').controller('PlayPauseCtrl', ['$scope', 'port', PlayPauseCtrl]);
-angular.module('Sonos').controller('CurrentTrackCtrl', ['$scope', 'port', 'media', CurrentTrackCtrl]);
-angular.module('Sonos').controller('QueueCtrl', ['$scope', 'port', 'media', QueueCtrl]);
+angular.module('Sonos').controller('ZoneListCtrl', ['$scope', '$rootScope', '$filter', 'port', ZoneListCtrl]);
+angular.module('Sonos').controller('PlayPauseCtrl', ['$scope', '$rootScope', 'port', PlayPauseCtrl]);
+angular.module('Sonos').controller('CurrentTrackCtrl', ['$scope', '$rootScope', 'port', 'media', CurrentTrackCtrl]);
+angular.module('Sonos').controller('QueueCtrl', ['$scope', '$rootScope', 'port', 'media', QueueCtrl]);

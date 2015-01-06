@@ -1,4 +1,4 @@
-function CurrentTrackCtrl ($scope, port, media) {
+function CurrentTrackCtrl ($scope, $rootScope, port, media) {
 
 	port.registerCallback(function(msg) {
 		if(msg.type === 'currentTrack') {
@@ -8,7 +8,7 @@ function CurrentTrackCtrl ($scope, port, media) {
 			$scope.track = msg.track;
 			var url = $scope.track.albumArtURL;
 
-			$scope.track.albumArtURL = 'null';
+			$scope.track.albumArtURL = '';
 
 			if(url) {
 				media.urlToData(url, function (data) {

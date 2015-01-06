@@ -496,7 +496,7 @@ h4 {
 
 #queue-container li div {
 	display: inline-block;
-	width: calc(100% - 43px);
+	width: calc(100% - 53px);
 }
 
 #queue-container li div p {
