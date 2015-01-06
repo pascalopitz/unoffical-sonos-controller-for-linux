@@ -19,7 +19,7 @@ First, initialize the project:
 	npm install
 	bower install
 
-Second, build the dist folder:
+Second, build the compiled files into the js folder:
 
 	npm run-script compile
 
