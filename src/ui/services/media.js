@@ -1,4 +1,5 @@
 var map = {};
+var blocked = {};
 
 class Media {
 	urlToData (url, callback) {
@@ -7,6 +8,15 @@ class Media {
 			callback(map[url]);
 			return;
 		}
+
+		if(blocked[url]) {
+			blocked.push(callback);
+			return;
+		}
+
+		blocked[url] = [callback];
+
+		console.log('xhr');
 
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', url, true);
@@ -30,7 +40,16 @@ class Media {
 
 
 			map[url] = dataURL;
-			callback(map[url]);				
+
+			window.setTimeout(function () {
+
+				blocked[url].forEach(function (cb) {
+					cb(dataURL);
+				});
+
+				delete blocked[url];
+
+			}, 1);
 		};
 
 		xhr.send();

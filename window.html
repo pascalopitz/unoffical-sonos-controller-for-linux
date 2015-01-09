@@ -81,7 +81,7 @@
 			<h4 id="queue">QUEUE</h4>
 			<ul id="queue-container" ng-controller="QueueCtrl">
 				<li ng-repeat="track in tracks" ng-dblclick="goto($index+1)">
-					<img  ng-src="{{track.albumArtURL}}" />
+					<img ng-src="{{track.albumArtURL}}" />
 					<div class="trackinfo">
 						<p class="title">{{track.title}}</p>
 						<p class="artist">{{track.artist}}</p>
@@ -105,6 +105,20 @@
 			<ul ng-if="mode === 'library'" id="browser-container">
 				<li ng-if="searchMode === null" ng-repeat="type in searchTypes" ng-click="setSearchType(type)">
 					<img>
+					<div>
+						<p>{{type.title}}</p>
+					</div>
+				</li>
+
+				<li ng-if="searchMode === 'artists'" ng-repeat="item in items" ng-click="navigate(item)">
+					<img ng-src="{{item.albumArtURL}}">
+					<div>
+						<p>{{type.name}}</p>
+					</div>
+				</li>
+
+				<li ng-if="searchMode === 'albums'" ng-repeat="item in items" ng-click="navigate(item)">
+					<img ng-src="{{item.albumArtURL}}">
 					<div>
 						<p>{{type.title}}</p>
 					</div>

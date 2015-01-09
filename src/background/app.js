@@ -37,6 +37,12 @@ chrome.app.runtime.onLaunched.addListener(function() {
 					});
 				}
 
+				if(msg.type === 'browse') {
+					deviceSearches[msg.host].getMusicLibrary(msg.searchMode, msg.params || {}, function (err, result) {
+		 				uiPort.postMessage({ type: 'browse', result: result, host: deviceSearches[msg.host].host, port: deviceSearches[msg.host].port }); 
+					});					
+				}
+
 				if(msg.type === 'goto') {
 					deviceSearches[msg.host].goto(msg.target, function () {
 						queryState(deviceSearches[msg.host]);

@@ -8,8 +8,8 @@
     "watch-ui": "./node_modules/.bin/watch \"npm run-script compile-ui\" src/ui",
     "watch-background": "./node_modules/.bin/watch \"npm run-script compile-background\" src/background",
     "compile": "npm run-script compile-ui && npm run-script compile-background",
-    "compile-ui": "node_modules/.bin/6to5 src/ui --out-file=js/compiled_ui.js -m amd -a",
-    "compile-background": "node_modules/.bin/6to5 src/background --out-file=js/compiled_background.js -m amd -a",
+    "compile-ui": "node_modules/.bin/6to5 src/ui --out-file=js/compiled_ui.js --source-maps-inline -m amd -a",
+    "compile-background": "node_modules/.bin/6to5 src/background --out-file=js/compiled_background.js --source-maps-inline -m amd -a",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
