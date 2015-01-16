@@ -4,46 +4,46 @@ import ZoneGroupMember from './ZoneGroupMember';
 
 class ZoneGroup {
 
-  componentDidMount () {
-  	var self = this;
+	componentDidMount () {
+		var self = this;
 
-  	model.observe('currentZone', function () {
+		model.observe('currentZone', function () {
 			self.forceUpdate();
-  	});
-  }
+		});
+	}
 
-  componentWillUnmount () {
-    // unsubscribe
-  }
+	componentWillUnmount () {
+		// unsubscribe
+	}
 
-  render () {
+	render () {
 
-  	var zoneNodes = this.props.data.ZoneGroupMember.map(function (z) {
-      return (
-        <ZoneGroupMember data={z.$} />
-      );
-    });
+		var zoneNodes = this.props.data.ZoneGroupMember.map(function (z) {
+			return (
+				<ZoneGroupMember data={z.$} />
+			);
+		});
 
-  	var classString = 'not-selected'
+		var classString = 'not-selected'
 
-  	if(!model.currentZone) {
-  		model.currentZone = this.props.data;
-  	}
+		if(!model.currentZone) {
+			model.currentZone = this.props.data;
+		}
 
-  	if(model.currentZone.$.ID === this.props.data.$.ID) {
-  		classString = 'selected';
-  	}
+		if(model.currentZone.$.ID === this.props.data.$.ID) {
+			classString = 'selected';
+		}
 
-      return (
-      	<ul className={classString} onClick={this._onClick}>
-      		{{zoneNodes}}
-      	</ul>
-  	);
-  }
+			return (
+				<ul className={classString} onClick={this._onClick}>
+					{{zoneNodes}}
+				</ul>
+		);
+	}
 
-  _onClick () {
-  	model.currentZone = this.props.data;
-  }
+	_onClick () {
+		model.currentZone = this.props.data;
+	}
 }
 
 ZoneGroup.prototype.displayName = "ZoneGroup";

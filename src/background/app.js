@@ -12,6 +12,8 @@ chrome.app.runtime.onLaunched.addListener(function() {
 	chrome.runtime.onConnect.addListener(function(port) {
   		console.log('port open', port);
 
+  		var polling;
+
   		if(port.name === 'ui') {
   			uiPort = port;
 			port.onMessage.addListener(function(msg) {
@@ -35,6 +37,14 @@ chrome.app.runtime.onLaunched.addListener(function() {
 					sonos.getMusicLibrary('queue', {}, function (err, result) {
 		 				uiPort.postMessage({ type: 'queue', result: result, host: sonos.host, port: sonos.port }); 
 					});
+
+					if(polling) {
+						window.clearTimeout(polling);
+					}
+
+					polling = window.setTimeout(function () {
+						queryState(sonos);						
+					}, 500)
 				}
 
 				if(msg.type === 'browse') {
@@ -46,9 +56,6 @@ chrome.app.runtime.onLaunched.addListener(function() {
 				if(msg.type === 'goto') {
 					deviceSearches[msg.host].goto(msg.target, function () {
 						queryState(deviceSearches[msg.host]);
-						window.setTimeout(function () {
-							queryState(deviceSearches[msg.host]);
-						}, 500);
 					});
 				}
 
@@ -56,16 +63,10 @@ chrome.app.runtime.onLaunched.addListener(function() {
 					if(!msg.item) {
 						deviceSearches[msg.host].play(function () {
 							queryState(deviceSearches[msg.host]);
-							window.setTimeout(function () {
-								queryState(deviceSearches[msg.host]);
-							}, 500);
 						});
 					} else {
 						deviceSearches[msg.host].play(msg.item.uri , function () {
 							queryState(deviceSearches[msg.host]);
-							window.setTimeout(function () {
-								queryState(deviceSearches[msg.host]);
-							}, 500);
 						});
 					}
 				}
@@ -73,49 +74,37 @@ chrome.app.runtime.onLaunched.addListener(function() {
 				if(msg.type === 'pause') {
 					deviceSearches[msg.host].pause(function () {
 						queryState(deviceSearches[msg.host]);
-						window.setTimeout(function () {
-							queryState(deviceSearches[msg.host]);
-						}, 500);
 					});					
 				}
 
 				if(msg.type === 'next') {
 					deviceSearches[msg.host].next(function () {
 						queryState(deviceSearches[msg.host]);
-						window.setTimeout(function () {
-							queryState(deviceSearches[msg.host]);
-						}, 500);
 					});										
 				}
 
 				if(msg.type === 'prev') {
 					deviceSearches[msg.host].previous(function () {
 						queryState(deviceSearches[msg.host]);
-						window.setTimeout(function () {
-							queryState(deviceSearches[msg.host]);
-						}, 500);
 					});					
 				}
 
 				if(msg.type === 'selectZoneGroup') {
-					var l = msg.ZoneGroup.ZoneGroupMember[0].$.Location;
-					var matches = reg.exec(l);
+					var sonos;
 
-					var sonos = deviceSearches[matches[1]];
+					msg.ZoneGroup.ZoneGroupMember.forEach(function (m) {
+						if(m.$.UUID === msg.ZoneGroup.$.Coordinator) {
+							var l = m.$.Location;
+							var matches = reg.exec(l);
+
+							sonos = deviceSearches[matches[1]];
+						}
+					});				
+
 
 					if(sonos) {
+		 				uiPort.postMessage({ type: 'coordinator', state: { host: sonos.host, port: sonos.port }, host: sonos.host, port: sonos.port }); 
 						queryState(sonos);
-						// sonos.deviceDescription(function (err, desc) {
-						// 	console.log(sonos.host, 'deviceDescription', desc);
-						// });
-
-						// sonos.getZoneInfo(function (err, result) {
-						// 	console.log(sonos.host, 'getZoneInfo', result);
-						// });
-
-						// sonos.getMusicLibrary('artists', {}, function (err, result) {
-						// 	console.log(sonos.host, 'getMusicLibrary', result);
-						// });						
 					}
 				}
 			});

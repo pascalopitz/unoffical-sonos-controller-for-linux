@@ -6,6 +6,7 @@ const width = 180;
 class VolumeSlider {
 
 	render () {
+		var id = this.props.id || '';
 
 		var margin = width / 100 * this.props.volume;
 
@@ -14,7 +15,7 @@ class VolumeSlider {
 		};
 
 		return (
-			<div className="volume-bar">
+			<div id={this.props.id} className="volume-bar">
 				<img style={styles}  src="images/popover_vol_scrubber_normal.png" />
 			</div>
 		);

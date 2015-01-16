@@ -31,7 +31,7 @@ h4 {
 }
 
 #volume-controls-container {
-	top: 8px;
+	top: -12px;
 	left: 0px;
 	position: absolute;
 }

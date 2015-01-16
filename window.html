@@ -15,21 +15,9 @@
 	<header id="top-control">
 
 		<div id="volume-controls-container"></div>
-<!-- 		<img  id="master-mute" class="mute-button" src="svg/mute_off.svg" />
-		<div id="master-volume" class="volume-bar" /><img src="images/popover_vol_scrubber_normal.png" /></div>
-		<div id="player-volumes-container">
-			<div id="player-volumes" class="loading"></div>
-		</div>
- -->
-		<div id="controls" ng-controller="PlayPauseCtrl">
-			<img id="prev" src="svg/prev.svg" ng-click="prev()" />
-			<div id="play-pause" class="play" ng-click="toggle()" >
-				<img id="play" src="svg/play.svg" />
-				<img id="pause" src="svg/pause.svg" />
-			</div>
-			<img id="next" src="svg/next.svg" ng-click="next()" />
 
-		</div>
+ 		<div id="play-controls-container"></div>
+
 		<div id="position-info">
 			<img class="left" src="images/tc_progress_container_left.png" />
 			<img class="right" src="images/tc_progress_container_right.png" />
@@ -51,44 +39,16 @@
 	<div id="column-container">
 		<div id="zone-container">
 			<h4>ROOMS</h4>
-<!-- 			<div id="zone-wrapper">
-
-				<ul ng-repeat="group in ZoneGroups"
-					ng-click="select(group)"
-					ng-class="{ selected : group.$.ID === $parent.selectedGroup.$.ID }">
-					<li ng-repeat="member in group.ZoneGroupMember">
-						<span>{{member.$.ZoneName}}</span>
-					</li>
-				</ul>
-
+			<div id="zone-list-container">
 			</div>
- -->		</div>
-		<div id="status-container" ng-controller="CurrentTrackCtrl">
+ 		</div>
+		<div id="status-container">
+
 			<h4 id="now-playing">NOW PLAYING</h4>
-			<div id="current-track-info">
-				<img id="current-track-art" ng-src="{{track.albumArtURL}}" />
-				<div>
-					<h6>Track</h6>
-					<p id="track">{{track.title}}</p>
-					<h6>Artist</h6>
-					<p id="artist">{{track.artist}}</p>
-					<h6>Album</h6>
-					<p id="album">{{track.album}}</p>
-				</div>
-				<h5>Next</h5>
-				<p id="next-track"></p>
-			</div>
+			<div id="current-track-container"></div>
 
 			<h4 id="queue">QUEUE</h4>
-			<ul id="queue-container" ng-controller="QueueCtrl">
-				<li ng-repeat="track in tracks" ng-dblclick="goto($index+1)">
-					<img ng-src="{{track.albumArtURL}}" />
-					<div class="trackinfo">
-						<p class="title">{{track.title}}</p>
-						<p class="artist">{{track.artist}}</p>
-					</div>
-				</li>
-			</ul>
+			<div id="queue-list-container"></div>
 
 		</div>
 		<div id="music-sources-container" ng-controller="BrowserCtrl">

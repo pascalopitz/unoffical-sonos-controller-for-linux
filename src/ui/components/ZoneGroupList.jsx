@@ -4,35 +4,35 @@ import ZoneGroup from './ZoneGroup';
 
 class ZoneGroupList {
 
-  getInitialState () {
-    return {data: []};
-  }
+	getInitialState () {
+		return {data: []};
+	}
 
-  componentDidMount () {
-    var self = this;
+	componentDidMount () {
+		var self = this;
 
-    model.observe('zoneGroups', function() {
-      self.setState({ data: model.zoneGroups });
-    });
-  }
+		model.observe('zoneGroups', function() {
+			self.setState({ data: model.zoneGroups });
+		});
+	}
 
-  componentWillUnmount () {
-    // unsubscribe
-  }
+	componentWillUnmount () {
+		// unsubscribe
+	}
 
-  render () {
-  	let zoneGroupNodes = this.state.data.map(function (g) {
-      return (
-        <ZoneGroup data={g} />
-      );
-    });
+	render () {
+		var zoneGroupNodes = this.state.data.map(function (g) {
+			return (
+				<ZoneGroup data={g} />
+			);
+		});
 
-    return (
-    	<div id="zone-wrapper">
-    		{{zoneGroupNodes}}
-    	</div>
-    );
-  }
+		return (
+			<div id="zone-wrapper">
+				{{zoneGroupNodes}}
+			</div>
+		);
+	}
 }
 
 ZoneGroupList.prototype.displayName = "ZoneGroupList";

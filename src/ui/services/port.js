@@ -2,9 +2,6 @@ var uiPort = chrome.runtime.connect({name: "ui"});
 var handlers = [];
 
 uiPort.onMessage.addListener(function(msg) {
-
-	console.log('msg', msg.type, msg);
-
 	handlers.forEach(function (handler) {
 		if(handler.type === msg.type) {
 			handler.callback(msg);
