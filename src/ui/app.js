@@ -1,19 +1,32 @@
 import port from './services/port';
-import media from './services/media';
+import model from './model';
 
-import ZoneListCtrl from './controllers/ZoneListCtrl';
-import CurrentTrackCtrl from './controllers/CurrentTrackCtrl';
-import PlayPauseCtrl from './controllers/PlayPauseCtrl';
-import QueueCtrl from './controllers/QueueCtrl';
-import BrowserCtrl from './controllers/BrowserCtrl';
+port.registerCallback('volume', function(msg) {
+	model.volume = msg.state;
+});
 
-var app = angular.module('Sonos', []);
+port.registerCallback('topology', function(msg) {
+  model.zoneGroups = msg.state.ZoneGroups.ZoneGroup;
+});
 
-angular.module('Sonos').factory('port', port);
-angular.module('Sonos').factory('media', media);
+model.observe('currentZone', function () {
+	port.postMessage({
+		type: 'selectZoneGroup',
+		ZoneGroup: model.currentZone
+	});
+});
 
-angular.module('Sonos').controller('ZoneListCtrl', ['$scope', '$rootScope', '$filter', 'port', ZoneListCtrl]);
-angular.module('Sonos').controller('PlayPauseCtrl', ['$scope', '$rootScope', 'port', PlayPauseCtrl]);
-angular.module('Sonos').controller('CurrentTrackCtrl', ['$scope', '$rootScope', 'port', 'media', CurrentTrackCtrl]);
-angular.module('Sonos').controller('QueueCtrl', ['$scope', '$rootScope', 'port', 'media', QueueCtrl]);
-angular.module('Sonos').controller('BrowserCtrl', ['$scope', '$rootScope', 'port', 'media', BrowserCtrl]);
+
+import VolumeControls from './components/VolumeControls'; 
+
+React.render(
+  React.createElement(VolumeControls, null),
+  document.getElementById('volume-controls-container')
+);
+
+import ZoneGroupList from './components/ZoneGroupList'; 
+
+React.render(
+  React.createElement(ZoneGroupList, null),
+  document.getElementById('zone-container')
+);

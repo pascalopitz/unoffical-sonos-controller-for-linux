@@ -7,17 +7,20 @@
 		<title id="page-title">Sonos Web Controller</title>
 		<link id="favicon" rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 
-		<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+		<script type="text/javascript" src="bower_components/react/react-with-addons.js"></script>
+		<script type="text/javascript" src="bower_components/react/JSXTransformer.js"></script>
 		<script type="text/javascript" src="bower_components/requirejs/require.js"></script>
 	</head>
 <body>
 	<header id="top-control">
 
-		<img  id="master-mute" class="mute-button" src="svg/mute_off.svg" />
+		<div id="volume-controls-container"></div>
+<!-- 		<img  id="master-mute" class="mute-button" src="svg/mute_off.svg" />
 		<div id="master-volume" class="volume-bar" /><img src="images/popover_vol_scrubber_normal.png" /></div>
 		<div id="player-volumes-container">
 			<div id="player-volumes" class="loading"></div>
 		</div>
+ -->
 		<div id="controls" ng-controller="PlayPauseCtrl">
 			<img id="prev" src="svg/prev.svg" ng-click="prev()" />
 			<div id="play-pause" class="play" ng-click="toggle()" >
@@ -48,9 +51,7 @@
 	<div id="column-container">
 		<div id="zone-container">
 			<h4>ROOMS</h4>
-			<div
-				id="zone-wrapper"
-				ng-controller="ZoneListCtrl">
+<!-- 			<div id="zone-wrapper">
 
 				<ul ng-repeat="group in ZoneGroups"
 					ng-click="select(group)"
@@ -61,7 +62,7 @@
 				</ul>
 
 			</div>
-		</div>
+ -->		</div>
 		<div id="status-container" ng-controller="CurrentTrackCtrl">
 			<h4 id="now-playing">NOW PLAYING</h4>
 			<div id="current-track-info">

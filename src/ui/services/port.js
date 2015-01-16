@@ -2,14 +2,22 @@ var uiPort = chrome.runtime.connect({name: "ui"});
 var handlers = [];
 
 uiPort.onMessage.addListener(function(msg) {
-	handlers.forEach(function (f) {
-		f(msg);
+
+	console.log('msg', msg.type, msg);
+
+	handlers.forEach(function (handler) {
+		if(handler.type === msg.type) {
+			handler.callback(msg);
+		}
 	});
 });
 
 class Port {
-	registerCallback (f) {
-		handlers.push(f);
+	registerCallback (type, f) {
+		handlers.push({
+			type: type,
+			callback: f,
+		});
 	}
 
 	postMessage () {
@@ -18,7 +26,4 @@ class Port {
 }
 
 var instance = new Port();
-
-export default function () {
-	return instance;
-};
+return instance;

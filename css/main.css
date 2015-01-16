@@ -30,6 +30,12 @@ h4 {
 	position: relative;
 }
 
+#volume-controls-container {
+	top: 8px;
+	left: 0px;
+	position: absolute;
+}
+
 #top-control #play-pause,
 #top-control #prev,
 #top-control #next,

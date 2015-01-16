@@ -57,7 +57,4 @@ class Media {
 }
 
 var instance = new Media();
-
-export default function () {
-	return instance;
-};
+return instance;
