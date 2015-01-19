@@ -7,108 +7,149 @@ chrome.app.runtime.onLaunched.addListener(function() {
 	var uiPort;
 
 	var deviceSearches = {};
+	var listeners = {};
+	var serviceEventHandlers = {};
+
 	var reg = /^http:\/\/([\d\.]+)/; 
 
 	chrome.runtime.onConnect.addListener(function(port) {
-  		console.log('port open', port);
+			console.log('port open', port);
 
-  		var polling;
+			var currentSonos = null;
+			var currentSubscriptions = [];
 
-  		if(port.name === 'ui') {
-  			uiPort = port;
-			port.onMessage.addListener(function(msg) {
-				// handle messages
+			if(port.name === 'ui') {
 
-				function queryState(sonos) {
-					sonos.getVolume(function (err, vol) {
-		 				uiPort.postMessage({ type: 'volume', state: vol, host: sonos.host, port: sonos.port }); 
-					});
+				uiPort = port;
 
-					sonos.currentTrack(function (err, track) {
-						console.log('currentTrack', track)
-		 				uiPort.postMessage({ type: 'currentTrack', track: track, host: sonos.host, port: sonos.port }); 
-					});
+				port.onMessage.addListener(function(msg) {
+					// handle messages
 
-					sonos.getCurrentState(function (err, state) {
-						console.log('currentState', state)
-		 				uiPort.postMessage({ type: 'currentState', state: state, host: sonos.host, port: sonos.port }); 
-					});
+					function subscribeServiceEvents(sonos) {
+						var x = listeners[sonos.host];
 
-					sonos.getMusicLibrary('queue', {}, function (err, result) {
-		 				uiPort.postMessage({ type: 'queue', result: result, host: sonos.host, port: sonos.port }); 
-					});
-
-					if(polling) {
-						window.clearTimeout(polling);
-					}
-
-					polling = window.setTimeout(function () {
-						queryState(sonos);						
-					}, 500)
-				}
-
-				if(msg.type === 'browse') {
-					deviceSearches[msg.host].getMusicLibrary(msg.searchMode, msg.params || {}, function (err, result) {
-		 				uiPort.postMessage({ type: 'browse', result: result, host: deviceSearches[msg.host].host, port: deviceSearches[msg.host].port }); 
-					});					
-				}
-
-				if(msg.type === 'goto') {
-					deviceSearches[msg.host].goto(msg.target, function () {
-						queryState(deviceSearches[msg.host]);
-					});
-				}
-
-				if(msg.type === 'play') {
-					if(!msg.item) {
-						deviceSearches[msg.host].play(function () {
-							queryState(deviceSearches[msg.host]);
+						x.addService('/MediaRenderer/AVTransport/Event', function(error, sid) {
+							if (error) throw err;
+							currentSubscriptions.push(sid);
 						});
-					} else {
-						deviceSearches[msg.host].play(msg.item.uri , function () {
-							queryState(deviceSearches[msg.host]);
+
+						x.addService('/MediaRenderer/RenderingControl/Event', function(error, sid) {
+							if (error) throw err;
+							currentSubscriptions.push(sid);
+						});
+
+						x.addService('/MediaRenderer/GroupRenderingControl/Event', function(error, sid) {
+							if (error) throw err;
+							currentSubscriptions.push(sid);
+						});
+
+						x.addService('/MediaServer/ContentDirectory/Event', function(error, sid) {
+							if (error) throw err;
+							currentSubscriptions.push(sid);
 						});
 					}
-				}
 
-				if(msg.type === 'pause') {
-					deviceSearches[msg.host].pause(function () {
-						queryState(deviceSearches[msg.host]);
-					});					
-				}
+					function unsubscribeServiceEvents(sonos) {
+						var x = listeners[sonos.host];
 
-				if(msg.type === 'next') {
-					deviceSearches[msg.host].next(function () {
-						queryState(deviceSearches[msg.host]);
-					});										
-				}
+						currentSubscriptions.forEach( function (sid) {
+							x.removeService(sid, function(error) {
+								if (error) throw err;
+								console.log('Successfully unsubscribed');
+							});
+						});
 
-				if(msg.type === 'prev') {
-					deviceSearches[msg.host].previous(function () {
-						queryState(deviceSearches[msg.host]);
-					});					
-				}
+						currentSubscriptions = [];
+					}
 
-				if(msg.type === 'selectZoneGroup') {
-					var sonos;
+					function queryState(sonos) {
+						sonos.getVolume(function (err, vol) {
+			 				uiPort.postMessage({ type: 'volume', state: vol, host: sonos.host, port: sonos.port }); 
+						});
 
-					msg.ZoneGroup.ZoneGroupMember.forEach(function (m) {
-						if(m.$.UUID === msg.ZoneGroup.$.Coordinator) {
-							var l = m.$.Location;
-							var matches = reg.exec(l);
+						sonos.currentTrack(function (err, track) {
+			 				uiPort.postMessage({ type: 'currentTrack', track: track, host: sonos.host, port: sonos.port }); 
+						});
 
-							sonos = deviceSearches[matches[1]];
+						sonos.getCurrentState(function (err, state) {
+			 				uiPort.postMessage({ type: 'currentState', state: state, host: sonos.host, port: sonos.port }); 
+						});
+
+						sonos.getMusicLibrary('queue', {}, function (err, result) {
+			 				uiPort.postMessage({ type: 'queue', result: result, host: sonos.host, port: sonos.port }); 
+						});
+					}
+
+					if(msg.type === 'browse') {
+						deviceSearches[msg.host].getMusicLibrary(msg.searchMode, msg.params || {}, function (err, result) {
+			 				uiPort.postMessage({ type: 'browse', result: result, host: deviceSearches[msg.host].host, port: deviceSearches[msg.host].port }); 
+						});					
+					}
+
+					if(msg.type === 'goto') {
+						deviceSearches[msg.host].goto(msg.target, function () {
+							queryState(deviceSearches[msg.host]);
+						});
+					}
+
+					if(msg.type === 'play') {
+						if(!msg.item) {
+							deviceSearches[msg.host].play(function () {
+								queryState(deviceSearches[msg.host]);
+							});
+						} else {
+							deviceSearches[msg.host].play(msg.item.uri , function () {
+								queryState(deviceSearches[msg.host]);
+							});
 						}
-					});				
-
-
-					if(sonos) {
-		 				uiPort.postMessage({ type: 'coordinator', state: { host: sonos.host, port: sonos.port }, host: sonos.host, port: sonos.port }); 
-						queryState(sonos);
 					}
-				}
-			});
-  		}
+
+					if(msg.type === 'pause') {
+						deviceSearches[msg.host].pause(function () {
+							queryState(deviceSearches[msg.host]);
+						});					
+					}
+
+					if(msg.type === 'next') {
+						deviceSearches[msg.host].next(function () {
+							queryState(deviceSearches[msg.host]);
+						});										
+					}
+
+					if(msg.type === 'prev') {
+						deviceSearches[msg.host].previous(function () {
+							queryState(deviceSearches[msg.host]);
+						});					
+					}
+
+					if(msg.type === 'selectZoneGroup') {
+						var sonos;
+
+						msg.ZoneGroup.ZoneGroupMember.forEach(function (m) {
+							if(m.$.UUID === msg.ZoneGroup.$.Coordinator) {
+								var l = m.$.Location;
+								var matches = reg.exec(l);
+
+								sonos = deviceSearches[matches[1]];
+							}
+						});				
+
+
+						if(sonos) {
+
+							if(currentSonos) {
+								unsubscribeServiceEvents(currentSonos);
+							}
+
+							currentSonos = sonos;
+			 				uiPort.postMessage({ type: 'coordinator', state: { host: sonos.host, port: sonos.port }, host: sonos.host, port: sonos.port }); 
+							
+			 				subscribeServiceEvents(sonos);
+							queryState(sonos);
+						}
+					}
+				});
+			}
 	});
 
 	if(search) {
@@ -118,33 +159,46 @@ chrome.app.runtime.onLaunched.addListener(function() {
 	var search = new Search(function (sonos) {
 
 		deviceSearches[sonos.host] = sonos;
+		listeners[sonos.host] = new Listener(sonos);
 
-		if(!firstSonos) {
-			firstSonos = sonos;
+		listeners[sonos.host].listen(function (err) {
+			if (err) throw err;
 
+			if(!firstSonos) {
+				firstSonos = sonos;
 
-			var x = new Listener(sonos);
-			x.listen(function(err) {
-			  if (err) throw err;
-			  
-			  x.addService('/ZoneGroupTopology/Event', function(error, sid) {
-			    if (error) throw err;
-			    console.log('Successfully subscribed, with subscription id', sid);
-			  });
+				listeners[sonos.host].addService('/ZoneGroupTopology/Event', function(error, sid) {
 
-			  x.onServiceEvent(function(endpoint, sid, data) {
+					if (error) throw err;
+					console.log('Successfully subscribed, with subscription id', sid);
 
-				var state = xml2json(data.ZoneGroupState, {
-					explicitArray: true
 				});
 
-				if(uiPort) {
-	 				uiPort.postMessage({ type: 'topology', state: state }); 
-				}
-			  });
-			});
-		}
+			}
 
+
+			listeners[sonos.host].onServiceEvent(function(endpoint, sid, data) {
+
+				if(endpoint === '/ZoneGroupTopology/Event') {
+					var state = xml2json(data.ZoneGroupState, {
+						explicitArray: true
+					});
+
+					if(uiPort) {
+		 				uiPort.postMessage({ type: 'topology', state: state }); 
+					}					
+				}
+
+
+				if(endpoint === '/MediaRenderer/AVTransport/Event') {
+					var lastChange = xml2json(data.LastChange);
+
+					// need to make sense of the info here
+					console.log(lastChange);
+				}
+
+			});
+		});
 
 	});
 

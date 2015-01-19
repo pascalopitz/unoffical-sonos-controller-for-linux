@@ -15,6 +15,7 @@
     }
   },
   "permissions": [
+    "webview",
     "system.network",
     "http://*/MediaRenderer/AVTransport/Control",
     "http://*/MediaRenderer/RenderingControl/Control",

@@ -11,7 +11,7 @@ class VolumeSlider {
 		var margin = width / 100 * this.props.volume;
 
 		var styles = {
-			"margin-left": margin + "px",			
+			marginLeft: margin + "px",			
 		};
 
 		return (

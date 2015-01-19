@@ -28,7 +28,7 @@ class CurrentTrack {
 
 		return (
 			<div id="current-track-info">
-				<AlbumArt id="current-track-art" src={track.albumArtURL} />
+				<AlbumArt id="current-track-art" src={track.albumArtURI} />
 				<div>
 					<h6>Track</h6>
 					<p id="track">{track.title}</p>

@@ -1,7 +1,7 @@
 import register from '../helpers/registerComponent';
 import model from '../model';
 
-import port from '../services/port';
+import port from '../port';
 
 class PlayControls {
 
@@ -22,7 +22,6 @@ class PlayControls {
 	}
 
 	render () {
-		console.log('render play ctrl');
 		var src = this.state.playing ? "svg/pause.svg" : "svg/play.svg";
 
 		return (

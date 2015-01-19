@@ -1,5 +1,5 @@
 import register from '../helpers/registerComponent';
-import port from '../services/port';
+import port from '../port';
 import model from '../model';
 
 import AlbumArt from './AlbumArt';
@@ -12,7 +12,7 @@ class QueueListItem {
 
 		return (
 			<li onDoubleClick={this._onDoubleClick}>
-				<AlbumArt src={track.albumArtURL} />
+				<AlbumArt id="" src={track.albumArtURI} />
 				<div className="trackinfo">
 					<p className="title">{track.title}</p>
 					<p className="artist">{track.creator}</p>
