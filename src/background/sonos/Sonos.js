@@ -683,6 +683,7 @@ Sonos.prototype.getTopology = function(callback) {
  */
 Sonos.prototype.getCurrentState = function(callback) {
   debug('Sonos.currentState(%j)', callback);
+  var _this = this;
   var action = '"urn:schemas-upnp-org:service:AVTransport:1#GetTransportInfo"';
   var body = '<u:GetTransportInfo xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID></u:GetTransportInfo>';
   var state = null;
@@ -693,18 +694,23 @@ Sonos.prototype.getCurrentState = function(callback) {
       return;
     }
 
-    if (JSON.stringify(data[0].CurrentTransportState) === '["STOPPED"]') {
-      state = 'stopped';
-    } else if (JSON.stringify(data[0].CurrentTransportState) === '["PLAYING"]') {
-      state = 'playing';
-    } else if (JSON.stringify(data[0].CurrentTransportState) === '["PAUSED_PLAYBACK"]') {
-      state = 'paused';
-    } else if (JSON.stringify(data[0].CurrentTransportState) === '["TRANSITIONING"]') {
-      state = 'transitioning';
-    }
+    var state = _this.translateState(data[0].CurrentTransportState[0]);
     
     return callback(err, state);
   });
+};
+
+
+Sonos.prototype.translateState = function (inputState) {
+
+  switch(inputState) {
+    case 'PAUSED_PLAYBACK':
+      return 'paused';
+
+    default:
+      return inputState.toLowerCase();
+  }
+
 };
 
 export default Sonos;

@@ -25,6 +25,8 @@ chrome.app.runtime.onLaunched.addListener(function() {
 				port.onMessage.addListener(function(msg) {
 					// handle messages
 
+					console.log('message: ', msg);
+
 					function subscribeServiceEvents(sonos) {
 						var x = listeners[sonos.host];
 
@@ -80,8 +82,12 @@ chrome.app.runtime.onLaunched.addListener(function() {
 						});
 					}
 
+					if(msg.type === 'queryState') {
+						queryState(deviceSearches[msg.host]);						
+					}
+
 					if(msg.type === 'browse') {
-						deviceSearches[msg.host].getMusicLibrary(msg.searchMode, msg.params || {}, function (err, result) {
+						deviceSearches[msg.host].getMusicLibrary(msg.searchType, msg.params || {}, function (err, result) {
 			 				uiPort.postMessage({ type: 'browse', result: result, host: deviceSearches[msg.host].host, port: deviceSearches[msg.host].port }); 
 						});					
 					}
@@ -194,7 +200,25 @@ chrome.app.runtime.onLaunched.addListener(function() {
 					var lastChange = xml2json(data.LastChange);
 
 					// need to make sense of the info here
-					console.log(lastChange);
+					// console.log(lastChange.Event.InstanceID);
+
+					var currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
+						explicitArray: true						
+					});
+
+	 				uiPort.postMessage({ type: 'currentTrack', track: sonos.parseDIDL(currentTrackDIDL), host: sonos.host, port: sonos.port }); 
+
+					// console.log('CurrentTrackMetaData', sonos.parseDIDL(currentTrackDIDL));
+
+					var nextTrackDIDL = xml2json(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val, {
+						explicitArray: true						
+					});
+
+					// console.log('NextTrackMetaData', sonos.parseDIDL(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val));
+
+					// console.log('TransportState', sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val));
+
+	 				uiPort.postMessage({ type: 'currentState', state: sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val), host: sonos.host, port: sonos.port }); 
 				}
 
 			});

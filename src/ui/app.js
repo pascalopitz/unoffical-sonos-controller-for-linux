@@ -3,6 +3,7 @@ import model from './model';
 
 import CurrentTrack from './components/CurrentTrack'; 
 import QueueList from './components/QueueList'; 
+import BrowserList from './components/BrowserList'; 
 import PlayControls from './components/PlayControls'; 
 import VolumeControls from './components/VolumeControls'; 
 import ZoneGroupList from './components/ZoneGroupList'; 
@@ -16,11 +17,27 @@ port.registerCallback('volume', function(msg) {
 	model.volume = msg.state;
 });
 
+port.registerCallback('browse', function(msg) {
+	console.log(arguments);
+});
+
+
 port.registerCallback('topology', function(msg) {
 	model.zoneGroups = msg.state.ZoneGroups.ZoneGroup;
 });
 
 port.registerCallback('currentState', function(msg) {
+	if(msg.state === 'transitioning') {
+		window.setTimeout(function () {
+			port.postMessage({
+				type: 'queryState',
+				host: model.coordinator.host,
+			});
+		}, 200);
+
+		return;
+	}
+
 	model.currentState = msg.state;
 });
 
@@ -49,6 +66,11 @@ React.render(
 React.render(
 	React.createElement(QueueList, null),
 	document.getElementById('queue-list-container')
+)
+
+React.render(
+	React.createElement(BrowserList, null),
+	document.getElementById('music-sources-container')
 )
 
 React.render(

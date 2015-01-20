@@ -24,9 +24,10 @@ class QueueList {
 
 	render () {
 
-		var queueItemNodes = this.state.items.map(function (i) {
+		var queueItemNodes = this.state.items.map(function (i, p) {
+			var position = p + 1;
 			return (
-				<QueueListItem data={i} />
+				<QueueListItem data={i} position={position} />
 			);
 		});
 

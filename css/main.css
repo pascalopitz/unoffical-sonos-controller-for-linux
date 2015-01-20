@@ -457,7 +457,7 @@ h4 {
 }
 
 #browser-container,
-#queue-container {
+#queue-list-container {
 	margin: 0;
 	padding: 0;
 	cursor: pointer;
@@ -525,6 +525,6 @@ h4 {
 	line-height: 22px;
 }
 
-#queue-container {
+#queue-list-container {
 	height: calc(100% - 316px);
 }

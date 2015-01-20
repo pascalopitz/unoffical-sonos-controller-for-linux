@@ -51,40 +51,7 @@
 			<div id="queue-list-container"></div>
 
 		</div>
-		<div id="music-sources-container" ng-controller="BrowserCtrl">
-			<h4>{{title}}</h4>
-
-			<ul ng-if="mode === 'sources'" id="browser-container">
-				<li ng-repeat="source in sources" ng-click="setSource(source)">
-					<img>
-					<div>
-						<p>{{source.title}}</p>
-					</div>
-				</li>
-			</ul>
-
-			<ul ng-if="mode === 'library'" id="browser-container">
-				<li ng-if="searchMode === null" ng-repeat="type in searchTypes" ng-click="setSearchType(type)">
-					<img>
-					<div>
-						<p>{{type.title}}</p>
-					</div>
-				</li>
-
-				<li ng-if="searchMode === 'artists'" ng-repeat="item in items" ng-click="navigate(item)">
-					<img ng-src="{{item.albumArtURL}}">
-					<div>
-						<p>{{type.name}}</p>
-					</div>
-				</li>
-
-				<li ng-if="searchMode === 'albums'" ng-repeat="item in items" ng-click="navigate(item)">
-					<img ng-src="{{item.albumArtURL}}">
-					<div>
-						<p>{{type.title}}</p>
-					</div>
-				</li>
-			</ul>
+		<div id="music-sources-container">
 
 		</div>
 	</div>

@@ -4,14 +4,14 @@ import model from '../model';
 
 import AlbumArt from './AlbumArt';
 
-class QueueListItem {
+class BrowserListItem {
 
 	render () {
 
 		var track = this.props.data;
 
 		return (
-			<li onDoubleClick={this._onDoubleClick} data-position={this.props.position}>
+			<li onClick={this._onClick} data-position={this.props.position}>
 				<AlbumArt id="" src={track.albumArtURI} />
 				<div className="trackinfo">
 					<p className="title">{track.title}</p>
@@ -21,16 +21,12 @@ class QueueListItem {
 		);
 	}
 
-	_onDoubleClick () {
+	_onClick (e) {
 
-		port.postMessage({
-			type: 'goto',
-			host: model.coordinator.host,
-			target: this.props.position,
-		});
+		this.props.clickAction(e, this.props.data);
 
 	}
 }
 
-QueueListItem.prototype.displayName = "QueueListItem";
-export default register(QueueListItem);
+BrowserListItem.prototype.displayName = "BrowserListItem";
+export default register(BrowserListItem);
