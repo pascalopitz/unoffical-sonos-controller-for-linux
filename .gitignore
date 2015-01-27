@@ -1,5 +1,6 @@
-js/compiled*.js
+js/*.js
 .git
+tmp
 npm-debug.log
 node_modules
 bower_components

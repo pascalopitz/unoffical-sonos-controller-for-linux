@@ -26,10 +26,6 @@ class ZoneGroup {
 
 		var classString = 'not-selected'
 
-		if(!model.currentZone) {
-			model.currentZone = this.props.data;
-		}
-
 		if(model.currentZone.$.ID === this.props.data.$.ID) {
 			classString = 'selected';
 		}

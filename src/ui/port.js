@@ -23,4 +23,4 @@ class Port {
 }
 
 var instance = new Port();
-return instance;
+export default instance;

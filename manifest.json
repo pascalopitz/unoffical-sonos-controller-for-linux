@@ -8,10 +8,7 @@
       "scripts": [
         "bower_components/jquery-xml2json/src/xml2json.js",
         "bower_components/underscore/underscore.js",
-        "bower_components/requirejs/require.js",
-        "js/compiled_background.js",
-        "js/background_wrapper.js"
-      ]
+        "js/background.js"      ]
     }
   },
   "permissions": [

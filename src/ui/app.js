@@ -8,7 +8,6 @@ import PlayControls from './components/PlayControls';
 import VolumeControls from './components/VolumeControls'; 
 import ZoneGroupList from './components/ZoneGroupList'; 
 
-
 port.registerCallback('coordinator', function(msg) {
 	model.coordinator = msg.state;
 });
@@ -24,6 +23,10 @@ port.registerCallback('browse', function(msg) {
 
 port.registerCallback('topology', function(msg) {
 	model.zoneGroups = msg.state.ZoneGroups.ZoneGroup;
+
+	if(!model.currentZone) {
+		model.currentZone = msg.state.ZoneGroups.ZoneGroup[0];
+	}
 });
 
 port.registerCallback('currentState', function(msg) {
