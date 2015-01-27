@@ -14,7 +14,12 @@
   "license": "ISC",
   "devDependencies": {
     "6to5": "^2.2.0",
+    "array-union": "^1.0.0",
     "browserify": "^8.1.1",
+    "deep-equal": "^0.2.1",
+    "omit-keys": "^0.1.0",
+    "react": "^0.12.2",
+    "react-cursor": "^0.9.2",
     "watch": "^0.13.0"
   }
 }

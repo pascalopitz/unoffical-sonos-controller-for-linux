@@ -1,8 +1,9 @@
-import register from '../helpers/registerComponent';
 import model from '../model';
 
 import MuteButton from './MuteButton'; 
 import VolumeSlider from './VolumeSlider'; 
+
+var React = require('react/addons');
 
 class VolumeControls {
 
@@ -68,4 +69,4 @@ class VolumeControls {
 }
 
 VolumeControls.prototype.displayName = "VolumeControls";
-export default register(VolumeControls);
+export default React.createClass(VolumeControls.prototype);

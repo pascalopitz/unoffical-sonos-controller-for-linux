@@ -15,8 +15,6 @@
   ],
   "dependencies": {
     "jquery-xml2json": "git@github.com:pascalopitz/jQuery-xml2json.git",
-    "underscore": "~1.7.0",
-    "react": "~0.12.2",
-    "react-cursor": "*"
+    "underscore": "~1.7.0"
   }
 }

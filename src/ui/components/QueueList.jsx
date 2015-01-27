@@ -1,7 +1,8 @@
 import model from '../model';
-import register from '../helpers/registerComponent';
-
+	
 import QueueListItem from './QueueListItem';
+
+var React = require('react/addons');
 
 class QueueList {
 
@@ -40,4 +41,4 @@ class QueueList {
 }
 
 QueueList.prototype.displayName = "QueueList";
-export default register(QueueList);
+export default React.createClass(QueueList.prototype);

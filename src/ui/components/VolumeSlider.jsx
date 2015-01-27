@@ -1,7 +1,8 @@
-import register from '../helpers/registerComponent';
 import model from '../model';
 
 const width = 180;
+
+var React = require('react/addons');
 
 class VolumeSlider {
 
@@ -23,4 +24,4 @@ class VolumeSlider {
 }
 
 VolumeSlider.prototype.displayName = "VolumeSlider";
-export default register(VolumeSlider);
+export default React.createClass(VolumeSlider.prototype);

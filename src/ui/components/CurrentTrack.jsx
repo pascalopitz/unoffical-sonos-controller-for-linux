@@ -1,7 +1,8 @@
-import register from '../helpers/registerComponent';
 import model from '../model';
 
 import AlbumArt from './AlbumArt';
+
+var React = require('react/addons');
 
 class CurrentTrack {
 
@@ -46,4 +47,4 @@ class CurrentTrack {
 }
 
 CurrentTrack.prototype.displayName = "CurrentTrack";
-export default register(CurrentTrack);
+export default React.createClass(CurrentTrack.prototype);

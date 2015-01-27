@@ -1,8 +1,9 @@
-import register from '../helpers/registerComponent';
 import port from '../port';
 import model from '../model';
 
 import AlbumArt from './AlbumArt';
+
+var React = require('react/addons');
 
 class BrowserListItem {
 
@@ -29,4 +30,4 @@ class BrowserListItem {
 }
 
 BrowserListItem.prototype.displayName = "BrowserListItem";
-export default register(BrowserListItem);
+export default React.createClass(BrowserListItem.prototype);

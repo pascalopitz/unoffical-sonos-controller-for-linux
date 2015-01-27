@@ -1,5 +1,6 @@
-import register from '../helpers/registerComponent';
 import model from '../model';
+
+var React = require('react/addons');
 
 // var queue = [];
 // var fetching = 0;
@@ -87,4 +88,4 @@ class AlbumArt {
 }
 
 AlbumArt.prototype.displayName = "AlbumArt";
-export default register(AlbumArt);
+export default React.createClass(AlbumArt.prototype);

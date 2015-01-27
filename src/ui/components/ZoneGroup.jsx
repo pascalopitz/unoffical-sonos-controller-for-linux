@@ -1,6 +1,7 @@
-import register from '../helpers/registerComponent';
 import model from '../model';
 import ZoneGroupMember from './ZoneGroupMember'; 
+
+var React = require('react/addons');
 
 class ZoneGroup {
 
@@ -43,4 +44,4 @@ class ZoneGroup {
 }
 
 ZoneGroup.prototype.displayName = "ZoneGroup";
-export default register(ZoneGroup);
+export default React.createClass(ZoneGroup.prototype);

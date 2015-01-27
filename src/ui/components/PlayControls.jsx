@@ -1,7 +1,8 @@
-import register from '../helpers/registerComponent';
 import model from '../model';
 
 import port from '../port';
+
+var React = require('react/addons');
 
 class PlayControls {
 
@@ -62,4 +63,4 @@ class PlayControls {
 }
 
 PlayControls.prototype.displayName = "PlayControls";
-export default register(PlayControls);
+export default React.createClass(PlayControls.prototype);

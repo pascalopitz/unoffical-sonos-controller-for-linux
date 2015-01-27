@@ -1,9 +1,10 @@
 
-import register from '../helpers/registerComponent';
 import port from '../port';
 import model from '../model';
 
 import BrowserListItem from './BrowserListItem';
+
+var React = require('react/addons');
 
 var initialState = {
 	source: null,
@@ -109,4 +110,4 @@ class BrowserList {
 }
 
 BrowserList.prototype.displayName = "BrowserList";
-export default register(BrowserList);
+export default React.createClass(BrowserList.prototype);

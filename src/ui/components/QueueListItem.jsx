@@ -1,8 +1,9 @@
-import register from '../helpers/registerComponent';
 import port from '../port';
 import model from '../model';
 
 import AlbumArt from './AlbumArt';
+
+var React = require('react/addons');
 
 class QueueListItem {
 
@@ -33,4 +34,4 @@ class QueueListItem {
 }
 
 QueueListItem.prototype.displayName = "QueueListItem";
-export default register(QueueListItem);
+export default React.createClass(QueueListItem.prototype);

@@ -1,6 +1,7 @@
 import model from '../model';
-import register from '../helpers/registerComponent';
 import ZoneGroup from './ZoneGroup'; 
+
+var React = require('react/addons');
 
 class ZoneGroupList {
 
@@ -36,4 +37,4 @@ class ZoneGroupList {
 }
 
 ZoneGroupList.prototype.displayName = "ZoneGroupList";
-export default register(ZoneGroupList);
+export default React.createClass(ZoneGroupList.prototype);

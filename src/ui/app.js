@@ -8,6 +8,11 @@ import PlayControls from './components/PlayControls';
 import VolumeControls from './components/VolumeControls'; 
 import ZoneGroupList from './components/ZoneGroupList'; 
 
+var React = require('react/addons');
+var Cursor = require('react-cursor').Cursor;
+
+console.log(Cursor)
+
 port.registerCallback('coordinator', function(msg) {
 	model.coordinator = msg.state;
 });

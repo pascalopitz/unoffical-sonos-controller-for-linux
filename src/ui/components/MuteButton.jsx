@@ -1,4 +1,5 @@
-import register from '../helpers/registerComponent';
+	
+var React = require('react/addons');
 
 class MuteButton {
 
@@ -17,4 +18,4 @@ class MuteButton {
 }
 
 MuteButton.prototype.displayName = "MuteButton";
-export default register(MuteButton);
+export default React.createClass(MuteButton.prototype);

@@ -1,4 +1,4 @@
-import register from '../helpers/registerComponent';
+var React = require('react/addons');
 
 class ZoneGroupMember {
   render () {
@@ -11,4 +11,4 @@ class ZoneGroupMember {
 }
 
 ZoneGroupMember.prototype.displayName = "ZoneGroupMember";
-export default register(ZoneGroupMember);
+export default React.createClass(ZoneGroupMember.prototype);
