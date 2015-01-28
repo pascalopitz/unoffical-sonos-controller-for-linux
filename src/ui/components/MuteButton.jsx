@@ -1,5 +1,7 @@
 	
 import React from 'react/addons';
+import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import EventableMixin from '../mixins/EventableMixin';
 
 class MuteButton {
 
@@ -18,4 +20,8 @@ class MuteButton {
 }
 
 MuteButton.prototype.displayName = "MuteButton";
+MuteButton.prototype.mixins = [
+	ImmutableOptimizations(['cursor']),
+	EventableMixin
+];
 export default React.createClass(MuteButton.prototype);

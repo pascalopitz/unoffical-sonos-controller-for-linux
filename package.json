@@ -4,10 +4,13 @@
   "description": "Sonos Controller for Chrome",
   "main": "dist/background.js",
   "scripts": {
-    "watch": "./node_modules/.bin/watch \"npm run-script compile && npm run-script minify-bg && npm run-script minify-ui\" src",
+    "watch": "npm run-script watch-ui & npm run-script watch-bg",
+    "watch-ui": "./node_modules/.bin/watch \"npm run-script compile-ui && npm run-script minify-ui\" src/ui",
+    "watch-bg": "./node_modules/.bin/watch \"npm run-script compile-bg && npm run-script minify-bg\" src/background",
     "minify-ui": "node_modules/.bin/browserify --extension=.jsx -e tmp/ui/app.js > js/ui.js",
     "minify-bg": "node_modules/.bin/browserify -e tmp/background/background.js > js/background.js",
-    "compile": "node_modules/.bin/6to5 src --out-dir=tmp --source-maps-inline -m common -a",
+    "compile-ui": "node_modules/.bin/6to5 src/ui --out-dir=tmp/ui -m common -a",
+    "compile-bg": "node_modules/.bin/6to5 src/background --out-dir=tmp/background -m common -a",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,6 +18,7 @@
   "devDependencies": {
     "6to5": "^2.2.0",
     "array-union": "^1.0.0",
+    "bloody-events": "^1.3.0",
     "browserify": "^8.1.1",
     "deep-equal": "^0.2.1",
     "omit-keys": "^0.1.0",

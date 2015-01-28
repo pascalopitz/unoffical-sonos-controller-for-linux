@@ -1,29 +1,13 @@
-import model from '../model';
-
 import port from '../port';
 
 import React from 'react/addons';
+import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import EventableMixin from '../mixins/EventableMixin';
 
 class PlayControls {
 
-	getInitialState () {
-		return {
-			playing: false
-		};
-	}
-
-	componentDidMount () {
-		var self = this;
-
-		model.observe('currentState', function() {
-			self.setState({
-				playing: model.currentState === 'playing'
-			});
-		});
-	}
-
 	render () {
-		var src = this.state.playing ? "svg/pause.svg" : "svg/play.svg";
+		var src = this.props.model.value.playing ? "svg/pause.svg" : "svg/play.svg";
 
 		return (
 			<div id="controls">
@@ -63,4 +47,11 @@ class PlayControls {
 }
 
 PlayControls.prototype.displayName = "PlayControls";
+PlayControls.prototype.mixins = [
+	ImmutableOptimizations(['cursor']),
+	EventableMixin
+];
+PlayControls.prototype.propTypes = {
+	model: React.PropTypes.instanceOf(Cursor).isRequired
+};
 export default React.createClass(PlayControls.prototype);

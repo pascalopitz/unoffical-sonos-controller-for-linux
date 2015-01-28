@@ -1,6 +1,8 @@
 import model from '../model';
 
 import React from 'react/addons';
+import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import EventableMixin from '../mixins/EventableMixin';
 
 // var queue = [];
 // var fetching = 0;
@@ -88,4 +90,8 @@ class AlbumArt {
 }
 
 AlbumArt.prototype.displayName = "AlbumArt";
+AlbumArt.prototype.mixins = [
+	ImmutableOptimizations(['cursor']),
+	EventableMixin
+];
 export default React.createClass(AlbumArt.prototype);

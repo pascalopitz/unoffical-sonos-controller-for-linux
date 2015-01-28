@@ -1,47 +1,49 @@
-import model from '../model';
 import ZoneGroupMember from './ZoneGroupMember'; 
 
 import React from 'react/addons';
+import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import EventableMixin from '../mixins/EventableMixin';
+
+// import model from '../model';
 
 class ZoneGroup {
 
-	componentDidMount () {
-		var self = this;
-
-		model.observe('currentZone', function () {
-			self.forceUpdate();
-		});
-	}
-
-	componentWillUnmount () {
-		// unsubscribe
-	}
-
 	render () {
+		var members = this.props.group.refine('ZoneGroupMember');
 
-		var zoneNodes = this.props.data.ZoneGroupMember.map(function (z) {
+		var zoneNodes = members.value.map(function (item, index) {
+			var z = members.refine(index);
 			return (
-				<ZoneGroupMember data={z.$} />
+				<ZoneGroupMember member={z} />
 			);
 		});
 
 		var classString = 'not-selected'
 
-		if(model.currentZone.$.ID === this.props.data.$.ID) {
+		console.log(this.props.currentZone);
+		if(this.props.currentZone.value && this.props.currentZone.value.$.ID === this.props.group.value.$.ID) {
 			classString = 'selected';
 		}
 
-			return (
-				<ul className={classString} onClick={this._onClick}>
-					{{zoneNodes}}
-				</ul>
+		return (
+			<ul className={classString} onClick={this._onClick}>
+				{{zoneNodes}}
+			</ul>
 		);
 	}
 
 	_onClick () {
-		model.currentZone = this.props.data;
+		this.trigger('zonegroup:select', this.props.group.value);
 	}
 }
 
 ZoneGroup.prototype.displayName = "ZoneGroup";
+ZoneGroup.prototype.mixins = [
+	ImmutableOptimizations(['cursor']),
+	EventableMixin
+];
+ZoneGroup.prototype.propTypes = {
+	group: React.PropTypes.instanceOf(Cursor).isRequired,
+	currentZone: React.PropTypes.instanceOf(Cursor).isRequired
+};
 export default React.createClass(ZoneGroup.prototype);

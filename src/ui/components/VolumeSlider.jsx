@@ -3,6 +3,8 @@ import model from '../model';
 const width = 180;
 
 import React from 'react/addons';
+import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import EventableMixin from '../mixins/EventableMixin';
 
 class VolumeSlider {
 
@@ -24,4 +26,8 @@ class VolumeSlider {
 }
 
 VolumeSlider.prototype.displayName = "VolumeSlider";
+VolumeSlider.prototype.mixins = [
+	ImmutableOptimizations(['cursor']),
+	EventableMixin
+];
 export default React.createClass(VolumeSlider.prototype);

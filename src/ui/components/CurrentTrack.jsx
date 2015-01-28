@@ -1,35 +1,17 @@
-import model from '../model';
-
 import AlbumArt from './AlbumArt';
 
 import React from 'react/addons';
+import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import EventableMixin from '../mixins/EventableMixin';
 
 class CurrentTrack {
-
-	getInitialState () {
-		return {
-			track: {
-
-			}
-		}
-	}
-
-	componentDidMount () {
-		var self = this;
-
-		model.observe('currentTrack', function() {
-			self.setState({
-				track: model.currentTrack
-			});
-		});
-	}	
-
 	render () {
-		var track = this.state.track;
+		var track = this.props.track.value;
+		//var albumArtURI = this.props.cursor.refine('albumArtURI');
 
 		return (
 			<div id="current-track-info">
-				<AlbumArt id="current-track-art" src={track.albumArtURI} />
+				<AlbumArt id="current-track-art" />
 				<div>
 					<h6>Track</h6>
 					<p id="track">{track.title}</p>
@@ -47,4 +29,11 @@ class CurrentTrack {
 }
 
 CurrentTrack.prototype.displayName = "CurrentTrack";
+CurrentTrack.prototype.mixins = [
+	ImmutableOptimizations(['cursor']),
+	EventableMixin
+];
+CurrentTrack.prototype.propTypes = {
+	track: React.PropTypes.instanceOf(Cursor).isRequired
+};
 export default React.createClass(CurrentTrack.prototype);

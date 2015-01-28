@@ -5,6 +5,8 @@ import model from '../model';
 import BrowserListItem from './BrowserListItem';
 
 import React from 'react/addons';
+import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import EventableMixin from '../mixins/EventableMixin';
 
 var initialState = {
 	source: null,
@@ -76,7 +78,7 @@ class BrowserList {
 		});
 
 		return (
-			<div>
+			<div id="music-sources-container">
 				<h4>{this.state.headline}</h4>
 				<ul id="browser-container">
 					{{listItemNodes}}
@@ -110,4 +112,8 @@ class BrowserList {
 }
 
 BrowserList.prototype.displayName = "BrowserList";
+BrowserList.prototype.mixins = [
+	ImmutableOptimizations(['cursor']),
+	EventableMixin
+];
 export default React.createClass(BrowserList.prototype);

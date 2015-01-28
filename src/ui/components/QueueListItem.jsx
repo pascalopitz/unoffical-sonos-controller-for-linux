@@ -4,12 +4,14 @@ import model from '../model';
 import AlbumArt from './AlbumArt';
 
 import React from 'react/addons';
+import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import EventableMixin from '../mixins/EventableMixin';
 
 class QueueListItem {
 
 	render () {
 
-		var track = this.props.data;
+		var track = this.props.item.value;
 
 		return (
 			<li onDoubleClick={this._onDoubleClick} data-position={this.props.position}>
@@ -34,4 +36,8 @@ class QueueListItem {
 }
 
 QueueListItem.prototype.displayName = "QueueListItem";
+QueueListItem.prototype.mixins = [
+	ImmutableOptimizations(['cursor']),
+	EventableMixin
+];
 export default React.createClass(QueueListItem.prototype);

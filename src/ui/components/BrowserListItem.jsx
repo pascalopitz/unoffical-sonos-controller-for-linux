@@ -4,6 +4,8 @@ import model from '../model';
 import AlbumArt from './AlbumArt';
 
 import React from 'react/addons';
+import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import EventableMixin from '../mixins/EventableMixin';
 
 class BrowserListItem {
 
@@ -30,4 +32,8 @@ class BrowserListItem {
 }
 
 BrowserListItem.prototype.displayName = "BrowserListItem";
+BrowserListItem.prototype.mixins = [
+	ImmutableOptimizations(['cursor']),
+	EventableMixin
+];
 export default React.createClass(BrowserListItem.prototype);

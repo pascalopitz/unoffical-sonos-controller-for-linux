@@ -3,7 +3,24 @@ body {
 	background-image: -moz-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
 	background-image: -webkit-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
 	background-image: -ms-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
-	margin: 5px 5px 0 5px;
+	margin: 0px;
+}
+
+#root {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+
+#application {
+	position: absolute;
+	top: 5px;
+	bottom: 0;
+	left: 5px;
+	right: 5px;
 }
 
 ::-webkit-scrollbar {
@@ -464,6 +481,12 @@ h4 {
 	height: calc(100% - 40px);
 	overflow: auto;
 	border-top: 1px solid #012947;
+}
+
+#queue-container {
+	list-style: none;
+	margin: 0;
+	padding: 0;	
 }
 
 #browser-container li,

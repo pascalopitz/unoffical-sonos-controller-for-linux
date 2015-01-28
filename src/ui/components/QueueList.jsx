@@ -1,34 +1,20 @@
-import model from '../model';
-	
 import QueueListItem from './QueueListItem';
 
 import React from 'react/addons';
+import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import EventableMixin from '../mixins/EventableMixin';
 
 class QueueList {
 
-	getInitialState () {
-		return {
-			items: []
-		};
-	}
-
-	componentDidMount () {
-		var self = this;
-
-		model.observe('queue', function () {
-			self.setState({
-				items: model.queue.items
-			});
-		});
-	}
-
-
 	render () {
 
-		var queueItemNodes = this.state.items.map(function (i, p) {
+		var items = this.props.items;
+
+		var queueItemNodes = items.value.map(function (i, p) {
 			var position = p + 1;
+			var item = items.refine(p);
 			return (
-				<QueueListItem data={i} position={position} />
+				<QueueListItem item={item} position={position} />
 			);
 		});
 
@@ -41,4 +27,8 @@ class QueueList {
 }
 
 QueueList.prototype.displayName = "QueueList";
+QueueList.prototype.mixins = [
+	ImmutableOptimizations(['cursor']),
+	EventableMixin
+];
 export default React.createClass(QueueList.prototype);
