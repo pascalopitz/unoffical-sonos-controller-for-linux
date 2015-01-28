@@ -3,6 +3,8 @@ import Services from '../helpers/Services';
 import xml2js from '../helpers/xml2js';
 import request from '../helpers/request';
 
+import _ from 'lodash';
+
 class Service {
 
   constructor (options) {

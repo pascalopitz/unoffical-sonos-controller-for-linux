@@ -4,6 +4,8 @@ import ip from '../helpers/ip';
 
 import Stream from './IncomingStream';
 
+import _ from 'lodash';
+
 var listeners = {};
 
 var Listener = function(device) {

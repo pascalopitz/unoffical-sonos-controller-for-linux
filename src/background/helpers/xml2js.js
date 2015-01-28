@@ -1,3 +1,5 @@
+import xml2json from 'jquery-xml2json';
+
 var xml2js = {
 	Parser: function () {
 		return {

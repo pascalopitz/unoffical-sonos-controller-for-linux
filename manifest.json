@@ -6,8 +6,6 @@
   "app": {
     "background": {
       "scripts": [
-        "bower_components/jquery-xml2json/src/xml2json.js",
-        "bower_components/underscore/underscore.js",
         "js/background.js"      ]
     }
   },

@@ -1,6 +1,8 @@
 import Search from './sonos/Search';
 import Listener from './events/listener';
 
+import xml2json from 'jquery-xml2json';
+
 chrome.app.runtime.onLaunched.addListener(function() {
 
 	var firstSonos;
