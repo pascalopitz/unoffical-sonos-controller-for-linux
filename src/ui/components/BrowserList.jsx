@@ -1,7 +1,4 @@
 
-import port from '../port';
-import model from '../model';
-
 import BrowserListItem from './BrowserListItem';
 
 import React from 'react/addons';

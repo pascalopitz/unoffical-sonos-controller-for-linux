@@ -114,6 +114,18 @@ chrome.app.runtime.onLaunched.addListener(function() {
 					});
 				}
 
+				if(msg.type === 'mute') {
+					deviceSearches[msg.host].setMuted(true, function () {
+						queryState(deviceSearches[msg.host]);
+					});
+				}
+
+				if(msg.type === 'unmute') {
+					deviceSearches[msg.host].setMuted(false, function () {
+						queryState(deviceSearches[msg.host]);
+					});
+				}
+
 				if(msg.type === 'play') {
 					if(!msg.item) {
 						deviceSearches[msg.host].play(function () {
@@ -129,7 +141,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
 				if(msg.type === 'pause') {
 					deviceSearches[msg.host].pause(function () {
 						queryState(deviceSearches[msg.host]);
-					});					
+					});
 				}
 
 				if(msg.type === 'next') {

@@ -187,6 +187,8 @@ h4 {
 #status-container #current-track-info div p {
 	height: 36px;
 	width: 100%;
+	white-space: nowrap;
+	overflow: ellipsis;
 }
 
 #status-container #next-track {
@@ -231,6 +233,7 @@ h4 {
 #zone-container,
 #status-container,
 #music-sources-container {
+	margin-left: 4.4px;
 	width: -webkit-calc((100% - 15px) / 3);
 	width: calc(40% - 4px);
 	display: inline-block;
@@ -239,6 +242,10 @@ h4 {
 	background: #021B2E;
 	vertical-align: top;
 	overflow: hidden;
+}
+
+#zone-container {
+	margin-left: 0;
 }
 
 #zone-container,
@@ -386,6 +393,7 @@ h4 {
 #position-info .content span,
 #position-info .content img,
 #position-info .content div {
+	margin: 0px 5px;
 	display: inline-block;
 	vertical-align: middle;
 }

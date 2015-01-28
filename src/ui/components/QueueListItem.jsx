@@ -1,6 +1,3 @@
-import port from '../port';
-import model from '../model';
-
 import AlbumArt from './AlbumArt';
 
 import React from 'react/addons';
@@ -34,4 +31,7 @@ QueueListItem.prototype.mixins = [
 	ImmutableOptimizations(['cursor']),
 	EventableMixin
 ];
+QueueListItem.prototype.propTypes = {
+	item: React.PropTypes.instanceOf(Cursor).isRequired
+};
 export default React.createClass(QueueListItem.prototype);

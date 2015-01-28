@@ -35,8 +35,6 @@ class VolumeControls {
 		var muted = model.refine('master', 'muted');
 		var volume = model.refine('master', 'volume');
 
-		console.log('VolumeControls', this.props.model.value);
-
 		return (
 			<div>
 				<MuteButton id="master-mute" muted={muted} />
@@ -49,10 +47,6 @@ class VolumeControls {
 				</div>
 			</div>
 		);
-	}
-
-	_toggleMute () {
-		console.log('toggleMute');
 	}
 }
 

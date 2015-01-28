@@ -12,10 +12,15 @@ class MuteButton {
 
 		return (
 			<img 
+			onClick={this._toggleMute}
 			className="mute-button"
 			id={id}
 			src={src} />
 		);
+	}
+
+	_toggleMute () {
+		this.trigger('volume:togglemute');
 	}
 }
 

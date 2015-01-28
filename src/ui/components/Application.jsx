@@ -8,7 +8,8 @@ import EventableMixin from '../mixins/EventableMixin';
 import CurrentTrack from './CurrentTrack'; 
 import QueueList from './QueueList'; 
 import BrowserList from './BrowserList'; 
-import PlayControls from './PlayControls'; 
+import PlayControls from './PlayControls';
+import PositionInfo from './PositionInfo'; 
 import VolumeControls from './VolumeControls'; 
 import ZoneGroupList from './ZoneGroupList'; 
 
@@ -99,6 +100,16 @@ class Application {
 		port.postMessage({
 			type: 'goto',
 			target: target,
+			host: this.cursor.refine('coordinator', 'host').value
+		});		
+	}
+
+	toggleMute () {
+		console.log('here');
+		var msg = this.cursor.refine('volumeControls', 'master', 'mute').value ? 'unmute' : 'mute';
+
+		port.postMessage({
+			type: msg,
 			host: this.cursor.refine('coordinator', 'host').value
 		});		
 	}
@@ -198,6 +209,8 @@ class Application {
 
 		this.subscribe('browser:action', this.browserAction.bind('this'));
 
+		this.subscribe('volume:togglemute', this.toggleMute.bind('this'));
+
 		port.registerCallback('coordinator', function(msg) {
 			console.log('coordinator---------------', msg.state);
 			cursor.merge({
@@ -281,25 +294,10 @@ class Application {
 				<header id="top-control">
 
 					<VolumeControls model={volumeControls} />
+
 					<PlayControls model={playState} />
+					<PositionInfo />
 
-					<div id="position-info">
-						<img className="left" src="images/tc_progress_container_left.png" />
-						<img className="right" src="images/tc_progress_container_right.png" />
-						<div className="content">
-							<img id="repeat" className="playback-mode" src="images/tc_progress_repeat_normal_off.png" />
-							<img id="shuffle"  className="playback-mode" src="images/tc_progress_shuffle_normal_off.png" />
-							<img id="crossfade"  className="playback-mode" src="images/tc_progress_crossfade_normal_off.png" />
-							<span id="countup">0:00</span>
-								<div id="position-info-control">
-									<div id="position-bar">
-										<div id="position-bar-scrubber"></div>
-									</div>
-								</div>
-							<span id="countdown">-0:00</span>
-						</div>
-
-					</div>
 				</header>
 				<div id="column-container">
 					<div id="zone-container">

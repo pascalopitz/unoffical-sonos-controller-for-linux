@@ -21,7 +21,7 @@ First, initialize the project:
 
 Second, build the compiled files into the js folder:
 
-	npm run-script compile
+	npm run-script watch
 
 Third, add the app in the extensions tab of chrome, via "Load unpacked extension". Select the prject folder.
 You will need to check the developer mode checkbox in order to be able to do that.

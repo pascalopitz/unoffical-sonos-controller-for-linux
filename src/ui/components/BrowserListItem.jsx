@@ -1,6 +1,3 @@
-import port from '../port';
-import model from '../model';
-
 import AlbumArt from './AlbumArt';
 
 import React from 'react/addons';

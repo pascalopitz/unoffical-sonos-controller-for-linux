@@ -1,5 +1,3 @@
-import port from '../port';
-
 import React from 'react/addons';
 import { Cursor, ImmutableOptimizations }  from 'react-cursor';
 import EventableMixin from '../mixins/EventableMixin';
