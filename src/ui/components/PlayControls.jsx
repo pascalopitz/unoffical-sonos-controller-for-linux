@@ -2,7 +2,7 @@ import model from '../model';
 
 import port from '../port';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
 class PlayControls {
 

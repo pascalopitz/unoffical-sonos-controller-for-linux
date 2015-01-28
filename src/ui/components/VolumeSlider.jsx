@@ -2,7 +2,7 @@ import model from '../model';
 
 const width = 180;
 
-var React = require('react/addons');
+import React from 'react/addons';
 
 class VolumeSlider {
 

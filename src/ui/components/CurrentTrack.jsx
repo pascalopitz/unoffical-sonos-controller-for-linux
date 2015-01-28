@@ -2,7 +2,7 @@ import model from '../model';
 
 import AlbumArt from './AlbumArt';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
 class CurrentTrack {
 

@@ -3,7 +3,7 @@ import model from '../model';
 import MuteButton from './MuteButton'; 
 import VolumeSlider from './VolumeSlider'; 
 
-var React = require('react/addons');
+import React from 'react/addons';
 
 class VolumeControls {
 

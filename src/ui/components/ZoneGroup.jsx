@@ -1,7 +1,7 @@
 import model from '../model';
 import ZoneGroupMember from './ZoneGroupMember'; 
 
-var React = require('react/addons');
+import React from 'react/addons';
 
 class ZoneGroup {
 

@@ -4,7 +4,7 @@ import model from '../model';
 
 import BrowserListItem from './BrowserListItem';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
 var initialState = {
 	source: null,

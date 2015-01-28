@@ -2,7 +2,7 @@ import model from '../model';
 	
 import QueueListItem from './QueueListItem';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
 class QueueList {
 

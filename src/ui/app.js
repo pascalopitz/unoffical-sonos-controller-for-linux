@@ -8,8 +8,8 @@ import PlayControls from './components/PlayControls';
 import VolumeControls from './components/VolumeControls'; 
 import ZoneGroupList from './components/ZoneGroupList'; 
 
-var React = require('react/addons');
-var Cursor = require('react-cursor').Cursor;
+import React from 'react/addons';
+import { Cursor }  from 'react-cursor';
 
 console.log(Cursor)
 

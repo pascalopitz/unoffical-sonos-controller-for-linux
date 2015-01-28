@@ -1,6 +1,6 @@
 import model from '../model';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
 // var queue = [];
 // var fetching = 0;
