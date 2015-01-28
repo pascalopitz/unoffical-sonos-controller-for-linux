@@ -23,26 +23,15 @@ class PlayControls {
 	}
 
 	_toggle () {
-		var msg = model.currentState === 'playing' ? 'pause' : 'play';
-
-		port.postMessage({
-			type: msg,
-			host: model.coordinator.host
-		});
+		this.trigger('playstate:toggle');
 	}
 
 	_prev () {
-		port.postMessage({
-			type: 'prev',
-			host: model.coordinator.host
-		});
+		this.trigger('playstate:prev');
 	}
 
 	_next () {
-		port.postMessage({
-			type: 'next',
-			host: model.coordinator.host
-		});
+		this.trigger('playstate:next');
 	}
 }
 

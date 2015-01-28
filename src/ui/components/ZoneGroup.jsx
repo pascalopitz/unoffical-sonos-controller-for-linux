@@ -4,14 +4,16 @@ import React from 'react/addons';
 import { Cursor, ImmutableOptimizations }  from 'react-cursor';
 import EventableMixin from '../mixins/EventableMixin';
 
-// import model from '../model';
+import sort from '../helpers/sort';
 
 class ZoneGroup {
 
 	render () {
 		var members = this.props.group.refine('ZoneGroupMember');
 
-		var zoneNodes = members.value.map(function (item, index) {
+		var items = members.value.sort(sort.asc)
+
+		var zoneNodes = items.map(function (item, index) {
 			var z = members.refine(index);
 			return (
 				<ZoneGroupMember member={z} />
@@ -20,7 +22,6 @@ class ZoneGroup {
 
 		var classString = 'not-selected'
 
-		console.log(this.props.currentZone);
 		if(this.props.currentZone.value && this.props.currentZone.value.$.ID === this.props.group.value.$.ID) {
 			classString = 'selected';
 		}

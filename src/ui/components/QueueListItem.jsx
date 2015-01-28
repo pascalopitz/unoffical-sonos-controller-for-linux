@@ -25,13 +25,7 @@ class QueueListItem {
 	}
 
 	_onDoubleClick () {
-
-		port.postMessage({
-			type: 'goto',
-			host: model.coordinator.host,
-			target: this.props.position,
-		});
-
+		this.trigger('queuelist:goto', this.props.position);
 	}
 }
 

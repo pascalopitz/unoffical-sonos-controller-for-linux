@@ -12,12 +12,18 @@ import PlayControls from './PlayControls';
 import VolumeControls from './VolumeControls'; 
 import ZoneGroupList from './ZoneGroupList'; 
 
+var history = [];
 
 class Application {
 	getInitialState() {
 		return {
 			currentZone: null,
 			zoneGroups: [],
+
+			coordinator: {
+				host: null,
+				port: null
+			},
 			currentTrack: {},
 			volumeControls: {
 				master: {
@@ -29,22 +35,152 @@ class Application {
 			playState: {
 				playing: false
 			},
-			queue: []			
+			queue: {
+				returned: 0,
+				total: 0,
+				items: []
+			},
+
+			browserState: {
+				source: null,
+				searchType: null,
+				headline: 'Select a Music Source',
+				items: [
+					{
+						title: 'Sonos Favourites',
+						source: 'favourites'
+					},
+					{
+						title: 'Music Library',
+						source: 'library'
+					}
+				]
+			}				
 		};
 	}
 
 	selectCurrentZone (value) {		
-		var cursor = Cursor.build(this);
-
 		this.cursor.merge({
-			currentZone: value
+			currentZone: value,
+
+			currentTrack: {},
+
+			playState: {
+				playing: false
+			},
+			queue: {
+				returned: 0,
+				total: 0,
+				items: []
+			}
 		});
 
 		port.postMessage({
 			type: 'selectZoneGroup',
-			ZoneGroup: this.cursor.refine('currentZone')
+			ZoneGroup: value
 		});
 	}
+
+	playPrev() {
+		port.postMessage({
+			type: 'prev',
+			host: this.cursor.refine('coordinator', 'host').value
+		});
+	}
+
+	playNext() {
+		port.postMessage({
+			type: 'next',
+			host: this.cursor.refine('coordinator', 'host').value
+		});
+	}
+
+	queuelistGoto (target) {
+		port.postMessage({
+			type: 'goto',
+			target: target,
+			host: this.cursor.refine('coordinator', 'host').value
+		});		
+	}
+
+	toggelPlaystate() {
+		var msg = this.cursor.refine('playState', 'playing').value ? 'pause' : 'play';
+
+		port.postMessage({
+			type: msg,
+			host: this.cursor.refine('coordinator', 'host').value
+		});
+	}
+
+	browserAction(item) {
+		var librarySearch = {
+			headline: 'Browse Music Library',
+			source: 'library',
+			items: [
+				{
+					title: 'Artists',
+					searchType: 'artists'
+				},
+				{
+					title: 'Albums',
+					searchType: 'albums'
+				},
+				{
+					title: 'Composers',
+					searchType: 'composers'
+				},
+				{
+					title: 'Genres',
+					searchType: 'genres'
+				},
+				{
+					title: 'Tracks',
+					searchType: 'tracks'
+				},
+				{
+					title: 'Playlists',
+					searchType: 'playlists'
+				}
+			]
+		};
+
+		var model = this.cursor.refine('browserState');
+		var source = model.refine('source').value;
+
+		if(!source && item.source === 'library') {
+			
+			model.set(librarySearch);
+
+		} else if(source === 'library' && item.searchType) {
+			
+			this.prendinBrowserUpdate = {
+				headline : item.title,
+				searchType : item.searchType
+			};
+
+			port.postMessage({
+				type: 'browse',
+				host: this.cursor.refine('coordinator', 'host').value,
+				searchType: item.searchType,
+			});
+		}
+	}
+
+	queryState() {
+		port.postMessage({
+			type: 'queryState',
+			host: this.cursor.refine('coordinator', 'host').value
+		});		
+	}
+
+	delayedQueryState() {
+		window.setTimeout(this.queryState.bind(this), 300);
+	}
+
+	isOk(msg) {
+		return msg.host === this.cursor.refine('coordinator', 'host').value;
+	}	
+
 
 	componentDidMount () {
 
@@ -52,23 +188,37 @@ class Application {
 		var cursor = Cursor.build(this);
 		this.cursor = cursor;
 
-
 		this.subscribe('zonegroup:select', this.selectCurrentZone.bind('this'));
 
+		this.subscribe('playstate:toggle', this.toggelPlaystate.bind('this'));
+		this.subscribe('playstate:prev', this.playPrev.bind('this'));
+		this.subscribe('playstate:next', this.playNext.bind('this'));
+
+		this.subscribe('queuelist:goto', this.queuelistGoto.bind('this'));
+
+		this.subscribe('browser:action', this.browserAction.bind('this'));
+
 		port.registerCallback('coordinator', function(msg) {
+			console.log('coordinator---------------', msg.state);
 			cursor.merge({
 				coordinator:  msg.state
 			});
 		});
 
 		port.registerCallback('volume', function(msg) {
-			cursor.merge({
-				volume: msg.state
-			});
+			if(!self.isOk(msg)) {
+				return;
+			}
+
+			cursor.refine('volumeControls', 'master', 'volume').set(msg.state);
 		});
 
 		port.registerCallback('browse', function(msg) {
-			console.log(arguments);
+			var state = self.prendinBrowserUpdate;
+			state.items = msg.result.items;
+
+			self.cursor.refine('browserState').set(state);
+			self.prendinBrowserUpdate = null;
 		});
 
 
@@ -83,34 +233,32 @@ class Application {
 		});
 
 		port.registerCallback('currentState', function(msg) {
-			if(msg.state === 'transitioning') {
-				window.setTimeout(function () {
-					port.postMessage({
-						type: 'queryState',
-						host: model.coordinator.host,
-					});
-				}, 300);
-
+			if(!self.isOk(msg)) {
 				return;
 			}
 
-			cursor.merge({
-				playState: {
-					playing: msg.state === 'playing'
-				}
-			});
+			if(msg.state === 'transitioning') {
+				self.delayedQueryState();
+				return;
+			}
+
+			cursor.refine('playState', 'playing').set(msg.state === 'playing');
 		});
 
 		port.registerCallback('currentTrack', function(msg) {
-			cursor.merge({
-				currentTrack: msg.track
-			});
+			if(!self.isOk(msg)) {
+				return;
+			}
+
+			cursor.refine('currentTrack').set(msg.track);
 		});
 
 		port.registerCallback('queue', function(msg) {
-			cursor.merge({
-				queue: msg.result
-			});
+			if(!self.isOk(msg)) {
+				return;
+			}
+
+			cursor.refine('queue').set(msg.result);
 		});
 	}
 
@@ -125,6 +273,8 @@ class Application {
 		var currentTrack = cursor.refine('currentTrack');
 		var playState = cursor.refine('playState');
 		var queue = cursor.refine('queue');
+
+		var browserState = cursor.refine('browserState');
 	
 		return (
 			<div id="application">
@@ -163,12 +313,12 @@ class Application {
 
 						<h4 id="queue">QUEUE</h4>
 						<div id="queue-list-container">
-							<QueueList items={queue} />
+							<QueueList model={queue} />
 						</div>
 
 					</div>
 
-					<BrowserList />
+					<BrowserList model={browserState} />
 				</div>
 			</div>
 		);

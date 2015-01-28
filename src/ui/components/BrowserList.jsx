@@ -8,78 +8,31 @@ import React from 'react/addons';
 import { Cursor, ImmutableOptimizations }  from 'react-cursor';
 import EventableMixin from '../mixins/EventableMixin';
 
-var initialState = {
-	source: null,
-	searchType: null,
-	headline: 'Select a Music Source',
-	items: [
-		{
-			title: 'Sonos Favourites',
-			source: 'favourites'
-		},
-		{
-			title: 'Music Library',
-			source: 'library'
-		}
-	]
-};
-
-var librarySearch= {
-	headline: 'Browse Music Library',
-	source: 'library',
-	items: [
-		{
-			title: 'Artists',
-			searchType: 'artists'
-		},
-		{
-			title: 'Albums',
-			searchType: 'albums'
-		},
-		{
-			title: 'Composers',
-			searchType: 'composers'
-		},
-		{
-			title: 'Genres',
-			searchType: 'genres'
-		},
-		{
-			title: 'Tracks',
-			searchType: 'tracks'
-		},
-		{
-			title: 'Playlists',
-			searchType: 'playlists'
-		}
-	]
-};
-
-var rewinds = [];
-
+var history = [];
 
 class BrowserList {
-
-	getInitialState () {
-		rewinds.push(initialState);
-		return initialState;	
-	}
 
 	render () {
 
 		var self = this;
-		var clickAction
 
-		var listItemNodes = this.state.items.map(function (i, p) {
+		console.log(this.props.model.value);
+		history.push(this.props.model.value);
+
+		var items = this.props.model.refine('items');
+		var headline = this.props.model.refine('headline').value;
+
+		var listItemNodes = items.value.map(function (i, p) {
 			var position = p + 1;
+			var item = items.refine(p);
 			return (
-				<BrowserListItem data={i} position={position} clickAction={self._clickAction} />
+				<BrowserListItem model={item} position={position} />
 			);
 		});
 
 		return (
 			<div id="music-sources-container">
-				<h4>{this.state.headline}</h4>
+				<h4><a onClick={this._back}>{headline}</a></h4>
 				<ul id="browser-container">
 					{{listItemNodes}}
 				</ul>
@@ -87,27 +40,10 @@ class BrowserList {
 		);
 	}
 
-	_clickAction (e, item) {
-		console.log(item);
-
-		if(!this.state.source) {
-			if(item.source === 'library') {
-				this.setState(librarySearch);
-				rewinds.push(this.state);
-			} else {
-				this.setState(initialState);
-			}			
-		}
-
-		if(this.state.source === 'library' && item.searchType) {
-			console.log('here', item);
-
-			port.postMessage({
-				type: 'browse',
-				host: model.coordinator.host,
-				searchType: item.searchType,
-			});
-		}
+	_back() {
+		var state = history.pop();
+		console.log('back', state);
+		this.props.model.set(state);
 	}
 }
 
@@ -116,4 +52,7 @@ BrowserList.prototype.mixins = [
 	ImmutableOptimizations(['cursor']),
 	EventableMixin
 ];
+BrowserList.prototype.propTypes = {
+	model: React.PropTypes.instanceOf(Cursor).isRequired
+};
 export default React.createClass(BrowserList.prototype);

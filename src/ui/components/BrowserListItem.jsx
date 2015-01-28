@@ -11,7 +11,7 @@ class BrowserListItem {
 
 	render () {
 
-		var track = this.props.data;
+		var track = this.props.model.value;
 
 		return (
 			<li onClick={this._onClick} data-position={this.props.position}>
@@ -26,7 +26,7 @@ class BrowserListItem {
 
 	_onClick (e) {
 
-		this.props.clickAction(e, this.props.data);
+		this.trigger('browser:action', this.props.model.value);
 
 	}
 }
@@ -36,4 +36,7 @@ BrowserListItem.prototype.mixins = [
 	ImmutableOptimizations(['cursor']),
 	EventableMixin
 ];
+BrowserListItem.prototype.propTypes = {
+	model: React.PropTypes.instanceOf(Cursor).isRequired
+};
 export default React.createClass(BrowserListItem.prototype);

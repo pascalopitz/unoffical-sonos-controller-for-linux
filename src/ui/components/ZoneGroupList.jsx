@@ -5,13 +5,23 @@ import React from 'react/addons';
 import { Cursor, ImmutableOptimizations }  from 'react-cursor';
 import EventableMixin from '../mixins/EventableMixin';
 
+import sort from '../helpers/sort';
+
 class ZoneGroupList {
 
 	render () {
 		var groups = this.props.zoneGroups;
 		var currentZone = this.props.currentZone;
 
-		var zoneGroupNodes = groups.value.map(function (item, index) {
+		var items = groups.value.sort(function (item1, item2) {
+
+			var members1 = item1.ZoneGroupMember.sort(sort.asc)
+			var members2 = item2.ZoneGroupMember.sort(sort.asc)
+
+			return sort.asc(members1[0], members2[0]);
+		});
+
+		var zoneGroupNodes = items.map(function (item, index) {
 			var g = groups.refine(index);
 			return (
 				<ZoneGroup group={g} currentZone={currentZone} />

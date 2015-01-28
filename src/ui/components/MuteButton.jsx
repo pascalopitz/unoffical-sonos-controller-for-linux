@@ -8,7 +8,7 @@ class MuteButton {
 	render () {
 
 		var id = this.props.id || '';
-		var src = this.props.muted ? 'svg/mute_on.svg' : 'svg/mute_off.svg'; 
+		var src = this.props.muted.value ? 'svg/mute_on.svg' : 'svg/mute_off.svg'; 
 
 		return (
 			<img 
@@ -24,4 +24,7 @@ MuteButton.prototype.mixins = [
 	ImmutableOptimizations(['cursor']),
 	EventableMixin
 ];
+MuteButton.prototype.propTypes = {
+	muted: React.PropTypes.instanceOf(Cursor).isRequired
+};
 export default React.createClass(MuteButton.prototype);

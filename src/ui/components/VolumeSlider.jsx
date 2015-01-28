@@ -11,7 +11,7 @@ class VolumeSlider {
 	render () {
 		var id = this.props.id || '';
 
-		var margin = width / 100 * this.props.volume;
+		var margin = width / 100 * this.props.volume.value;
 
 		var styles = {
 			marginLeft: margin + "px",			
@@ -30,4 +30,7 @@ VolumeSlider.prototype.mixins = [
 	ImmutableOptimizations(['cursor']),
 	EventableMixin
 ];
+VolumeSlider.prototype.propTypes = {
+	volume: React.PropTypes.instanceOf(Cursor).isRequired
+};
 export default React.createClass(VolumeSlider.prototype);

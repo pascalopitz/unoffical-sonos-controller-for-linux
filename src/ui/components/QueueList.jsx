@@ -8,15 +8,18 @@ class QueueList {
 
 	render () {
 
-		var items = this.props.items;
+		var items = this.props.model.refine('items');
+		var queueItemNodes;
 
-		var queueItemNodes = items.value.map(function (i, p) {
-			var position = p + 1;
-			var item = items.refine(p);
-			return (
-				<QueueListItem item={item} position={position} />
-			);
-		});
+		if(items.value) {		
+			queueItemNodes = items.value.map(function (i, p) {
+				var position = p + 1;
+				var item = items.refine(p);
+				return (
+					<QueueListItem item={item} position={position} />
+				);
+			});
+		}
 
 		return (
 			<ul id="queue-container">
