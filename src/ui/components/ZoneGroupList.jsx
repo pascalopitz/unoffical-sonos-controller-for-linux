@@ -21,6 +21,11 @@ class ZoneGroupList {
 		});
 
 		var zoneGroupNodes = items.map(function (item, index) {
+
+			if(item.ZoneGroupMember[0].$.IsZoneBridge) {
+				return;
+			}
+
 			var g = groups.refine(index);
 			return (
 				<ZoneGroup group={g} currentZone={currentZone} />
