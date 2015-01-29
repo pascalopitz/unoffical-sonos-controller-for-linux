@@ -21,12 +21,15 @@ First, initialize the project:
 
 Second, build the compiled files into the js folder:
 
-	npm run-script watch
+	npm run-script compile
 
 Third, add the app in the extensions tab of chrome, via "Load unpacked extension". Select the prject folder.
 You will need to check the developer mode checkbox in order to be able to do that.
 Now you should be able to run the app, and inspect console messages coming through via the background.js inspector.
 
+For development, you can run the watch task, which will re-compile on change:
+
+	npm run-script watch
 
 ##Todo
 
