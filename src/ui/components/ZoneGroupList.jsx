@@ -1,4 +1,3 @@
-import model from '../model';
 import ZoneGroup from './ZoneGroup'; 
 
 import React from 'react/addons';

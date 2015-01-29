@@ -13,6 +13,14 @@ class GroupManagement extends Service {
 		this.SCPDURL = '/xml/GroupManagement1.xml';
 	}
 
+	SetMuted (muted, callback) {
+		this._request('SetGroupMute', {
+			InstanceID: 0,
+			Channel: 'Master',
+			DesiredMute: muted
+		}, callback);
+	}
+
 	AddMember (options, callback) {
 		this._request('AddMember', options, callback);
 	}

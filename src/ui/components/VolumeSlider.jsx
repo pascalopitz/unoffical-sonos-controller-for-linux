@@ -1,5 +1,3 @@
-import model from '../model';
-
 const width = 180;
 
 import React from 'react/addons';
