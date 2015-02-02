@@ -1,10 +1,8 @@
 import Service from './Service';
-import Services from '../helpers/Services';
-
 
 class GroupManagement extends Service {
 
-	contructor (host, port) {
+	constructor (host, port) {
 		this.name = 'GroupManagement';
 		this.host = host;
 		this.port = port || 1400;

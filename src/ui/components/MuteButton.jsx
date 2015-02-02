@@ -20,7 +20,7 @@ class MuteButton {
 	}
 
 	_toggleMute () {
-		this.trigger('volume:togglemute');
+		this.trigger('volume:togglemute', this.props.id);
 	}
 }
 

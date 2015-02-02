@@ -104,9 +104,14 @@ class Application {
 		});		
 	}
 
-	toggleMute () {
-		console.log('here');
-		var msg = this.cursor.refine('volumeControls', 'master', 'mute').value ? 'unmute' : 'mute';
+	toggleMute (id) {
+		console.log('here', arguments);
+
+		if(id === 'master-mute') {
+			var msg = this.cursor.refine('volumeControls', 'master', 'mute').value ? 'group-unmute' : 'group-mute';
+		} else {
+			throw new Error("have't dealt with this yet");
+		}
 
 		port.postMessage({
 			type: msg,
@@ -234,6 +239,10 @@ class Application {
 			self.prendinBrowserUpdate = null;
 		});
 
+
+		port.registerCallback('group-mute', function(msg) {
+			cursor.refine('volumeControls', 'master', 'mute').set(msg.state);
+		});
 
 		port.registerCallback('topology', function(msg) {
 			cursor.merge({

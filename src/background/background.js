@@ -83,6 +83,10 @@ chrome.app.runtime.onLaunched.addListener(function() {
 		 				uiPort.postMessage({ type: 'volume', state: vol, host: sonos.host, port: sonos.port }); 
 					});
 
+					sonos.getGroupMuted(function (err, muted) {
+		 				uiPort.postMessage({ type: 'group-mute', state: muted, host: sonos.host, port: sonos.port }); 
+					});
+
 					sonos.currentTrack(function (err, track) {
 		 				uiPort.postMessage({ type: 'currentTrack', track: track, host: sonos.host, port: sonos.port }); 
 					});
@@ -122,6 +126,18 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 				if(msg.type === 'unmute') {
 					deviceSearches[msg.host].setMuted(false, function () {
+						queryState(deviceSearches[msg.host]);
+					});
+				}
+
+				if(msg.type === 'group-mute') {
+					deviceSearches[msg.host].setGroupMuted(true, function () {
+						queryState(deviceSearches[msg.host]);
+					});
+				}
+
+				if(msg.type === 'group-unmute') {
+					deviceSearches[msg.host].setGroupMuted(false, function () {
 						queryState(deviceSearches[msg.host]);
 					});
 				}

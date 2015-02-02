@@ -13,6 +13,7 @@ import _ from 'lodash';
 
 var TRANSPORT_ENDPOINT = '/MediaRenderer/AVTransport/Control',
     RENDERING_ENDPOINT = '/MediaRenderer/RenderingControl/Control',
+    GROUP_RENDERING_ENDPOINT = '/MediaRenderer/GroupRenderingControl/Control',
     DEVICE_ENDPOINT = '/DeviceProperties/Control';
 
 
@@ -238,6 +239,23 @@ Sonos.prototype.getMuted = function(callback) {
   });
 };
 
+/**
+ * Get Current Muted
+ * @param  {Function} callback (err, muted)
+ */
+Sonos.prototype.getGroupMuted = function(callback) {
+  debug('Sonos.getMuted(' + ((callback) ? 'callback' : '') + ')');
+
+  var action = '"urn:schemas-upnp-org:service:GroupRenderingControl:1#GetGroupMute"';
+  var body = '<u:GetGroupMute xmlns:u="urn:schemas-upnp-org:service:GroupRenderingControl:1"><InstanceID>0</InstanceID><Channel>Master</Channel></u:GetGroupMute>';
+  var responseTag = 'u:GetGroupMuteResponse';
+
+  return this.request(GROUP_RENDERING_ENDPOINT, action, body, responseTag, function(err, data) {
+    if (err) return callback(err);
+
+    callback(null, parseInt(data[0].CurrentMute[0], 10) ? true : false);
+  });
+};
 /**
  * Resumes Queue or Plays Provided URI
  * @param  {String|Object}   uri      Optional - URI to a Audio Stream or Object with play options
@@ -697,7 +715,7 @@ Sonos.prototype.setMuted = function(muted, callback) {
   if (typeof muted === 'string') muted = parseInt(muted, 10) ? true : false;
   var action = '"urn:schemas-upnp-org:service:RenderingControl:1#SetMute"';
   var body = '<u:SetMute xmlns:u="urn:schemas-upnp-org:service:RenderingControl:1"><InstanceID>0</InstanceID><Channel>Master</Channel><DesiredMute>' + (muted ? '1' : '0') + '</DesiredMute></u:SetMute>';
-  this.request(RENDERING_ENDPOINT, action, body, 'u:SetMutedResponse', function(err, data) {
+  this.request(RENDERING_ENDPOINT, action, body, 'u:SetMuteResponse', function(err, data) {
     return callback(err, data);
   });
 };
@@ -712,9 +730,11 @@ Sonos.prototype.setGroupMuted = function(muted, callback) {
   debug('Sonos.setGroupMuted(%j, %j)', muted, callback);
   if (typeof muted === 'string') muted = parseInt(muted, 10) ? true : false;
 
-  var groupManagement = new Services.GroupManagement(this.host, this.port);
-
-  groupManagement.SetMuted(muted, callback);  
+  var action = '"urn:schemas-upnp-org:service:GroupRenderingControl:1#SetGroupMute"';
+  var body = '<u:SetGroupMute xmlns:u="urn:schemas-upnp-org:service:GroupRenderingControl:1"><InstanceID>0</InstanceID><Channel>Master</Channel><DesiredMute>' + (muted ? '1' : '0') + '</DesiredMute></u:SetMute>';
+  this.request(GROUP_RENDERING_ENDPOINT, action, body, 'u:SetGroupMuteResponse', function(err, data) {
+    return callback(err, data);
+  });
 };
 
 /**
