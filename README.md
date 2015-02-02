@@ -38,11 +38,11 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Single output JS
 - [x] Port node-sonos discovery message via
 - [x] Port node-sonos UPNP message
-- [ ] ES6ify the Sonos class 
+- [x] ES6ify the Sonos class 
 - [x] Port node-sonos UPNP Event Listener UPNP subscribe messages
 - [x] Port node-sonos UPNP Event Listener UPNP incoming message handling
 - [x] Make sense of topology messages
-- [ ] ES6ify Event Listener class
+- [x] ES6ify Event Listener class
 - [x] UPNP subscriptions for selected zone 
 - [ ] Display Lodaing message if there's no players
 - [x] Display and interact with rooms/zones UI
