@@ -275,7 +275,7 @@ h4 {
 }
 
 #master-volume {
-	top: 28px;
+	top: 21px;
 	left: 50px;
 	position: absolute;
 }
@@ -286,11 +286,14 @@ h4 {
 	border-radius: 15px;
 	border-top: 1px solid #303030;
 	border-bottom: 1px solid #707070;
+	position: relative;
 	background-image: -moz-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
 	background-image: -webkit-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
 
 }
 #top-control .volume-bar img {
+	cursor: pointer;
+	position: absolute;
 	margin: -1px 1px;
 }
 
@@ -354,21 +357,26 @@ h4 {
 
 #master-mute {
 	position: absolute;
-	top: 24px;
+	top: 18px;
 	left: 10px;
 }
 
 #controls {
+	position: absolute;
 	height: 44px;
 	width: 124px;
-	margin: 7px auto 0;
+	left: calc(50% - 62px);
+	top: 10px;
+	height: 44px;
+	width: 124px;
 }
 
 #position-info {
 	height: 22px;
 	width: 440px;
-	margin: 7px auto 0 auto;
-	position: relative;
+	position: absolute;
+	bottom: 0;
+	left: calc(50% - 220px);
 }
 
 #position-info .left {
@@ -382,7 +390,7 @@ h4 {
 }
 
 #position-info .content {
-	margin: 0px 38px 0 38px;
+	margin: 0 38px 0 38px;
 	height: 22px;
 	background-image: url(../images/tc_progress_container_center.png);
 	font-size: 11px;
@@ -494,7 +502,7 @@ h4 {
 #queue-container {
 	list-style: none;
 	margin: 0;
-	padding: 0;	
+	padding: 0;
 }
 
 #browser-container li,

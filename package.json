@@ -23,11 +23,13 @@
     "bloody-events": "^1.3.0",
     "browserify": "^8.1.1",
     "deep-equal": "^0.2.1",
+    "jquery-xml2json": "git+https://github.com/pascalopitz/jQuery-xml2json.git",
     "lodash": "^3.0.0",
     "omit-keys": "^0.1.0",
     "react": "^0.12.2",
     "react-cursor": "^0.9.2",
-    "watch": "^0.13.0",
-    "jquery-xml2json": "git+https://github.com/pascalopitz/jQuery-xml2json.git"
+    "react-draggable2": "^0.4.2",
+    "reactify": "^1.0.0",
+    "watch": "^0.13.0"
   }
 }
