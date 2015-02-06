@@ -25,7 +25,7 @@ class VolumeSlider {
 				<Draggable
 					axis="x"
 					handle="img"
-					onDrag={this._onDrag}
+					onStop={this._onStop}
 					start={pos}
 					bound="all box">
 					<img
@@ -35,8 +35,11 @@ class VolumeSlider {
 		);
 	}
 
-	_onDrag (e)  {
-		console.log(arguments);
+	_onStop (e, params)  {
+		this.trigger('volume:set', {
+			channel: this.props.id,
+			volume: Math.round(params.position.left * 100 / width)
+		});
 	}
 }
 

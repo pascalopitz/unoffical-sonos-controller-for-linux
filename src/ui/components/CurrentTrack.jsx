@@ -6,7 +6,8 @@ import EventableMixin from '../mixins/EventableMixin';
 
 class CurrentTrack {
 	render () {
-		var track = this.props.track.value;
+		var currentTrack = this.props.currentTrack.value;
+		var nextTrack = this.props.nextTrack.value;
 		//var albumArtURI = this.props.cursor.refine('albumArtURI');
 
 		return (
@@ -14,16 +15,16 @@ class CurrentTrack {
 				<AlbumArt id="current-track-art" />
 				<div>
 					<h6>Track</h6>
-					<p id="track">{track.title}</p>
+					<p id="track">{currentTrack.title}</p>
 					<h6>Artist</h6>
-					<p id="artist">{track.artist}</p>
+					<p id="artist">{currentTrack.artist}</p>
 					<h6>Album</h6>
-					<p id="album">{track.album}</p>
+					<p id="album">{currentTrack.album}</p>
 				</div>
 
 				<h5>Next</h5>
-				<p id="next-track"></p>
-			</div>			
+				<p id="next-track">{nextTrack.title}</p>
+			</div>
 		);
 	}
 }
@@ -34,6 +35,7 @@ CurrentTrack.prototype.mixins = [
 	EventableMixin
 ];
 CurrentTrack.prototype.propTypes = {
-	track: React.PropTypes.instanceOf(Cursor).isRequired
+	currentTrack: React.PropTypes.instanceOf(Cursor).isRequired,
+	nextTrack: React.PropTypes.instanceOf(Cursor).isRequired
 };
 export default React.createClass(CurrentTrack.prototype);

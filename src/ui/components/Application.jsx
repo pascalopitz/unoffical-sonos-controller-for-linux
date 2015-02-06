@@ -5,18 +5,18 @@ import { Cursor, ImmutableOptimizations }  from 'react-cursor';
 import EventableMixin from '../mixins/EventableMixin';
 
 // import all dependencies
-import CurrentTrack from './CurrentTrack'; 
-import QueueList from './QueueList'; 
-import BrowserList from './BrowserList'; 
+import CurrentTrack from './CurrentTrack';
+import QueueList from './QueueList';
+import BrowserList from './BrowserList';
 import PlayControls from './PlayControls';
-import PositionInfo from './PositionInfo'; 
-import VolumeControls from './VolumeControls'; 
-import ZoneGroupList from './ZoneGroupList'; 
+import PositionInfo from './PositionInfo';
+import VolumeControls from './VolumeControls';
+import ZoneGroupList from './ZoneGroupList';
 
 var history = [];
 
 class Application {
-	getInitialState() {
+	getInitialState () {
 		return {
 			currentZone: null,
 			zoneGroups: [],
@@ -26,6 +26,7 @@ class Application {
 				port: null
 			},
 			currentTrack: {},
+			nextTrack: {},
 			volumeControls: {
 				master: {
 					volume: 0,
@@ -56,11 +57,11 @@ class Application {
 						source: 'library'
 					}
 				]
-			}				
+			}
 		};
 	}
 
-	selectCurrentZone (value) {		
+	selectCurrentZone (value) {
 		this.cursor.merge({
 			currentZone: value,
 
@@ -82,14 +83,14 @@ class Application {
 		});
 	}
 
-	playPrev() {
+	playPrev () {
 		port.postMessage({
 			type: 'prev',
 			host: this.cursor.refine('coordinator', 'host').value
 		});
 	}
 
-	playNext() {
+	playNext () {
 		port.postMessage({
 			type: 'next',
 			host: this.cursor.refine('coordinator', 'host').value
@@ -101,7 +102,7 @@ class Application {
 			type: 'goto',
 			target: target,
 			host: this.cursor.refine('coordinator', 'host').value
-		});		
+		});
 	}
 
 	toggleMute (id) {
@@ -116,10 +117,10 @@ class Application {
 		port.postMessage({
 			type: msg,
 			host: this.cursor.refine('coordinator', 'host').value
-		});		
+		});
 	}
 
-	toggelPlaystate() {
+	toggelPlaystate () {
 		var msg = this.cursor.refine('playState', 'playing').value ? 'pause' : 'play';
 
 		port.postMessage({
@@ -128,7 +129,18 @@ class Application {
 		});
 	}
 
-	browserAction(item) {
+	volumeSet (params) {
+		console.log('volumeSet', params.volume);
+
+		port.postMessage({
+			type: 'volumeSet',
+			volume: params.volume,
+			channel: params.channel,
+			host: this.cursor.refine('coordinator', 'host').value
+		});
+	}
+
+	browserAction (item) {
 		var librarySearch = {
 			headline: 'Browse Music Library',
 			source: 'library',
@@ -164,11 +176,11 @@ class Application {
 		var source = model.refine('source').value;
 
 		if(!source && item.source === 'library') {
-			
+
 			model.set(librarySearch);
 
 		} else if(source === 'library' && item.searchType) {
-			
+
 			this.prendinBrowserUpdate = {
 				headline : item.title,
 				searchType : item.searchType
@@ -182,20 +194,20 @@ class Application {
 		}
 	}
 
-	queryState() {
+	queryState () {
 		port.postMessage({
 			type: 'queryState',
 			host: this.cursor.refine('coordinator', 'host').value
-		});		
+		});
 	}
 
-	delayedQueryState() {
+	delayedQueryState () {
 		window.setTimeout(this.queryState.bind(this), 300);
 	}
 
-	isOk(msg) {
+	isOk (msg) {
 		return msg.host === this.cursor.refine('coordinator', 'host').value;
-	}	
+	}
 
 
 	componentDidMount () {
@@ -215,6 +227,8 @@ class Application {
 		this.subscribe('browser:action', this.browserAction.bind('this'));
 
 		this.subscribe('volume:togglemute', this.toggleMute.bind('this'));
+
+		this.subscribe('volume:set', this.volumeSet.bind('this'));
 
 		port.registerCallback('coordinator', function(msg) {
 			console.log('coordinator---------------', msg.state);
@@ -275,6 +289,14 @@ class Application {
 			cursor.refine('currentTrack').set(msg.track);
 		});
 
+		port.registerCallback('nextTrack', function(msg) {
+			if(!self.isOk(msg)) {
+				return;
+			}
+
+			cursor.refine('nextTrack').set(msg.track);
+		});
+
 		port.registerCallback('queue', function(msg) {
 			if(!self.isOk(msg)) {
 				return;
@@ -293,11 +315,12 @@ class Application {
 		var currentZone = cursor.refine('currentZone');
 
 		var currentTrack = cursor.refine('currentTrack');
+		var nextTrack = cursor.refine('nextTrack');
 		var playState = cursor.refine('playState');
 		var queue = cursor.refine('queue');
 
 		var browserState = cursor.refine('browserState');
-	
+
 		return (
 			<div id="application">
 				<header id="top-control">
@@ -316,7 +339,7 @@ class Application {
 					<div id="status-container">
 
 						<h4 id="now-playing">NOW PLAYING</h4>
-						<CurrentTrack track={currentTrack} />
+						<CurrentTrack currentTrack={currentTrack} nextTrack={nextTrack} />
 
 						<h4 id="queue">QUEUE</h4>
 						<div id="queue-list-container">

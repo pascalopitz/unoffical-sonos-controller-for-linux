@@ -12,7 +12,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
 	var listeners = {};
 	var serviceEventHandlers = {};
 
-	var reg = /^http:\/\/([\d\.]+)/; 
+	var reg = /^http:\/\/([\d\.]+)/;
 
 	chrome.runtime.onConnect.addListener(function(port) {
 
@@ -70,7 +70,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 			port.onDisconnect.addListener(function () {
 				unsubscribeServiceEvents(currentSonos);
-				uiPort = null;					
+				uiPort = null;
 			});
 
 			port.onMessage.addListener(function(msg) {
@@ -80,34 +80,34 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 				function queryState(sonos) {
 					sonos.getVolume(function (err, vol) {
-		 				uiPort.postMessage({ type: 'volume', state: vol, host: sonos.host, port: sonos.port }); 
+		 				uiPort.postMessage({ type: 'volume', state: vol, host: sonos.host, port: sonos.port });
 					});
 
 					sonos.getGroupMuted(function (err, muted) {
-		 				uiPort.postMessage({ type: 'group-mute', state: muted, host: sonos.host, port: sonos.port }); 
+		 				uiPort.postMessage({ type: 'group-mute', state: muted, host: sonos.host, port: sonos.port });
 					});
 
 					sonos.currentTrack(function (err, track) {
-		 				uiPort.postMessage({ type: 'currentTrack', track: track, host: sonos.host, port: sonos.port }); 
+		 				uiPort.postMessage({ type: 'currentTrack', track: track, host: sonos.host, port: sonos.port });
 					});
 
 					sonos.getCurrentState(function (err, state) {
-		 				uiPort.postMessage({ type: 'currentState', state: state, host: sonos.host, port: sonos.port }); 
+		 				uiPort.postMessage({ type: 'currentState', state: state, host: sonos.host, port: sonos.port });
 					});
 
 					sonos.getMusicLibrary('queue', {}, function (err, result) {
-		 				uiPort.postMessage({ type: 'queue', result: result, host: sonos.host, port: sonos.port }); 
+		 				uiPort.postMessage({ type: 'queue', result: result, host: sonos.host, port: sonos.port });
 					});
 				}
 
 				if(msg.type === 'queryState') {
-					queryState(deviceSearches[msg.host]);						
+					queryState(deviceSearches[msg.host]);
 				}
 
 				if(msg.type === 'browse') {
 					deviceSearches[msg.host].getMusicLibrary(msg.searchType, msg.params || {}, function (err, result) {
-		 				uiPort.postMessage({ type: 'browse', result: result, host: deviceSearches[msg.host].host, port: deviceSearches[msg.host].port }); 
-					});					
+		 				uiPort.postMessage({ type: 'browse', result: result, host: deviceSearches[msg.host].host, port: deviceSearches[msg.host].port });
+					});
 				}
 
 				if(msg.type === 'goto') {
@@ -115,6 +115,12 @@ chrome.app.runtime.onLaunched.addListener(function() {
 						deviceSearches[msg.host].play(function () {
 							queryState(deviceSearches[msg.host]);
 						});
+					});
+				}
+
+				if(msg.type === 'volumeSet') {
+					deviceSearches[msg.host].setVolume(msg.volume, function () {
+						queryState(deviceSearches[msg.host]);
 					});
 				}
 
@@ -163,13 +169,13 @@ chrome.app.runtime.onLaunched.addListener(function() {
 				if(msg.type === 'next') {
 					deviceSearches[msg.host].next(function () {
 						queryState(deviceSearches[msg.host]);
-					});										
+					});
 				}
 
 				if(msg.type === 'prev') {
 					deviceSearches[msg.host].previous(function () {
 						queryState(deviceSearches[msg.host]);
-					});					
+					});
 				}
 
 				if(msg.type === 'selectZoneGroup') {
@@ -182,7 +188,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 							sonos = deviceSearches[matches[1]];
 						}
-					});				
+					});
 
 
 					if(sonos) {
@@ -192,8 +198,8 @@ chrome.app.runtime.onLaunched.addListener(function() {
 						}
 
 						currentSonos = sonos;
-		 				uiPort.postMessage({ type: 'coordinator', state: { host: sonos.host, port: sonos.port }, host: sonos.host, port: sonos.port }); 
-						
+		 				uiPort.postMessage({ type: 'coordinator', state: { host: sonos.host, port: sonos.port }, host: sonos.host, port: sonos.port });
+
 		 				subscribeServiceEvents(sonos);
 						queryState(sonos);
 					}
@@ -223,34 +229,25 @@ chrome.app.runtime.onLaunched.addListener(function() {
 						});
 
 						if(uiPort) {
-			 				uiPort.postMessage({ type: 'topology', state: state }); 
-						}					
+			 				uiPort.postMessage({ type: 'topology', state: state });
+						}
 					}
 
 
 					if(endpoint === '/MediaRenderer/AVTransport/Event') {
 						var lastChange = xml2json(data.LastChange);
 
-						// need to make sense of the info here
-						// console.log(lastChange.Event.InstanceID);
-
 						var currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
-							explicitArray: true						
+							explicitArray: true
 						});
-
-		 				uiPort.postMessage({ type: 'currentTrack', track: sonos.parseDIDL(currentTrackDIDL), host: sonos.host, port: sonos.port }); 
-
-						// console.log('CurrentTrackMetaData', sonos.parseDIDL(currentTrackDIDL));
 
 						var nextTrackDIDL = xml2json(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val, {
-							explicitArray: true						
+							explicitArray: true
 						});
 
-						// console.log('NextTrackMetaData', sonos.parseDIDL(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val));
-
-						// console.log('TransportState', sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val));
-
-		 				uiPort.postMessage({ type: 'currentState', state: sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val), host: sonos.host, port: sonos.port }); 
+						uiPort.postMessage({ type: 'currentTrack', track: sonos.parseDIDL(currentTrackDIDL), host: sonos.host, port: sonos.port });
+						uiPort.postMessage({ type: 'nextTrack', track: sonos.parseDIDL(nextTrackDIDL), host: sonos.host, port: sonos.port });
+						uiPort.postMessage({ type: 'currentState', state: sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val), host: sonos.host, port: sonos.port });
 					}
 
 				});
@@ -263,7 +260,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 			});
 
-		});			
+		});
 	});
 
 
