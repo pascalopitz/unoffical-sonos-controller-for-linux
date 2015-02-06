@@ -4,6 +4,7 @@ import Listener from './events/listener';
 
 import xml2json from 'jquery-xml2json';
 
+const reg = /^http:\/\/([\d\.]+)/;
 
 var firstSonos;
 
@@ -11,15 +12,12 @@ var deviceSearches = {};
 var listeners = {};
 var serviceEventHandlers = {};
 
-var reg = /^http:\/\/([\d\.]+)/;
-
 var currentSonos = null;
 var currentSubscriptions = [];
 
 var cursor;
 
 class SonosCoordinator {
-//chrome.app.runtime.onLaunched.addListener(function() {
 
   constructor () {
     e.on('application:mount', this.handleAppMount.bind(this));
@@ -33,11 +31,13 @@ class SonosCoordinator {
     e.on('volume:set', this.volumeSet.bind(this));
   }
 
+
   handleAppMount (app, c) {
     cursor = c;
     this.cursor = c;
     this.searchForDevices();
   }
+
 
   queryState (sonos) {
     sonos.getVolume((err, vol) => {
@@ -55,16 +55,7 @@ class SonosCoordinator {
     });
 
     sonos.getCurrentState((err, state) => {
-      cursor.merge({
-        currentState: state
-      });
-
-      if(state === 'transitioning') {
-        this.delayedQueryState(currentSonos);
-        return;
-      }
-
-      cursor.refine('playState', 'playing').set(state === 'playing');
+      this.setCurrentState(state);
     });
 
     sonos.getMusicLibrary('queue', {}, (err, result) => {
@@ -100,6 +91,20 @@ class SonosCoordinator {
     });
 
     currentSubscriptions = [];
+  }
+
+
+  setCurrentState(state) {
+    cursor.merge({
+      currentState: state
+    });
+
+    if(state === 'transitioning') {
+      this.delayedQueryState(currentSonos);
+      return;
+    }
+
+    cursor.refine('playState', 'playing').set(state === 'playing');
   }
 
 
@@ -167,17 +172,10 @@ class SonosCoordinator {
   }
 
   toggleMute (id) {
-    console.log('here', arguments);
+    let muted = this.cursor.refine('volumeControls', 'master', 'mute').value;
 
-    if(id === 'master-mute') {
-      var msg = this.cursor.refine('volumeControls', 'master', 'mute').value ? 'group-unmute' : 'group-mute';
-    } else {
-      throw new Error("have't dealt with this yet");
-    }
-
-    port.postMessage({
-      type: msg,
-      host: this.cursor.refine('coordinator', 'host').value
+    currentSonos.setGroupMuted(!muted, () => {
+      this.queryState(currentSonos);
     });
   }
 
@@ -269,6 +267,7 @@ class SonosCoordinator {
     }, 300);
   }
 
+
   searchForDevices() {
 
     var search = new Search((sonos) => {
@@ -312,9 +311,10 @@ class SonosCoordinator {
 
             cursor.merge({
               currentTrack: sonos.parseDIDL(currentTrackDIDL),
-              nextTrack: sonos.parseDIDL(nextTrackDIDL),
-              currentState: sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val),
+              nextTrack: sonos.parseDIDL(nextTrackDIDL)
             });
+
+            this.setCurrentState(sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val));
           }
         });
 
@@ -326,96 +326,6 @@ class SonosCoordinator {
       });
     });
   }
-
-    // port.registerCallback('currentState', function(msg) {
-    // 	if(!self.isOk(msg)) {
-    // 		return;
-    // 	}
-    //
-    // 	if(msg.state === 'transitioning') {
-    // 		self.delayedQueryState();
-    // 		return;
-    // 	}
-    //
-    // 	cursor.refine('playState', 'playing').set(msg.state === 'playing');
-    // });
-    //
-
-
-    // if(port.name === 'ui') {
-    //
-    //   uiPort = port;
-
-      // port.onDisconnect.addListener(function () {
-      //   unsubscribeServiceEvents(currentSonos);
-      //   uiPort = null;
-      // });
-
-    //   port.onMessage.addListener(function(msg) {
-    //     // handle messages
-    //
-    //     console.log('message: ', msg);
-    //
-    //
-    //     if(msg.type === 'browse') {
-    //       deviceSearches[msg.host].getMusicLibrary(msg.searchType, msg.params || {}, function (err, result) {
-    //          uiPort.postMessage({ type: 'browse', result: result, host: deviceSearches[msg.host].host, port: deviceSearches[msg.host].port });
-    //       });
-    //     }
-    //
-    //     if(msg.type === 'goto') {
-    //       deviceSearches[msg.host].goto(msg.target, function () {
-    //         deviceSearches[msg.host].play(function () {
-    //           queryState(deviceSearches[msg.host]);
-    //         });
-    //       });
-    //     }
-    //
-    //     if(msg.type === 'volumeSet') {
-    //       deviceSearches[msg.host].setVolume(msg.volume, function () {
-    //         queryState(deviceSearches[msg.host]);
-    //       });
-    //     }
-    //
-    //     if(msg.type === 'mute') {
-    //       deviceSearches[msg.host].setMuted(true, function () {
-    //         queryState(deviceSearches[msg.host]);
-    //       });
-    //     }
-    //
-    //     if(msg.type === 'unmute') {
-    //       deviceSearches[msg.host].setMuted(false, function () {
-    //         queryState(deviceSearches[msg.host]);
-    //       });
-    //     }
-    //
-    //     if(msg.type === 'group-mute') {
-    //       deviceSearches[msg.host].setGroupMuted(true, function () {
-    //         queryState(deviceSearches[msg.host]);
-    //       });
-    //     }
-    //
-    //     if(msg.type === 'group-unmute') {
-    //       deviceSearches[msg.host].setGroupMuted(false, function () {
-    //         queryState(deviceSearches[msg.host]);
-    //       });
-    //     }
-    //
-    //     if(msg.type === 'play') {
-    //       if(!msg.item) {
-    //         deviceSearches[msg.host].play(function () {
-    //           queryState(deviceSearches[msg.host]);
-    //         });
-    //       } else {
-    //         deviceSearches[msg.host].play(msg.item.uri , function () {
-    //           queryState(deviceSearches[msg.host]);
-    //         });
-    //       }
-    //     }
-    //
-    //   });
-    // }
-  //});
 
 }
 
