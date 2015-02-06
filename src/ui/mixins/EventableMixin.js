@@ -1,5 +1,4 @@
-var events = require("bloody-events");
-var e = events.create();
+import e from '../events';
 
 export default {
 	trigger: function() {
