@@ -74,7 +74,6 @@ class SonosCoordinator {
 
     x.addService('/ZoneGroupTopology/Event', cb);
     x.addService('/MediaRenderer/AVTransport/Event', cb);
-    x.addService('/MediaRenderer/RenderingControl/Event', cb);
     x.addService('/MediaRenderer/GroupRenderingControl/Event', cb);
     x.addService('/MediaServer/ContentDirectory/Event', cb);
   }
@@ -252,11 +251,11 @@ class SonosCoordinator {
       };
 
       currentSonos.getMusicLibrary(item.searchType, {}, (err, result) => {
-        	var state = this.prendinBrowserUpdate;
-        	state.items = result.items;
+        var state = this.prendinBrowserUpdate;
+        state.items = result.items;
 
-        	this.cursor.refine('browserState').set(state);
-        	this.prendinBrowserUpdate = null;
+        this.cursor.refine('browserState').set(state);
+        this.prendinBrowserUpdate = null;
       });
     }
   }
@@ -278,9 +277,22 @@ class SonosCoordinator {
       listeners[sonos.host].listen((err) => {
         if (err) throw err;
 
+        listeners[sonos.host].addService('/MediaRenderer/RenderingControl/Event', () => {
+
+        });
+
         listeners[sonos.host].onServiceEvent((endpoint, sid, data) => {
 
-          console.log(endpoint, sid, data);
+          if(endpoint === '/MediaRenderer/RenderingControl/Event') {
+              var lastChange = xml2json(data.LastChange, {
+                explicitArray: false
+              });
+
+              cursor.refine('volumeControls', 'players', sonos.host).set({
+                  muted: lastChange.Event.InstanceID.Muted[0].$.val,
+                  volume: lastChange.Event.InstanceID.Volume[0].$.val,
+              });
+          }
 
           if(endpoint === '/ZoneGroupTopology/Event') {
             var state = xml2json(data.ZoneGroupState, {
@@ -288,13 +300,13 @@ class SonosCoordinator {
             });
 
             cursor.merge({
-          		zoneGroups: state.ZoneGroups.ZoneGroup
-          	});
+              zoneGroups: state.ZoneGroups.ZoneGroup
+            });
 
-            	if(!cursor.refine('currentZone').value) {
-            		this.selectCurrentZone(state.ZoneGroups.ZoneGroup[0]);
-                this.delayedQueryState(currentSonos);
-            	}
+            if(!cursor.refine('currentZone').value) {
+              this.selectCurrentZone(state.ZoneGroups.ZoneGroup[0]);
+              this.delayedQueryState(currentSonos);
+            }
           }
 
 
