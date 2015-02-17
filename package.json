@@ -25,6 +25,7 @@
     "deep-equal": "^0.2.1",
     "jquery-xml2json": "git+https://github.com/pascalopitz/jQuery-xml2json.git",
     "lodash": "^3.0.0",
+    "moment": "^2.9.0",
     "omit-keys": "^0.1.0",
     "react": "^0.12.2",
     "react-cursor": "^0.9.2",

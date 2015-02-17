@@ -12,6 +12,7 @@ var deviceSearches = {};
 var listeners = {};
 var serviceEventHandlers = {};
 
+var queryInterval = null;
 var currentSonos = null;
 var currentSubscriptions = [];
 
@@ -40,6 +41,10 @@ class SonosCoordinator {
 
 
   queryState (sonos) {
+    sonos.getPositionInfo((err, info) => {
+      cursor.refine('positionInfo').set(info);
+    });
+
     sonos.getVolume((err, vol) => {
       cursor.refine('volumeControls', 'master', 'volume').set(vol);
     });
@@ -99,7 +104,6 @@ class SonosCoordinator {
     });
 
     if(state === 'transitioning') {
-      this.delayedQueryState(currentSonos);
       return;
     }
 
@@ -138,6 +142,10 @@ class SonosCoordinator {
         this.unsubscribeServiceEvents(currentSonos);
       }
 
+      if(queryInterval) {
+          window.clearInterval(queryInterval);
+      }
+
       currentSonos = sonos;
 
       cursor.merge({
@@ -146,26 +154,29 @@ class SonosCoordinator {
 
       this.subscribeServiceEvents(sonos);
       this.queryState(sonos);
+      queryInterval = window.setInterval(() => {
+          this.queryState(sonos);
+      }, 1000);
     }
   }
 
 
   playPrev () {
     currentSonos.previous(target, () => {
-      this.queryState(currentSonos);
+
     });
   }
 
   playNext () {
     currentSonos.next(target, () => {
-      this.queryState(currentSonos);
+
     });
   }
 
   queuelistGoto (target) {
     currentSonos.goto(target, () => {
       currentSonos.play(() => {
-        this.queryState(currentSonos);
+
       });
     });
   }
@@ -174,7 +185,7 @@ class SonosCoordinator {
     let muted = this.cursor.refine('volumeControls', 'master', 'mute').value;
 
     currentSonos.setGroupMuted(!muted, () => {
-      this.queryState(currentSonos);
+
     });
   }
 
@@ -182,7 +193,7 @@ class SonosCoordinator {
     let isPlaying = this.cursor.refine('playState', 'playing').value;
 
     let cb = () => {
-      this.queryState(currentSonos);
+
     };
 
     if(isPlaying) {
@@ -260,12 +271,6 @@ class SonosCoordinator {
     }
   }
 
-  delayedQueryState (sonos) {
-    window.setTimeout(() => {
-      this.queryState.bind(sonos);
-    }, 300);
-  }
-
 
   searchForDevices() {
 
@@ -288,10 +293,12 @@ class SonosCoordinator {
                 explicitArray: false
               });
 
-              cursor.refine('volumeControls', 'players', sonos.host).set({
-                  muted: lastChange.Event.InstanceID.Muted[0].$.val,
-                  volume: lastChange.Event.InstanceID.Volume[0].$.val,
-              });
+              if(lastChange.Event.InstanceID.Muted) {
+                  cursor.refine('volumeControls', 'players', sonos.host).set({
+                      muted: lastChange.Event.InstanceID.Muted[0].$.val,
+                      volume: lastChange.Event.InstanceID.Volume[0].$.val,
+                  });
+              }
           }
 
           if(endpoint === '/ZoneGroupTopology/Event') {
@@ -305,13 +312,14 @@ class SonosCoordinator {
 
             if(!cursor.refine('currentZone').value) {
               this.selectCurrentZone(state.ZoneGroups.ZoneGroup[0]);
-              this.delayedQueryState(currentSonos);
             }
           }
 
 
           if(endpoint === '/MediaRenderer/AVTransport/Event') {
             var lastChange = xml2json(data.LastChange);
+
+            console.log(lastChange);
 
             var currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
               explicitArray: true

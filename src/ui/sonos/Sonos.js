@@ -84,7 +84,7 @@ class Sonos {
 			'queue': 'Q:0',
 			'share': 'S:'
 		};
-		
+
 		var defaultOptions = {
 			BrowseFlag: 'BrowseDirectChildren',
 			Filter: '*',
@@ -92,28 +92,28 @@ class Sonos {
 			RequestedCount: '100',
 			SortCriteria: ''
 		};
-		
+
 		var opts = {
 			ObjectID: searches[searchType]
 		};
-		
+
 		if(options.start !== undefined) opts.StartingIndex = options.start;
 		if(options.total !== undefined) opts.RequestedCount = options.total;
 
 		opts = _.extend(defaultOptions, opts);
-		
+
 		var contentDirectory = new Services.ContentDirectory(this.host, this.port);
 		return contentDirectory.Browse(opts, function(err, data){
 			if (err) return callback(err);
 			return (new xml2js.Parser()).parseString(data.Result, function(err, didl) {
 				if (err) return callback(err, data);
-				
+
 				var items = [];
-				
+
 				if ((!didl) || (!didl['DIDL-Lite']) || (!Array.isArray(didl['DIDL-Lite'].container))){
 					callback(new Error('Cannot parse DIDTL result'), data);
 				}
-				
+
 				_.each(didl['DIDL-Lite'].container || didl['DIDL-Lite'].item, function(item){
 					items.push(
 						{
@@ -620,7 +620,7 @@ class Sonos {
 
 	/**
 	 * Set Play Mode
-	 * @param	{String}	 
+	 * @param	{String}
 	 * @param	{Function} callback (err, data)
 	 * @return {[type]}
 	 */
@@ -704,7 +704,7 @@ class Sonos {
 		async.parallel(actions, function(status) {
 			// recalculate group volume when finished
 		});
-		*/	
+		*/
 	}
 
 	/**
@@ -792,14 +792,31 @@ class Sonos {
 			}
 
 			var state = _this.translateState(data[0].CurrentTransportState[0]);
-			
+
 			return callback(err, state);
 		});
 	}
 
+	/**
+	* Get Current Position Info
+	* @param	{Function} callback (err, info)
+	*/
+	getPositionInfo (callback) {
+		debug('Sonos.positionInfo(%j)', callback);
 
+		var avTransport = new Services.AVTransport(this.host, this.port);
+
+		avTransport.GetPositionInfo({
+			InstanceID: 0
+		}, function (err, data) {
+			callback(err, data);
+		});
+	}
+
+	/**
+	 * @param {String}
+	 */
 	translateState	(inputState) {
-
 		switch(inputState) {
 			case 'PAUSED_PLAYBACK':
 				return 'paused';
@@ -807,7 +824,6 @@ class Sonos {
 			default:
 				return inputState.toLowerCase();
 		}
-
 	}
 
 }

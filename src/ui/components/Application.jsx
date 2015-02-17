@@ -40,6 +40,7 @@ class Application {
 		var zoneGroups = cursor.refine('zoneGroups');
 		var currentZone = cursor.refine('currentZone');
 
+		var positionInfo = cursor.refine('positionInfo');
 		var currentTrack = cursor.refine('currentTrack');
 		var nextTrack = cursor.refine('nextTrack');
 		var playState = cursor.refine('playState');
@@ -54,7 +55,7 @@ class Application {
 					<VolumeControls model={volumeControls} />
 
 					<PlayControls model={playState} />
-					<PositionInfo />
+					<PositionInfo info={positionInfo} />
 
 				</header>
 				<div id="column-container">

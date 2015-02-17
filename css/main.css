@@ -415,6 +415,7 @@ h4 {
 }
 
 #position-bar-scrubber {
+	position: absolute;
 	width: 4px;
 	height: 4px;
 	border-radius: 2px;

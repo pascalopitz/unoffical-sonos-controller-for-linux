@@ -17,6 +17,7 @@ export default {
 
         }
     },
+    positionInfo: null,
     playState: {
         playing: false
     },
