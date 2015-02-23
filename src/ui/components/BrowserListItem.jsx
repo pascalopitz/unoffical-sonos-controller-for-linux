@@ -1,17 +1,17 @@
 import AlbumArt from './AlbumArt';
 
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
-class BrowserListItem {
+class BrowserListItem extends ImmutableMixin {
 
 	render () {
 
 		var track = this.props.model.value;
 
 		return (
-			<li onClick={this._onClick} data-position={this.props.position}>
+			<li onClick={this._onClick.bind(this)} data-position={this.props.position}>
 				<AlbumArt id="" src={track.albumArtURI} />
 				<div className="trackinfo">
 					<p className="title">{track.title}</p>
@@ -28,12 +28,7 @@ class BrowserListItem {
 	}
 }
 
-BrowserListItem.prototype.displayName = "BrowserListItem";
-BrowserListItem.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-BrowserListItem.prototype.propTypes = {
+BrowserListItem.propTypes = {
 	model: React.PropTypes.instanceOf(Cursor).isRequired
 };
-export default React.createClass(BrowserListItem.prototype);
+export default BrowserListItem;

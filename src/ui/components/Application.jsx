@@ -1,5 +1,5 @@
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
+import { Cursor }  from 'react-cursor';
 import EventableMixin from '../mixins/EventableMixin';
 
 // import all dependencies
@@ -15,9 +15,11 @@ import initialState from '../initialState';
 
 var history = [];
 
-class Application {
-	getInitialState () {
-		return initialState;
+class Application extends EventableMixin {
+
+	constructor(props) {
+		super(props);
+		this.state = initialState;
 	}
 
 	isOk (msg) {
@@ -82,7 +84,4 @@ class Application {
 	}
 }
 
-Application.prototype.mixins = [
-	EventableMixin
-];
-export default React.createClass(Application.prototype);
+export default Application;

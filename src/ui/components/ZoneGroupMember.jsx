@@ -1,23 +1,18 @@
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
-class ZoneGroupMember {
-  render () {
-    return (
-    	<li>
-    		<span>{this.props.member.value.$.ZoneName}</span>
-    	</li>
-	);
-  }
+class ZoneGroupMember extends ImmutableMixin {
+	render () {
+		return (
+			<li>
+				<span>{this.props.member.value.$.ZoneName}</span>
+			</li>
+		);
+	}
 }
 
-ZoneGroupMember.prototype.displayName = "ZoneGroupMember";
-ZoneGroupMember.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-ZoneGroupMember.prototype.propTypes = {
+ZoneGroupMember.propTypes = {
 	member: React.PropTypes.instanceOf(Cursor).isRequired
 };
-export default React.createClass(ZoneGroupMember.prototype);
+export default ZoneGroupMember;

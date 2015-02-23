@@ -2,13 +2,14 @@ const width = 180;
 
 import React from 'react/addons';
 import Draggable from 'react-draggable2';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
-class VolumeSlider {
+class VolumeSlider extends ImmutableMixin {
 
-	getInitialState() {
-		return { dragging: false };
+	constructor () {
+		super();
+		this.state = { dragging: false };
 	}
 
 	render () {
@@ -25,7 +26,7 @@ class VolumeSlider {
 				<Draggable
 					axis="x"
 					handle="img"
-					onStop={this._onStop}
+					onStop={this._onStop.bind(this)}
 					start={pos}
 					bound="all box">
 					<img
@@ -43,12 +44,7 @@ class VolumeSlider {
 	}
 }
 
-VolumeSlider.prototype.displayName = "VolumeSlider";
-VolumeSlider.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-VolumeSlider.prototype.propTypes = {
+VolumeSlider.propTypes = {
 	volume: React.PropTypes.instanceOf(Cursor).isRequired
 };
-export default React.createClass(VolumeSlider.prototype);
+export default VolumeSlider;

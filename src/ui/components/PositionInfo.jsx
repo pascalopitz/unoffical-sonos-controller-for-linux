@@ -1,11 +1,11 @@
 import moment from 'moment';
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
 const width = 150;
 
-class PositionInfo {
+class PositionInfo extends ImmutableMixin {
 
 	render () {
 
@@ -58,12 +58,7 @@ class PositionInfo {
 	}
 }
 
-PositionInfo.prototype.displayName = "PositionInfo";
-PositionInfo.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-PositionInfo.prototype.propTypes = {
+PositionInfo.propTypes = {
 	info: React.PropTypes.instanceOf(Cursor).isRequired
 };
-export default React.createClass(PositionInfo.prototype);
+export default PositionInfo;

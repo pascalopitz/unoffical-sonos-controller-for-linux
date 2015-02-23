@@ -1,12 +1,12 @@
 import ZoneGroup from './ZoneGroup'; 
 
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
 import sort from '../helpers/sort';
 
-class ZoneGroupList {
+class ZoneGroupList extends ImmutableMixin {
 
 	render () {
 		var groups = this.props.zoneGroups;
@@ -40,13 +40,8 @@ class ZoneGroupList {
 	}
 }
 
-ZoneGroupList.prototype.displayName = "ZoneGroupList";
-ZoneGroupList.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-ZoneGroupList.prototype.propTypes = {
+ZoneGroupList.propTypes = {
 	zoneGroups: React.PropTypes.instanceOf(Cursor).isRequired,
 	currentZone: React.PropTypes.instanceOf(Cursor).isRequired
 };
-export default React.createClass(ZoneGroupList.prototype);
+export default ZoneGroupList;

@@ -1,19 +1,19 @@
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
-class PlayControls {
+class PlayControls extends ImmutableMixin {
 
 	render () {
 		var src = this.props.model.value.playing ? "svg/pause.svg" : "svg/play.svg";
 
 		return (
 			<div id="controls">
-				<img id="prev" src="svg/prev.svg" onClick={this._prev} />
-				<div id="play-pause" className="play" onClick={this._toggle} >
+				<img id="prev" src="svg/prev.svg" onClick={this._prev.bind(this)} />
+				<div id="play-pause" className="play" onClick={this._toggle.bind(this)} >
 					<img id="play" src={src} />
 				</div>
-				<img id="next" src="svg/next.svg" onClick={this._next} />
+				<img id="next" src="svg/next.svg" onClick={this._next.bind(this)} />
 
 			</div>
 
@@ -33,12 +33,7 @@ class PlayControls {
 	}
 }
 
-PlayControls.prototype.displayName = "PlayControls";
-PlayControls.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-PlayControls.prototype.propTypes = {
+PlayControls.propTypes = {
 	model: React.PropTypes.instanceOf(Cursor).isRequired
 };
-export default React.createClass(PlayControls.prototype);
+export default PlayControls;

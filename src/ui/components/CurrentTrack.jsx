@@ -1,10 +1,10 @@
 import AlbumArt from './AlbumArt';
 
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
-class CurrentTrack {
+class CurrentTrack extends ImmutableMixin {
 	render () {
 		var currentTrack = this.props.currentTrack.value;
 		var nextTrack = this.props.nextTrack.value;
@@ -29,13 +29,8 @@ class CurrentTrack {
 	}
 }
 
-CurrentTrack.prototype.displayName = "CurrentTrack";
-CurrentTrack.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-CurrentTrack.prototype.propTypes = {
+CurrentTrack.propTypes = {
 	currentTrack: React.PropTypes.instanceOf(Cursor).isRequired,
 	nextTrack: React.PropTypes.instanceOf(Cursor).isRequired
 };
-export default React.createClass(CurrentTrack.prototype);
+export default CurrentTrack;

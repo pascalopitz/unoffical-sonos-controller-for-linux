@@ -2,10 +2,10 @@ import MuteButton from './MuteButton';
 import VolumeSlider from './VolumeSlider'; 
 
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
-class VolumeControls {
+class VolumeControls extends ImmutableMixin {
 
 	render () {
 
@@ -50,12 +50,7 @@ class VolumeControls {
 	}
 }
 
-VolumeControls.prototype.displayName = "VolumeControls";
-VolumeControls.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-VolumeControls.prototype.propTypes = {
+VolumeControls.propTypes = {
 	model: React.PropTypes.instanceOf(Cursor).isRequired
 };
-export default React.createClass(VolumeControls.prototype);
+export default VolumeControls;

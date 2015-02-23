@@ -1,9 +1,9 @@
 	
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
-class MuteButton {
+class MuteButton extends ImmutableMixin {
 
 	render () {
 
@@ -12,7 +12,7 @@ class MuteButton {
 
 		return (
 			<img 
-			onClick={this._toggleMute}
+			onClick={this._toggleMute.bind(this)}
 			className="mute-button"
 			id={id}
 			src={src} />
@@ -24,12 +24,7 @@ class MuteButton {
 	}
 }
 
-MuteButton.prototype.displayName = "MuteButton";
-MuteButton.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-MuteButton.prototype.propTypes = {
+MuteButton.propTypes = {
 	muted: React.PropTypes.instanceOf(Cursor).isRequired
 };
-export default React.createClass(MuteButton.prototype);
+export default MuteButton;

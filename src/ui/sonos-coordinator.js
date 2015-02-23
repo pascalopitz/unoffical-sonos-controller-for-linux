@@ -154,9 +154,9 @@ class SonosCoordinator {
 
       this.subscribeServiceEvents(sonos);
       this.queryState(sonos);
-      queryInterval = window.setInterval(() => {
-          this.queryState(sonos);
-      }, 1000);
+      // queryInterval = window.setInterval(() => {
+      //     this.queryState(sonos);
+      // }, 1000);
     }
   }
 

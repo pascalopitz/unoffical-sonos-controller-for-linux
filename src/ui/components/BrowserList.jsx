@@ -2,12 +2,12 @@
 import BrowserListItem from './BrowserListItem';
 
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
 var history = [];
 
-class BrowserList {
+class BrowserList extends ImmutableMixin {
 
 	render () {
 
@@ -29,7 +29,7 @@ class BrowserList {
 
 		return (
 			<div id="music-sources-container">
-				<h4><a onClick={this._back}>{headline}</a></h4>
+				<h4><a onClick={this._back.bind(this)}>{headline}</a></h4>
 				<ul id="browser-container">
 					{{listItemNodes}}
 				</ul>
@@ -44,12 +44,7 @@ class BrowserList {
 	}
 }
 
-BrowserList.prototype.displayName = "BrowserList";
-BrowserList.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-BrowserList.prototype.propTypes = {
+BrowserList.propTypes = {
 	model: React.PropTypes.instanceOf(Cursor).isRequired
 };
-export default React.createClass(BrowserList.prototype);
+export default BrowserList;

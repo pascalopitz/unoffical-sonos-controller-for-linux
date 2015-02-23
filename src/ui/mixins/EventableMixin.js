@@ -1,11 +1,14 @@
 import e from '../events';
+import React from 'react/addons';
 
-export default {
-	trigger: function() {
+class EventableMixin extends React.Component {
+	trigger () {
 		e.emit.apply(e, arguments);
-	},
+	}
 
-	subscribe: function () {
+	subscribe () {
 		e.on.apply(e, arguments);
 	}
 };
+
+export default EventableMixin;

@@ -1,6 +1,6 @@
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
 // var queue = [];
 // var fetching = 0;
@@ -16,7 +16,7 @@ import EventableMixin from '../mixins/EventableMixin';
 // 	xhr.responseType = 'arraybuffer';
 
 // 	xhr.onload = function () {
-//         var arr = new Uint8Array(this.response);
+//		 var arr = new Uint8Array(this.response);
 
 // 		// Convert the int array to a binary string
 // 		// We have to use apply() as we are converting an *array*
@@ -61,10 +61,11 @@ import EventableMixin from '../mixins/EventableMixin';
 // 	processQueue();
 // }
 
-class AlbumArt {
+class AlbumArt extends ImmutableMixin {
 
-	getInitialState () {
-		return {
+	constructor () {
+		super();
+		this.state = {
 			src: 'images/browse_missing_album_art.png',
 			fetched: false,
 		};
@@ -87,9 +88,4 @@ class AlbumArt {
 	}
 }
 
-AlbumArt.prototype.displayName = "AlbumArt";
-AlbumArt.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-export default React.createClass(AlbumArt.prototype);
+export default AlbumArt;

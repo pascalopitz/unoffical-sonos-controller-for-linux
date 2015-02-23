@@ -1,10 +1,10 @@
 import QueueListItem from './QueueListItem';
 
 import React from 'react/addons';
-import { Cursor, ImmutableOptimizations }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import { Cursor }  from 'react-cursor';
+import ImmutableMixin from '../mixins/ImmutableMixin';
 
-class QueueList {
+class QueueList extends ImmutableMixin {
 
 	render () {
 
@@ -29,9 +29,4 @@ class QueueList {
 	}
 }
 
-QueueList.prototype.displayName = "QueueList";
-QueueList.prototype.mixins = [
-	ImmutableOptimizations(['cursor']),
-	EventableMixin
-];
-export default React.createClass(QueueList.prototype);
+export default QueueList;
