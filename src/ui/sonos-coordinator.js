@@ -149,14 +149,37 @@ class SonosCoordinator {
       currentSonos = sonos;
 
       cursor.merge({
-        coordinator: { host: sonos.host, port: sonos.port }
+        coordinator: { 
+          host: sonos.host,
+          port: sonos.port
+        },
+        currentTrack: {},
+        nextTrack: {},
+        volumeControls: {
+            master: {
+                volume: 0,
+                muted: false
+            },
+            players: {
+
+            }
+        },
+        positionInfo: null,
+        playState: {
+            playing: false
+        },
+        queue: {
+            returned: 0,
+            total: 0,
+            items: []
+        }
       });
 
       this.subscribeServiceEvents(sonos);
       this.queryState(sonos);
-      // queryInterval = window.setInterval(() => {
-      //     this.queryState(sonos);
-      // }, 1000);
+      queryInterval = window.setInterval(() => {
+          this.queryState(sonos);
+      }, 1000);
     }
   }
 

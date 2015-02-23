@@ -1,7 +1,7 @@
 import withinEnvelope from '../helpers/withinEnvelope';
 import htmlEntities from '../helpers/htmlEntities';
 import xml2js from '../helpers/xml2js';
-import request from '../helpers/request';
+import requestHelper from '../helpers/request';
 
 import Services from '../helpers/Services';
 
@@ -18,7 +18,7 @@ var TRANSPORT_ENDPOINT = '/MediaRenderer/AVTransport/Control',
 
 
 var debug = function() {
-	//console.log(arguments);
+	//console.log.apply(null, arguments);
 }
 
 
@@ -43,7 +43,7 @@ class Sonos {
 	 */
 	request (endpoint, action, body, responseTag, callback) {
 		debug('Sonos.request(%j, %j, %j, %j, %j)', endpoint, action, body, responseTag, callback);
-		request({
+		requestHelper({
 			uri: 'http://' + this.host + ':' + this.port + endpoint,
 			method: 'POST',
 			headers: {
@@ -589,7 +589,7 @@ class Sonos {
 	 * @param	{Function} callback (err, info)
 	 */
 	deviceDescription (callback) {
-		request({
+		requestHelper({
 			uri: 'http://' + this.host + ':' + this.port + '/xml/device_description.xml'
 		}, function(err, res, body) {
 			if (err) return callback(err);
@@ -746,7 +746,7 @@ class Sonos {
 	 */
 	getTopology (callback) {
 		debug('Sonos.getTopology(%j)', callback);
-		request('http://' + this.host + ':' + this.port + '/status/topology', function(err, res, body) {
+		requestHelper('http://' + this.host + ':' + this.port + '/status/topology', function(err, res, body) {
 			if(err) return callback(err);
 			debug(body);
 			xml2js.parseString(body, function(err, topology) {
