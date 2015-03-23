@@ -228,13 +228,12 @@ class SonosCoordinator {
 
   volumeSet (params) {
     console.log('volumeSet', params.volume);
-
-    port.postMessage({
-      type: 'volumeSet',
-      volume: params.volume,
-      channel: params.channel,
-      host: this.cursor.refine('coordinator', 'host').value
-    });
+    // port.postMessage({
+    //   type: 'volumeSet',
+    //   volume: params.volume,
+    //   channel: params.channel,
+    //   host: this.cursor.refine('coordinator', 'host').value
+    // });
   }
 
 
