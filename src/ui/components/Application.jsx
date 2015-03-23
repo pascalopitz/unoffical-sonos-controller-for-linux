@@ -1,6 +1,6 @@
 import React from 'react/addons';
 import { Cursor }  from 'react-cursor';
-import EventableMixin from '../mixins/EventableMixin';
+import EventableMixin from './mixins/EventableMixin';
 
 // import all dependencies
 import CurrentTrack from './CurrentTrack';

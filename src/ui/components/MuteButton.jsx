@@ -1,7 +1,7 @@
 	
 import React from 'react/addons';
 import { Cursor }  from 'react-cursor';
-import ImmutableMixin from '../mixins/ImmutableMixin';
+import ImmutableMixin from './mixins/ImmutableMixin';
 
 class MuteButton extends ImmutableMixin {
 

@@ -1,6 +1,6 @@
-import e from './events';
+import e from './helpers/events';
 import Search from './sonos/Search';
-import Listener from './events/listener';
+import Listener from './sonos/events/listener';
 
 import xml2json from 'jquery-xml2json';
 

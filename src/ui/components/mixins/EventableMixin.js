@@ -1,4 +1,4 @@
-import e from '../events';
+import e from '../../helpers/events';
 import React from 'react/addons';
 
 class EventableMixin extends React.Component {
