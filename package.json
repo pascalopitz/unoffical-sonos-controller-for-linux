@@ -26,9 +26,9 @@
     "lodash": "^3.0.0",
     "moment": "^2.9.0",
     "omit-keys": "^0.1.0",
-    "react": "0.13.0-rc1",
+    "react": "0.13.1",
     "react-cursor": "^0.9.2",
-    "react-draggable2": "git+https://github.com/pascalopitz/react-draggable.git",
+    "react-draggable2": "^0.5.1",
     "reactify": "^1.0.0",
     "watch": "^0.13.0"
   }
