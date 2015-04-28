@@ -49,6 +49,7 @@ class Application extends EventableMixin {
 		var queue = cursor.refine('queue');
 
 		var browserState = cursor.refine('browserState');
+		var browserStateHistory = cursor.refine('browserStateHistory');
 
 		return (
 			<div id="application">
@@ -77,7 +78,7 @@ class Application extends EventableMixin {
 
 					</div>
 
-					<BrowserList model={browserState} />
+					<BrowserList model={browserState} history={browserStateHistory} />
 				</div>
 			</div>
 		);

@@ -7,7 +7,7 @@
     "watch": "npm run-script cleanup & npm run-script watch-ui & npm run-script watch-bg",
     "watch-ui": "./node_modules/.bin/watch \"npm run-script minify-ui\" src/ui",
     "watch-bg": "./node_modules/.bin/watch \"npm run-script minify-bg\" src/background",
-    "minify-ui": "./node_modules/.bin/browserify -t babelify --extension=.jsx -e src/ui/app.js > js/ui.js",
+    "minify-ui": "./node_modules/.bin/browserify -d -t babelify --extension=.jsx -e src/ui/app.js > js/ui.js",
     "minify-bg": "./node_modules/.bin/browserify -t babelify -e src/background/background.js > js/background.js",
     "compile": "npm run-script cleanup && npm run-script minify-ui && npm run-script minify-bg",
     "cleanup": "rm -Rf ./js && mkdir js",

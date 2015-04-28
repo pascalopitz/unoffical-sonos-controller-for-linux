@@ -22,9 +22,7 @@ class BrowserListItem extends ImmutableMixin {
 	}
 
 	_onClick (e) {
-
 		this.trigger('browser:action', this.props.model.value);
-
 	}
 }
 

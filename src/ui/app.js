@@ -6,4 +6,4 @@ import sonos from './sonos-coordinator';
 React.render(
 	React.createElement(Application, null),
 	document.getElementById('root')
-)
+);

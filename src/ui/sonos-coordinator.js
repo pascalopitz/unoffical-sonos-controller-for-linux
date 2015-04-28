@@ -28,6 +28,8 @@ class SonosCoordinator {
     e.on('playstate:next', this.playNext.bind(this));
     e.on('queuelist:goto', this.queuelistGoto.bind(this));
     e.on('browser:action', this.browserAction.bind(this));
+    e.on('browser:back', this.browserBack.bind(this));
+    e.on('browser:render', this.browserRender.bind(this));
     e.on('volume:togglemute', this.toggleMute.bind(this));
     e.on('volume:set', this.volumeSet.bind(this));
   }
@@ -179,7 +181,7 @@ class SonosCoordinator {
       this.queryState(sonos);
       queryInterval = window.setInterval(() => {
           this.queryState(sonos);
-      }, 1000);
+      }, 10000);
     }
   }
 
@@ -236,8 +238,49 @@ class SonosCoordinator {
     // });
   }
 
+  browserRender (state) {
+
+    window.setTimeout(() => {
+      if(!this.cursor) {
+        return;
+      }
+
+      var history = this.cursor.refine('browserStateHistory').value;
+
+      if(history[history.length - 1] === state) {
+        return;
+      }
+
+      console.log('browserRender');
+      history.push(state);
+      this.cursor.refine('browserStateHistory').set(history);
+    }, 100);
+  }
+
+  browserBack () {
+    console.log('browserBack');
+
+    var history = this.cursor.refine('browserStateHistory').value;
+
+    if(history.length <= 1) {
+      return;
+    }
+
+    history.pop();
+    var state = history.pop();
+
+    console.log(history, state);
+
+    this.cursor.set({
+      browserState: state,
+      browserStateHistory: history
+    });
+  }
 
   browserAction (item) {
+
+    console.log('browserAction', item);
+
     var librarySearch = {
       headline: 'Browse Music Library',
       source: 'library',
@@ -278,16 +321,20 @@ class SonosCoordinator {
 
     } else if(source === 'library' && item.searchType) {
 
-      this.prendinBrowserUpdate = {
-        headline : item.title,
-        searchType : item.searchType
-      };
+      if(item.searchType) {
+        this.prendinBrowserUpdate = {
+          headline : item.title,
+          searchType : item.searchType
+        };
+      } else {
+        this.prendinBrowserUpdate = item;
+      }      
 
       currentSonos.getMusicLibrary(item.searchType, {}, (err, result) => {
         var state = this.prendinBrowserUpdate;
         state.items = result.items;
 
-        this.cursor.refine('browserState').set(state);
+        this.cursor.set({ browserState : state });
         this.prendinBrowserUpdate = null;
       });
     }

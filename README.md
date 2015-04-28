@@ -13,7 +13,7 @@ The project is written in ES6 and utilizes react and react-cursor to manage the 
 
 ##Install and Run
 
-You will need node.js and bower for this.
+You will need node.js for this.
 
 First, initialize the project:
 

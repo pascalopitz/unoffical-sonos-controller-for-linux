@@ -28,6 +28,8 @@ export default {
         items: []
     },
 
+    browserStateHistory: [],
+
     browserState: {
         source: null,
         searchType: null,

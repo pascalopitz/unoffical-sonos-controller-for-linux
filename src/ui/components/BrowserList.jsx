@@ -5,16 +5,13 @@ import React from 'react/addons';
 import { Cursor }  from 'react-cursor';
 import ImmutableMixin from './mixins/ImmutableMixin';
 
-var history = [];
-
 class BrowserList extends ImmutableMixin {
 
 	render () {
 
 		var self = this;
 
-		console.log(this.props.model.value);
-		history.push(this.props.model.value);
+		this.trigger('browser:render', this.props.model.value);
 
 		var items = this.props.model.refine('items');
 		var headline = this.props.model.refine('headline').value;
@@ -38,9 +35,7 @@ class BrowserList extends ImmutableMixin {
 	}
 
 	_back() {
-		var state = history.pop();
-		console.log('back', state);
-		this.props.model.set(state);
+		this.trigger('browser:back');
 	}
 }
 

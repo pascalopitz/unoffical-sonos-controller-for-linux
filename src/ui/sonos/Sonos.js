@@ -104,13 +104,15 @@ class Sonos {
 
 		var contentDirectory = new Services.ContentDirectory(this.host, this.port);
 		return contentDirectory.Browse(opts, function(err, data){
+			console.log(err, data);
 			if (err) return callback(err);
 			return (new xml2js.Parser()).parseString(data.Result, function(err, didl) {
+				console.log(err, didl);
 				if (err) return callback(err, data);
 
 				var items = [];
 
-				if ((!didl) || (!didl['DIDL-Lite']) || (!Array.isArray(didl['DIDL-Lite'].container))){
+				if ((!didl) || (!didl['DIDL-Lite']) || ((!Array.isArray(didl['DIDL-Lite'].container)) && (!Array.isArray(didl['DIDL-Lite'].item)))) {
 					callback(new Error('Cannot parse DIDTL result'), data);
 				}
 
