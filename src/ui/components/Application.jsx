@@ -42,6 +42,10 @@ class Application extends EventableMixin {
 		var zoneGroups = cursor.refine('zoneGroups');
 		var currentZone = cursor.refine('currentZone');
 
+		if(!zoneGroups || zoneGroups.length === 0) {
+			return (<div id="application">Loading</div>);
+		}
+
 		var positionInfo = cursor.refine('positionInfo');
 		var currentTrack = cursor.refine('currentTrack');
 		var nextTrack = cursor.refine('nextTrack');

@@ -3,12 +3,14 @@ import Service from './Service';
 class ZoneGroupTopology extends Service {
 
 	constructor (host, port) {
-		this.name = 'ZoneGroupTopology';
-		this.host = host;
-		this.port = port || 1400;
-		this.controlURL = '/MediaRenderer/ZoneGroupTopology/Control';
-		this.eventSubURL = '/MediaRenderer/ZoneGroupTopology/Event';
-		this.SCPDURL = '/xml/ZoneGroupTopology1.xml';
+		super({
+			name : 'ZoneGroupTopology',
+			host : host,
+			port : port || 1400,
+			controlURL : '/MediaRenderer/ZoneGroupTopology/Control',
+			eventSubURL : '/MediaRenderer/ZoneGroupTopology/Event',
+			SCPDURL : '/xml/ZoneGroupTopology1.xml',
+		});
 	}
 
 	CheckForUpdate (options, callback) {

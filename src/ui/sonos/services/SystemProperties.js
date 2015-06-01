@@ -3,12 +3,14 @@ import Service from './Service';
 class SystemProperties extends Service {
 
 	constructor (host, port) {
-		this.name = 'SystemProperties';
-		this.host = host;
-		this.port = port || 1400;
-		this.controlURL = '/MediaRenderer/SystemProperties/Control';
-		this.eventSubURL = '/MediaRenderer/SystemProperties/Event';
-		this.SCPDURL = '/xml/SystemProperties1.xml';
+		super({
+			name : 'SystemProperties',
+			host : host,
+			port : port || 1400,
+			controlURL : '/MediaRenderer/SystemProperties/Control',
+			eventSubURL : '/MediaRenderer/SystemProperties/Event',
+			SCPDURL : '/xml/SystemProperties1.xml',
+		});
 	}
 
 	SetString (options, callback) {

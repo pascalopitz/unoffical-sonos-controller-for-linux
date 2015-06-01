@@ -3,12 +3,14 @@ import Service from './Service';
 class DeviceProperties extends Service {
 
 	constructor (host, port) {
-		this.name = 'DeviceProperties';
-		this.host = host;
-		this.port = port || 1400;
-		this.controlURL = '/MediaRenderer/DeviceProperties/Control';
-		this.eventSubURL = '/MediaRenderer/DeviceProperties/Event';
-		this.SCPDURL = '/xml/DeviceProperties1.xml';
+		super({
+			name : 'DeviceProperties',
+			host : host,
+			port : port || 1400,
+			controlURL : '/MediaRenderer/DeviceProperties/Control',
+			eventSubURL : '/MediaRenderer/DeviceProperties/Event',
+			SCPDURL : '/xml/DeviceProperties1.xml',		
+		});
 	}
 
 	SetLEDState (options, callback) {

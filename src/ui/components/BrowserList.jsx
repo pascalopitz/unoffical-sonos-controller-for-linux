@@ -25,7 +25,7 @@ class BrowserList extends ImmutableMixin {
 		});
 
 		return (
-			<div id="music-sources-container">
+			<div id="music-sources-container" onScroll={this._onScroll.bind(this)}>
 				<h4><a onClick={this._back.bind(this)}>{headline}</a></h4>
 				<ul id="browser-container">
 					{{listItemNodes}}
@@ -36,6 +36,15 @@ class BrowserList extends ImmutableMixin {
 
 	_back() {
 		this.trigger('browser:back');
+	}
+
+	_onScroll(e) {
+		let node = e.target;
+		let height = node.scrollHeight - node.offsetHeight;
+
+		if(node.scrollTop + 50 > height) {
+			this.trigger('browser:more');
+		}
 	}
 }
 

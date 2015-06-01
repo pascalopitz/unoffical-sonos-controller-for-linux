@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import e from './helpers/events';
 import Search from './sonos/Search';
 import Listener from './sonos/events/listener';
@@ -30,6 +32,7 @@ class SonosCoordinator {
     e.on('browser:action', this.browserAction.bind(this));
     e.on('browser:back', this.browserBack.bind(this));
     e.on('browser:render', this.browserRender.bind(this));
+    e.on('browser:more', this.browserAddToList.bind(this));
     e.on('volume:togglemute', this.toggleMute.bind(this));
     e.on('volume:set', this.volumeSet.bind(this));
   }
@@ -38,6 +41,7 @@ class SonosCoordinator {
   handleAppMount (app, c) {
     cursor = c;
     this.cursor = c;
+    window.cursor = c;
     this.searchForDevices();
   }
 
@@ -230,12 +234,6 @@ class SonosCoordinator {
 
   volumeSet (params) {
     console.log('volumeSet', params.volume);
-    // port.postMessage({
-    //   type: 'volumeSet',
-    //   volume: params.volume,
-    //   channel: params.channel,
-    //   host: this.cursor.refine('coordinator', 'host').value
-    // });
   }
 
   browserRender (state) {
@@ -251,15 +249,12 @@ class SonosCoordinator {
         return;
       }
 
-      console.log('browserRender');
       history.push(state);
       this.cursor.refine('browserStateHistory').set(history);
     }, 100);
   }
 
   browserBack () {
-    console.log('browserBack');
-
     var history = this.cursor.refine('browserStateHistory').value;
 
     if(history.length <= 1) {
@@ -269,17 +264,29 @@ class SonosCoordinator {
     history.pop();
     var state = history.pop();
 
-    console.log(history, state);
-
     this.cursor.set({
       browserState: state,
       browserStateHistory: history
     });
   }
 
-  browserAction (item) {
+  browserAddToList () {
+    var model = this.cursor.refine('browserStateHistory');
+    var state = _.last(model.value);
 
-    console.log('browserAction', item);
+    // state not right?
+
+    console.log(state);
+
+    currentSonos.getMusicLibrary(state.searchType, {
+      start: state.items.length
+    }, (err, result) => {
+      state.items = state.items.concat(result.items);
+      this.cursor.set({ browserState : state });
+    });
+  }
+
+  browserAction (item) {
 
     var librarySearch = {
       headline: 'Browse Music Library',
@@ -387,8 +394,6 @@ class SonosCoordinator {
 
           if(endpoint === '/MediaRenderer/AVTransport/Event') {
             var lastChange = xml2json(data.LastChange);
-
-            console.log(lastChange);
 
             var currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
               explicitArray: true

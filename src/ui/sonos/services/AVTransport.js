@@ -3,12 +3,14 @@ import Service from './Service';
 class AVTransport extends Service {
 
 	constructor (host, port) {
-		this.name = 'AVTransport';
-		this.host = host;
-		this.port = port || 1400;
-		this.controlURL = '/MediaRenderer/AVTransport/Control';
-		this.eventSubURL = '/MediaRenderer/AVTransport/Event';
-		this.SCPDURL = '/xml/AVTransport1.xml';
+		super({
+			name : 'AVTransport',
+			host : host,
+			port : port || 1400,
+			controlURL : '/MediaRenderer/AVTransport/Control',
+			eventSubURL : '/MediaRenderer/AVTransport/Event',
+			SCPDURL : '/xml/AVTransport1.xml',
+		});
 	}
 
 	SetAVTransportURI (options, callback) {

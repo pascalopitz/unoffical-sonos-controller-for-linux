@@ -3,12 +3,14 @@ import Service from './Service';
 class AlarmClock extends Service {
 
 	constructor (host, port) {
-		this.name = 'AlarmClock';
-		this.host = host;
-		this.port = port || 1400;
-		this.controlURL = '/MediaRenderer/AlarmClock/Control';
-		this.eventSubURL = '/MediaRenderer/AlarmClock/Event';
-		this.SCPDURL = '/xml/AlarmClock1.xml';
+		super({
+			name : 'AlarmClock',
+			host : host,
+			port : port || 1400,
+			controlURL : '/MediaRenderer/AlarmClock/Control',
+			eventSubURL : '/MediaRenderer/AlarmClock/Event',
+			SCPDURL : '/xml/AlarmClock1.xml',
+		});
 	}
 
 	SetFormat (options, callback) {

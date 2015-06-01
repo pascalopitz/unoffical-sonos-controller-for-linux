@@ -3,12 +3,14 @@ import Service from './Service';
 class MusicServices extends Service {
 
 	constructor (host, port) {
-		this.name = 'MusicServices';
-		this.host = host;
-		this.port = port || 1400;
-		this.controlURL = '/MediaRenderer/MusicServices/Control';
-		this.eventSubURL = '/MediaRenderer/MusicServices/Event';
-		this.SCPDURL = '/xml/MusicServices1.xml';
+		super({
+			name : 'MusicServices',
+			host : host,
+			port : port || 1400,
+			controlURL : '/MediaRenderer/MusicServices/Control',
+			eventSubURL : '/MediaRenderer/MusicServices/Event',
+			SCPDURL : '/xml/MusicServices1.xml',
+		});
 	}
 
 	GetSessionId (options, callback) {

@@ -3,12 +3,14 @@ import Service from './Service';
 class AudioIn extends Service {
 
 	constructor (host, port) {
-		this.name = 'AudioIn';
-		this.host = host;
-		this.port = port || 1400;
-		this.controlURL = '/MediaRenderer/AudioIn/Control';
-		this.eventSubURL = '/MediaRenderer/AudioIn/Event';
-		this.SCPDURL = '/xml/AudioIn1.xml';
+		super({
+			name : 'AudioIn',
+			host : host,
+			port : port || 1400,
+			controlURL : '/MediaRenderer/AudioIn/Control',
+			eventSubURL : '/MediaRenderer/AudioIn/Event',
+			SCPDURL : '/xml/AudioIn1.xml',
+		});
 	}
 
 	StartTransmissionToGroup (options, callback) {

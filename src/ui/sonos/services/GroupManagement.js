@@ -3,12 +3,14 @@ import Service from './Service';
 class GroupManagement extends Service {
 
 	constructor (host, port) {
-		this.name = 'GroupManagement';
-		this.host = host;
-		this.port = port || 1400;
-		this.controlURL = '/MediaRenderer/GroupManagement/Control';
-		this.eventSubURL = '/MediaRenderer/GroupManagement/Event';
-		this.SCPDURL = '/xml/GroupManagement1.xml';
+		super({
+			name : 'GroupManagement',
+			host : host,
+			port : port || 1400,
+			controlURL : '/MediaRenderer/GroupManagement/Control',
+			eventSubURL : '/MediaRenderer/GroupManagement/Event',
+			SCPDURL : '/xml/GroupManagement1.xml',
+		});
 	}
 
 	SetMuted (muted, callback) {
