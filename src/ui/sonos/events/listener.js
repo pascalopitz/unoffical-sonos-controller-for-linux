@@ -42,11 +42,13 @@ class Listener {
             self.port = i.localPort;
 
             listeners[info.socketId] = self;
+
+            setInterval(self._renewServices.bind(self), 1 * 1000);    
             callback();
           });
 
        });  
-     });
+    });
   }
 
 
@@ -73,11 +75,50 @@ class Listener {
     }
   }
 
+  _renewServices () {
+    var sid;
+
+    var now = new Date().getTime();
+
+    var renew = function(sid) {
+      return function(err, response) {
+        var serviceEndpoint = this.services[sid].endpoint;
+
+        if (err || ((response.statusCode !== 200) && (response.statusCode !== 412))) {
+          this.emit('error', err || response.statusMessage, serviceEndpoint, sid);
+        } else if (response.statusCode === 412) { // restarted, this is why renewal is at most 300sec
+          delete this.services[sid];
+          this.addService(serviceEndpoint, function(err, sid) {
+            if (!!err) this.emit('error', err, serviceEndpoint, sid);
+          });
+        } else {
+          this.services[sid].renew = this.renew_at(response.headers.timeout);
+        }
+      };
+    };
+
+    for (sid in this.services) {
+      var thisService = this.services[sid];
+
+      if (now < thisService.renew) continue;
+
+      var opt = {
+        url: 'http://' + this.device.host + ':' + this.device.port + thisService.endpoint,
+        method: 'SUBSCRIBE',
+        headers: {
+          SID: sid,
+          Timeout: 'Second-3600'
+        }
+      };
+
+      request(opt, renew(sid).bind(this));
+
+    }
+  }
 
   onServiceEvent (f) {
     this.serviceEventCallback = f;
   }
-
 
   addService (serviceEndpoint, callback) {
     if (!this.server) {
@@ -102,6 +143,7 @@ class Listener {
           callback(null, response.headers.sid);
 
           this.services[response.headers.sid] = {
+            renew: this.renew_at(response.headers.timeout),
             endpoint: serviceEndpoint,
             data: {}
           };
@@ -111,16 +153,23 @@ class Listener {
     }
   }
 
+  renew_at (timeout) {
+    var seconds;
+
+    if ((!!timeout) && (timeout.indexOf('Second-') === 0)) timeout = timeout.substr(7);
+    seconds = (((!!timeout) && (!isNaN(timeout))) ? parseInt(timeout, 10) : 3600) - 15;
+    if (seconds < 0) seconds = 15; else if (seconds > 300) seconds = 300;
+
+    return (new Date().getTime() + (seconds * 1000));
+  }
 
   listen (callback) {
-
     if (!this.server) {
       this._startInternalServer(callback);
     } else {
       throw 'Service listener is already listening';
     }
   }
-
 
   removeService (sid, callback) {
     if (!this.server) {

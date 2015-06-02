@@ -274,10 +274,6 @@ class SonosCoordinator {
     var model = this.cursor.refine('browserStateHistory');
     var state = _.last(model.value);
 
-    // state not right?
-
-    console.log(state);
-
     currentSonos.getMusicLibrary(state.searchType, {
       start: state.items.length
     }, (err, result) => {
@@ -323,11 +319,11 @@ class SonosCoordinator {
     var source = model.refine('source').value;
 
     if(!source && item.source === 'library') {
-
       model.set(librarySearch);
+      return;
+    } 
 
-    } else if(source === 'library' && item.searchType) {
-
+    if(source === 'library' && item.searchType) {
       if(item.searchType) {
         this.prendinBrowserUpdate = {
           headline : item.title,
@@ -343,6 +339,13 @@ class SonosCoordinator {
 
         this.cursor.set({ browserState : state });
         this.prendinBrowserUpdate = null;
+      });
+      return;
+    }
+
+    if(item.class) {
+      currentSonos.queue(item, () => {
+        this.queryState(currentSonos);
       });
     }
   }
