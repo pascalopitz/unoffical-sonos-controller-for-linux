@@ -8,6 +8,8 @@ import xml2json from 'jquery-xml2json';
 
 const reg = /^http:\/\/([\d\.]+)/;
 
+import ZoneGroupActions from './actions/ZoneGroupActions';
+
 var firstSonos;
 
 var deviceSearches = {};
@@ -388,6 +390,8 @@ class SonosCoordinator {
             cursor.merge({
               zoneGroups: state.ZoneGroups.ZoneGroup
             });
+
+            ZoneGroupActions.setGroups(state.ZoneGroups.ZoneGroup);
 
             if(!cursor.refine('currentZone').value) {
               this.selectCurrentZone(state.ZoneGroups.ZoneGroup[0]);

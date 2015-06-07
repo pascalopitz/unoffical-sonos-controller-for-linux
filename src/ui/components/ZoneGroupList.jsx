@@ -1,34 +1,47 @@
-import ZoneGroup from './ZoneGroup'; 
-
 import React from 'react/addons';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
 
 import sort from '../helpers/sort';
 
-class ZoneGroupList extends ImmutableMixin {
+import ZoneGroup from './ZoneGroup'; 
+import ZoneGroupStore from '../stores/ZoneGroupStore';
+
+class ZoneGroupList extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			groups: ZoneGroupStore.getAll(),
+			current: ZoneGroupStore.getCurrent(),
+		};
+	}
+
+	componentDidMount() {
+		ZoneGroupStore.addChangeListener(this._onChange.bind(this));
+	}
+
+	_onChange() {
+		this.setState({
+			groups: ZoneGroupStore.getAll(),
+			current: ZoneGroupStore.getCurrent(),
+		});
+	}
 
 	render () {
-		var groups = this.props.zoneGroups;
-		var currentZone = this.props.currentZone;
 
-		var items = groups.value.sort(function (item1, item2) {
-
-			var members1 = item1.ZoneGroupMember.sort(sort.asc)
-			var members2 = item2.ZoneGroupMember.sort(sort.asc)
+		var items = this.state.groups.sort((item1, item2) => {
+			var members1 = item1.ZoneGroupMember.sort(sort.asc);
+			var members2 = item2.ZoneGroupMember.sort(sort.asc);
 
 			return sort.asc(members1[0], members2[0]);
 		});
 
-		var zoneGroupNodes = items.map(function (item, index) {
-
+		var zoneGroupNodes = items.map((item, index) => {
 			if(item.ZoneGroupMember[0].$.IsZoneBridge) {
 				return;
 			}
 
-			var g = groups.refine(index);
 			return (
-				<ZoneGroup group={g} currentZone={currentZone} />
+				<ZoneGroup group={item} currentZone={this.state.current} />
 			);
 		});
 
@@ -40,8 +53,4 @@ class ZoneGroupList extends ImmutableMixin {
 	}
 }
 
-ZoneGroupList.propTypes = {
-	zoneGroups: React.PropTypes.instanceOf(Cursor).isRequired,
-	currentZone: React.PropTypes.instanceOf(Cursor).isRequired
-};
 export default ZoneGroupList;

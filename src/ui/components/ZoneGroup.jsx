@@ -1,28 +1,26 @@
-import ZoneGroupMember from './ZoneGroupMember'; 
-
 import React from 'react/addons';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
 
 import sort from '../helpers/sort';
+import ZoneGroupActions from '../actions/ZoneGroupActions';
 
-class ZoneGroup extends ImmutableMixin {
+import ZoneGroupMember from './ZoneGroupMember'; 
+
+class ZoneGroup extends React.Component {
 
 	render () {
-		var members = this.props.group.refine('ZoneGroupMember');
+		var members = this.props.group.ZoneGroupMember;
 
-		var items = members.value.sort(sort.asc)
+		var items = members.sort(sort.asc)
 
 		var zoneNodes = items.map(function (item, index) {
-			var z = members.refine(index);
 			return (
-				<ZoneGroupMember member={z} />
+				<ZoneGroupMember member={item} />
 			);
 		});
 
 		var classString = 'not-selected'
 
-		if(this.props.currentZone.value && this.props.currentZone.value.$.ID === this.props.group.value.$.ID) {
+		if(this.props.currentZone && this.props.currentZone.$.ID === this.props.group.$.ID) {
 			classString = 'selected';
 		}
 
@@ -34,12 +32,8 @@ class ZoneGroup extends ImmutableMixin {
 	}
 
 	_onClick () {
-		this.trigger('zonegroup:select', this.props.group.value);
+		ZoneGroupActions.selectGroup(this.props.group);
 	}
 }
 
-ZoneGroup.propTypes = {
-	group: React.PropTypes.instanceOf(Cursor).isRequired,
-	currentZone: React.PropTypes.instanceOf(Cursor).isRequired
-};
 export default ZoneGroup;

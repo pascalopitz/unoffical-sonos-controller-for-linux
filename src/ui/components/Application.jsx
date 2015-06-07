@@ -68,7 +68,7 @@ class Application extends EventableMixin {
 				<div id="column-container">
 					<div id="zone-container">
 						<h4>ROOMS</h4>
-						<ZoneGroupList currentZone={currentZone} zoneGroups={zoneGroups} />
+						<ZoneGroupList />
 			 		</div>
 					<div id="status-container">
 
