@@ -40,10 +40,7 @@ class Application extends React.Component {
 						<CurrentTrack />
 
 						<h4 id="queue">QUEUE</h4>
-						<div id="queue-list-container">
-							<QueueList />
-						</div>
-
+						<QueueList />
 					</div>
 
 					<BrowserList />

@@ -1,6 +1,8 @@
 import React from 'react/addons';
 
+import QueueActions from '../actions/QueueActions';
 import QueueStore from '../stores/QueueStore';
+
 import QueueListItem from './QueueListItem';
 
 class QueueList extends React.Component {
@@ -24,6 +26,10 @@ class QueueList extends React.Component {
 		});
 	}
 
+	_onClick () {
+		QueueActions.flush();
+	}
+
 	render () {
 
 		var tracks = this.state.tracks;
@@ -39,9 +45,14 @@ class QueueList extends React.Component {
 		}
 
 		return (
-			<ul id="queue-container">
-				{{queueItemNodes}}
-			</ul>
+			<div id="queue-list-container">
+
+				<a id="queue-clear-button" onClick={this._onClick.bind(this)}>Clear</a>
+
+				<ul id="queue-container">
+					{{queueItemNodes}}
+				</ul>
+			</div>
 		);
 	}
 }

@@ -1,7 +1,7 @@
 #Sonos Controller for Chrome
 
 Tinkering with chrome apps and sonos.
-The project is written in ES6 and utilizes react and react-cursor to manage the UI
+The project is written in ES6 and utilizes react and flux to manage the UI
 
 ##State of Affairs
 
@@ -51,7 +51,6 @@ For development, you can run the watch task, which will re-compile on change:
 - [ ] Display and interact with current play time UI
 - [ ] Display and interact with UI to start / stop / skip / rewind
 - [ ] UI to browse artists / tracks / albums
-
 
 
 ##Thanks to other projects

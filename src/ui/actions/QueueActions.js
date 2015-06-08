@@ -12,6 +12,17 @@ export default {
 		});
 	},
 
+	flush () {
+		let sonos = SonosService._currentDevice;
+
+		sonos.flush(() => {
+			Dispatcher.dispatch({
+				actionType: Constants.QUEUE_FLUSH,
+				position: position
+			});
+		});
+	},
+
 	gotoPosition (position) {
 		let sonos = SonosService._currentDevice;
 

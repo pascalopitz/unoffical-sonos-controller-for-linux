@@ -9,7 +9,7 @@ class ContentDirectory extends Service {
 			port : port || 1400,
 			controlURL : '/MediaServer/ContentDirectory/Control',
 			eventSubURL : '/MediaServer/ContentDirectory/Event',
-			SCPDURL : '/xml/ContentDirectory1.xml',			
+			SCPDURL : '/xml/ContentDirectory1.xml',
 		});
 	}
 
