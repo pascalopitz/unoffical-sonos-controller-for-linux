@@ -40,7 +40,6 @@ class AudioIn extends Service {
 	SelectAudio (options, callback) {
 		this._request('SelectAudio', options, callback);
 	}
-};
-
+}
 
 export default AudioIn;

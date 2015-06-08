@@ -140,6 +140,6 @@ class AVTransport extends Service {
 	BecomeGroupCoordinatorAndSource (options, callback) {
 		this._request('BecomeGroupCoordinatorAndSource', options, callback);
 	}
-};
+}
 
 export default AVTransport;

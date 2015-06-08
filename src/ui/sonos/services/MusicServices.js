@@ -24,7 +24,6 @@ class MusicServices extends Service {
 	UpdateAvailableServices (options, callback) {
 		this._request('UpdateAvailableServices', options, callback);
 	}
-};
-
+}
 
 export default MusicServices;

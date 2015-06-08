@@ -40,7 +40,6 @@ class ZoneGroupTopology extends Service {
 	GetZoneGroupAttributes (options, callback) {
 		this._request('GetZoneGroupAttributes', options, callback);
 	}
-};
-
+}
 
 export default ZoneGroupTopology;

@@ -16,7 +16,6 @@ class ContentDirectory extends Service {
 	Browse (options, callback) {
 		this._request('Browse', options, callback);
 	}
-};
-
+}
 
 export default ContentDirectory;

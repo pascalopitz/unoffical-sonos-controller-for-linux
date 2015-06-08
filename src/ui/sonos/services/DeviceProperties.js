@@ -104,8 +104,7 @@ class DeviceProperties extends Service {
 	RemoveHTSatellite (options, callback) {
 		this._request('RemoveHTSatellite', options, callback);
 	}
-};
-
+}
 
 export default DeviceProperties;
 

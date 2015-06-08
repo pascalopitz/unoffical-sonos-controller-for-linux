@@ -19,7 +19,7 @@ var Services = {
 	GroupManagement: GroupManagement,
 	MusicServices: MusicServices,
 	SystemProperties: SystemProperties,
-	ZoneGroupTopology: ZoneGroupTopology,	
+	ZoneGroupTopology: ZoneGroupTopology,
 };
 
 export default Services;

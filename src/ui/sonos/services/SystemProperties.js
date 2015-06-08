@@ -80,7 +80,6 @@ class SystemProperties extends Service {
 	ResetThirdPartyCredentials (options, callback) {
 		this._request('ResetThirdPartyCredentials', options, callback);
 	}
-};
-
+}
 
 export default SystemProperties;

@@ -141,71 +141,71 @@ class Sonos {
 
 	/**
 	 * Get Music Library Information
-	 * @param  {String}   searchType  Choice - artists, albumArtists, albums, genres, composers, tracks, playlists, share
-	 * @param  {String}   searchTerm  search term to search for
-	 * @param  {Object}   options     Opitional - default {start: 0, total: 100}
-	 * @param  {Function} callback (err, result) result - {returned: {String}, total: {String}, items:[{title:{String}, uri: {String}}]}
+	 * @param	{String}	searchType	Choice - artists, albumArtists, albums, genres, composers, tracks, playlists, share
+	 * @param	{String}	searchTerm	search term to search for
+	 * @param	{Object}	options	 Opitional - default {start: 0, total: 100}
+	 * @param	{Function}	callback (err, result) result - {returned: {String}, total: {String}, items:[{title:{String}, uri: {String}}]}
 	 */
 	searchMusicLibrary (searchType, searchTerm, options, callback) {
-	    var self = this
-	    var searches = {
-	        'artists': 'A:ARTIST',
-	        'albumArtists': 'A:ALBUMARTIST',
-	        'albums': 'A:ALBUM',
-	        'genres': 'A:GENRE',
-	        'composers': 'A:COMPOSER',
-	        'tracks': 'A:TRACKS',
-	        'playlists': 'A:PLAYLISTS',
-	        'share': 'S:'
-	    }
-	    var defaultOptions = {
-	        BrowseFlag: 'BrowseDirectChildren',
-	        Filter: '*',
-	        StartingIndex: '0',
-	        RequestedCount: '100',
-	        SortCriteria: ''
-	    }
-	    var searches = searches[searchType] + ':' + searchTerm
-	    var opts = {
-	        ObjectID: searches
-	    }
-	    
-	    opts = _.extend(defaultOptions, opts)
-	    var contentDirectory = new Services.ContentDirectory(this.host, this.port)
-	    return contentDirectory.Browse(opts, function (err, data) {
-	        if (err) return callback(err)
-	        return (new xml2js.Parser()).parseString(data.Result, function (err, didl) {
-	            if (err) return callback(err, data)
-	            var items = []
-	            if ((!didl) || (!didl['DIDL-Lite']) || (!util.isArray(didl['DIDL-Lite'].item))) {
-	                callback(new Error('Cannot parse DIDTL result'), data)
-	            }
-	            _.each(didl['DIDL-Lite'].item, function (item) {
-	                var albumArtURL = null
-	                if (util.isArray(item['upnp:albumArtURI'])) {
-	                    if (item['upnp:albumArtURI'][0].indexOf('http') !== -1) {
-	                        albumArtURL = item['upnp:albumArtURI'][0]
-	                    } else {
-	                        albumArtURL = 'http://' + self.host + ':' + self.port + item['upnp:albumArtURI'][0]
-	                    }
-	                }
-	                items.push(
-	                    {
-	                        'title': util.isArray(item['dc:title']) ? item['dc:title'][0] : null,
-	                        'artist': util.isArray(item['dc:creator']) ? item['dc:creator'][0] : null,
-	                        'albumArtURL': albumArtURL,
-	                        'uri': util.isArray(item.res) ? item.res[0]._ : null
-	                    }
-	                )
-	            })
-	            var result = {
-	                returned: data.NumberReturned,
-	                total: data.TotalMatches,
-	                items: items
-	            }
-	            return callback(null, result)
-	        })
-	    })
+		var self = this
+		var searches = {
+			'artists': 'A:ARTIST',
+			'albumArtists': 'A:ALBUMARTIST',
+			'albums': 'A:ALBUM',
+			'genres': 'A:GENRE',
+			'composers': 'A:COMPOSER',
+			'tracks': 'A:TRACKS',
+			'playlists': 'A:PLAYLISTS',
+			'share': 'S:'
+		}
+		var defaultOptions = {
+			BrowseFlag: 'BrowseDirectChildren',
+			Filter: '*',
+			StartingIndex: '0',
+			RequestedCount: '100',
+			SortCriteria: ''
+		}
+		var searches = searches[searchType] + ':' + searchTerm
+		var opts = {
+			ObjectID: searches
+		}
+		
+		opts = _.extend(defaultOptions, opts)
+		var contentDirectory = new Services.ContentDirectory(this.host, this.port)
+		return contentDirectory.Browse(opts, function (err, data) {
+			if (err) return callback(err)
+			return (new xml2js.Parser()).parseString(data.Result, function (err, didl) {
+				if (err) return callback(err, data)
+				var items = []
+				if ((!didl) || (!didl['DIDL-Lite']) || (!util.isArray(didl['DIDL-Lite'].item))) {
+					callback(new Error('Cannot parse DIDTL result'), data)
+				}
+				_.each(didl['DIDL-Lite'].item, function (item) {
+					var albumArtURL = null
+					if (util.isArray(item['upnp:albumArtURI'])) {
+						if (item['upnp:albumArtURI'][0].indexOf('http') !== -1) {
+							albumArtURL = item['upnp:albumArtURI'][0]
+						} else {
+							albumArtURL = 'http://' + self.host + ':' + self.port + item['upnp:albumArtURI'][0]
+						}
+					}
+					items.push(
+						{
+							'title': util.isArray(item['dc:title']) ? item['dc:title'][0] : null,
+							'artist': util.isArray(item['dc:creator']) ? item['dc:creator'][0] : null,
+							'albumArtURL': albumArtURL,
+							'uri': util.isArray(item.res) ? item.res[0]._ : null
+						}
+					)
+				})
+				var result = {
+					returned: data.NumberReturned,
+					total: data.TotalMatches,
+					items: items
+				}
+				return callback(null, result)
+			})
+		})
 	}
 
 	/**
@@ -259,7 +259,7 @@ class Sonos {
 	/**
 	 * Parse DIDL into track structure
 	 * @param	{String} didl
-	 * @return {object}
+	 * @return	{object}
 	 */
 	parseDIDL (didl) {
 		var item;
@@ -612,30 +612,30 @@ class Sonos {
 
 	/**
 	 * Add a song to the queue.
-	 * @param  {String}   uri             URI to Audio Stream
-	 * @param  {Number}   positionInQueue Position in queue at which to add song (optional, indexed from 1,
-	 *                                    defaults to end of queue, 0 to explicitly set end of queue)
-	 * @param  {Function} callback (err, queued)
+	 * @param	{String}	 uri			 URI to Audio Stream
+	 * @param	{Number}	 positionInQueue Position in queue at which to add song (optional, indexed from 1,
+	 *									defaults to end of queue, 0 to explicitly set end of queue)
+	 * @param	{Function} callback (err, queued)
 	 */
 	queue (uri, positionInQueue, callback) {
-	  debug('Sonos.queue(%j, %j, %j)', uri, positionInQueue, callback)
-	  if (typeof positionInQueue === 'function') {
-	    callback = positionInQueue
-	    positionInQueue = 0
-	    }
-	    var options = (typeof uri === 'object' ? uri : { metadata: '' })
-	    if (typeof uri === 'object') {
-	        options.metadata = uri.metadata || ''
-	        options.metadata = htmlEntities(options.metadata)
-	        options.uri = uri.uri
-	    } else {
-	        options.uri = uri
-	    }
-	  var action = '"urn:schemas-upnp-org:service:AVTransport:1#AddURIToQueue"'
-	  var body = '<u:AddURIToQueue xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><EnqueuedURI>' + options.uri + '</EnqueuedURI><EnqueuedURIMetaData>' + options.metadata + '</EnqueuedURIMetaData><DesiredFirstTrackNumberEnqueued>' + positionInQueue + '</DesiredFirstTrackNumberEnqueued><EnqueueAsNext>1</EnqueueAsNext></u:AddURIToQueue>'
-	  this.request(TRANSPORT_ENDPOINT, action, body, 'u:AddURIToQueueResponse', function (err, data) {
-	    return callback(err, data)
-	  })
+		debug('Sonos.queue(%j, %j, %j)', uri, positionInQueue, callback)
+		if (typeof positionInQueue === 'function') {
+			callback = positionInQueue
+			positionInQueue = 0
+		}
+		var options = (typeof uri === 'object' ? uri : { metadata: '' })
+		if (typeof uri === 'object') {
+			options.metadata = uri.metadata || ''
+			options.metadata = htmlEntities(options.metadata)
+			options.uri = uri.uri
+		} else {
+			options.uri = uri
+		}
+		var action = '"urn:schemas-upnp-org:service:AVTransport:1#AddURIToQueue"'
+		var body = '<u:AddURIToQueue xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><EnqueuedURI>' + options.uri + '</EnqueuedURI><EnqueuedURIMetaData>' + options.metadata + '</EnqueuedURIMetaData><DesiredFirstTrackNumberEnqueued>' + positionInQueue + '</DesiredFirstTrackNumberEnqueued><EnqueueAsNext>1</EnqueueAsNext></u:AddURIToQueue>'
+		this.request(TRANSPORT_ENDPOINT, action, body, 'u:AddURIToQueueResponse', function (err, data) {
+			return callback(err, data)
+		})
 	}
 
 	/**

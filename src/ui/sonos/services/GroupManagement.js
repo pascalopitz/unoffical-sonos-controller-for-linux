@@ -32,7 +32,6 @@ class GroupManagement extends Service {
 	ReportTrackBufferingResult (options, callback) {
 		this._request('ReportTrackBufferingResult', options, callback);
 	}
-};
-
+}
 
 export default GroupManagement;

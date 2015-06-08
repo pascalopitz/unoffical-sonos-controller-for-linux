@@ -80,7 +80,6 @@ class AlarmClock extends Service {
 	GetDailyIndexRefreshTime (options, callback) {
 		this._request('GetDailyIndexRefreshTime', options, callback);
 	}
-}; 
-
+}
 
 export default AlarmClock;

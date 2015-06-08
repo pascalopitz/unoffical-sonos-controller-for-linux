@@ -5,7 +5,7 @@ import Search from '../sonos/Search';
 import Listener from '../sonos/events/listener';
 
 import Dispatcher from '../dispatcher/AppDispatcher'
-import Constants	from '../constants/Constants'
+import Constants from '../constants/Constants'
 
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
@@ -49,6 +49,9 @@ let SonosService = {
 	},
 
 	queryState (sonos) {
+
+		// TODO: I should be able to do all of these in a promise based op
+		// i.e. seek->getPosition
 		sonos.getPositionInfo((err, info) => {
 			if(err) {
 				return;
