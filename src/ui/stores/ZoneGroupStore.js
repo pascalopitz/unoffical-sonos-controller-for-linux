@@ -2,7 +2,7 @@ import events from 'events';
 import _ from "lodash";
 
 import Dispatcher from '../dispatcher/AppDispatcher'
-import Constants  from '../constants/ZoneGroupConstants'
+import Constants  from '../constants/Constants'
 
 const CHANGE_EVENT = 'change';
 
@@ -33,17 +33,18 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 
 	getCurrent () {
 		return this._current;
-	}
+	},
 });
 
 Dispatcher.register(action => {
 	switch (action.actionType) {
-		case Constants.ZONE_GROUP_SET:
+		case Constants.SONOS_SERVICE_ZONEGROUPS_UPDATE:
 			ZoneGroupStore.setAll(action.groups);
 			ZoneGroupStore.emitChange();
 			break;
 
 		case Constants.ZONE_GROUP_SELECT:
+		case Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT:
 			ZoneGroupStore.setCurrent(action.group);
 			ZoneGroupStore.emitChange();
 			break;

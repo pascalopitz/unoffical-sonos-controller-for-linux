@@ -1,4 +1,0 @@
-export default {
-	ZONE_GROUP_SELECT: 'ZONE_GROUP_SELECT',
-	ZONE_GROUP_SET: 'ZONE_GROUP_SET',
-};

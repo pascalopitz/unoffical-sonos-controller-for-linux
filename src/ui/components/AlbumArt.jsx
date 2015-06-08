@@ -1,6 +1,4 @@
 import React from 'react/addons';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
 
 // var queue = [];
 // var fetching = 0;
@@ -61,7 +59,7 @@ import ImmutableMixin from './mixins/ImmutableMixin';
 // 	processQueue();
 // }
 
-class AlbumArt extends ImmutableMixin {
+class AlbumArt extends React.Component {
 
 	constructor () {
 		super();

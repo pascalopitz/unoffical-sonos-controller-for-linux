@@ -1,14 +1,14 @@
+import React from 'react/addons';
+
 import AlbumArt from './AlbumArt';
 
-import React from 'react/addons';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
+import QueueActions from '../actions/QueueActions';
 
-class QueueListItem extends ImmutableMixin {
+class QueueListItem extends React.Component {
 
 	render () {
 
-		var track = this.props.item.value;
+		var track = this.props.track;
 
 		return (
 			<li onDoubleClick={this._onDoubleClick.bind(this)} data-position={this.props.position}>
@@ -22,11 +22,9 @@ class QueueListItem extends ImmutableMixin {
 	}
 
 	_onDoubleClick () {
-		this.trigger('queuelist:goto', this.props.position);
+		QueueActions.gotoPosition(this.props.position);
+		//this.trigger('queuelist:goto', this.props.position);
 	}
 }
 
-QueueListItem.propTypes = {
-	item: React.PropTypes.instanceOf(Cursor).isRequired
-};
 export default QueueListItem;

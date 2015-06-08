@@ -1,7 +1,4 @@
 export default {
-    currentZone: null,
-    zoneGroups: [],
-
     coordinator: {
         host: null,
         port: null
@@ -20,12 +17,6 @@ export default {
     positionInfo: null,
     playState: {
         playing: false
-    },
-
-    queue: {
-        returned: 0,
-        total: 0,
-        items: []
     },
 
     browserStateHistory: [],

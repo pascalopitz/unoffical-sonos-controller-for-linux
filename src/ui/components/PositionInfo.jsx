@@ -1,15 +1,33 @@
 import moment from 'moment';
 import React from 'react/addons';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
 
-const width = 150;
+import PlayerActions from '../actions/PlayerActions';
+import PlayerStore from '../stores/PlayerStore';
 
-class PositionInfo extends ImmutableMixin {
+class PositionInfo extends React.Component {
+
+	constructor () {
+		super();
+		this.state = {
+			info: null,
+		};
+	}
+
+	componentDidMount() {
+		PlayerStore.addChangeListener(this._onChange.bind(this));
+	}
+
+	_onChange() {
+		let info = PlayerStore.getPositionInfo();
+
+		this.setState({
+			info: info,
+		});
+	}
 
 	render () {
 
-		var info = this.props.info.value;
+		var info = this.state.info;
 		var percent = 0;
 		var from = '00:00';
 		var to = '-0:00';
@@ -54,11 +72,9 @@ class PositionInfo extends ImmutableMixin {
 	}
 
 	_onClick () {
-		this.trigger('queuelist:goto', this.props.position);
+		// PlayerActions.
+		// this.trigger('queuelist:goto', this.props.position);
 	}
 }
 
-PositionInfo.propTypes = {
-	info: React.PropTypes.instanceOf(Cursor).isRequired
-};
 export default PositionInfo;

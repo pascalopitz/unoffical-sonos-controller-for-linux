@@ -1,9 +1,6 @@
-	
 import React from 'react/addons';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
 
-class MuteButton extends ImmutableMixin {
+class MuteButton extends React.Component {
 
 	render () {
 
@@ -20,11 +17,8 @@ class MuteButton extends ImmutableMixin {
 	}
 
 	_toggleMute () {
-		this.trigger('volume:togglemute', this.props.id);
+		// this.trigger('volume:togglemute', this.props.id);
 	}
 }
 
-MuteButton.propTypes = {
-	muted: React.PropTypes.instanceOf(Cursor).isRequired
-};
 export default MuteButton;

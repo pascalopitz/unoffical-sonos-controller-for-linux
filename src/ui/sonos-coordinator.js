@@ -8,7 +8,10 @@ import xml2json from 'jquery-xml2json';
 
 const reg = /^http:\/\/([\d\.]+)/;
 
+import QueueActions from './actions/QueueActions';
 import ZoneGroupActions from './actions/ZoneGroupActions';
+
+import Dispatcher from './dispatcher/AppDispatcher';
 
 var firstSonos;
 
@@ -25,26 +28,18 @@ var cursor;
 class SonosCoordinator {
 
   constructor () {
-    e.on('application:mount', this.handleAppMount.bind(this));
-    e.on('zonegroup:select', this.selectCurrentZone.bind(this));
-    e.on('playstate:toggle', this.toggelPlaystate.bind(this));
-    e.on('playstate:prev', this.playPrev.bind(this));
-    e.on('playstate:next', this.playNext.bind(this));
-    e.on('queuelist:goto', this.queuelistGoto.bind(this));
-    e.on('browser:action', this.browserAction.bind(this));
-    e.on('browser:back', this.browserBack.bind(this));
-    e.on('browser:render', this.browserRender.bind(this));
-    e.on('browser:more', this.browserAddToList.bind(this));
-    e.on('volume:togglemute', this.toggleMute.bind(this));
-    e.on('volume:set', this.volumeSet.bind(this));
-  }
-
-
-  handleAppMount (app, c) {
-    cursor = c;
-    this.cursor = c;
-    window.cursor = c;
-    this.searchForDevices();
+    // e.on('application:mount', this.handleAppMount.bind(this));
+    // e.on('zonegroup:select', this.selectCurrentZone.bind(this));
+    // e.on('playstate:toggle', this.toggelPlaystate.bind(this));
+    // e.on('playstate:prev', this.playPrev.bind(this));
+    // e.on('playstate:next', this.playNext.bind(this));
+    // e.on('queuelist:goto', this.queuelistGoto.bind(this));
+    // e.on('browser:action', this.browserAction.bind(this));
+    // e.on('browser:back', this.browserBack.bind(this));
+    // e.on('browser:render', this.browserRender.bind(this));
+    // e.on('browser:more', this.browserAddToList.bind(this));
+    // e.on('volume:togglemute', this.toggleMute.bind(this));
+    // e.on('volume:set', this.volumeSet.bind(this));
   }
 
 
@@ -72,145 +67,11 @@ class SonosCoordinator {
     });
 
     sonos.getMusicLibrary('queue', {}, (err, result) => {
-      cursor.refine('queue').set(result);
+      QueueActions.setTracks(result.tracks);
     });
   }
 
 
-  subscribeServiceEvents (sonos) {
-    var x = listeners[sonos.host];
-
-    let cb = (error, sid) => {
-      if (error) throw err;
-      currentSubscriptions.push(sid);
-    }
-
-    x.addService('/ZoneGroupTopology/Event', cb);
-    x.addService('/MediaRenderer/AVTransport/Event', cb);
-    x.addService('/MediaRenderer/GroupRenderingControl/Event', cb);
-    x.addService('/MediaServer/ContentDirectory/Event', cb);
-  }
-
-
-  unsubscribeServiceEvents (sonos) {
-    var x = listeners[sonos.host];
-
-    currentSubscriptions.forEach((sid) => {
-      x.removeService(sid, (error) => {
-        if (error) throw err;
-        console.log('Successfully unsubscribed');
-      });
-    });
-
-    currentSubscriptions = [];
-  }
-
-
-  setCurrentState(state) {
-    cursor.merge({
-      currentState: state
-    });
-
-    if(state === 'transitioning') {
-      return;
-    }
-
-    cursor.refine('playState', 'playing').set(state === 'playing');
-  }
-
-
-  selectCurrentZone (value) {
-    var sonos;
-
-    cursor.merge({
-      currentZone: value,
-      currentTrack: {},
-      playState: {
-        playing: false
-      },
-      queue: {
-        returned: 0,
-        total: 0,
-        items: []
-      }
-    });
-
-    value.ZoneGroupMember.forEach((m) => {
-      if(m.$.UUID === value.$.Coordinator) {
-        let l = m.$.Location;
-        let matches = reg.exec(l);
-        sonos = deviceSearches[matches[1]];
-      }
-    });
-
-
-    if(sonos) {
-
-      if(currentSonos) {
-        this.unsubscribeServiceEvents(currentSonos);
-      }
-
-      if(queryInterval) {
-          window.clearInterval(queryInterval);
-      }
-
-      currentSonos = sonos;
-
-      cursor.merge({
-        coordinator: { 
-          host: sonos.host,
-          port: sonos.port
-        },
-        currentTrack: {},
-        nextTrack: {},
-        volumeControls: {
-            master: {
-                volume: 0,
-                muted: false
-            },
-            players: {
-
-            }
-        },
-        positionInfo: null,
-        playState: {
-            playing: false
-        },
-        queue: {
-            returned: 0,
-            total: 0,
-            items: []
-        }
-      });
-
-      this.subscribeServiceEvents(sonos);
-      this.queryState(sonos);
-      queryInterval = window.setInterval(() => {
-          this.queryState(sonos);
-      }, 10000);
-    }
-  }
-
-
-  playPrev () {
-    currentSonos.previous(target, () => {
-
-    });
-  }
-
-  playNext () {
-    currentSonos.next(target, () => {
-
-    });
-  }
-
-  queuelistGoto (target) {
-    currentSonos.goto(target, () => {
-      currentSonos.play(() => {
-
-      });
-    });
-  }
 
   toggleMute (id) {
     let muted = this.cursor.refine('volumeControls', 'master', 'mute').value;
@@ -220,19 +81,6 @@ class SonosCoordinator {
     });
   }
 
-  toggelPlaystate () {
-    let isPlaying = this.cursor.refine('playState', 'playing').value;
-
-    let cb = () => {
-
-    };
-
-    if(isPlaying) {
-      currentSonos.pause(cb);
-    } else {
-      currentSonos.play(cb);
-    }
-  }
 
   volumeSet (params) {
     console.log('volumeSet', params.volume);
@@ -350,82 +198,6 @@ class SonosCoordinator {
         this.queryState(currentSonos);
       });
     }
-  }
-
-
-  searchForDevices() {
-
-    var search = new Search((sonos) => {
-
-      deviceSearches[sonos.host] = sonos;
-      listeners[sonos.host] = new Listener(sonos);
-
-      listeners[sonos.host].listen((err) => {
-        if (err) throw err;
-
-        listeners[sonos.host].addService('/MediaRenderer/RenderingControl/Event', () => {
-
-        });
-
-        listeners[sonos.host].onServiceEvent((endpoint, sid, data) => {
-
-          if(endpoint === '/MediaRenderer/RenderingControl/Event') {
-              var lastChange = xml2json(data.LastChange, {
-                explicitArray: false
-              });
-
-              if(lastChange.Event.InstanceID.Muted) {
-                  cursor.refine('volumeControls', 'players', sonos.host).set({
-                      muted: lastChange.Event.InstanceID.Muted[0].$.val,
-                      volume: lastChange.Event.InstanceID.Volume[0].$.val,
-                  });
-              }
-          }
-
-          if(endpoint === '/ZoneGroupTopology/Event') {
-            var state = xml2json(data.ZoneGroupState, {
-              explicitArray: true
-            });
-
-            cursor.merge({
-              zoneGroups: state.ZoneGroups.ZoneGroup
-            });
-
-            ZoneGroupActions.setGroups(state.ZoneGroups.ZoneGroup);
-
-            if(!cursor.refine('currentZone').value) {
-              this.selectCurrentZone(state.ZoneGroups.ZoneGroup[0]);
-            }
-          }
-
-
-          if(endpoint === '/MediaRenderer/AVTransport/Event') {
-            var lastChange = xml2json(data.LastChange);
-
-            var currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
-              explicitArray: true
-            });
-
-            var nextTrackDIDL = xml2json(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val, {
-              explicitArray: true
-            });
-
-            cursor.merge({
-              currentTrack: sonos.parseDIDL(currentTrackDIDL),
-              nextTrack: sonos.parseDIDL(nextTrackDIDL)
-            });
-
-            this.setCurrentState(sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val));
-          }
-        });
-
-
-        if(!currentSonos) {
-          currentSonos = sonos;
-          this.subscribeServiceEvents(currentSonos);
-        }
-      });
-    });
   }
 
 }

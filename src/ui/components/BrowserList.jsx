@@ -1,22 +1,32 @@
+import React from 'react/addons';
 
 import BrowserListItem from './BrowserListItem';
 
-import React from 'react/addons';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
+import BrowserListActions from '../actions/BrowserListActions';
+import BrowserListStore from '../stores/BrowserListStore';
 
-class BrowserList extends ImmutableMixin {
+class BrowserList extends React.Component {
+
+	constructor (props) {
+		super(props);
+		this.state = {
+			items: [],
+			headline: 'Headline',
+		};
+	}
 
 	render () {
 
 		var self = this;
+		var items = this.state.items;
+		var headline = this.state.headline;
 
-		this.trigger('browser:render', this.props.model.value);
+		// this.trigger('browser:render', this.props.model.value);
 
-		var items = this.props.model.refine('items');
-		var headline = this.props.model.refine('headline').value;
+		// var items = this.props.model.refine('items');
+		// var headline = this.props.model.refine('headline').value;
 
-		var listItemNodes = items.value.map(function (i, p) {
+		var listItemNodes = items.map(function (i, p) {
 			var position = p + 1;
 			var item = items.refine(p);
 			return (
@@ -35,7 +45,7 @@ class BrowserList extends ImmutableMixin {
 	}
 
 	_back() {
-		this.trigger('browser:back');
+		// this.trigger('browser:back');
 	}
 
 	_onScroll(e) {
@@ -43,12 +53,9 @@ class BrowserList extends ImmutableMixin {
 		let height = node.scrollHeight - node.offsetHeight;
 
 		if(node.scrollTop + 50 > height) {
-			this.trigger('browser:more');
+			// this.trigger('browser:more');
 		}
 	}
 }
 
-BrowserList.propTypes = {
-	model: React.PropTypes.instanceOf(Cursor).isRequired
-};
 export default BrowserList;

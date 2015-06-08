@@ -43,7 +43,8 @@ class Listener {
 
             listeners[info.socketId] = self;
 
-            setInterval(self._renewServices.bind(self), 1 * 1000);    
+            // TODO: figure why this throws 412
+            //setInterval(self._renewServices.bind(self), 1 * 1000);
             callback();
           });
 
@@ -143,7 +144,8 @@ class Listener {
           callback(null, response.headers.sid);
 
           this.services[response.headers.sid] = {
-            renew: this.renew_at(response.headers.timeout),
+            // TODO: figure why this throws 412
+            // renew: this.renew_at(response.headers.timeout),
             endpoint: serviceEndpoint,
             data: {}
           };

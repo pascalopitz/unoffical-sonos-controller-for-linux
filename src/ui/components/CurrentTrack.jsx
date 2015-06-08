@@ -1,13 +1,17 @@
+import React from 'react/addons';
+
 import AlbumArt from './AlbumArt';
 
-import React from 'react/addons';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
+class CurrentTrack extends React.Component {
 
-class CurrentTrack extends ImmutableMixin {
+	constructor(props) {
+		super(props);
+		this.state = {};
+	}
+
 	render () {
-		var currentTrack = this.props.currentTrack.value;
-		var nextTrack = this.props.nextTrack.value;
+		var currentTrack = this.state.currentTrack || {};
+		var nextTrack = this.state.nextTrack || {};
 		//var albumArtURI = this.props.cursor.refine('albumArtURI');
 
 		return (
@@ -29,8 +33,4 @@ class CurrentTrack extends ImmutableMixin {
 	}
 }
 
-CurrentTrack.propTypes = {
-	currentTrack: React.PropTypes.instanceOf(Cursor).isRequired,
-	nextTrack: React.PropTypes.instanceOf(Cursor).isRequired
-};
 export default CurrentTrack;

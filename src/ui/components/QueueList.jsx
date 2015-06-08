@@ -1,22 +1,39 @@
+import React from 'react/addons';
+
+import QueueStore from '../stores/QueueStore';
 import QueueListItem from './QueueListItem';
 
-import React from 'react/addons';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
+class QueueList extends React.Component {
 
-class QueueList extends ImmutableMixin {
+	constructor(props) {
+		super(props);
+		this.state = {
+			tracks: QueueStore.getTracks(),
+		};
+	}
+
+	componentDidMount() {
+		QueueStore.addChangeListener(this._onChange.bind(this));
+	}
+
+	_onChange() {
+		let tracks = QueueStore.getTracks();
+
+		this.setState({
+			tracks: tracks,
+		});
+	}
 
 	render () {
 
-		var items = this.props.model.refine('items');
+		var tracks = this.state.tracks;
 		var queueItemNodes;
 
-		if(items.value) {		
-			queueItemNodes = items.value.map(function (i, p) {
+		if(tracks.length) {
+			queueItemNodes = tracks.map((track, p) => {
 				var position = p + 1;
-				var item = items.refine(p);
 				return (
-					<QueueListItem item={item} position={position} />
+					<QueueListItem track={track} position={position} />
 				);
 			});
 		}

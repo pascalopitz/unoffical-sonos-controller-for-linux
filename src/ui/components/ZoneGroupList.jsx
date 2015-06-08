@@ -2,7 +2,7 @@ import React from 'react/addons';
 
 import sort from '../helpers/sort';
 
-import ZoneGroup from './ZoneGroup'; 
+import ZoneGroup from './ZoneGroup';
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
 class ZoneGroupList extends React.Component {

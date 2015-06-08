@@ -1,11 +1,34 @@
 import React from 'react/addons';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
 
-class PlayControls extends ImmutableMixin {
+import PlayerActions from '../actions/PlayerActions';
+import PlayerStore from '../stores/PlayerStore';
+
+class PlayControls extends React.Component {
+
+	constructor(props) {
+		super(props);
+
+		let playing = PlayerStore.isPlaying();
+
+		this.state = {
+			playing: playing,
+		};
+	}
+
+	componentDidMount() {
+		PlayerStore.addChangeListener(this._onChange.bind(this));
+	}
+
+	_onChange() {
+		let playing = PlayerStore.isPlaying();
+
+		this.setState({
+			playing: playing,
+		});
+	}
 
 	render () {
-		var src = this.props.model.value.playing ? "svg/pause.svg" : "svg/play.svg";
+		var src = this.state.playing ? "svg/pause.svg" : "svg/play.svg";
 
 		return (
 			<div id="controls">
@@ -14,26 +37,25 @@ class PlayControls extends ImmutableMixin {
 					<img id="play" src={src} />
 				</div>
 				<img id="next" src="svg/next.svg" onClick={this._next.bind(this)} />
-
 			</div>
-
 		);
 	}
 
 	_toggle () {
-		this.trigger('playstate:toggle');
+		if(this.state.playing) {
+			PlayerActions.pause();
+		} else {
+			PlayerActions.play();
+		}
 	}
 
 	_prev () {
-		this.trigger('playstate:prev');
+		PlayerActions.playPrev();
 	}
 
 	_next () {
-		this.trigger('playstate:next');
+		PlayerActions.playNext();
 	}
 }
 
-PlayControls.propTypes = {
-	model: React.PropTypes.instanceOf(Cursor).isRequired
-};
 export default PlayControls;

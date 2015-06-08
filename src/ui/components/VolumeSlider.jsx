@@ -1,11 +1,9 @@
-const width = 180;
-
 import React from 'react/addons';
 import Draggable from 'react-draggable2';
-import { Cursor }  from 'react-cursor';
-import ImmutableMixin from './mixins/ImmutableMixin';
 
-class VolumeSlider extends ImmutableMixin {
+const WIDTH = 180;
+
+class VolumeSlider extends React.Component {
 
 	constructor () {
 		super();
@@ -15,7 +13,7 @@ class VolumeSlider extends ImmutableMixin {
 	render () {
 		var id = this.props.id || '';
 
-		var left = width / 100 * this.props.volume.value;
+		var left = WIDTH / 100 * this.props.volume;
 
 		var pos = { x: left, y: 0 };
 
@@ -39,12 +37,9 @@ class VolumeSlider extends ImmutableMixin {
 	_onStop (e, params)  {
 		this.trigger('volume:set', {
 			channel: this.props.id,
-			volume: Math.round(params.position.left * 100 / width)
+			volume: Math.round(params.position.left * 100 / WIDTH)
 		});
 	}
 }
 
-VolumeSlider.propTypes = {
-	volume: React.PropTypes.instanceOf(Cursor).isRequired
-};
 export default VolumeSlider;
