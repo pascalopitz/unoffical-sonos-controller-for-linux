@@ -23,7 +23,6 @@ class QueueListItem extends React.Component {
 
 	_onDoubleClick () {
 		QueueActions.gotoPosition(this.props.position);
-		//this.trigger('queuelist:goto', this.props.position);
 	}
 }
 

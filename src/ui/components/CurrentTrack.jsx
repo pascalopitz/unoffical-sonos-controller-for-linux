@@ -1,18 +1,48 @@
 import React from 'react/addons';
 
+import PlayerStore from '../stores/PlayerStore';
+
 import AlbumArt from './AlbumArt';
 
 class CurrentTrack extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			currentTrack: null,
+			nextTrack: null,
+		};
+	}
+
+	componentDidMount() {
+		PlayerStore.addChangeListener(this._onChange.bind(this));
+	}
+
+	_onChange() {
+		let currentTrack = PlayerStore.getCurrentTrack();
+		let nextTrack = PlayerStore.getNextTrack();
+
+		this.setState({
+			currentTrack: currentTrack,
+			nextTrack: nextTrack,
+		});
 	}
 
 	render () {
-		var currentTrack = this.state.currentTrack || {};
-		var nextTrack = this.state.nextTrack || {};
+		var currentTrack = this.state.currentTrack;
+		var nextTrack = this.state.nextTrack;
+
+
+		var nextTrackInfo;
 		//var albumArtURI = this.props.cursor.refine('albumArtURI');
+
+		if(!currentTrack || !currentTrack.title) {
+			return <div id="current-track-info">No Music</div>
+		}
+
+		if(nextTrack && nextTrack.title) {
+			nextTrackInfo = <p id="next-track">{nextTrack.title}</p>
+		}
 
 		return (
 			<div id="current-track-info">
@@ -27,7 +57,7 @@ class CurrentTrack extends React.Component {
 				</div>
 
 				<h5>Next</h5>
-				<p id="next-track">{nextTrack.title}</p>
+				{nextTrackInfo}
 			</div>
 		);
 	}

@@ -35,10 +35,10 @@ class VolumeSlider extends React.Component {
 	}
 
 	_onStop (e, params)  {
-		this.trigger('volume:set', {
-			channel: this.props.id,
-			volume: Math.round(params.position.left * 100 / WIDTH)
-		});
+		// this.trigger('volume:set', {
+		// 	channel: this.props.id,
+		// 	volume: Math.round(params.position.left * 100 / WIDTH)
+		// });
 	}
 }
 

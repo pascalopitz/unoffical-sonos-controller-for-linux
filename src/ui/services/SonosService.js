@@ -10,7 +10,7 @@ import Constants	from '../constants/Constants'
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
 const REG = /^http:\/\/([\d\.]+)/;
-const QUERY_INTERVAL = 5000;
+const QUERY_INTERVAL = 10000;
 
 let SonosService = {
 
@@ -50,6 +50,9 @@ let SonosService = {
 
 	queryState (sonos) {
 		sonos.getPositionInfo((err, info) => {
+			if(err) {
+				return;
+			}
 			Dispatcher.dispatch({
 				actionType: Constants.SONOS_SERVICE_POSITION_INFO_UPDATE,
 				info: info,
@@ -57,6 +60,9 @@ let SonosService = {
 		});
 
 		sonos.getVolume((err, vol) => {
+			if(err) {
+				return;
+			}
 			Dispatcher.dispatch({
 				actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
 				vol: vol,
@@ -68,6 +74,9 @@ let SonosService = {
 		// });
 
 		sonos.currentTrack((err, track) => {
+			if(err) {
+				return;
+			}
 			Dispatcher.dispatch({
 				actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
 				track: track,
@@ -75,13 +84,16 @@ let SonosService = {
 		});
 
 		sonos.getCurrentState((err, state) => {
-			Dispatcher.dispatch({
-				actionType: Constants.SONOS_SERVICE_PLAYSTATE_UPDATE,
-				state: state,
-			});
+			if(err) {
+				return;
+			}
+			this.processPlaystateUpdate(state);
 		});
 
 		sonos.getMusicLibrary('queue', {}, (err, result) => {
+			if(err) {
+				return;
+			}
 			Dispatcher.dispatch({
 				actionType: Constants.SONOS_SERVICE_QUEUE_UPDATE,
 				result: result,
@@ -89,59 +101,90 @@ let SonosService = {
 		});
 	},
 
-	onServiceEvent (endpoint, sid, data) {
-		if(endpoint === '/ZoneGroupTopology/Event') {
-			var state = xml2json(data.ZoneGroupState, {
-				explicitArray: true
-			});
+	processPlaystateUpdate (state) {
 
+		let publishState = (state) => {
 			Dispatcher.dispatch({
-				actionType: Constants.SONOS_SERVICE_ZONEGROUPS_UPDATE,
-				groups: state.ZoneGroups.ZoneGroup,
+				actionType: Constants.SONOS_SERVICE_PLAYSTATE_UPDATE,
+				state: state,
 			});
+		};
 
-			if(!ZoneGroupStore.getCurrent()) {
-				this.selectCurrentZone(state.ZoneGroups.ZoneGroup[0]);
-				Dispatcher.dispatch({
-					actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
-					group: state.ZoneGroups.ZoneGroup[0],
+		if(state === 'transitioning') {
+			window.setTimeout(() => {
+				this._currentDevice.getCurrentState((err, state) => {
+					this.processPlaystateUpdate(state);
 				});
-			}
+			}, 100);
 		}
 
-		// if(endpoint === '/MediaRenderer/RenderingControl/Event') {
-		// 	var lastChange = xml2json(data.LastChange, {
-		// 		explicitArray: false
-		// 	});
+		publishState(state);
+	},
 
-		// 	if(lastChange.Event.InstanceID.Muted) {
-		// 			cursor.refine('volumeControls', 'players', sonos.host).set({
-		// 					muted: lastChange.Event.InstanceID.Muted[0].$.val,
-		// 					volume: lastChange.Event.InstanceID.Volume[0].$.val,
-		// 			});
-		// 	}
-		// }
+	onServiceEvent (endpoint, sid, data) {
+
+		switch (endpoint) {
+
+			case '/ZoneGroupTopology/Event':
+				let state = xml2json(data.ZoneGroupState, {
+					explicitArray: true
+				});
+
+				Dispatcher.dispatch({
+					actionType: Constants.SONOS_SERVICE_ZONEGROUPS_UPDATE,
+					groups: state.ZoneGroups.ZoneGroup,
+				});
+
+				if(!ZoneGroupStore.getCurrent()) {
+					this.selectCurrentZone(state.ZoneGroups.ZoneGroup[0]);
+					Dispatcher.dispatch({
+						actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
+						group: state.ZoneGroups.ZoneGroup[0],
+					});
+				}
+
+				break;
+
+			// if(endpoint === '/MediaRenderer/RenderingControl/Event') {
+			// 	var lastChange = xml2json(data.LastChange, {
+			// 		explicitArray: false
+			// 	});
+
+			// 	if(lastChange.Event.InstanceID.Muted) {
+			// 			cursor.refine('volumeControls', 'players', sonos.host).set({
+			// 					muted: lastChange.Event.InstanceID.Muted[0].$.val,
+			// 					volume: lastChange.Event.InstanceID.Volume[0].$.val,
+			// 			});
+			// 	}
+			// }
 
 
 
-		// if(endpoint === '/MediaRenderer/AVTransport/Event') {
-		// 	var lastChange = xml2json(data.LastChange);
+			case'/MediaRenderer/AVTransport/Event':
+				let lastChange = xml2json(data.LastChange);
 
-		// 	var currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
-		// 		explicitArray: true
-		// 	});
+				let currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
+					explicitArray: true
+				});
 
-		// 	var nextTrackDIDL = xml2json(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val, {
-		// 		explicitArray: true
-		// 	});
+				let nextTrackDIDL = xml2json(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val, {
+					explicitArray: true
+				});
 
-		// 	cursor.merge({
-		// 		currentTrack: sonos.parseDIDL(currentTrackDIDL),
-		// 		nextTrack: sonos.parseDIDL(nextTrackDIDL)
-		// 	});
+				Dispatcher.dispatch({
+					actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
+					track: this._currentDevice.parseDIDL(currentTrackDIDL),
+				});
 
-		// 	this.setCurrentState(sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val));
-		// }
+				Dispatcher.dispatch({
+					actionType: Constants.SONOS_SERVICE_NEXT_TRACK_UPDATE,
+					track: this._currentDevice.parseDIDL(nextTrackDIDL),
+				});
+
+				this.processPlaystateUpdate(this._currentDevice.translateState(lastChange.Event.InstanceID.TransportState.$.val));
+
+				break;
+		}
 	},
 
 	subscribeServiceEvents (sonos) {
@@ -197,7 +240,7 @@ let SonosService = {
 			this.subscribeServiceEvents(sonos);
 			this.queryState(sonos);
 			this._queryInterval = window.setInterval(() => {
-					this.queryState(sonos);
+					this.queryState(this._currentDevice);
 			}, QUERY_INTERVAL);
 		}
 	},

@@ -42,4 +42,14 @@ export default {
 		});
 	},
 
+	seek (time) {
+		let sonos = SonosService._currentDevice;
+
+		sonos.seek(time, () => {
+			Dispatcher.dispatch({
+				actionType: Constants.PLAYER_SEEK,
+				time: time,
+			});
+		});
+	},
 };

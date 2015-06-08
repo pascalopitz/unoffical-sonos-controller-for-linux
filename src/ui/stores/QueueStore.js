@@ -33,6 +33,11 @@ Dispatcher.register(action => {
 			QueueStore.setTracks(action.result.items);
 			QueueStore.emitChange();
 			break;
+
+		case Constants.ZONE_GROUP_SELECT:
+			QueueStore.setTracks(null);
+			QueueStore.emitChange();
+			break;
 	}
 });
 
