@@ -1,7 +1,11 @@
-import Dispatcher from '../dispatcher/AppDispatcher'
-import Constants	from '../constants/Constants'
+import _ from 'lodash';
 
-import SonosService	from '../services/SonosService'
+import Dispatcher from '../dispatcher/AppDispatcher'
+import Constants  from '../constants/Constants'
+
+import SonosService from '../services/SonosService'
+
+import BrowserListStore from '../stores/BrowserListStore'
 
 export default {
 
@@ -30,18 +34,7 @@ export default {
 
 		let sonos = SonosService._currentDevice;
 		let prendinBrowserUpdate;
-
-		if(item.class) {
-			sonos.queue(item, () => {
-				this.queryState(sonos);
-			});
-
-			Dispatcher.dispatch({
-				actionType: Constants.BROWSER_PLAY,
-				state: state,
-			});
-		}
-
+		let objectId = item.searchType;
 
 		if(item.searchType) {
 			prendinBrowserUpdate = {
@@ -52,7 +45,31 @@ export default {
 			prendinBrowserUpdate = item;
 		}
 
-		sonos.getMusicLibrary(item.searchType, {}, (err, result) => {
+		if(item.class === 'object.item.audioItem.musicTrack') {
+			sonos.queue(item, () => {
+				SonosService.queryState(sonos);
+			});
+
+			Dispatcher.dispatch({
+				actionType: Constants.BROWSER_PLAY,
+				state: item,
+			});
+			return;
+		}
+
+		if(item.class) {
+			let tokens = [escape(item.headline)];
+
+			_(BrowserListStore.getHistory())
+				.reverse()
+				.forEach((i) => {
+					tokens.unshift(i.searchType || escape(i.headline));
+				});
+
+			console.log(tokens.join('/'));
+		}
+
+		sonos.getMusicLibrary(objectId, {}, (err, result) => {
 			var state = prendinBrowserUpdate;
 			state.items = result.items;
 

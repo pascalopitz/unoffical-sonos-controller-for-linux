@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import React from 'react/addons';
 
 import BrowserListItem from './BrowserListItem';
@@ -9,7 +11,14 @@ class BrowserList extends React.Component {
 
 	constructor (props) {
 		super(props);
-		this.state = BrowserListStore.getState();
+
+		let state = BrowserListStore.getState();
+		let history = BrowserListStore.getHistory();
+
+		this.state = {
+			currentState: state,
+			history: history,
+		};
 	}
 
 	componentDidMount() {
@@ -18,7 +27,12 @@ class BrowserList extends React.Component {
 
 	_onChange() {
 		let state = BrowserListStore.getState();
-		this.setState(state);
+		let history = BrowserListStore.getHistory();
+
+		this.setState({
+			currentState: state,
+			history: history,
+		});
 	}
 
 	_back() {
@@ -30,14 +44,18 @@ class BrowserList extends React.Component {
 		let height = node.scrollHeight - node.offsetHeight;
 
 		if(node.scrollTop + 50 > height) {
-			BrowserListActions.more(this.state);
+			let more = _.throttle(() => {
+				BrowserListActions.more(this.state.currentState);
+			}, 1000);
+			more();
 		}
 	}
 
 	render () {
 
-		var items = this.state.items;
-		var headline = this.state.headline;
+		var history = this.state.history;
+		var items = this.state.currentState.items;
+		var headline = this.state.currentState.headline;
 
 		var listItemNodes = items.map((item, p) => {
 			var position = p + 1;
@@ -46,9 +64,17 @@ class BrowserList extends React.Component {
 			);
 		});
 
+		var headlineNodes;
+
+		if(history.length) {
+			headlineNodes = <h4><a onClick={this._back.bind(this)}>back</a> {headline}</h4>
+		} else {
+			headlineNodes = <h4>{headline}</h4>;
+		}
+
 		return (
 			<div id="music-sources-container" onScroll={this._onScroll.bind(this)}>
-				<h4><a onClick={this._back.bind(this)}>{headline}</a></h4>
+				{{headlineNodes}}
 				<ul id="browser-container">
 					{{listItemNodes}}
 				</ul>

@@ -68,7 +68,7 @@ class Sonos {
 
 	/**
 	 * Get Music Library Information
-	 * @param	{String}	 searchType	Choice - artists, albumArtists, albums, genres, composers, tracks, playlists, share
+	 * @param	{String}	 searchType	Choice - artists, albumArtists, albums, genres, composers, tracks, playlists, share, or objectId
 	 * @param	{Object}	 options		 Opitional - default {start: 0, total: 100}
 	 * @param	{Function} callback (err, result) result - {returned: {String}, total: {String}, items:[{title:{String}, uri: {String}}]}
 	 */
@@ -94,7 +94,7 @@ class Sonos {
 		};
 
 		var opts = {
-			ObjectID: searches[searchType]
+			ObjectID: [searches[searchType] || searchType]
 		};
 
 		if(options.start !== undefined) opts.StartingIndex = options.start;

@@ -130,69 +130,73 @@ let SonosService = {
 		switch (endpoint) {
 
 			case '/ZoneGroupTopology/Event':
-				let state = xml2json(data.ZoneGroupState, {
-					explicitArray: true
-				});
-
-				Dispatcher.dispatch({
-					actionType: Constants.SONOS_SERVICE_ZONEGROUPS_UPDATE,
-					groups: state.ZoneGroups.ZoneGroup,
-				});
-
-				if(!ZoneGroupStore.getCurrent()) {
-					this.selectCurrentZone(state.ZoneGroups.ZoneGroup[0]);
-					Dispatcher.dispatch({
-						actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
-						group: state.ZoneGroups.ZoneGroup[0],
+				{
+					let state = xml2json(data.ZoneGroupState, {
+						explicitArray: true
 					});
-				}
 
+					Dispatcher.dispatch({
+						actionType: Constants.SONOS_SERVICE_ZONEGROUPS_UPDATE,
+						groups: state.ZoneGroups.ZoneGroup,
+					});
+
+					if(!ZoneGroupStore.getCurrent()) {
+						this.selectCurrentZone(state.ZoneGroups.ZoneGroup[0]);
+						Dispatcher.dispatch({
+							actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
+							group: state.ZoneGroups.ZoneGroup[0],
+						});
+					}
+				}
 				break;
 
 			case '/MediaRenderer/RenderingControl/Event':
-				let lastChange = xml2json(data.LastChange, {
-					explicitArray: false
-				});
+				{
+					let lastChange = xml2json(data.LastChange, {
+						explicitArray: false
+					});
 
-				if(lastChange.Event.InstanceID.Muted) {
+					if(lastChange.Event.InstanceID.Muted) {
 
-					// TODO: make this update the right values, as in the indiviual players, not the group?
+						// TODO: make this update the right values, as in the indiviual players, not the group?
 
-					// Dispatcher.dispatch({
-					// 	actionType: Constants.SONOS_SERVICE_MUTED_UPDATE,
-					// 	muted: lastChange.Event.InstanceID.Muted[0].$.val,
-					// });
+						// Dispatcher.dispatch({
+						// 	actionType: Constants.SONOS_SERVICE_MUTED_UPDATE,
+						// 	muted: lastChange.Event.InstanceID.Muted[0].$.val,
+						// });
 
-					// Dispatcher.dispatch({
-					// 	actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
-					// 	volume: lastChange.Event.InstanceID.Volume[0].$.val,
-					// });
+						// Dispatcher.dispatch({
+						// 	actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
+						// 	volume: lastChange.Event.InstanceID.Volume[0].$.val,
+						// });
+					}
 				}
 				break;
 
 			case'/MediaRenderer/AVTransport/Event':
-				let lastChange = xml2json(data.LastChange);
+				{
+					let lastChange = xml2json(data.LastChange);
 
-				let currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
-					explicitArray: true
-				});
+					let currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
+						explicitArray: true
+					});
 
-				let nextTrackDIDL = xml2json(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val, {
-					explicitArray: true
-				});
+					let nextTrackDIDL = xml2json(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val, {
+						explicitArray: true
+					});
 
-				Dispatcher.dispatch({
-					actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
-					track: this._currentDevice.parseDIDL(currentTrackDIDL),
-				});
+					Dispatcher.dispatch({
+						actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
+						track: this._currentDevice.parseDIDL(currentTrackDIDL),
+					});
 
-				Dispatcher.dispatch({
-					actionType: Constants.SONOS_SERVICE_NEXT_TRACK_UPDATE,
-					track: this._currentDevice.parseDIDL(nextTrackDIDL),
-				});
+					Dispatcher.dispatch({
+						actionType: Constants.SONOS_SERVICE_NEXT_TRACK_UPDATE,
+						track: this._currentDevice.parseDIDL(nextTrackDIDL),
+					});
 
-				this.processPlaystateUpdate(this._currentDevice.translateState(lastChange.Event.InstanceID.TransportState.$.val));
-
+					this.processPlaystateUpdate(this._currentDevice.translateState(lastChange.Event.InstanceID.TransportState.$.val));
+				}
 				break;
 		}
 	},

@@ -28,31 +28,30 @@ const LIBRARY_STATE = {
 	items: [
 		{
 			title: 'Artists',
-			searchType: 'artists'
+			searchType: 'A:ARTIST'
 		},
 		{
 			title: 'Albums',
-			searchType: 'albums'
+			searchType: 'A:ALBUM'
 		},
 		{
 			title: 'Composers',
-			searchType: 'composers'
+			searchType: 'A:COMPOSER'
 		},
 		{
 			title: 'Genres',
-			searchType: 'genres'
+			searchType: 'A:GENRE'
 		},
 		{
 			title: 'Tracks',
-			searchType: 'tracks'
+			searchType: 'A:TRACKS'
 		},
 		{
 			title: 'Playlists',
-			searchType: 'playlists'
+			searchType: 'A:PLAYLISTS'
 		}
 	]
 };
-
 
 var BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 
@@ -77,6 +76,10 @@ var BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 
 	addToHistory (state) {
 		this._history.push(state);
+	},
+
+	getHistory () {
+		return this._history;
 	},
 
 });
