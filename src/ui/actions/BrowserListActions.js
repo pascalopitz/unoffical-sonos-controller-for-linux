@@ -31,6 +31,18 @@ export default {
 		let sonos = SonosService._currentDevice;
 		let prendinBrowserUpdate;
 
+		if(item.class) {
+			sonos.queue(item, () => {
+				this.queryState(sonos);
+			});
+
+			Dispatcher.dispatch({
+				actionType: Constants.BROWSER_PLAY,
+				state: state,
+			});
+		}
+
+
 		if(item.searchType) {
 			prendinBrowserUpdate = {
 				headline : item.title,

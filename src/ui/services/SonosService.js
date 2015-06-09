@@ -62,19 +62,22 @@ let SonosService = {
 			});
 		});
 
-		sonos.getVolume((err, vol) => {
+		sonos.getVolume((err, volume) => {
 			if(err) {
 				return;
 			}
 			Dispatcher.dispatch({
 				actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
-				vol: vol,
+				volume: volume,
 			});
 		});
 
-		// sonos.getGroupMuted((err, muted) => {
-		// 	cursor.refine('volumeControls', 'master', 'mute').set(muted);
-		// });
+		sonos.getGroupMuted((err, muted) => {
+			Dispatcher.dispatch({
+				actionType: Constants.SONOS_SERVICE_MUTED_UPDATE,
+				muted: muted,
+			});
+		});
 
 		sonos.currentTrack((err, track) => {
 			if(err) {

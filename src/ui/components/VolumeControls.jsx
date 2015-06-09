@@ -3,20 +3,34 @@ import React from 'react/addons';
 import MuteButton from './MuteButton'; 
 import VolumeSlider from './VolumeSlider'; 
 
+import PlayerActions from '../actions/PlayerActions';
+import PlayerStore from '../stores/PlayerStore';
+
 class VolumeControls extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			muted: false,
-			volume: 0,
+			muted: PlayerStore.getMuted(),
+			volume: PlayerStore.getVolume(),
 		};
+	}
+
+	componentDidMount() {
+		PlayerStore.addChangeListener(this._onChange.bind(this));
+	}
+
+	_onChange() {
+		this.setState({
+			muted: PlayerStore.getMuted(),
+			volume: PlayerStore.getVolume(),
+		});
 	}
 
 	render () {
 
-		var model;// = this.props.model;
-		var playerVolumeNodes;
+		// var model;// = this.props.model;
+		// var playerVolumeNodes;
 		// var player = volume.refine('players');
 
 
@@ -43,11 +57,13 @@ class VolumeControls extends React.Component {
 				<MuteButton id="master-mute" muted={this.state.muted} />
 				<VolumeSlider id="master-volume" volume={this.state.volume} />
 
+				{/*
 				<div id="player-volumes-container">
 					<div id="player-volumes" className="loading">
 					{{playerVolumeNodes}}
 					</div>
 				</div>
+				*/}
 			</div>
 		);
 	}
