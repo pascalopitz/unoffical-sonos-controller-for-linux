@@ -9,26 +9,38 @@ class BrowserList extends React.Component {
 
 	constructor (props) {
 		super(props);
-		this.state = {
-			items: [],
-			headline: 'Headline',
-		};
+		this.state = BrowserListStore.getState();
+	}
+
+	componentDidMount() {
+		BrowserListStore.addChangeListener(this._onChange.bind(this));
+	}
+
+	_onChange() {
+		let state = BrowserListStore.getState();
+		this.setState(state);
+	}
+
+	_back() {
+		BrowserListActions.back();
+	}
+
+	_onScroll(e) {
+		let node = e.target;
+		let height = node.scrollHeight - node.offsetHeight;
+
+		if(node.scrollTop + 50 > height) {
+			BrowserListActions.more(this.state);
+		}
 	}
 
 	render () {
 
-		var self = this;
 		var items = this.state.items;
 		var headline = this.state.headline;
 
-		// this.trigger('browser:render', this.props.model.value);
-
-		// var items = this.props.model.refine('items');
-		// var headline = this.props.model.refine('headline').value;
-
-		var listItemNodes = items.map(function (i, p) {
+		var listItemNodes = items.map((item, p) => {
 			var position = p + 1;
-			var item = items.refine(p);
 			return (
 				<BrowserListItem model={item} position={position} />
 			);
@@ -42,19 +54,6 @@ class BrowserList extends React.Component {
 				</ul>
 			</div>
 		);
-	}
-
-	_back() {
-		// this.trigger('browser:back');
-	}
-
-	_onScroll(e) {
-		let node = e.target;
-		let height = node.scrollHeight - node.offsetHeight;
-
-		if(node.scrollTop + 50 > height) {
-			// this.trigger('browser:more');
-		}
 	}
 }
 

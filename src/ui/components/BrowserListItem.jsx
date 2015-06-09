@@ -1,11 +1,11 @@
 import React from 'react/addons';
 
 import AlbumArt from './AlbumArt';
+import BrowserListActions from '../actions/BrowserListActions';
 
 class BrowserListItem extends React.Component  {
 
 	render () {
-
 		var track = this.props.model;
 
 		return (
@@ -20,7 +20,7 @@ class BrowserListItem extends React.Component  {
 	}
 
 	_onClick (e) {
-		// this.trigger('browser:action', this.props.model.value);
+		BrowserListActions.select(this.props.model);
 	}
 }
 
