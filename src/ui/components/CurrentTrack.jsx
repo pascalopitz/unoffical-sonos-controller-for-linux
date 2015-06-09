@@ -1,6 +1,6 @@
 import React from 'react/addons';
 
-import PlayerStore from '../stores/PlayerStore';
+import CurrentTrackStore from '../stores/CurrentTrackStore';
 
 import AlbumArt from './AlbumArt';
 
@@ -15,12 +15,12 @@ class CurrentTrack extends React.Component {
 	}
 
 	componentDidMount() {
-		PlayerStore.addChangeListener(this._onChange.bind(this));
+		CurrentTrackStore.addChangeListener(this._onChange.bind(this));
 	}
 
 	_onChange() {
-		let currentTrack = PlayerStore.getCurrentTrack();
-		let nextTrack = PlayerStore.getNextTrack();
+		let currentTrack = CurrentTrackStore.getCurrentTrack();
+		let nextTrack = CurrentTrackStore.getNextTrack();
 
 		this.setState({
 			currentTrack: currentTrack,

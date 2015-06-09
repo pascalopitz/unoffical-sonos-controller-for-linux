@@ -57,6 +57,8 @@ class Listener {
 
 		if (req.method.toUpperCase() === 'NOTIFY' && req.uri.toLowerCase() === '/notify') {
 
+			console.info(req);
+
 			if (!this.services[req.headers.sid])
 				return;
 

@@ -10,10 +10,6 @@ var PlayerStore = _.assign({}, events.EventEmitter.prototype, {
 
 	_playing : false,
 	_positionInfo: null,
-	_currentTrack: null,
-	_nextTrack: null,
-	_muted: false,
-	_volume: 0,
 
 	emitChange () {
 		this.emit(CHANGE_EVENT);
@@ -38,44 +34,16 @@ var PlayerStore = _.assign({}, events.EventEmitter.prototype, {
 	setPositionInfo (info) {
 		this._positionInfo = info;
 	},
-
-	getCurrentTrack () {
-		return this._currentTrack ;
-	},
-
-	setCurrentTrack (info) {
-		this._currentTrack = info;
-	},
-
-	getNextTrack () {
-		return this._nextTrack ;
-	},
-
-	setNextTrack (info) {
-		this._nextTrack = info;
-	},
-
-	getMuted () {
-		return this._muted ;
-	},
-
-	setMuted (muted) {
-		this._muted = muted;
-	},
-
-	getVolume () {
-		return this._volume;
-	},
-
-	setVolume (volume) {
-		this._volume = volume;
-	},
 });
 
 Dispatcher.register(action => {
 	switch (action.actionType) {
-
 		case Constants.PLAYER_SEEK:
+			break;
+
+		case Constants.ZONE_GROUP_SELECT:
+			PlayerStore.setPositionInfo(0);
+			PlayerStore.emitChange();
 			break;
 
 		case Constants.PLAYER_PAUSE:
@@ -106,32 +74,6 @@ Dispatcher.register(action => {
 
 		case Constants.SONOS_SERVICE_POSITION_INFO_UPDATE:
 			PlayerStore.setPositionInfo(action.info);
-			PlayerStore.emitChange();
-			break;
-
-		case Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE:
-			PlayerStore.setCurrentTrack(action.track);
-			PlayerStore.emitChange();
-			break;
-
-		case Constants.SONOS_SERVICE_NEXT_TRACK_UPDATE:
-			PlayerStore.setNextTrack(action.track);
-			PlayerStore.emitChange();
-			break;
-
-		case Constants.SONOS_SERVICE_MUTED_UPDATE:
-			PlayerStore.setMuted(action.muted);
-			PlayerStore.emitChange();
-			break;
-
-		case Constants.SONOS_SERVICE_VOLUME_UPDATE:
-			PlayerStore.setVolume(action.volume);
-			PlayerStore.emitChange();
-			break;
-
-		case Constants.ZONE_GROUP_SELECT:
-			PlayerStore.setCurrentTrack(null);
-			PlayerStore.setNextTrack(null);
 			PlayerStore.emitChange();
 			break;
 	}

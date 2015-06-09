@@ -450,7 +450,7 @@ h4 {
 	background-image: -moz-linear-gradient(top, #04304F 0px, #032540 24px);
 	background-image: -webkit-linear-gradient(top, #04304F 0px, #032540 24px);
 	margin: 10px;
-	padding: 10px 10px 10px 46px;
+	padding: 10px 10px 10px 10px;
 	border-radius: 5px;
 	border-top: 1px solid #054367;
 	border-right: 1px solid #032B4A;
@@ -475,7 +475,7 @@ h4 {
 
 
 #zone-wrapper ul li {
-	list-style: url(../images/wdcr_zm_ic_bedroom.png);
+	list-style: none;
 	padding-top: 3px;
 	cursor: pointer;
 }

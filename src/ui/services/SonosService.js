@@ -10,7 +10,7 @@ import Constants from '../constants/Constants'
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
 const REG = /^http:\/\/([\d\.]+)/;
-const QUERY_INTERVAL = 10000;
+const QUERY_INTERVAL = 5000;
 
 let SonosService = {
 
@@ -34,8 +34,6 @@ let SonosService = {
 
 			listener.listen((err) => {
 				if (err) throw err;
-
-				listener.addService('/MediaRenderer/RenderingControl/Event', () => {});
 
 				listener.onServiceEvent(this.onServiceEvent.bind(this));
 
@@ -208,6 +206,7 @@ let SonosService = {
 		}
 
 		x.addService('/ZoneGroupTopology/Event', cb);
+		x.addService('/MediaRenderer/RenderingControl/Event', cb);
 		x.addService('/MediaRenderer/AVTransport/Event', cb);
 		x.addService('/MediaRenderer/GroupRenderingControl/Event', cb);
 		x.addService('/MediaServer/ContentDirectory/Event', cb);
