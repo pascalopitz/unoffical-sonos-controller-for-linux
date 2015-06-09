@@ -151,20 +151,26 @@ let SonosService = {
 
 				break;
 
-			// if(endpoint === '/MediaRenderer/RenderingControl/Event') {
-			// 	var lastChange = xml2json(data.LastChange, {
-			// 		explicitArray: false
-			// 	});
+			case '/MediaRenderer/RenderingControl/Event':
+				let lastChange = xml2json(data.LastChange, {
+					explicitArray: false
+				});
 
-			// 	if(lastChange.Event.InstanceID.Muted) {
-			// 			cursor.refine('volumeControls', 'players', sonos.host).set({
-			// 					muted: lastChange.Event.InstanceID.Muted[0].$.val,
-			// 					volume: lastChange.Event.InstanceID.Volume[0].$.val,
-			// 			});
-			// 	}
-			// }
+				if(lastChange.Event.InstanceID.Muted) {
 
+					// TODO: make this update the right values, as in the indiviual players, not the group?
 
+					// Dispatcher.dispatch({
+					// 	actionType: Constants.SONOS_SERVICE_MUTED_UPDATE,
+					// 	muted: lastChange.Event.InstanceID.Muted[0].$.val,
+					// });
+
+					// Dispatcher.dispatch({
+					// 	actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
+					// 	volume: lastChange.Event.InstanceID.Volume[0].$.val,
+					// });
+				}
+				break;
 
 			case'/MediaRenderer/AVTransport/Event':
 				let lastChange = xml2json(data.LastChange);
