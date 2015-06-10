@@ -3,13 +3,11 @@
 Tinkering with chrome apps and sonos.
 The project is written in ES6 and utilizes react and flux to manage the UI
 
-##State of Affairs
+##Why?
 
-- we can see the list of rooms/zones
-- the current track info displays
-- play/pause/prev/next works
-- queue is displaying, and a double click will jump to that track
-- we can browse one level of the media library
+I have recently started to use Ubuntu as my main OS, and there's no decent controller app.
+So I am aiming to at some point provide a usable sonos controller that can run on Linux also, installed via chrome store.
+Maybe it won't have all the functions of the real sonos player, but if I can browse the library and manage the queue, I'll be pretty damn happy.
 
 ##Install and Run
 
@@ -46,11 +44,15 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] UPNP subscriptions for selected zone
 - [ ] Display Loading message if there's no players
 - [x] Display and interact with rooms/zones UI
-- [ ] Display and interact with volume control UI
+- [ ] Display and interact with volume controls
+- [ ] Display and interact with mute button
 - [x] Display and interact with queue
-- [ ] Display and interact with current play time UI
-- [ ] Display and interact with UI to start / stop / skip / rewind
-- [ ] UI to browse artists / tracks / albums
+- [x] Display and interact with current play time UI
+- [x] Display and interact with UI to start / stop / back / next
+- [x] UI to browse artists / tracks / albums
+- [x] Drill down from artists / tracks / albums
+- [ ] Play, add to/replace queue from library browser
+- [ ] Load and display images
 
 
 ##Thanks to other projects

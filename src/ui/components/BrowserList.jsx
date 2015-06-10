@@ -55,7 +55,7 @@ class BrowserList extends React.Component {
 
 		var history = this.state.history;
 		var items = this.state.currentState.items;
-		var headline = this.state.currentState.headline;
+		var title = this.state.currentState.title;
 
 		var listItemNodes = items.map((item, p) => {
 			var position = p + 1;
@@ -67,9 +67,9 @@ class BrowserList extends React.Component {
 		var headlineNodes;
 
 		if(history.length) {
-			headlineNodes = <h4><a onClick={this._back.bind(this)}>back</a> {headline}</h4>
+			headlineNodes = <h4><a onClick={this._back.bind(this)}>back</a> {title}</h4>
 		} else {
-			headlineNodes = <h4>{headline}</h4>;
+			headlineNodes = <h4>{title}</h4>;
 		}
 
 		return (

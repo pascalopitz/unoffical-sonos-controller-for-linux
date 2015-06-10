@@ -9,7 +9,7 @@ const CHANGE_EVENT = 'change';
 // const START_STATE = {
 // 	source: null,
 // 	searchType: null,
-// 	headline: 'Select a Music Source',
+// 	title: 'Select a Music Source',
 // 	items: [
 // 		{
 // 			title: 'Sonos Favourites',
@@ -23,7 +23,7 @@ const CHANGE_EVENT = 'change';
 // };
 
 const LIBRARY_STATE = {
-	headline: 'Browse Music Library',
+	title: 'Browse Music Library',
 	source: 'library',
 	items: [
 		{

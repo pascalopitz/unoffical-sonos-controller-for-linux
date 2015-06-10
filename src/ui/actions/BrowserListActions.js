@@ -38,7 +38,7 @@ export default {
 
 		if(item.searchType) {
 			prendinBrowserUpdate = {
-				headline : item.title,
+				title : item.title,
 				searchType : item.searchType
 			};
 		} else {
@@ -58,16 +58,10 @@ export default {
 		}
 
 		if(item.class) {
-			let tokens = [escape(item.headline)];
-
-			_(BrowserListStore.getHistory())
-				.reverse()
-				.forEach((i) => {
-					tokens.unshift(i.searchType || escape(i.headline));
-				});
-
-			console.log(tokens.join('/'));
+			objectId = item.uri.split('#')[1];
 		}
+
+		console.log(objectId, item);
 
 		sonos.getMusicLibrary(objectId, {}, (err, result) => {
 			var state = prendinBrowserUpdate;

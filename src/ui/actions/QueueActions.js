@@ -18,7 +18,6 @@ export default {
 		sonos.flush(() => {
 			Dispatcher.dispatch({
 				actionType: Constants.QUEUE_FLUSH,
-				position: position
 			});
 		});
 	},
@@ -30,7 +29,7 @@ export default {
 			sonos.play(() => {
 				Dispatcher.dispatch({
 					actionType: Constants.QUEUE_GOTO,
-					position: position
+					position: position,
 				});
 			});
 		});
