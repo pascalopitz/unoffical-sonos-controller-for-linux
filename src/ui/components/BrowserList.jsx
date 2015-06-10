@@ -43,6 +43,11 @@ class BrowserList extends React.Component {
 		let node = e.target;
 		let height = node.scrollHeight - node.offsetHeight;
 
+		// HACK: this happens when we press the back button for some reason
+		if(height === -1) {
+			return;
+		}
+
 		if(node.scrollTop + 50 > height) {
 			let more = _.throttle(() => {
 				BrowserListActions.more(this.state.currentState);

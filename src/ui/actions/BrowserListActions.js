@@ -61,8 +61,6 @@ export default {
 			objectId = item.uri.split('#')[1];
 		}
 
-		console.log(objectId, item);
-
 		sonos.getMusicLibrary(objectId, {}, (err, result) => {
 			var state = prendinBrowserUpdate;
 			state.items = result.items;
