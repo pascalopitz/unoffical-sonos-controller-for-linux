@@ -56,11 +56,18 @@ class BrowserList extends React.Component {
 		}
 	}
 
+	_playAlbum (e) {
+		BrowserListActions.play(this.state.currentState);
+	}
+
 	render () {
 
 		var history = this.state.history;
 		var items = this.state.currentState.items;
 		var title = this.state.currentState.title;
+
+		var headlineNodes;
+		var actionNodes;
 
 		var listItemNodes = items.map((item, p) => {
 			var position = p + 1;
@@ -69,18 +76,35 @@ class BrowserList extends React.Component {
 			);
 		});
 
-		var headlineNodes;
-
 		if(history.length) {
-			headlineNodes = <h4><a onClick={this._back.bind(this)}>back</a> {title}</h4>
+			headlineNodes = (
+				<h4 className="with-history">
+					<a onClick={this._back.bind(this)} className="back-arrow">
+						<i className="material-icons">keyboard_arrow_left</i>
+					</a>
+					<span>{title}</span>
+				</h4>
+			);
 		} else {
 			headlineNodes = <h4>{title}</h4>;
+		}
+
+		if(this.state.currentState.class === 'object.container.album.musicAlbum') {
+			actionNodes = (
+				<li onClick={this._playAlbum.bind(this)} className="top-action">
+					<i className="material-icons">playlist_add</i>
+					<p>
+						Queue Album
+					</p>
+				</li>
+			);
 		}
 
 		return (
 			<div id="music-sources-container" onScroll={this._onScroll.bind(this)}>
 				{{headlineNodes}}
 				<ul id="browser-container">
+					{{actionNodes}}
 					{{listItemNodes}}
 				</ul>
 			</div>

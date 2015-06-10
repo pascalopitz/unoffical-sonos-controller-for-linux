@@ -20,7 +20,16 @@ class BrowserListItem extends React.Component  {
 	}
 
 	_onClick (e) {
-		BrowserListActions.select(this.props.model);
+		let item = this.props.model;
+
+		if(item.class === 'object.item.audioItem.musicTrack') {
+			BrowserListActions.play(item);
+		} else {
+			let node = React.findDOMNode(this);
+			node.parentNode.scrollTop = 0;
+
+			BrowserListActions.select(item);
+		}
 	}
 }
 

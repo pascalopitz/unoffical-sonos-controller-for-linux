@@ -13,6 +13,8 @@ export default {
 			actionType: Constants.ZONE_GROUP_SELECT,
 			group: group
 		});
+
+		SonosService.queryState();
 	},
 
 };

@@ -10,6 +10,7 @@ export default {
 			actionType: Constants.QUEUE_TRACKS_SET,
 			tracks: tracks
 		});
+		SonosService.queryState();
 	},
 
 	flush () {
@@ -19,6 +20,7 @@ export default {
 			Dispatcher.dispatch({
 				actionType: Constants.QUEUE_FLUSH,
 			});
+			SonosService.queryState();
 		});
 	},
 
@@ -31,6 +33,7 @@ export default {
 					actionType: Constants.QUEUE_GOTO,
 					position: position,
 				});
+				SonosService.queryState();
 			});
 		});
 	}

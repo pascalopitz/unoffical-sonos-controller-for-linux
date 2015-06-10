@@ -30,6 +30,19 @@ export default {
 		});
 	},
 
+	play (item) {
+		let sonos = SonosService._currentDevice;
+
+		sonos.queue(item, () => {
+			SonosService.queryState(sonos);
+		});
+
+		Dispatcher.dispatch({
+			actionType: Constants.BROWSER_PLAY,
+			state: item,
+		});
+	},
+
 	select (item) {
 
 		let sonos = SonosService._currentDevice;
@@ -43,18 +56,6 @@ export default {
 			};
 		} else {
 			prendinBrowserUpdate = item;
-		}
-
-		if(item.class === 'object.item.audioItem.musicTrack') {
-			sonos.queue(item, () => {
-				SonosService.queryState(sonos);
-			});
-
-			Dispatcher.dispatch({
-				actionType: Constants.BROWSER_PLAY,
-				state: item,
-			});
-			return;
 		}
 
 		if(item.class) {

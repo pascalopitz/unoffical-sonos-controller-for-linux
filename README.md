@@ -51,6 +51,7 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Display and interact with UI to start / stop / back / next
 - [x] UI to browse artists / tracks / albums
 - [x] Drill down from artists / tracks / albums
+- [ ] Jump to places in the alphabet
 - [ ] Play, add to/replace queue from library browser
 - [ ] Load and display images
 - [ ] Remember last selected room

@@ -34,8 +34,15 @@ class QueueList extends React.Component {
 
 		var tracks = this.state.tracks;
 		var queueItemNodes;
+		var clearNode;
 
 		if(tracks.length) {
+			clearNode = (
+				<a id="queue-clear-button" onClick={this._onClick.bind(this)}>
+					<i className="material-icons">clear_all</i>
+				</a>
+			);
+
 			queueItemNodes = tracks.map((track, p) => {
 				var position = p + 1;
 				return (
@@ -46,9 +53,7 @@ class QueueList extends React.Component {
 
 		return (
 			<div id="queue-list-container">
-
-				<a id="queue-clear-button" onClick={this._onClick.bind(this)}>Clear</a>
-
+				{{clearNode}}
 				<ul id="queue-container">
 					{{queueItemNodes}}
 				</ul>

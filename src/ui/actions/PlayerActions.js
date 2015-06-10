@@ -11,6 +11,7 @@ export default {
 			Dispatcher.dispatch({
 				actionType: Constants.PLAYER_PAUSE,
 			});
+			SonosService.queryState();
 		});
 	},
 
@@ -20,6 +21,7 @@ export default {
 			Dispatcher.dispatch({
 				actionType: Constants.PLAYER_PLAY,
 			});
+			SonosService.queryState();
 		});
 	},
 
@@ -29,6 +31,7 @@ export default {
 			Dispatcher.dispatch({
 				actionType: Constants.PLAYER_PREV,
 			});
+			SonosService.queryState();
 		});
 	},
 
@@ -39,6 +42,7 @@ export default {
 			Dispatcher.dispatch({
 				actionType: Constants.PLAYER_NEXT,
 			});
+			SonosService.queryState();
 		});
 	},
 
@@ -50,6 +54,7 @@ export default {
 				actionType: Constants.PLAYER_SEEK,
 				time: time,
 			});
+			SonosService.queryState();
 		});
 	},
 };

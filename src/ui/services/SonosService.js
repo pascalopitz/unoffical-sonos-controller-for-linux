@@ -10,7 +10,7 @@ import Constants from '../constants/Constants'
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
 const REG = /^http:\/\/([\d\.]+)/;
-const QUERY_INTERVAL = 5000;
+const QUERY_INTERVAL = 10000;
 
 let SonosService = {
 
@@ -47,6 +47,8 @@ let SonosService = {
 	},
 
 	queryState (sonos) {
+
+		sonos = sonos || this._currentDevice;
 
 		// TODO: I should be able to do all of these in a promise based op
 		// i.e. seek->getPosition

@@ -1,3 +1,39 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url(../fonts/MaterialIcons-Regular.woff2) format('woff2'),
+       url(../fonts/MaterialIcons-Regular.woff) format('woff'),
+       url(../fonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
 body {
 	background-image: linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
 	background-image: -moz-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
@@ -141,6 +177,22 @@ h4 {
 	margin: 0;
 	color: #0A97FF;
 	font-size: 15px;
+}
+
+#music-sources-container h4.with-history {
+	text-align: center;
+	position: relative;
+}
+
+#music-sources-container h4.with-history .back-arrow {
+	position: absolute;
+	left: 0px;
+	top: 3px;
+}
+
+#music-sources-container h4.with-history .material-icons {
+	font-size: 33px;
+	cursor: pointer;
 }
 
 #status-container h4#now-playing {
@@ -396,6 +448,8 @@ h4 {
 	font-size: 11px;
 	color: #666;
 	text-shadow: #111 0px -1px;
+	text-align: center;
+	line-height: 2;
 }
 
 #position-info .content span,
@@ -515,12 +569,16 @@ h4 {
 
 #queue-clear-button {
 	position: absolute;
-	top: -25px;
+	top: -35px;
 	right: 5px;
 	display: block;
 	text-align: right;
 	color: #0A97FF;
-	font-size: 12px;
+	cursor: pointer;
+}
+
+#queue-clear-button .material-icons {
+	font-size: 33px;
 }
 
 #browser-container li,
@@ -547,7 +605,7 @@ h4 {
 }
 
 
-
+#browser-container li i.material-icons,
 #browser-container li img,
 #queue-container li img {
 	width: 40px;
@@ -555,6 +613,17 @@ h4 {
 	vertical-align: top;
 	margin-right: 3px;
 	display: inline-block;
+}
+
+#browser-container .top-action {
+	overflow: hidden;
+	cursor: pointer;
+}
+
+#browser-container .top-action i.material-icons {
+	float: left;
+	font-size: 33px;
+	padding: 5px;
 }
 
 #browser-container li div,
