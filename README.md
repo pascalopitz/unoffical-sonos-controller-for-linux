@@ -54,7 +54,7 @@ For development, you can run the watch task, which will re-compile on change:
 - [ ] Jump to places in the alphabet
 - [ ] Play, add to/replace queue from library browser
 - [ ] Load and display images
-- [ ] Remember last selected room
+- [x] Remember last selected room
 
 
 ##Thanks to other projects
