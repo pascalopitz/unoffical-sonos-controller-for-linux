@@ -9,10 +9,11 @@ class QueueListItem extends React.Component {
 	render () {
 
 		var track = this.props.track;
+		var id = this.props.uid || '';
 
 		return (
 			<li onDoubleClick={this._onDoubleClick.bind(this)} data-position={this.props.position}>
-				<AlbumArt id="" src={track.albumArtURI} />
+				<AlbumArt id={id} src={track.albumArtURI} />
 				<div className="trackinfo">
 					<p className="title">{track.title}</p>
 					<p className="artist">{track.creator}</p>

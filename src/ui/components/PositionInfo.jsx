@@ -75,7 +75,7 @@ class PositionInfo extends React.Component {
 
 		let element = e.target;
 		let rect = element.getBoundingClientRect();
-		let left = e.screenX - Math.floor(rect.left);
+		let left = e.clientX - Math.floor(rect.left);
 
 		let d = info.TrackDuration.split(':');
 		let totalSeconds = (Number(d[0]) * 60 * 60) + (Number(d[1]) * 60) + Number(d[2]);
