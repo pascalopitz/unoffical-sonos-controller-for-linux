@@ -143,11 +143,29 @@ let SonosService = {
 					});
 
 					if(!ZoneGroupStore.getCurrent()) {
-						this.selectCurrentZone(state.ZoneGroups.ZoneGroup[0]);
-						Dispatcher.dispatch({
-							actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
-							group: state.ZoneGroups.ZoneGroup[0],
+
+						chrome.storage.local.get(['zone'], (vals) => {
+
+							let zone = state.ZoneGroups.ZoneGroup[0];
+
+							if(vals.zone) {
+								let match = _(state.ZoneGroups.ZoneGroup).findWhere({
+									$: {
+										ID: vals.zone
+									}
+								});
+
+								zone = match || zone;
+							}
+
+							this.selectCurrentZone(zone);
+							Dispatcher.dispatch({
+								actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
+								group: zone,
+							});
+
 						});
+
 					}
 				}
 				break;
@@ -234,6 +252,10 @@ let SonosService = {
 
 	selectCurrentZone (value) {
 		var sonos;
+
+		chrome.storage.local.set({
+			zone: value.$.ID
+		}, () => {});
 
 		value.ZoneGroupMember.forEach((m) => {
 			if(m.$.UUID === value.$.Coordinator) {

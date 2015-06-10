@@ -6,10 +6,12 @@
   "app": {
     "background": {
       "scripts": [
-        "js/background.js"      ]
+        "js/background.js"
+      ]
     }
   },
   "permissions": [
+    "storage",
     "webview",
     "system.network",
     "http://*/MediaRenderer/AVTransport/Control",
