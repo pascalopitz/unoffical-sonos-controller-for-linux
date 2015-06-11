@@ -18,6 +18,7 @@ let SonosService = {
 	_queryInterval: null,
 	_deviceSearches: {},
 	_listeners: {},
+	_persistentSubscriptions: [],
 	_currentSubscriptions: [],
 
 	mount () {
@@ -37,12 +38,55 @@ let SonosService = {
 
 				listener.onServiceEvent(this.onServiceEvent.bind(this));
 
+				// these events happen for all players
+				listener.addService('/MediaRenderer/RenderingControl/Event', (err, sid) => {
+					if(!err) {
+						this._persistentSubscriptions.push({
+							sid: sid,
+							host: sonos.host,
+							sonos: sonos,
+						});
+					}
+				});
+
 				if(!this._currentDevice) {
 					this._currentDevice = sonos;
 					this.subscribeServiceEvents(sonos);
 				}
 			});
 
+		});
+	},
+
+	queryVolumeInfo () {
+		let group = ZoneGroupStore.getCurrent();
+
+		if(!group) {
+			return;
+		}
+
+		group.ZoneGroupMember.forEach((m) => {
+
+			let l = m.$.Location;
+			let matches = REG.exec(l);
+			let sonos = this._deviceSearches[matches[1]];
+
+			sonos.getMuted((err, muted) => {
+				if(err) {
+					return;
+				}
+				sonos.getVolume((err, volume) => {
+					if(err) {
+						return;
+					}
+					Dispatcher.dispatch({
+						actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
+						volume: volume,
+						muted: muted,
+						sonos: sonos,
+					});
+				});
+			});
 		});
 	},
 
@@ -62,22 +106,7 @@ let SonosService = {
 			});
 		});
 
-		sonos.getVolume((err, volume) => {
-			if(err) {
-				return;
-			}
-			Dispatcher.dispatch({
-				actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
-				volume: volume,
-			});
-		});
-
-		sonos.getGroupMuted((err, muted) => {
-			Dispatcher.dispatch({
-				actionType: Constants.SONOS_SERVICE_MUTED_UPDATE,
-				muted: muted,
-			});
-		});
+		this.queryVolumeInfo(sonos);
 
 		sonos.currentTrack((err, track) => {
 			if(err) {
@@ -176,19 +205,15 @@ let SonosService = {
 						explicitArray: false
 					});
 
-					if(lastChange.Event.InstanceID.Muted) {
+					let subscription = _(this._persistentSubscriptions).findWhere({sid: sid});
 
-						// TODO: make this update the right values, as in the indiviual players, not the group?
-
-						// Dispatcher.dispatch({
-						// 	actionType: Constants.SONOS_SERVICE_MUTED_UPDATE,
-						// 	muted: lastChange.Event.InstanceID.Muted[0].$.val,
-						// });
-
-						// Dispatcher.dispatch({
-						// 	actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
-						// 	volume: lastChange.Event.InstanceID.Volume[0].$.val,
-						// });
+					if(subscription) {
+						Dispatcher.dispatch({
+							actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
+							volume: Number(lastChange.Event.InstanceID.Volume[0].$.val),
+							muted: Boolean(Number(lastChange.Event.InstanceID.Mute[0].$.val)),
+							sonos: subscription.sonos,
+						});
 					}
 				}
 				break;
@@ -230,7 +255,6 @@ let SonosService = {
 		}
 
 		x.addService('/ZoneGroupTopology/Event', cb);
-		x.addService('/MediaRenderer/RenderingControl/Event', cb);
 		x.addService('/MediaRenderer/AVTransport/Event', cb);
 		x.addService('/MediaRenderer/GroupRenderingControl/Event', cb);
 		x.addService('/MediaServer/ContentDirectory/Event', cb);

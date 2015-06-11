@@ -1,7 +1,10 @@
+import _ from 'lodash';
+
 import React from 'react/addons';
 import Draggable from 'react-draggable2';
 
 const WIDTH = 180;
+const ADJUST = 21;
 
 class VolumeSlider extends React.Component {
 
@@ -11,20 +14,17 @@ class VolumeSlider extends React.Component {
 	}
 
 	render () {
-		var id = this.props.id || '';
-
-		var left = WIDTH / 100 * this.props.volume;
-
+		var left = (this.state.dragging) ?  (this.state.left) : ((WIDTH - ADJUST) / 100 * this.props.volume);
 		var pos = { x: left, y: 0 };
 
 		return (
-			<div
-				id={this.props.id}
-				className="volume-bar">
+			<div className="volume-bar">
 				<Draggable
 					axis="x"
 					handle="img"
 					onStop={this._onStop.bind(this)}
+					onDrag={this._onDrag.bind(this)}
+					onStart={this._onStart.bind(this)}
 					start={pos}
 					bound="all box">
 					<img
@@ -34,11 +34,35 @@ class VolumeSlider extends React.Component {
 		);
 	}
 
-	_onStop (e, params)  {
-		// this.trigger('volume:set', {
-		// 	channel: this.props.id,
-		// 	volume: Math.round(params.position.left * 100 / WIDTH)
-		// });
+	_onStart (e, params) {
+		this.setState({
+			dragging: true,
+			left: params.position.left,
+		});
+	}
+
+	_onDrag (e, params) {
+		let left = params.position.left;
+		if(left < 0) {
+			left = 0;
+		}
+
+		this.setState({
+			dragging: true,
+			left: left,
+		});
+		let volume = Math.ceil(left / (WIDTH - ADJUST) * 100);
+		let func = _.throttle(() => {
+			this.props.dragHandler(volume);
+		}, 100);
+		func();
+	}
+
+	_onStop (e, params) {
+		this.setState({
+			dragging: false,
+			left: null,
+		});
 	}
 }
 

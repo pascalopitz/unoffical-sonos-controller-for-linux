@@ -327,9 +327,18 @@ h4 {
 }
 
 #master-volume {
-	top: 21px;
-	left: 50px;
+	top: 18px;
+	left: 10px;
 	position: absolute;
+}
+
+#master-volume > * {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#master-volume > img {
+	margin-right: 10px;
 }
 
 #top-control .volume-bar {
@@ -405,12 +414,6 @@ h4 {
 	vertical-align: middle;
 	margin-left: 15px;
 	position: relative;
-}
-
-#master-mute {
-	position: absolute;
-	top: 18px;
-	left: 10px;
 }
 
 #controls {

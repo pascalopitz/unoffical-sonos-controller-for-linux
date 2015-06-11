@@ -1,9 +1,10 @@
+import _ from 'lodash';
 import React from 'react/addons';
 
 import MuteButton from './MuteButton'; 
 import VolumeSlider from './VolumeSlider'; 
 
-import PlayerActions from '../actions/PlayerActions';
+import VolumeControlActions from '../actions/VolumeControlActions';
 import VolumeControlStore from '../stores/VolumeControlStore';
 
 class VolumeControls extends React.Component {
@@ -11,8 +12,7 @@ class VolumeControls extends React.Component {
 	constructor (props) {
 		super(props);
 		this.state = {
-			muted: VolumeControlStore.getMuted(),
-			volume: VolumeControlStore.getVolume(),
+			players: VolumeControlStore.getPlayers(),
 		};
 	}
 
@@ -22,8 +22,7 @@ class VolumeControls extends React.Component {
 
 	_onChange () {
 		this.setState({
-			muted: VolumeControlStore.getMuted(),
-			volume: VolumeControlStore.getVolume(),
+			players: VolumeControlStore.getPlayers(),
 		});
 	}
 
@@ -88,7 +87,58 @@ class VolumeControls extends React.Component {
 		
 	}
 
+	_toggleGoupMute (e) {
+		let muted = this._calculateGroupMuted();
+
+		Object.keys(this.state.players).forEach((host) => {
+			VolumeControlActions.setPlayerMuted(host, !muted);
+		});
+	}
+
+	_changeGroupVolume (volume) {
+		let keys = Object.keys(this.state.players);
+
+		if(keys.length === 1) {
+			_.forEach(keys, (host) => {
+				VolumeControlActions.setPlayerVolume(host, volume);
+			});
+		} else {
+
+		}
+	}
+
+	_calculateGroupMuted () {
+		return _.where(this.state.players, { muted: false }).length === 0;
+	}
+
+	_calculateGroupVolume () {
+		let keys = Object.keys(this.state.players);
+
+		if(!keys.length) {
+			return 0;
+		}
+
+		return Math.floor(_.sum(_.pluck(this.state.players, 'volume')) / keys.length);
+	}
+
 	render () {
+
+		let groupMuted = false;
+		let groupVolume = 0;
+
+		let keys = Object.keys(this.state.players);
+
+		if(keys.length === 1) {
+			groupMuted = this.state.players[keys[0]].muted;
+			groupVolume = this.state.players[keys[0]].volume;
+		} else {
+			groupMuted = this._calculateGroupMuted();
+			groupVolume = this._calculateGroupVolume();
+		}
+
+
+
+
 
 		// var model;// = this.props.model;
 		// var playerVolumeNodes;
@@ -114,9 +164,12 @@ class VolumeControls extends React.Component {
 		*/
 
 		return (
-			<div>
-				<MuteButton id="master-mute" muted={this.state.muted} />
-				<VolumeSlider id="master-volume" volume={this.state.volume} />
+			<div id="master-volume">
+				<MuteButton muted={groupMuted} 
+							clickHandler={this._toggleGoupMute.bind(this)} />
+
+				<VolumeSlider volume={groupVolume}
+							  dragHandler={this._changeGroupVolume.bind(this)} />
 
 				{/*
 				<div id="player-volumes-container">
