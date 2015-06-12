@@ -371,11 +371,11 @@ h4 {
 }
 
 #player-volumes {
+	width: 245px;
 	position: absolute;
-	top: 58px;
-	left: 50px;
-	padding: 10px;
-	background: #fff;
+	top: 34px;
+	left: -12px;
+	background: #ddd;
 	z-index: 100;
 	border-radius: 10px;
 	border: 3px #666 solid;
@@ -385,20 +385,13 @@ h4 {
 
 }
 
-#player-volumes.loading {
-	visibility: hidden;
-	-webkit-transform: scale(0);
-	transform: scale(0);
+#player-volumes > div {
+	padding: 10px;
+	border-top: 1px solid #333;
 }
 
-#player-volumes.hidden {
-	opacity: 0;
-	-webkit-transform: scale(0);
-	transform: scale(0);
-}
-
-#player-volumes .hidden {
-	display: none;
+#player-volumes > div:first-child {
+	border-top: 0px;
 }
 
 #player-volumes h6 {
@@ -407,14 +400,19 @@ h4 {
 	margin-top: 5px;
 	text-shadow: none;
 	margin-bottom: 5px;
+	font-size: 12px;
 }
 
-#player-volumes .volume-bar {
+#player-volumes .mute-button {
+	margin-right: 10px;
+}
+
+#player-volumes .volume-bar,
+#player-volumes .mute-button {
 	display: inline-block;
 	vertical-align: middle;
-	margin-left: 15px;
-	position: relative;
 }
+
 
 #controls {
 	position: absolute;

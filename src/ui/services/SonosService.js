@@ -188,6 +188,7 @@ let SonosService = {
 							}
 
 							this.selectCurrentZone(zone);
+							this.queryState();
 							Dispatcher.dispatch({
 								actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
 								group: zone,

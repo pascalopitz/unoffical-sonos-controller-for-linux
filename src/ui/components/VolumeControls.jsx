@@ -21,70 +21,11 @@ class VolumeControls extends React.Component {
 	}
 
 	_onChange () {
-		this.setState({
-			players: VolumeControlStore.getPlayers(),
-		});
-	}
-
-	_onGroupVolumeChange () {
-
-/**
-	 * Set GroupVolume
-	 * @param	{String}	volume 0..100
-	 * @param	{Function} callback (err, data)
-	 * @return {[type]}
-	 */
-	// setGroupVolume (muted, callback) {
-		/*
-		var actions = [];
-		var count = 0;
-		var groupVolume = this.groupState.volume;
-
-		var deltaVolume;
-		// If prefixed with + or -
-		if (/^[+-]/.test(volumeLevel)) {
-			deltaVolume = parseInt(volumeLevel);
-			volumeLevel = groupVolume + parseInt(volumeLevel);
-		} else {
-			volumeLevel = parseInt(volumeLevel);
-			deltaVolume = volumeLevel - groupVolume;
+		if(!this.state.dragging) {
+			this.setState({
+				players: VolumeControlStore.getPlayers(),
+			});
 		}
-
-		var newVolume;
-		for (var uuid in this.discovery.players) {
-			var player = this.discovery.players[uuid];
-			if (player.coordinator.uuid != this.uuid) continue;
-			// part of this group
-
-			if (volumeLevel < 1)
-				newVolume = 0;
-			else if (deltaVolume > 0)
-				newVolume = player.state.volume + deltaVolume;
-			else {
-				var factor = player.state.volume / groupVolume;
-				var newVolume = Math.ceil(factor * volumeLevel);
-			}
-
-			// set this here to recalculate group volume instantly
-			player.state.volume = newVolume;
-
-			actions.push(function (player, volume) {
-				return function (callback) {
-					player.setVolume(volume, function (success) {
-						callback(success ? null : "error", volume);
-					});
-				}
-			}(player, newVolume));
-		}
-
-		this.calculateGroupVolume();
-
-		async.parallel(actions, function(status) {
-			// recalculate group volume when finished
-		});
-		*/
-	// }
-		
 	}
 
 	_toggleGoupMute (e) {
@@ -97,14 +38,79 @@ class VolumeControls extends React.Component {
 
 	_changeGroupVolume (volume) {
 		let keys = Object.keys(this.state.players);
+		let state = this.state;
 
+		// just one in group
 		if(keys.length === 1) {
-			_.forEach(keys, (host) => {
-				VolumeControlActions.setPlayerVolume(host, volume);
-			});
-		} else {
-
+			VolumeControlActions.setPlayerVolume(keys[0], volume);
+			return;
 		}
+
+		// adjust all players in group
+		let volumeLevel = volume;
+		let groupVolume = this._calculateGroupVolume();
+		let deltaVolume = volumeLevel - groupVolume;
+
+		keys.forEach((key) => {
+			if (volumeLevel < 1)
+				newVolume = 0;
+			else if (deltaVolume > 0)
+				newVolume = this.state.players[key].volume + deltaVolume;
+			else {
+				var factor = this.state.players[key].volume / groupVolume;
+				var newVolume = Math.ceil(factor * volumeLevel);
+			}
+
+			state.players[key].volume = newVolume;
+			VolumeControlActions.setPlayerVolume(key, newVolume);
+		});
+
+		this.setState(state);
+	}
+
+	_startGroupVolume () {
+		let keys = Object.keys(this.state.players);
+
+		this._dragStart();
+		this.setState({
+			expanded: keys.length > 1
+		});
+	}
+
+	_endGroupVolume () {
+		this._dragEnd();
+		this._hideTimeStart();
+	}
+
+	_dragStart () {
+		if(this._dragEndTimer) {
+			window.clearTimeout(this._dragEndTimer);
+		}
+
+		this.setState({
+			dragging: true
+		});
+	}
+
+	_dragEnd () {
+		this._dragEndTimer = window.setTimeout(() => {
+			this.setState({
+				dragging: false
+			});
+			VolumeControlActions.queryVolumes();
+		}, 500);
+	}
+
+	_hideTimeStart () {
+		this._hideTimer = window.setTimeout(() => {
+			this.setState({
+				expanded: false
+			});
+		}, 1000);
+	}
+
+	_hideTimeStop () {
+		window.clearTimeout(this._hideTimer);
 	}
 
 	_calculateGroupMuted () {
@@ -125,6 +131,7 @@ class VolumeControls extends React.Component {
 
 		let groupMuted = false;
 		let groupVolume = 0;
+		let playerPopover;
 
 		let keys = Object.keys(this.state.players);
 
@@ -136,32 +143,60 @@ class VolumeControls extends React.Component {
 			groupVolume = this._calculateGroupVolume();
 		}
 
+		if(this.state.expanded) {
 
+			let playerRows = Object.keys(this.state.players).map((key) => {
 
+				let muted = this.state.players[key].muted;
+				let volume = this.state.players[key].volume;
+				let name = this.state.players[key].name;
 
+				let startVolume = () => {
+					this._dragStart();
+					this.setState({
+						dragging: true
+					});
+				};
 
-		// var model;// = this.props.model;
-		// var playerVolumeNodes;
-		// var player = volume.refine('players');
+				let endVolume = () => {
+					this._dragEnd();
+				};
 
+				let changeVolume = (volume) => {
+					let state = this.state;
+					state.players[key].volume = volume;
 
-		// var playerVolumeNodes = .players.map(function (p) {
-		// 	return (
-		// 		<div>
-		// 	<MuteButton muted={p.muted} />
-		// 	<VolumeSlider volume={p.volume} />
-		// 		</div>
-		// 	);
-		// });		
+					this.setState(state);
+					VolumeControlActions.setPlayerVolume(key, volume);
+				};
 
+				let toggleMute = () => {
+					VolumeControlActions.setPlayerMuted(key, !muted);
+				};
 
-		/*
- 		<img	id="master-mute" class="mute-button" src="svg/mute_off.svg" />
-		<div id="master-volume" class="volume-bar" /><img src="images/popover_vol_scrubber_normal.png" /></div>
-		<div id="player-volumes-container">
-			<div id="player-volumes" class="loading"></div>
-		</div>
-		*/
+				return (
+					<div>
+						<h6>{name}</h6>
+
+						<MuteButton muted={muted} 
+							clickHandler={toggleMute} />
+
+						<VolumeSlider volume={volume}
+								stopHandler={endVolume}
+								startHandler={startVolume}
+								dragHandler={changeVolume} />
+					</div>
+				);
+			});
+
+			playerPopover = (
+				<div id="player-volumes-container"
+						onMouseOut={this._hideTimeStart.bind(this)}
+						onMouseOver={this._hideTimeStop.bind(this)}>
+					<div id="player-volumes">{playerRows}</div>
+				</div>
+			);
+		}
 
 		return (
 			<div id="master-volume">
@@ -169,15 +204,11 @@ class VolumeControls extends React.Component {
 							clickHandler={this._toggleGoupMute.bind(this)} />
 
 				<VolumeSlider volume={groupVolume}
-							  dragHandler={this._changeGroupVolume.bind(this)} />
+								stopHandler={this._endGroupVolume.bind(this)}
+								startHandler={this._startGroupVolume.bind(this)}
+								dragHandler={this._changeGroupVolume.bind(this)} />
 
-				{/*
-				<div id="player-volumes-container">
-					<div id="player-volumes" className="loading">
-					{{playerVolumeNodes}}
-					</div>
-				</div>
-				*/}
+				{playerPopover}
 			</div>
 		);
 	}

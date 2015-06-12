@@ -5,6 +5,10 @@ import SonosService  from '../services/SonosService'
 
 export default {
 
+	queryVolumes () {
+		SonosService.queryVolumeInfo();
+	},
+
 	setPlayerVolume(host, volume) {
 		let sonos = SonosService._deviceSearches[host];
 

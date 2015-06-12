@@ -42,21 +42,25 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Make sense of topology messages
 - [x] ES6ify Event Listener class
 - [x] UPNP subscriptions for selected zone
-- [ ] Display Loading message if there's no players
+- [x] Remember last selected room
 - [x] Display and interact with rooms/zones UI
 - [x] Display and interact with volume controls for single player zones
-- [ ] Display and interact with volume controls for multi player zones
+- [x] Display and interact with volume controls for multi player zones
 - [x] Display and interact with mute button
 - [x] Display and interact with queue
-- [ ] Sort things in the queue (drag & drop?)
 - [x] Display and interact with current play time UI
 - [x] Display and interact with UI to start / stop / back / next
 - [x] UI to browse artists / tracks / albums
 - [x] Drill down from artists / tracks / albums
-- [ ] Jump to places in the alphabet
+- [ ] Fix interaction glitch when dragging group volume slider
 - [ ] Play, add to/replace queue from library browser
+- [ ] Highlight currently playing track
+- [ ] Find out how to query for next track
+- [ ] Jump to places in the alphabet in media library
+- [ ] Sort things in the queue (drag & drop?)
 - [ ] Load and display images
-- [x] Remember last selected room
+- [ ] Display Loading message if there's no players
+- [ ] Integrate services???
 
 
 ##Thanks to other projects

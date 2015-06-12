@@ -39,6 +39,8 @@ class VolumeSlider extends React.Component {
 			dragging: true,
 			left: params.position.left,
 		});
+
+		this.props.startHandler();
 	}
 
 	_onDrag (e, params) {
@@ -63,6 +65,8 @@ class VolumeSlider extends React.Component {
 			dragging: false,
 			left: null,
 		});
+
+		this.props.stopHandler();
 	}
 }
 
