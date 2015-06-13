@@ -70,13 +70,19 @@ class AlbumArt extends React.Component {
 		if(visible && !this.state.src) {
 			// wait half a second, to prevent random scrolling fast through viewport 
 			// stuff to get loaded
-			window.setTimeout(this._loadImage.bind(this), 500)
+			this.timeout = window.setTimeout(this._loadImage.bind(this), 500)
 		}
 
 		if(this.state.visible !== visible) {
 			this.setState({
 				visible : visible
 			});
+		}
+	}
+
+	componentWillUnmount () {
+		if(this.timeout) {
+			window.clearTimeout(this.timeout);
 		}
 	}
 

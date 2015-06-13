@@ -147,7 +147,6 @@ class Sonos {
 	 * @param	{Function}	callback (err, result) result - {returned: {String}, total: {String}, items:[{title:{String}, uri: {String}}]}
 	 */
 	searchMusicLibrary (searchType, searchTerm, options, callback) {
-		var self = this
 		var searches = {
 			'artists': 'A:ARTIST',
 			'albumArtists': 'A:ALBUMARTIST',
@@ -177,24 +176,20 @@ class Sonos {
 			return (new xml2js.Parser()).parseString(data.Result, function (err, didl) {
 				if (err) return callback(err, data)
 				var items = []
-				if ((!didl) || (!didl['DIDL-Lite']) || (!util.isArray(didl['DIDL-Lite'].item))) {
+				if ((!didl) || (!didl['DIDL-Lite']) || (!Array.isArray(didl['DIDL-Lite'].item || didl['DIDL-Lite'].container))) {
 					callback(new Error('Cannot parse DIDTL result'), data)
 				}
-				_.each(didl['DIDL-Lite'].item, function (item) {
+				_.each(didl['DIDL-Lite'].item || didl['DIDL-Lite'].container, function (item) {
 					var albumArtURL = null
-					if (util.isArray(item['upnp:albumArtURI'])) {
-						if (item['upnp:albumArtURI'][0].indexOf('http') !== -1) {
-							albumArtURL = item['upnp:albumArtURI'][0]
-						} else {
-							albumArtURL = 'http://' + self.host + ':' + self.port + item['upnp:albumArtURI'][0]
-						}
-					}
 					items.push(
 						{
-							'title': util.isArray(item['dc:title']) ? item['dc:title'][0] : null,
-							'artist': util.isArray(item['dc:creator']) ? item['dc:creator'][0] : null,
-							'albumArtURL': albumArtURL,
-							'uri': util.isArray(item.res) ? item.res[0]._ : null
+							'title': Array.isArray(item['dc:title']) ? item['dc:title'][0]: null,
+							'creator': Array.isArray(item['dc:creator']) ? item['dc:creator'][0]: null,
+							'album': Array.isArray(item['upnp:album']) ? item['upnp:album'][0]: null,
+							'albumArtURI': Array.isArray(item['upnp:albumArtURI']) ? item['upnp:albumArtURI'][0]: null,
+							'class': Array.isArray(item['upnp:class']) ? item['upnp:class'][0]: null,
+							'originalTrackNumber': Array.isArray(item['upnp:originalTrackNumber']) ? item['upnp:originalTrackNumber'][0]: null,
+							'uri': Array.isArray(item.res) ? item.res[0]._: null
 						}
 					)
 				})

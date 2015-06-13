@@ -56,6 +56,9 @@ const LIBRARY_STATE = {
 var BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 
 	_state : LIBRARY_STATE,
+	_search :  false,
+	_searchResults :  null,
+	_searchTarget :  'artists',
 	_history: [],
 
 	emitChange () {
@@ -66,7 +69,30 @@ var BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 		this.on(CHANGE_EVENT, listener);
 	},
 
+	isSearching () {
+		return this._search;
+	},
+
+	startSearch () {
+		this._search = true;
+	},
+
+	endSearch () {
+		this._search = false;
+	},
+
+	getSearchMode () {
+		return this._searchTarget;
+	},
+
+	setSearchResults (results) {
+		this._searchResults = results;
+	},
+
 	getState () {
+		if(this._search && this._history.length === 0) {
+			return this._searchResults[this._searchTarget];
+		}
 		return this._state;
 	},
 
@@ -87,6 +113,27 @@ var BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 
 Dispatcher.register(action => {
 	switch (action.actionType) {
+
+		case Constants.SEARCH:
+			if(!action.term) {
+				BrowserListStore._history = [];
+				BrowserListStore.endSearch();
+				BrowserListStore.setSearchResults(null);
+				BrowserListStore._searchTarget = null;
+				BrowserListStore.setState(LIBRARY_STATE);
+			} else {
+				BrowserListStore._history = [];
+				BrowserListStore.startSearch();
+				BrowserListStore.setSearchResults(action.results);
+			}
+
+			BrowserListStore.emitChange();
+			break;
+
+		case Constants.BROWSER_CHANGE_SEARCH_MODE:
+			BrowserListStore._searchTarget = action.mode;
+			BrowserListStore.emitChange();
+			break;
 
 		case Constants.BROWSER_BACK:
 			if(BrowserListStore._history.length) {

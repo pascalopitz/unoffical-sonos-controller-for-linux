@@ -1,6 +1,5 @@
 let Constants = {
-
-	ALBUM_ART_LOAD: '',
+	SEARCH: '',
 
 	VOLUME_CONTROLS_MUTE_SET: '',
 	VOLUME_CONTROLS_VOLUME_SET: '',
@@ -9,6 +8,7 @@ let Constants = {
 	BROWSER_SCROLL_RESULT: '',
 	BROWSER_BACK: '',
 	BROWSER_PLAY: '',
+	BROWSER_CHANGE_SEARCH_MODE: '',
 
 	PLAYER_PAUSE: '',
 	PLAYER_PLAY: '',

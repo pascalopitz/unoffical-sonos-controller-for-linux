@@ -18,6 +18,8 @@ class BrowserList extends React.Component {
 		this.state = {
 			currentState: state,
 			history: history,
+			searching: false,
+			searchMode: null,
 			boundingRect: {},
 		};
 	}
@@ -33,10 +35,14 @@ class BrowserList extends React.Component {
 	_onChange() {
 		let state = BrowserListStore.getState();
 		let history = BrowserListStore.getHistory();
+		let searching = BrowserListStore.isSearching();
+		let searchMode = BrowserListStore.getSearchMode();
 
 		this.setState({
 			currentState: state,
 			history: history,
+			searching: searching,
+			searchMode: searchMode,
 		});
 	}
 
@@ -69,8 +75,15 @@ class BrowserList extends React.Component {
 		BrowserListActions.play(this.state.currentState);
 	}
 
+	_searchModeChange (e) {
+		let mode = e.target.getAttribute('data-mode');
+		BrowserListActions.changeSearchMode(mode);
+	}
+
 	render () {
 
+		var searching = this.state.searching;
+		var searchMode = this.state.searchMode;
 		var history = this.state.history;
 		var items = this.state.currentState.items;
 		var title = this.state.currentState.title;
@@ -93,6 +106,23 @@ class BrowserList extends React.Component {
 					</a>
 					<span>{title}</span>
 				</h4>
+			);
+		} else if(searching) {
+			let links = ["artists", "albums", "tracks"].map((mode) => {
+
+				let className = (mode === searchMode) ? 'active' : 'not-active';
+
+				return (
+					<li className={className}
+						onClick={this._searchModeChange.bind(this)} 
+						data-mode={mode}>{mode}</li>
+				);
+			})
+
+			headlineNodes = (
+				<ul className="with-search">
+					{{links}}
+				</ul>
 			);
 		} else {
 			headlineNodes = <h4>{title}</h4>;

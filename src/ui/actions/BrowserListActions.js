@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import Dispatcher from '../dispatcher/AppDispatcher'
 import Constants  from '../constants/Constants'
 
@@ -73,4 +71,10 @@ export default {
 		});
 	},
 
+	changeSearchMode (mode) {
+		Dispatcher.dispatch({
+			actionType: Constants.BROWSER_CHANGE_SEARCH_MODE,
+			mode: mode,
+		});
+	}
 };

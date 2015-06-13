@@ -167,6 +167,30 @@ h4 {
 	background-image: linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
 }
 
+#search {
+	position: absolute;
+	right: 50px;
+	top: 20px;
+}
+
+#search > i.material-icons {
+	position: absolute;
+	right: 3px;
+	top: 2px;
+	z-index: 1;
+	color: #002C4D;
+	text-shadow: none;
+	font-size: 18px;
+	cursor: pointer;
+}
+
+#search input {
+	height: 16px;
+	padding: 2px 8px;
+	border-radius: 8px;
+	border: none;
+}
+
 /* blue container */
 #zone-container h4,
 #status-container h4,
@@ -179,10 +203,35 @@ h4 {
 	font-size: 15px;
 }
 
+#music-sources-container ul.with-search {
+	display: flex;
+	margin: 0;
+	padding: 0;
+}
+
+#music-sources-container ul.with-search li {
+	flex: 1;
+	list-style: none;
+	margin: 0;
+	padding: 10px;
+	font-size: 15px;
+	text-align: center;
+	color: #0A97FF;
+	font-weight: bold;
+	cursor: pointer;
+	text-transform: capitalize;
+}
+
+#music-sources-container ul.with-search li.active {
+	background-image: -webkit-linear-gradient(top, #07558C 0px, #0A4069 24px);
+	color: #fff;
+}
+
 #music-sources-container h4.with-history {
 	text-align: center;
 	position: relative;
 }
+
 
 #music-sources-container h4.with-history .back-arrow {
 	position: absolute;

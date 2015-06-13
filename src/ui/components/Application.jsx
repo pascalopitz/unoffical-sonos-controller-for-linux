@@ -9,6 +9,7 @@ import PlayControls from './PlayControls';
 import PositionInfo from './PositionInfo';
 import VolumeControls from './VolumeControls';
 import ZoneGroupList from './ZoneGroupList';
+import SearchBar from './SearchBar';
 
 var history = [];
 
@@ -23,11 +24,10 @@ class Application extends React.Component {
 		return (
 			<div id="application">
 				<header id="top-control">
-
 					<VolumeControls />
 					<PlayControls />
 					<PositionInfo />
-
+					<SearchBar />
 				</header>
 				<div id="column-container">
 					<div id="zone-container">
