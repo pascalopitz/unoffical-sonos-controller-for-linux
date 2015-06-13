@@ -1,5 +1,7 @@
 let Constants = {
 
+	ALBUM_ART_LOAD: '',
+
 	VOLUME_CONTROLS_MUTE_SET: '',
 	VOLUME_CONTROLS_VOLUME_SET: '',
 
