@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "apps-resource-loader": "git+https://github.com/pascalopitz/apps-resource-loader.git",
     "array-union": "^1.0.0",
     "babel": "^4.4.5",
     "babelify": "^6.1.2",
