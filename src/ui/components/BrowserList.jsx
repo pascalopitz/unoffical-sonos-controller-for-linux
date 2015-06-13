@@ -18,11 +18,16 @@ class BrowserList extends React.Component {
 		this.state = {
 			currentState: state,
 			history: history,
+			boundingRect: {},
 		};
 	}
 
 	componentDidMount() {
 		BrowserListStore.addChangeListener(this._onChange.bind(this));
+
+		this.setState({
+			boundingRect : React.findDOMNode(this).getBoundingClientRect()
+		});
 	}
 
 	_onChange() {
@@ -42,6 +47,10 @@ class BrowserList extends React.Component {
 	_onScroll(e) {
 		let node = e.target;
 		let height = node.scrollHeight - node.offsetHeight;
+
+		this.setState({
+			boundingRect : node.getBoundingClientRect()
+		});
 
 		// HACK: this happens when we press the back button for some reason
 		if(height === -1) {
@@ -72,7 +81,7 @@ class BrowserList extends React.Component {
 		var listItemNodes = items.map((item, p) => {
 			var position = p + 1;
 			return (
-				<BrowserListItem model={item} position={position} />
+				<BrowserListItem model={item} position={position} viewport={this.state.boundingRect} />
 			);
 		});
 

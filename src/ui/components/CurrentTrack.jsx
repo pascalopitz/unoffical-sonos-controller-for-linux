@@ -16,6 +16,10 @@ class CurrentTrack extends React.Component {
 
 	componentDidMount() {
 		CurrentTrackStore.addChangeListener(this._onChange.bind(this));
+
+		this.setState({
+			boundingRect : React.findDOMNode(this).getBoundingClientRect()
+		});
 	}
 
 	_onChange() {
@@ -32,9 +36,7 @@ class CurrentTrack extends React.Component {
 		var currentTrack = this.state.currentTrack;
 		var nextTrack = this.state.nextTrack;
 
-
 		var nextTrackInfo;
-		//var albumArtURI = this.props.cursor.refine('albumArtURI');
 
 		if(!currentTrack || !currentTrack.title) {
 			return <div id="current-track-info">No Music</div>
@@ -46,7 +48,8 @@ class CurrentTrack extends React.Component {
 
 		return (
 			<div id="current-track-info">
-				<AlbumArt id="current-track-art" />
+				<AlbumArt id="current-track-art" src={currentTrack.albumArtURI}
+												 viewport={this.state.boundingRect} />
 				<div>
 					<h6>Track</h6>
 					<p id="track">{currentTrack.title}</p>

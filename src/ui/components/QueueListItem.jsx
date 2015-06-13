@@ -13,7 +13,7 @@ class QueueListItem extends React.Component {
 
 		return (
 			<li onDoubleClick={this._onDoubleClick.bind(this)} data-position={this.props.position}>
-				<AlbumArt id={id} src={track.albumArtURI} />
+				<AlbumArt id={id} src={track.albumArtURI} viewport={this.props.viewport} />
 				<div className="trackinfo">
 					<p className="title">{track.title}</p>
 					<p className="artist">{track.creator}</p>

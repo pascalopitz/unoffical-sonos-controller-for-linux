@@ -16,6 +16,10 @@ class QueueList extends React.Component {
 
 	componentDidMount() {
 		QueueStore.addChangeListener(this._onChange.bind(this));
+
+		this.setState({
+			boundingRect : React.findDOMNode(this).getBoundingClientRect()
+		});
 	}
 
 	_onChange() {
@@ -28,6 +32,14 @@ class QueueList extends React.Component {
 
 	_onClick () {
 		QueueActions.flush();
+	}
+
+	_onScroll (e) {
+		let node = e.target;
+
+		this.setState({
+			boundingRect : node.getBoundingClientRect()
+		});
 	}
 
 	render () {
@@ -46,7 +58,9 @@ class QueueList extends React.Component {
 			queueItemNodes = tracks.map((track, p) => {
 				var position = p + 1;
 				return (
-					<QueueListItem track={track} position={position} />
+					<QueueListItem track={track}
+									position={position}
+									viewport={this.state.boundingRect} />
 				);
 			});
 		}
@@ -54,7 +68,7 @@ class QueueList extends React.Component {
 		return (
 			<div id="queue-list-container">
 				{{clearNode}}
-				<ul id="queue-container">
+				<ul id="queue-container" onScroll={this._onScroll.bind(this)}>
 					{{queueItemNodes}}
 				</ul>
 			</div>
