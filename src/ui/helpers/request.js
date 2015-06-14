@@ -6,6 +6,10 @@ var request = function (options, callback) {
 
 	xhr.open(options.method || 'GET', options.uri || options.url);
 
+	if(options.responseType) {
+		xhr.responseType = options.responseType;
+	}
+
 	if(options.headers) {
 		for(var k in options.headers) {
 			if(options.headers.hasOwnProperty(k)) {
@@ -19,6 +23,9 @@ var request = function (options, callback) {
 
 
 		if (xhr.readyState == 4) {
+
+			let response = xhr.responseType === 'blob' ? xhr.response : xhr.responseText;
+
 			if (xhr.status === 200) {
 		
 				xhr.getAllResponseHeaders().split('\n').forEach(function (l) {
@@ -32,7 +39,12 @@ var request = function (options, callback) {
 				callback(null, { 
 					statusCode: xhr.status,
 					headers: headers
-				}, xhr.responseText);
+				}, response);
+			} else {
+				callback(xhr.status, { 
+					statusCode: xhr.status,
+					headers: headers
+				}, response);
 			}
 		}
 	}

@@ -52,13 +52,18 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Display and interact with UI to start / stop / back / next
 - [x] UI to browse artists / tracks / albums
 - [x] Drill down from artists / tracks / albums
-- [ ] Fix interaction glitch when dragging group volume slider
+- [x] Load and display images
+- [x] Search for artists / tracks / albums
 - [ ] Play, add to/replace queue from library browser
+- [ ] Drag and drop to the queue
+- [ ] Fix image ghosting issues
+- [ ] Make sure searches don't fire too often
+- [ ] Infinite scroll for search results
+- [ ] Fix interaction glitch when dragging group volume slider
 - [ ] Highlight currently playing track
 - [ ] Find out how to query for next track
 - [ ] Jump to places in the alphabet in media library
 - [ ] Sort things in the queue (drag & drop?)
-- [ ] Load and display images
 - [ ] Display Loading message if there's no players
 - [ ] Integrate services???
 

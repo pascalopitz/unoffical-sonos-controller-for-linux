@@ -43,6 +43,7 @@ class BrowserList extends React.Component {
 			history: history,
 			searching: searching,
 			searchMode: searchMode,
+			boundingRect : React.findDOMNode(this).getBoundingClientRect(),
 		});
 	}
 
