@@ -53,12 +53,14 @@ const LIBRARY_STATE = {
 	]
 };
 
+const DEFAULT_SEARCH_TARGET = 'artists';
+
 var BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 
 	_state : LIBRARY_STATE,
 	_search :  false,
 	_searchResults :  null,
-	_searchTarget :  'artists',
+	_searchTarget :  DEFAULT_SEARCH_TARGET,
 	_history: [],
 
 	emitChange () {
@@ -119,7 +121,7 @@ Dispatcher.register(action => {
 				BrowserListStore._history = [];
 				BrowserListStore.endSearch();
 				BrowserListStore.setSearchResults(null);
-				BrowserListStore._searchTarget = null;
+				BrowserListStore._searchTarget = DEFAULT_SEARCH_TARGET;
 				BrowserListStore.setState(LIBRARY_STATE);
 			} else {
 				BrowserListStore._history = [];
