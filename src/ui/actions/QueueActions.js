@@ -27,13 +27,15 @@ export default {
 	gotoPosition (position) {
 		let sonos = SonosService._currentDevice;
 
-		sonos.goto(position, () => {
-			sonos.play(() => {
-				Dispatcher.dispatch({
-					actionType: Constants.QUEUE_GOTO,
-					position: position,
+		sonos.selectQueue(() => {
+			sonos.goto(position, () => {
+				sonos.play(() => {
+					Dispatcher.dispatch({
+						actionType: Constants.QUEUE_GOTO,
+						position: position,
+					});
+					SonosService.queryState();
 				});
-				SonosService.queryState();
 			});
 		});
 	}
