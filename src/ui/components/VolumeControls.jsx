@@ -61,6 +61,14 @@ class VolumeControls extends React.Component {
 				var newVolume = Math.ceil(factor * volumeLevel);
 			}
 
+			if(newVolume > 99) {
+				newVolume = 99;
+			}
+
+			if(newVolume <= 0) {
+				newVolume = 0;
+			}
+
 			state.players[key].volume = newVolume;
 			VolumeControlActions.setPlayerVolume(key, newVolume);
 		});
@@ -90,6 +98,7 @@ class VolumeControls extends React.Component {
 		this.setState({
 			dragging: true
 		});
+		VolumeControlActions.startAdjust();
 	}
 
 	_dragEnd () {
@@ -97,6 +106,7 @@ class VolumeControls extends React.Component {
 			this.setState({
 				dragging: false
 			});
+			VolumeControlActions.stopAdjust();
 			VolumeControlActions.queryVolumes();
 		}, 500);
 	}
