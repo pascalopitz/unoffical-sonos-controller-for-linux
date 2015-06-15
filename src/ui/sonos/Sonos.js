@@ -424,23 +424,7 @@ class Sonos {
 	 * @param	{Function} callback (err, seeked)
 	 */
 	goto (trackNumber, callback) {
-		debug('Sonos.goto(%j)', callback);
-		var action, body;
-
-		action = '"urn:schemas-upnp-org:service:AVTransport:1#Seek"';
-		body = '<u:Seek xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><Unit>TRACK_NR</Unit><Target>' + trackNumber + '</Target></u:Seek>';
-		return this.request(TRANSPORT_ENDPOINT, action, body, 'u:SeekResponse', function(err, data) {
-			if (err) return callback(err);
-
-			if (data[0].$['xmlns:u'] === 'urn:schemas-upnp-org:service:AVTransport:1') {
-				return callback(null, true);
-			} else {
-				return callback(new Error({
-					err: err,
-					data: data
-				}), false);
-			}
-		});
+		this.selectTrack.call(this, trackNumber, callback);
 	}
 
 	/**
@@ -822,7 +806,7 @@ class Sonos {
 		requestHelper('http://' + this.host + ':' + this.port + '/status/topology', function(err, res, body) {
 			if(err) return callback(err);
 			debug(body);
-			xml2js.parseString(body, function(err, topology) {
+			(new xml2js.Parser()).parseString(body, function(err, topology) {
 				if(err) return callback(err);
 				var info = topology.ZPSupportInfo;
 				var zones = null, mediaServers = null;

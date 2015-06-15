@@ -4,6 +4,12 @@ var request = function (options, callback) {
 
 	var xhr = new XMLHttpRequest();
 
+	if(typeof options === 'string') {
+		options = {
+			uri: options,
+		}
+	}
+
 	xhr.open(options.method || 'GET', options.uri || options.url);
 
 	if(options.responseType) {

@@ -7,14 +7,15 @@ import QueueListItem from './QueueListItem';
 
 class QueueList extends React.Component {
 
-	constructor(props) {
+	constructor (props) {
 		super(props);
 		this.state = {
 			tracks: QueueStore.getTracks(),
+			position: QueueStore.getPosition(),
 		};
 	}
 
-	componentDidMount() {
+	componentDidMount () {
 		QueueStore.addChangeListener(this._onChange.bind(this));
 
 		this.setState({
@@ -22,11 +23,21 @@ class QueueList extends React.Component {
 		});
 	}
 
-	_onChange() {
+	componentWillUpdate (nextProps, nextState) {
+		if(nextState.position && nextState.position !== this.state.position) {
+			window.setTimeout(() => {
+				let current = root.querySelector('*[data-is-current=true]').scrollIntoViewIfNeeded();
+			}, 1000);
+		}
+	}
+
+	_onChange () {
 		let tracks = QueueStore.getTracks();
 
 		this.setState({
+			boundingRect : React.findDOMNode(this).getBoundingClientRect(),
 			tracks: tracks,
+			position: QueueStore.getPosition(),
 		});
 	}
 
@@ -45,6 +56,7 @@ class QueueList extends React.Component {
 	render () {
 
 		var tracks = this.state.tracks;
+		var currentPosition = this.state.position;
 		var queueItemNodes;
 		var clearNode;
 
@@ -57,9 +69,12 @@ class QueueList extends React.Component {
 
 			queueItemNodes = tracks.map((track, p) => {
 				var position = p + 1;
+				var isCurrent = position === currentPosition;
+
 				return (
 					<QueueListItem track={track}
 									position={position}
+									isCurrent={isCurrent}
 									viewport={this.state.boundingRect} />
 				);
 			});

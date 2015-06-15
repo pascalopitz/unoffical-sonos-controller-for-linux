@@ -58,6 +58,45 @@ let SonosService = {
 		});
 	},
 
+
+	queryTopology (sonos) {
+		sonos.getTopology((err, info) => {
+			if(err) {
+				return;
+			}
+
+			chrome.storage.local.get(['zone'], (vals) => {
+
+				let zone = _(info.zones).findWhere({
+					coordinator: "true"
+				});;
+
+				if(vals.zone) {
+					let match = _(info.zones).findWhere({
+						group: vals.zone,
+						coordinator: "true"
+					});
+
+					zone = match || zone;
+				}
+
+				// this.selectCurrentZone(zone);
+				// this.queryState();
+				// Dispatcher.dispatch({
+				// 	actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
+				// 	group: zone,
+				// });
+			});
+
+			// Dispatcher.dispatch({
+			// 	actionType: Constants.SONOS_SERVICE_TOPOLOGY_UPDATE,
+			// 	groups: info.zones,
+			// });
+			// TODO: update topology from here as well
+			// match different format somehow
+		});
+	},
+
 	queryVolumeInfo () {
 		let group = ZoneGroupStore.getCurrent();
 
@@ -106,7 +145,8 @@ let SonosService = {
 			});
 		});
 
-		this.queryVolumeInfo(sonos);
+		this.queryVolumeInfo();
+		// this.queryTopology(sonos);
 
 		sonos.currentTrack((err, track) => {
 			if(err) {

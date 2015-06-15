@@ -631,8 +631,9 @@ h4 {
 	font-size: 33px;
 }
 
-#browser-container li,
-#queue-container li {
+#browser-container > li,
+#queue-container > li {
+	position: relative;
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -649,17 +650,17 @@ h4 {
 }
 
 #browser-container li:focus,
-#queue-container li:focus {
-	background: rgba(255,255,255,0.15);
+#queue-container li:focus,
+#queue-container li[data-is-current=true] {
+	background: rgba(255,255,255,0.10);
 	outline: none;
 }
 
-
-#browser-container li i.material-icons,
+#browser-container li.top-action i.material-icons,
 #browser-container li img,
 #queue-container li img {
-	width: 40px;
-	height: 40px;
+	width: 50px;
+	height: 50px;
 	vertical-align: top;
 	margin-right: 3px;
 	display: inline-block;
@@ -682,10 +683,11 @@ h4 {
 	width: calc(100% - 53px);
 }
 
+#browser-container li div.with-creator p,
 #queue-container li div p {
 	margin: 0;
-	line-height: 18px;
-	font-size: 13px;
+	line-height: 24px;
+	font-size: 14px;
 	overflow: hidden;
 	width: 100%;
 	white-space: nowrap;
@@ -703,4 +705,55 @@ h4 {
 
 #queue-list-container {
 	height: calc(100% - 316px);
+}
+
+#browser-container .playable.trackinfo {
+	position: relative;
+	width: calc(100% - 53px - 40px);
+}
+
+#browser-container .title,
+#browser-container .creator {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+#browser-container i.material-icons.arrow {
+	height: 20px;
+	width: 20px;
+	vertical-align: top;
+	margin-top: 10px;
+	opacity: 0;
+	transition: all .3s;
+}
+
+#browser-container :hover i.material-icons.arrow {
+	opacity: .8;
+}
+
+#browser-container .inline-menu {
+	position: absolute;
+	background: #ddd;
+	z-index: 100;
+	border-radius: 5px;
+	margin: 0;
+	padding: 0;
+	top: 35px;
+	right: 15px;
+	box-shadow: 0px 0px 1px 1px #4399CC;
+}
+
+
+#browser-container .inline-menu > li {
+	color: #222;
+	margin: 0;
+	padding: 10px;
+	text-shadow: none;
+	font-size: 14px;
+	list-style: none;
+}
+
+#browser-container .inline-menu > li:not(:last-child) {
+	border-bottom: 1px #666 solid;
 }

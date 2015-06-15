@@ -1,9 +1,9 @@
-import Dispatcher from '../dispatcher/AppDispatcher'
-import Constants  from '../constants/Constants'
+import Dispatcher from '../dispatcher/AppDispatcher';
+import Constants  from '../constants/Constants';
 
-import SonosService from '../services/SonosService'
+import SonosService from '../services/SonosService';
 
-import BrowserListStore from '../stores/BrowserListStore'
+import QueueStore from '../stores/QueueStore';
 
 export default {
 
@@ -28,16 +28,51 @@ export default {
 		});
 	},
 
-	play (item) {
+	playNow (item) {
+		let sonos = SonosService._currentDevice;
+
+		sonos.getMusicLibrary('queue', {total: 0}, (err, res) => {
+			let pos = Number(res.total) + 1;
+			sonos.queue(item, () => {
+				sonos.goto(pos, () => {
+					sonos.play(() => {
+						SonosService.queryState(sonos);
+					});
+				});
+			});
+		});
+	},
+
+	playNext (item) {
+		let sonos = SonosService._currentDevice;
+
+		sonos.getPositionInfo((err, info) => {
+			let pos = Number(info.Track) + 1;
+			sonos.queue(item, pos, () => {
+				SonosService.queryState(sonos);
+			});
+		});
+	},
+
+
+	addQueue (item) {
 		let sonos = SonosService._currentDevice;
 
 		sonos.queue(item, () => {
 			SonosService.queryState(sonos);
 		});
+	},
 
-		Dispatcher.dispatch({
-			actionType: Constants.BROWSER_PLAY,
-			state: item,
+
+	replaceQueue (item) {
+		let sonos = SonosService._currentDevice;
+
+		sonos.flush(() => {
+			sonos.queue(item, () => {
+				sonos.play(() => {
+					SonosService.queryState(sonos);
+				});
+			});
 		});
 	},
 
