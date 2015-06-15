@@ -56,6 +56,26 @@ class BrowserListItem extends React.Component  {
 		return false;
 	}
 
+	_hideMenu (e) {
+		if(this.state.expanded) {
+			this.setState({
+				expanded: false
+			});
+		}
+	}
+
+	_onMouseOut (e) {
+		this._hideTimeout = window.setTimeout(this._hideMenu.bind(this), 500);
+		return false;
+	}
+
+	_onMouseOver (e) {
+		if(this._hideTimeout) {
+			window.clearTimeout(this._hideTimeout);
+		}
+		return false;
+	}
+
 	render () {
 		var item = this.props.model;
 		var inlineMenu, inlineMenuButton;
@@ -72,7 +92,10 @@ class BrowserListItem extends React.Component  {
 
 			if(this.state.expanded) {
 				inlineMenu = (
-					<ul className="inline-menu">
+					<ul className="inline-menu"
+						onMouseOut={this._onMouseOut.bind(this)}
+						onMouseOver={this._onMouseOver.bind(this)}>
+
 						<li onClick={this._playNow.bind(this)}>Play Now</li>
 						<li onClick={this._playNext.bind(this)}>Play Next</li>
 						<li onClick={this._addQueue.bind(this)}>Add to Queue</li>
@@ -91,7 +114,11 @@ class BrowserListItem extends React.Component  {
 		}
 
 		return (
-			<li onClick={this._onClick.bind(this)} data-position={this.props.position}>
+			<li onClick={this._onClick.bind(this)}
+				onMouseOut={this._onMouseOut.bind(this)}
+				onMouseOver={this._onMouseOver.bind(this)}
+				data-position={this.props.position}>
+
 				<AlbumArt viewport={this.props.viewport} src={item.albumArtURI} />
 				<div className={className}>
 					<p className="title" title={item.title}>{item.title}</p>

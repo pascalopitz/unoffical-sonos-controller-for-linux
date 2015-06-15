@@ -54,13 +54,13 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Drill down from artists / tracks / albums
 - [x] Load and display images
 - [x] Search for artists / tracks / albums
-- [ ] Play, add to/replace queue from library browser
+- [x] Play, add to/replace queue from library browser
+- [x] Highlight currently playing track
 - [ ] Drag and drop to the queue
 - [ ] Fix image ghosting issues
 - [ ] Make sure searches don't fire too often
 - [ ] Infinite scroll for search results
 - [ ] Fix interaction glitch when dragging group volume slider
-- [ ] Highlight currently playing track
 - [ ] Find out how to query for next track
 - [ ] Jump to places in the alphabet in media library
 - [ ] Sort things in the queue (drag & drop?)
