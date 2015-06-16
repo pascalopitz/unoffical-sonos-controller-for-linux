@@ -8,7 +8,7 @@ class BrowserListItem extends React.Component  {
 	constructor () {
 		super();
 		this.state = {
-			expanded: false
+			expanded: false,
 		};
 	}
 
@@ -80,8 +80,9 @@ class BrowserListItem extends React.Component  {
 	}
 
 	render () {
+		var inlineMenu;
+		var inlineMenuButton;
 		var item = this.props.model;
-		var inlineMenu, inlineMenuButton;
 		var className = 'trackinfo';
 
 		var artistInfo;

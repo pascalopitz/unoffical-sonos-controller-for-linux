@@ -269,6 +269,7 @@ h4 {
 
 #music-sources-container h4.with-history > span {
 	margin-left: 30px;
+	margin-right: 30px;
 	display: block;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -738,6 +739,7 @@ h4 {
 	height: calc(100% - 316px);
 }
 
+#queue-container .trackinfo,
 #browser-container .playable.trackinfo {
 	position: relative;
 	width: calc(100% - 53px - 40px);
@@ -750,7 +752,8 @@ h4 {
 	text-overflow: ellipsis;
 }
 
-#browser-container i.material-icons.arrow {
+#browser-container i.material-icons.arrow, 
+#queue-container i.material-icons.arrow {
 	height: 20px;
 	width: 20px;
 	vertical-align: top;
@@ -759,11 +762,12 @@ h4 {
 	transition: all .3s;
 }
 
-#browser-container :hover i.material-icons.arrow {
+#browser-container :hover i.material-icons.arrow,
+#queue-container :hover i.material-icons.arrow {
 	opacity: .8;
 }
 
-#browser-container .inline-menu {
+.inline-menu {
 	position: absolute;
 	background: #ddd;
 	z-index: 100;
@@ -776,7 +780,7 @@ h4 {
 }
 
 
-#browser-container .inline-menu > li {
+.inline-menu > li {
 	color: #222;
 	margin: 0;
 	padding: 10px;
@@ -785,6 +789,11 @@ h4 {
 	list-style: none;
 }
 
-#browser-container .inline-menu > li:not(:last-child) {
+.inline-menu > li:not(:last-child),
+.inline-menu > li:not(:last-child) {
 	border-bottom: 1px #666 solid;
+}
+
+.list-item-placeholder {
+	min-height: 53px;
 }
