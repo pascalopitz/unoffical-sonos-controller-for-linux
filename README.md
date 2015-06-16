@@ -56,15 +56,18 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Search for artists / tracks / albums
 - [x] Play, add to/replace queue from library browser
 - [x] Highlight currently playing track
-- [ ] Drag and drop to the queue
-- [ ] Fix image ghosting issues
-- [ ] Make sure searches don't fire too often
+- [x] Fix image ghosting issues
+- [x] Display Loading message if there's no players
+- [ ] Play and remove from to the queue
+- [ ] Select and group remove from to the queue
+- [ ] Drag and drop to reorder the queue
 - [ ] Infinite scroll for search results
+- [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin
+- [ ] Make sure searches don't fire too often
+- [ ] Fix broken image issues (data url too long?)
 - [ ] Fix interaction glitch when dragging group volume slider
 - [ ] Find out how to query for next track
 - [ ] Jump to places in the alphabet in media library
-- [ ] Sort things in the queue (drag & drop?)
-- [ ] Display Loading message if there's no players
 - [ ] Integrate services???
 
 
