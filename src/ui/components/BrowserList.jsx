@@ -86,7 +86,7 @@ class BrowserList extends React.Component {
 		var searching = this.state.searching;
 		var searchMode = this.state.searchMode;
 		var history = this.state.history;
-		var items = this.state.currentState.items;
+		var items = this.state.currentState.items || [];
 		var title = this.state.currentState.title;
 
 		var headlineNodes;

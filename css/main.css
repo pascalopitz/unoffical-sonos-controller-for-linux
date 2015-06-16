@@ -67,7 +67,7 @@ body {
 	right: 5px;	
 	z-index: 20000;
 
-	background: rgba(0, 0, 0, .3);
+	background: rgba(0, 0, 0, .7);
 
 	display: flex;
 	align-items: center;
@@ -265,6 +265,14 @@ h4 {
 #music-sources-container h4.with-history .material-icons {
 	font-size: 33px;
 	cursor: pointer;
+}
+
+#music-sources-container h4.with-history > span {
+	margin-left: 30px;
+	display: block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 #status-container h4#now-playing {

@@ -25,7 +25,7 @@ class Loader extends React.Component {
 			return null;
 		}
 
-		let msg = "Looking for Sonos Players ...";
+		let msg = "Searching for your Sonos System ...";
 
 		return (
 			<div id="loader">

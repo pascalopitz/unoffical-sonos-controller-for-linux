@@ -13,6 +13,7 @@ chrome.system.network.getNetworkInterfaces(function(interfaces) {
 
 var ip = {
 	address: function () {
+		console.log(firstInterface.address);
 		return firstInterface.address;
 	}
 };

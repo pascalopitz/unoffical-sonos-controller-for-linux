@@ -53,7 +53,8 @@ class BrowserListItem extends React.Component  {
 		this.setState({
 			expanded: !this.state.expanded
 		});
-		return false;
+		e.preventDefault();
+		e.stopPropagation();
 	}
 
 	_hideMenu (e) {
@@ -66,14 +67,16 @@ class BrowserListItem extends React.Component  {
 
 	_onMouseOut (e) {
 		this._hideTimeout = window.setTimeout(this._hideMenu.bind(this), 500);
-		return false;
+		e.preventDefault();
+		e.stopPropagation();
 	}
 
 	_onMouseOver (e) {
 		if(this._hideTimeout) {
 			window.clearTimeout(this._hideTimeout);
 		}
-		return false;
+		e.preventDefault();
+		e.stopPropagation();
 	}
 
 	render () {

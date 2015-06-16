@@ -53,7 +53,8 @@ class SearchBar extends React.Component {
 			term: term,
 		});
 		func();
-		return false;
+		e.preventDefault();
+		e.stopPropagation();
 	}
 }
 

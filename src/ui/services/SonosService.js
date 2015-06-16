@@ -20,13 +20,19 @@ let SonosService = {
 	_listeners: {},
 	_persistentSubscriptions: [],
 	_currentSubscriptions: [],
+	_searchInterval: null,
 
 	mount () {
+		this._searchInterval = window.setInterval(this.searchForDevices.bind(this), 1000);
 		this.searchForDevices();
 	},
 
 	searchForDevices () {
 		new Search((sonos) => {
+
+			if(this._searchInterval) {
+				window.clearInterval(this._searchInterval);
+			}
 
 			let listener = new Listener(sonos);
 
@@ -307,7 +313,7 @@ let SonosService = {
 
 		this._currentSubscriptions.forEach((sid) => {
 			x.removeService(sid, (error) => {
-				if (error) throw err;
+				if (error) throw error;
 				console.log('Successfully unsubscribed');
 			});
 		});
