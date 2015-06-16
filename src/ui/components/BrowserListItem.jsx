@@ -28,25 +28,25 @@ class BrowserListItem extends React.Component  {
 	_playNow (e) {
 		let item = this.props.model;
 		BrowserListActions.playNow(item);
-		return this._toggle();
+		this._toggle(e);
 	}
 
 	_playNext (e) {
 		let item = this.props.model;
 		BrowserListActions.playNext(item);
-		return this._toggle();
+		this._toggle(e);
 	}
 
 	_addQueue (e) {
 		let item = this.props.model;
 		BrowserListActions.addQueue(item);
-		return this._toggle();
+		this._toggle(e);
 	}
 
 	_replaceQueue (e) {
 		let item = this.props.model;
 		BrowserListActions.replaceQueue(item);
-		return this._toggle();
+		this._toggle(e);
 	}
 
 	_toggle (e) {
