@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import Dispatcher from '../dispatcher/AppDispatcher'
 import Constants  from '../constants/Constants'
 
@@ -7,11 +9,15 @@ export default {
 
 	selectGroup(group) {
 
-		SonosService.selectCurrentZone(group);
+		let zone = _(group).findWhere({
+			coordinator: 'true'
+		});
+
+		SonosService.selectCurrentZone(zone);
 
 		Dispatcher.dispatch({
 			actionType: Constants.ZONE_GROUP_SELECT,
-			group: group
+			zone: zone
 		});
 
 		SonosService.queryState();

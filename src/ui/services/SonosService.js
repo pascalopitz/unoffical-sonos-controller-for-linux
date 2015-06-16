@@ -57,6 +57,7 @@ let SonosService = {
 
 				if(!this._currentDevice) {
 					this._currentDevice = sonos;
+					this.queryTopology(sonos);
 					this.subscribeServiceEvents(sonos);
 				}
 			});
@@ -66,7 +67,9 @@ let SonosService = {
 
 
 	queryTopology (sonos) {
+
 		sonos.getTopology((err, info) => {
+			
 			if(err) {
 				return;
 			}
@@ -75,45 +78,47 @@ let SonosService = {
 
 				let zone = _(info.zones).findWhere({
 					coordinator: "true"
-				});;
+				});
 
 				if(vals.zone) {
 					let match = _(info.zones).findWhere({
-						group: vals.zone,
+						uuid: vals.zone,
 						coordinator: "true"
 					});
 
 					zone = match || zone;
 				}
 
-				// this.selectCurrentZone(zone);
-				// this.queryState();
-				// Dispatcher.dispatch({
-				// 	actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
-				// 	group: zone,
-				// });
+				this.selectCurrentZone(zone);
+				Dispatcher.dispatch({
+					actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
+					zone: zone,
+				});
 			});
 
-			// Dispatcher.dispatch({
-			// 	actionType: Constants.SONOS_SERVICE_TOPOLOGY_UPDATE,
-			// 	groups: info.zones,
-			// });
-			// TODO: update topology from here as well
-			// match different format somehow
+			Dispatcher.dispatch({
+				actionType: Constants.SONOS_SERVICE_TOPOLOGY_UPDATE,
+				groups: info.zones,
+			});
 		});
 	},
 
 	queryVolumeInfo () {
-		let group = ZoneGroupStore.getCurrent();
+		let zone = ZoneGroupStore.getCurrent();
+		let topology = ZoneGroupStore.getAll();
 
-		if(!group) {
+		if(!topology.length || !group) {
 			return;
 		}
 
-		group.ZoneGroupMember.forEach((m) => {
+		Object.keys(topology).forEach((key) => {
+			let m = topology[key];
 
-			let l = m.$.Location;
-			let matches = REG.exec(l);
+			if(m.group !== zone.group) {
+				return;
+			}
+
+			let matches = REG.exec(m.location);
 			let sonos = this._deviceSearches[matches[1]];
 
 			sonos.getMuted((err, muted) => {
@@ -152,7 +157,7 @@ let SonosService = {
 		});
 
 		this.queryVolumeInfo();
-		// this.queryTopology(sonos);
+		this.queryTopology(sonos);
 
 		sonos.currentTrack((err, track) => {
 			if(err) {
@@ -206,45 +211,45 @@ let SonosService = {
 
 		switch (endpoint) {
 
-			case '/ZoneGroupTopology/Event':
-				{
-					let state = xml2json(data.ZoneGroupState, {
-						explicitArray: true
-					});
+			// case '/ZoneGroupTopology/Event':
+			// 	{
+			// 		let state = xml2json(data.ZoneGroupState, {
+			// 			explicitArray: true
+			// 		});
 
-					Dispatcher.dispatch({
-						actionType: Constants.SONOS_SERVICE_ZONEGROUPS_UPDATE,
-						groups: state.ZoneGroups.ZoneGroup,
-					});
+			// 		Dispatcher.dispatch({
+			// 			actionType: Constants.SONOS_SERVICE_ZONEGROUPS_UPDATE,
+			// 			groups: state.ZoneGroups.ZoneGroup,
+			// 		});
 
-					if(!ZoneGroupStore.getCurrent()) {
+			// 		if(!ZoneGroupStore.getCurrent()) {
 
-						chrome.storage.local.get(['zone'], (vals) => {
+			// 			chrome.storage.local.get(['zone'], (vals) => {
 
-							let zone = state.ZoneGroups.ZoneGroup[0];
+			// 				let zone = state.ZoneGroups.ZoneGroup[0];
 
-							if(vals.zone) {
-								let match = _(state.ZoneGroups.ZoneGroup).findWhere({
-									$: {
-										ID: vals.zone
-									}
-								});
+			// 				if(vals.zone) {
+			// 					let match = _(state.ZoneGroups.ZoneGroup).findWhere({
+			// 						$: {
+			// 							ID: vals.zone
+			// 						}
+			// 					});
 
-								zone = match || zone;
-							}
+			// 					zone = match || zone;
+			// 				}
 
-							this.selectCurrentZone(zone);
-							this.queryState();
-							Dispatcher.dispatch({
-								actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
-								group: zone,
-							});
+			// 				this.selectCurrentZone(zone);
+			// 				this.queryState();
+			// 				Dispatcher.dispatch({
+			// 					actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
+			// 					zone: zone,
+			// 				});
 
-						});
+			// 			});
 
-					}
-				}
-				break;
+			// 		}
+			// 	}
+			// 	break;
 
 			case '/MediaRenderer/RenderingControl/Event':
 				{
@@ -325,16 +330,11 @@ let SonosService = {
 		var sonos;
 
 		chrome.storage.local.set({
-			zone: value.$.ID
+			zone: value.uuid
 		}, () => {});
 
-		value.ZoneGroupMember.forEach((m) => {
-			if(m.$.UUID === value.$.Coordinator) {
-				let l = m.$.Location;
-				let matches = REG.exec(l);
-				sonos = this._deviceSearches[matches[1]];
-			}
-		});
+		let matches = REG.exec(value.location);
+		sonos = this._deviceSearches[matches[1]];
 
 		if(sonos) {
 			if(this._currentDevice) {

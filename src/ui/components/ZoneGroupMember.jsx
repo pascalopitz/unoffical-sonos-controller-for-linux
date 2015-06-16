@@ -4,7 +4,7 @@ class ZoneGroupMember extends React.Component {
 	render () {
 		return (
 			<li>
-				<span>{this.props.member.$.ZoneName}</span>
+				<span>{this.props.member.name}</span>
 			</li>
 		);
 	}

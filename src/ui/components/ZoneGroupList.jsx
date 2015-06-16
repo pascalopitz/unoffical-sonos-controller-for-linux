@@ -1,6 +1,6 @@
 import React from 'react/addons';
 
-import sort from '../helpers/sort';
+// import sort from '../helpers/sort';
 
 import ZoneGroup from './ZoneGroup';
 import ZoneGroupStore from '../stores/ZoneGroupStore';
@@ -27,18 +27,16 @@ class ZoneGroupList extends React.Component {
 	}
 
 	render () {
+		// TODO: SORT PROPERLY
+		// var items = this.state.groups.sort((item1, item2) => {
+		// 	var members1 = item1.ZoneGroupMember.sort(sort.asc);
+		// 	var members2 = item2.ZoneGroupMember.sort(sort.asc);
 
-		var items = this.state.groups.sort((item1, item2) => {
-			var members1 = item1.ZoneGroupMember.sort(sort.asc);
-			var members2 = item2.ZoneGroupMember.sort(sort.asc);
+		// 	return sort.asc(members1[0], members2[0]);
+		// });
 
-			return sort.asc(members1[0], members2[0]);
-		});
-
-		var zoneGroupNodes = items.map((item, index) => {
-			if(item.ZoneGroupMember[0].$.IsZoneBridge) {
-				return;
-			}
+		var zoneGroupNodes = Object.keys(this.state.groups).map((key) => {
+			let item = this.state.groups[key];
 
 			return (
 				<ZoneGroup group={item} currentZone={this.state.current} />

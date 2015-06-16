@@ -20,7 +20,7 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	setAll (groups) {
-		this._groups = groups;
+		this._groups = _(groups).groupBy('group').value();
 	},
 
 	getAll () {
@@ -28,6 +28,7 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	setCurrent (group) {
+		console.log(group);
 		this._current = group;
 	},
 
@@ -38,14 +39,20 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 
 Dispatcher.register(action => {
 	switch (action.actionType) {
-		case Constants.SONOS_SERVICE_ZONEGROUPS_UPDATE:
+
+		case Constants.SONOS_SERVICE_TOPOLOGY_UPDATE:
 			ZoneGroupStore.setAll(action.groups);
-			ZoneGroupStore.emitChange();
+			ZoneGroupStore.emitChange();		
 			break;
+
+		// case Constants.SONOS_SERVICE_ZONEGROUPS_UPDATE:
+		// 	ZoneGroupStore.setAll(action.groups);
+		// 	ZoneGroupStore.emitChange();
+		// 	break;
 
 		case Constants.ZONE_GROUP_SELECT:
 		case Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT:
-			ZoneGroupStore.setCurrent(action.group);
+			ZoneGroupStore.setCurrent(action.zone);
 			ZoneGroupStore.emitChange();
 			break;
 	}

@@ -1,8 +1,10 @@
 import events from 'events';
 import _ from "lodash";
 
-import Dispatcher from '../dispatcher/AppDispatcher'
-import Constants  from '../constants/Constants'
+import Dispatcher from '../dispatcher/AppDispatcher';
+import Constants  from '../constants/Constants';
+
+import ZoneGroupStore from '../stores/ZoneGroupStore';
 
 const REG = /^http:\/\/([\d\.]+)/;
 const CHANGE_EVENT = 'change';
@@ -23,9 +25,17 @@ var VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
 
 	intializeGroup (group) {
 		this._players = {};
+		let topology = ZoneGroupStore.getAll();
+		console.log(group, topology);
 
-		group.ZoneGroupMember.forEach((m) => {
-			let matches = REG.exec(m.$.Location);
+		let members = _(topology).findWhere({
+			group: group.group
+		}) || [];
+
+		console.log(members);
+
+		members.forEach((m) => {
+			let matches = REG.exec(m.location);
 
 			if(matches) {
 				let host = matches[1];
@@ -40,7 +50,7 @@ var VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
 				}
 
 				this._players[host] = _.assign(defaults,{
-					name: m.$.ZoneName
+					name: m.name
 				});
 			}
 		});
@@ -88,7 +98,7 @@ Dispatcher.register(action => {
 
 		case Constants.ZONE_GROUP_SELECT:
 		case Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT:
-			VolumeControlStore.intializeGroup(action.group);
+			VolumeControlStore.intializeGroup(action.zone);
 			VolumeControlStore.emitChange();
 			break;
 
