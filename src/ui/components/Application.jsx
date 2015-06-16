@@ -10,6 +10,7 @@ import PositionInfo from './PositionInfo';
 import VolumeControls from './VolumeControls';
 import ZoneGroupList from './ZoneGroupList';
 import SearchBar from './SearchBar';
+import Loader from './Loader';
 
 var history = [];
 
@@ -22,29 +23,32 @@ class Application extends React.Component {
 	render () {
 
 		return (
-			<div id="application">
-				<header id="top-control">
-					<VolumeControls />
-					<PlayControls />
-					<PositionInfo />
-					<SearchBar />
-				</header>
-				<div id="column-container">
-					<div id="zone-container">
-						<h4>ROOMS</h4>
-						<ZoneGroupList />
-			 		</div>
-					<div id="status-container">
+			<div>
+				<div id="application">
+					<header id="top-control">
+						<VolumeControls />
+						<PlayControls />
+						<PositionInfo />
+						<SearchBar />
+					</header>
+					<div id="column-container">
+						<div id="zone-container">
+							<h4>ROOMS</h4>
+							<ZoneGroupList />
+				 		</div>
+						<div id="status-container">
 
-						<h4 id="now-playing">NOW PLAYING</h4>
-						<CurrentTrack />
+							<h4 id="now-playing">NOW PLAYING</h4>
+							<CurrentTrack />
 
-						<h4 id="queue">QUEUE</h4>
-						<QueueList />
+							<h4 id="queue">QUEUE</h4>
+							<QueueList />
+						</div>
+
+						<BrowserList />
 					</div>
-
-					<BrowserList />
 				</div>
+				<Loader />
 			</div>
 		);
 	}
