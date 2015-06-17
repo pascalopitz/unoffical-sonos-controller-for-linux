@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 import AlbumArt from './AlbumArt';
@@ -8,7 +10,7 @@ class BrowserListItem extends React.Component  {
 	constructor () {
 		super();
 		this.state = {
-			expanded: false,
+			isExpanded: false,
 		};
 	}
 
@@ -51,16 +53,16 @@ class BrowserListItem extends React.Component  {
 
 	_toggle (e) {
 		this.setState({
-			expanded: !this.state.expanded
+			isExpanded: !this.state.isExpanded
 		});
 		e.preventDefault();
 		e.stopPropagation();
 	}
 
 	_hideMenu (e) {
-		if(this.state.expanded) {
+		if(this.state.isExpanded) {
 			this.setState({
-				expanded: false
+				isExpanded: false
 			});
 		}
 	}
@@ -94,7 +96,7 @@ class BrowserListItem extends React.Component  {
 				<i className="material-icons arrow" onClick={this._toggle.bind(this)}>arrow_drop_down_circle</i>
 			);
 
-			if(this.state.expanded) {
+			if(this.state.isExpanded) {
 				inlineMenu = (
 					<ul className="inline-menu"
 						onMouseOut={this._onMouseOut.bind(this)}

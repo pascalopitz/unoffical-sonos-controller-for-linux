@@ -1,3 +1,5 @@
+"use strict";
+
 import events from 'events';
 import _ from "lodash";
 

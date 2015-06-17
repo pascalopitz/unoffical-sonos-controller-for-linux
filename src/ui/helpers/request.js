@@ -1,3 +1,5 @@
+"use strict";
+
 var reg = /^(\w+): (.+)/;
 
 var request = function (options, callback) {

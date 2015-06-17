@@ -1,18 +1,16 @@
+"use strict";
+
+import _ from 'lodash';
+
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants  from '../constants/Constants';
 
 import SonosService  from '../services/SonosService';
 import Services from '../sonos/helpers/Services';
 
-export default {
+import QueueStore from '../stores/QueueStore';
 
-	setTracks (tracks) {
-		Dispatcher.dispatch({
-			actionType: Constants.QUEUE_TRACKS_SET,
-			tracks: tracks
-		});
-		SonosService.queryState();
-	},
+export default {
 
 	flush () {
 		let sonos = SonosService._currentDevice;
@@ -41,6 +39,91 @@ export default {
 		});
 	},
 
+	select (track) {
+		Dispatcher.dispatch({
+			actionType: Constants.QUEUE_SELECT,
+			track: track,
+		});
+	},
+
+	deselect (track) {
+		Dispatcher.dispatch({
+			actionType: Constants.QUEUE_DESELECT,
+			track: track,
+		});
+	},
+
+	_getSeries() {
+		let tracks = QueueStore.getTracks();
+		let selected = QueueStore.getSelected();
+
+		let series = [];
+
+		let prevSelected = false;
+		let newRequired = true;
+
+		tracks.forEach((track, i) => {
+			let isSelected = _.filter(selected, _.matches(track)).length > 0;
+
+			if(isSelected) {
+
+				if(newRequired) {
+					series.push([]);
+					newRequired = false;
+				}
+
+				series[series.length - 1].push(i + 1);
+			}
+
+			if(!isSelected && prevSelected) {
+				newRequired = true;
+			}
+
+			prevSelected = isSelected;
+		});
+
+		return series;
+	},
+
+	removeSelected () {
+		let sonos = SonosService._currentDevice;
+		let avTransport = new Services.AVTransport(sonos.host, sonos.port);
+
+		let promises = [];
+		let removed = 0;
+
+		this._getSeries().forEach((arr) => {
+
+			let StartingIndex = arr[0] - removed;
+			let NumberOfTracks = arr.length;
+			removed = removed + NumberOfTracks;
+
+			promises.push(new Promise((resolve, reject) => {
+				let params = {
+					InstanceID: 0,
+					UpdateID: 0,
+					StartingIndex: StartingIndex,
+					NumberOfTracks: NumberOfTracks,
+				};
+				avTransport.RemoveTrackRangeFromQueue(params, (err) => {
+					if(err) {
+						reject();
+					} else {
+						resolve()
+					}
+				});
+			}));
+		});
+
+		Promise.all(promises).then(() => {
+			Dispatcher.dispatch({
+				actionType: Constants.QUEUE_REMOVE,
+			});
+			QueueStore.clearSelected();
+			SonosService.queryState();
+		});
+	},
+
 	removeTrack (position) {
 		let sonos = SonosService._currentDevice;
 
@@ -56,8 +139,6 @@ export default {
 		avTransport.RemoveTrackRangeFromQueue(params, () => {
 			Dispatcher.dispatch({
 				actionType: Constants.QUEUE_REMOVE,
-				position: position,
-				number: 1,
 			});
 			SonosService.queryState();
 		});

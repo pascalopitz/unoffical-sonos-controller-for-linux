@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Encodes characters not allowed within html/xml tags
  * @param  {String} body

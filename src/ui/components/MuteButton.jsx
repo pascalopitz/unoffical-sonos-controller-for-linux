@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 class MuteButton extends React.Component {

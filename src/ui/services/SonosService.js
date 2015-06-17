@@ -1,3 +1,5 @@
+"use strict";
+
 import _ from 'lodash';
 import xml2json from 'jquery-xml2json';
 

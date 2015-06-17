@@ -1,3 +1,5 @@
+"use strict";
+
 let Constants = {
 	SEARCH: '',
 
@@ -21,6 +23,8 @@ let Constants = {
 	QUEUE_GOTO: '',
 	QUEUE_FLUSH: '',
 	QUEUE_REMOVE: '',
+	QUEUE_SELECT: '',
+	QUEUE_DESELECT: '',
 
 	ZONE_GROUP_SELECT: '',
 	ZONE_GROUP_SET: '',

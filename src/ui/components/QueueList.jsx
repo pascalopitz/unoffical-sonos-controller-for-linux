@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 import QueueActions from '../actions/QueueActions';
@@ -12,6 +14,7 @@ class QueueList extends React.Component {
 		this.state = {
 			tracks: QueueStore.getTracks(),
 			position: QueueStore.getPosition(),
+			selected: QueueStore.getSelected(),
 		};
 	}
 
@@ -32,12 +35,11 @@ class QueueList extends React.Component {
 	}
 
 	_onChange () {
-		let tracks = QueueStore.getTracks();
-
 		this.setState({
 			boundingRect : React.findDOMNode(this).getBoundingClientRect(),
-			tracks: tracks,
+			tracks: QueueStore.getTracks(),
 			position: QueueStore.getPosition(),
+			selected: QueueStore.getSelected(),
 		});
 	}
 
@@ -54,11 +56,11 @@ class QueueList extends React.Component {
 	}
 
 	render () {
-
-		var tracks = this.state.tracks;
-		var currentPosition = this.state.position;
-		var queueItemNodes;
-		var clearNode;
+		let tracks = this.state.tracks;
+		let selected = this.state.selected;
+		let currentPosition = this.state.position;
+		let queueItemNodes;
+		let clearNode;
 
 		if(tracks.length) {
 			clearNode = (
@@ -68,12 +70,13 @@ class QueueList extends React.Component {
 			);
 
 			queueItemNodes = tracks.map((track, p) => {
-				var position = p + 1;
-				var isCurrent = position === currentPosition;
+				let position = p + 1;
+				let isCurrent = position === currentPosition;
 
 				return (
 					<QueueListItem track={track}
 									position={position}
+									selected={selected}
 									isCurrent={isCurrent}
 									viewport={this.state.boundingRect} />
 				);

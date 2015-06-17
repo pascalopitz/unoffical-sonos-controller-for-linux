@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 import sort from '../helpers/sort';

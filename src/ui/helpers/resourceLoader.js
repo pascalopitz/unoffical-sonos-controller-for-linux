@@ -1,3 +1,5 @@
+"use strict";
+
 import request from './request';
 
 const MAX_CONNECTIONS = 2;

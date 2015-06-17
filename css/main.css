@@ -677,14 +677,19 @@ h4 {
 
 #browser-container li:hover,
 #queue-container li:hover {
-	background: rgba(255,255,255,0.05);
+	background: rgba(255,255,255,0.07);
 	outline: none;
 }
 
 #browser-container li:focus,
 #queue-container li:focus,
-#queue-container li[data-is-current=true] {
+body #queue-container li[data-is-current=true] {
 	background: rgba(255,255,255,0.10);
+	outline: none;
+}
+
+#queue-container li[data-is-selected=true] {
+	background: rgba(255,255,255,0.02);
 	outline: none;
 }
 
@@ -739,7 +744,11 @@ h4 {
 	height: calc(100% - 316px);
 }
 
-#queue-container .trackinfo,
+#queue-container .trackinfo {
+	position: relative;
+	width: calc(100% - 53px - 80px);
+}
+
 #browser-container .playable.trackinfo {
 	position: relative;
 	width: calc(100% - 53px - 40px);
@@ -762,8 +771,19 @@ h4 {
 	transition: all .3s;
 }
 
+#queue-container i.material-icons.checkbox {
+	height: 20px;
+	width: 20px;
+	vertical-align: top;
+	margin-top: 10px;
+	opacity: .3;
+	transition: all .3s;
+	margin-right: 20px;
+}
+
 #browser-container :hover i.material-icons.arrow,
-#queue-container :hover i.material-icons.arrow {
+#queue-container :hover i.material-icons.arrow,
+#queue-container :hover i.material-icons.checkbox {
 	opacity: .8;
 }
 
