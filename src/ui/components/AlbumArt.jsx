@@ -15,8 +15,8 @@ class AlbumArt extends React.Component {
 		};
 	}
 
-	_isVisible () {
-		let vp = this.props.viewport;
+	_isVisible (props) {
+		let vp = props.viewport;
 		let rect = React.findDOMNode(this).getBoundingClientRect();
 
 		if(rect.bottom > vp.top && rect.top < vp.bottom) {
@@ -32,7 +32,7 @@ class AlbumArt extends React.Component {
 
 	_loadImage () {
 		// here we make sure it's still visible, a URL and hasn't failed previously
-		if(!this._isVisible() || !this.props.src || this.state.failed) {
+		if(!this.state.visible || !this.props.src || this.state.failed) {
 			return;
 		}
 
@@ -57,23 +57,14 @@ class AlbumArt extends React.Component {
 	}
 
 	componentDidUpdate () {
-		let visible = this._isVisible();
-		let url = this.props.src;
-
-		if(visible && !this.state.src) {
+		if(this.state.visible && !this.state.src) {
 			// wait half a second, to prevent random scrolling fast through viewport 
 			// stuff to get loaded
 			this.timeout = window.setTimeout(this._loadImage.bind(this), 500)
 		}
 
-		if(!visible && this.timeout) {
+		if(!this.state.visible && this.timeout) {
 			window.clearTimeout(this.timeout);
-		}
-
-		if(this.state.visible !== visible) {
-			this.setState({
-				visible : visible
-			});
 		}
 	}
 
@@ -88,6 +79,10 @@ class AlbumArt extends React.Component {
 	}
 
 	componentWillReceiveProps(props) {
+		this.setState({
+			visible: this._isVisible(props)
+		});
+
 		// HACK: prevent image ghosting when pressing back button
 		if(props.src !== this.props.src) {
 			this.setState({
