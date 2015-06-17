@@ -1,5 +1,6 @@
 "use strict";
 
+import _ from 'lodash';
 import request from './request';
 
 const MAX_CONNECTIONS = 2;
@@ -72,4 +73,8 @@ export default {
 
 		return p;
 	},
+
+	remove(p) {
+		pending = _.without(pending, p);
+	}
 };

@@ -40,7 +40,7 @@ class AlbumArt extends React.Component {
 		let url = this.props.src;
 		let srcUrl = (url.indexOf('http://') === 0) ? url : 'http://' + sonos.host + ':' + sonos.port + decodeURIComponent(url);
 
-		resourceLoader.add(srcUrl).then((data) => {
+		this.promise = resourceLoader.add(srcUrl).then((data) => {
 			if(this.props.src === url) {
 				this.setState({
 					src: data
@@ -78,6 +78,10 @@ class AlbumArt extends React.Component {
 	}
 
 	componentWillUnmount () {
+		if(this.promise) {
+			resourceLoader.remove(this.promise);
+		}
+
 		if(this.timeout) {
 			window.clearTimeout(this.timeout);
 		}
