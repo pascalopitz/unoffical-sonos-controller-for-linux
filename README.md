@@ -3,6 +3,8 @@
 Tinkering with chrome apps and sonos.
 The project is written in ES6 and utilizes react and flux to manage the UI
 
+![](screenshots/screenshot_1.png?raw=true)
+
 ##Why?
 
 I have recently started to use Ubuntu as my main OS, and there's no decent controller app.
@@ -58,12 +60,11 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Highlight currently playing track
 - [x] Fix image ghosting issues
 - [x] Display Loading message if there's no players
-- [ ] Play and remove from to the queue
-- [ ] Select and group remove from to the queue
+- [x] Play and remove from to the queue
+- [x] Select and group remove from to the queue
 - [ ] Drag and drop to reorder the queue
 - [ ] Infinite scroll for search results
 - [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin
-- [ ] Make sure searches don't fire too often
 - [ ] Fix broken image issues (data url too long?)
 - [ ] Fix interaction glitch when dragging group volume slider
 - [ ] Find out how to query for next track

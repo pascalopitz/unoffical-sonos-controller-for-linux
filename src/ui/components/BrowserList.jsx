@@ -132,13 +132,12 @@ class BrowserList extends React.Component {
 		}
 
 		if(this.state.currentState.class === 'object.container.album.musicAlbum') {
+			let albumState = this.state.currentState;
+			albumState.creator = null;
+			albumState.title = `Complete Album (${items.length} Tracks)`;
+
 			actionNodes = (
-				<li onClick={this._playAlbum.bind(this)} className="top-action">
-					<i className="material-icons">playlist_add</i>
-					<p>
-						Queue Album
-					</p>
-				</li>
+				<BrowserListItem model={albumState} viewport={this.state.boundingRect} />
 			);
 		}
 
