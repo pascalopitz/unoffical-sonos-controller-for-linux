@@ -74,7 +74,7 @@ export default {
 		return p;
 	},
 
-	remove(p) {
-		pending = _.without(pending, p);
+	remove(p, url) {
+		pending[url] = _.without(pending[url], p);
 	}
 };
