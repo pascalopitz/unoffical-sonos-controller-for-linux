@@ -38,7 +38,14 @@ export default {
 		let sonos = SonosService._currentDevice;
 
 		sonos.getMusicLibrary('queue', {total: 0}, (err, res) => {
-			let pos = Number(res.total) + 1;
+			if(err) {
+				return;
+			}
+
+			let pos = 1;
+			if(res.total) {
+				pos = Number(res.total) + 1;
+			}
 			sonos.queue(item, () => {
 				sonos.goto(pos, () => {
 					sonos.play(() => {

@@ -64,6 +64,8 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Display Loading message if there's no players
 - [x] Play and remove from to the queue
 - [x] Select and group remove from to the queue
+- [x] BUG: Sometimes menu click adds track twice to queue
+- [ ] BUG: Same track in queue multiple times and selecting one selects all
 - [ ] Drag and drop to reorder the queue
 - [ ] Infinite scroll for search results
 - [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin

@@ -15,6 +15,9 @@ class BrowserListItem extends React.Component  {
 	}
 
 	_onClick (e) {
+		e.preventDefault();
+		e.stopPropagation();
+
 		let item = this.props.model;
 
 		if(item.class === 'object.item.audioItem.musicTrack') {
