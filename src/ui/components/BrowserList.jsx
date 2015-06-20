@@ -132,7 +132,7 @@ class BrowserList extends React.Component {
 		}
 
 		if(this.state.currentState.class === 'object.container.album.musicAlbum') {
-			let albumState = this.state.currentState;
+			let albumState = _.cloneDeep(this.state.currentState);
 			albumState.creator = null;
 			albumState.title = `Complete Album (${items.length} Tracks)`;
 

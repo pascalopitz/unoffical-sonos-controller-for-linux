@@ -52,15 +52,16 @@ class VolumeControls extends React.Component {
 		let volumeLevel = volume;
 		let groupVolume = this._calculateGroupVolume();
 		let deltaVolume = volumeLevel - groupVolume;
+		let newVolume;
 
 		keys.forEach((key) => {
-			if (volumeLevel < 1)
+			if (volumeLevel < 1) {
 				newVolume = 0;
-			else if (deltaVolume > 0)
+			} else if (deltaVolume > 0) {
 				newVolume = this.state.players[key].volume + deltaVolume;
-			else {
+			} else {
 				let factor = this.state.players[key].volume / groupVolume;
-				let newVolume = Math.ceil(factor * volumeLevel);
+				newVolume = Math.ceil(factor * volumeLevel);
 			}
 
 			if(newVolume > 99) {

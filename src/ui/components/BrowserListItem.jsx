@@ -18,7 +18,7 @@ class BrowserListItem extends React.Component  {
 		let item = this.props.model;
 
 		if(item.class === 'object.item.audioItem.musicTrack') {
-			BrowserListActions.addQueue(item);
+			BrowserListActions.playNow(item);
 		} else {
 			let node = React.findDOMNode(this);
 			node.parentNode.scrollTop = 0;

@@ -58,9 +58,7 @@ let SonosService = {
 				});
 
 				if(!this._currentDevice) {
-					this._currentDevice = sonos;
 					this.queryTopology(sonos);
-					this.subscribeServiceEvents(sonos);
 				}
 			});
 
@@ -105,6 +103,7 @@ let SonosService = {
 					}
 
 					this.selectCurrentZone(zone);
+
 					Dispatcher.dispatch({
 						actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
 						zone: zone,
@@ -314,6 +313,7 @@ let SonosService = {
 		sonos = this._deviceSearches[matches[1]];
 
 		if(sonos === this._currentDevice) {
+			this.queryState(sonos);
 			return;
 		}
 
@@ -334,9 +334,7 @@ let SonosService = {
 
 			this.subscribeServiceEvents(sonos);
 			this.queryState(sonos);
-			this._queryInterval = window.setInterval(() => {
-					this.queryState(this._currentDevice);
-			}, QUERY_INTERVAL);
+			this._queryInterval = window.setInterval(() =>  this.queryState(), QUERY_INTERVAL);
 		}
 	},
 };
