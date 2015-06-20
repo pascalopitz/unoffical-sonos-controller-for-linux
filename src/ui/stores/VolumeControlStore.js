@@ -13,7 +13,6 @@ const CHANGE_EVENT = 'change';
 
 var VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
 
-	_blockUpdates: false,
 	_all: {},
 	_players: {},
 
@@ -58,10 +57,6 @@ var VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	setPlayer (host, obj) {
-		if(this._blockUpdates) {
-			return;
-		}
-
 		this._all[host] = {};
 		_.assign(this._all[host], obj);
 		_.assign(this._players[host], obj);
@@ -70,15 +65,6 @@ var VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
 
 Dispatcher.register(action => {
 	switch (action.actionType) {
-
-		case Constants.VOLUME_CONTROLS_START_ADJUST:
-			VolumeControlStore._blockUpdates = true;
-			break;
-
-		case Constants.VOLUME_CONTROLS_STOP_ADJUST:
-			VolumeControlStore._blockUpdates = false;
-			break;
-
 		case Constants.VOLUME_CONTROLS_VOLUME_SET:
 			VolumeControlStore.setPlayer(action.host, {
 				volume: action.volume,

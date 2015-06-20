@@ -33,7 +33,16 @@ For development, you can run the watch task, which will re-compile on change:
 
 	npm run-script watch
 
-##Todo
+##Thanks to other projects
+
+- I ported nearly all of https://github.com/bencevans/node-sonos/ so that it works in chrome.
+  Also made it into an ES6 code base where it was easy to do.
+
+- The web interface markup and css is poached from https://github.com/jishi/node-sonos-web-controller/
+
+- Dealing with the UPNP notifications needs a webserver, and https://github.com/kzahel/web-server-chrome provided a good insight and many snippets
+
+##Todo / Bugs / Features
 
 - [x] Create app shell and manifest
 - [x] Make all ES6 compile into a JS via npm script
@@ -65,6 +74,7 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Play and remove from to the queue
 - [x] Select and group remove from to the queue
 - [x] BUG: Sometimes menu click adds track twice to queue
+- [x] BUG: Volume slider snapping back after dragging on single player groups
 - [ ] BUG: Same track in queue multiple times and selecting one selects all
 - [ ] Drag and drop to reorder the queue
 - [ ] Infinite scroll for search results
@@ -74,13 +84,3 @@ For development, you can run the watch task, which will re-compile on change:
 - [ ] Find out how to query for next track
 - [ ] Jump to places in the alphabet in media library
 - [ ] Integrate services???
-
-
-##Thanks to other projects
-
-- I ported nearly all of https://github.com/bencevans/node-sonos/ so that it works in chrome.
-  Also made it into an ES6 code base where it was easy to do.
-
-- The web interface markup and css is poached from https://github.com/jishi/node-sonos-web-controller/
-
-- Dealing with the UPNP notifications needs a webserver, and https://github.com/kzahel/web-server-chrome provided a good insight and many snippets

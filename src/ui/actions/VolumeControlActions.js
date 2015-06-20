@@ -7,18 +7,6 @@ import SonosService  from '../services/SonosService'
 
 export default {
 
-	startAdjust() {
-		Dispatcher.dispatch({
-			actionType: Constants.VOLUME_CONTROLS_START_ADJUST,
-		});
-	},
-
-	stopAdjust() {
-		Dispatcher.dispatch({
-			actionType: Constants.VOLUME_CONTROLS_STOP_ADJUST,
-		});
-	},
-
 	queryVolumes () {
 		SonosService.queryVolumeInfo();
 	},

@@ -55,6 +55,7 @@ class VolumeSlider extends React.Component {
 			dragging: true,
 			left: left,
 		});
+
 		let volume = Math.ceil(left / (WIDTH - ADJUST) * 100);
 		let func = _.throttle(() => {
 			this.props.dragHandler(volume);

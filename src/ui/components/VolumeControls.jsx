@@ -42,12 +42,6 @@ class VolumeControls extends React.Component {
 		let keys = Object.keys(this.state.players);
 		let state = this.state;
 
-		// just one in group
-		if(keys.length === 1) {
-			VolumeControlActions.setPlayerVolume(keys[0], volume);
-			return;
-		}
-
 		// adjust all players in group
 		let volumeLevel = volume;
 		let groupVolume = this._calculateGroupVolume();
@@ -101,7 +95,6 @@ class VolumeControls extends React.Component {
 		this.setState({
 			dragging: true
 		});
-		VolumeControlActions.startAdjust();
 	}
 
 	_dragEnd () {
@@ -109,7 +102,6 @@ class VolumeControls extends React.Component {
 			this.setState({
 				dragging: false
 			});
-			VolumeControlActions.stopAdjust();
 			VolumeControlActions.queryVolumes();
 		}, 500);
 	}
