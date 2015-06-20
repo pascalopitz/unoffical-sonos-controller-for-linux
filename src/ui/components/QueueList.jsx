@@ -64,7 +64,7 @@ class QueueList extends React.Component {
 
 		if(tracks.length) {
 			clearNode = (
-				<a id="queue-clear-button" onClick={this._onClick.bind(this)}>
+				<a id="queue-clear-button" onClick={this._onClick.bind(this)} title="Clear Queue">
 					<i className="material-icons">clear_all</i>
 				</a>
 			);
