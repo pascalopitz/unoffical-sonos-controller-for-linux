@@ -1,3 +1,5 @@
+"use strict";
+
 import _ from 'lodash';
 import React from 'react/addons';
 
@@ -57,8 +59,8 @@ class VolumeControls extends React.Component {
 			else if (deltaVolume > 0)
 				newVolume = this.state.players[key].volume + deltaVolume;
 			else {
-				var factor = this.state.players[key].volume / groupVolume;
-				var newVolume = Math.ceil(factor * volumeLevel);
+				let factor = this.state.players[key].volume / groupVolume;
+				let newVolume = Math.ceil(factor * volumeLevel);
 			}
 
 			if(newVolume > 99) {
@@ -81,7 +83,7 @@ class VolumeControls extends React.Component {
 
 		this._dragStart();
 		this.setState({
-			expanded: keys.length > 1
+			isExpanded: keys.length > 1
 		});
 	}
 
@@ -114,7 +116,7 @@ class VolumeControls extends React.Component {
 	_hideTimeStart () {
 		this._hideTimer = window.setTimeout(() => {
 			this.setState({
-				expanded: false
+				isExpanded: false
 			});
 		}, 1000);
 	}
@@ -153,7 +155,7 @@ class VolumeControls extends React.Component {
 			groupVolume = this._calculateGroupVolume();
 		}
 
-		if(this.state.expanded) {
+		if(this.state.isExpanded) {
 
 			let playerRows = Object.keys(this.state.players).map((key) => {
 

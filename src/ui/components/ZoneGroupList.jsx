@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 // import sort from '../helpers/sort';
@@ -28,14 +30,14 @@ class ZoneGroupList extends React.Component {
 
 	render () {
 		// TODO: SORT PROPERLY
-		// var items = this.state.groups.sort((item1, item2) => {
-		// 	var members1 = item1.ZoneGroupMember.sort(sort.asc);
-		// 	var members2 = item2.ZoneGroupMember.sort(sort.asc);
+		// let items = this.state.groups.sort((item1, item2) => {
+		// 	let members1 = item1.ZoneGroupMember.sort(sort.asc);
+		// 	let members2 = item2.ZoneGroupMember.sort(sort.asc);
 
 		// 	return sort.asc(members1[0], members2[0]);
 		// });
 
-		var zoneGroupNodes = Object.keys(this.state.groups).map((key) => {
+		let zoneGroupNodes = Object.keys(this.state.groups).map((key) => {
 			let item = this.state.groups[key];
 
 			return (

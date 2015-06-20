@@ -1,3 +1,5 @@
+"use strict";
+
 import events from 'events';
 import _ from "lodash";
 
@@ -20,7 +22,7 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	setAll (groups) {
-		this._groups = _(groups).groupBy('group').value();
+		this._groups = _(groups).sortBy('name').groupBy('group').value();
 	},
 
 	getAll () {
@@ -28,7 +30,6 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	setCurrent (group) {
-		console.log(group);
 		this._current = group;
 	},
 
@@ -42,13 +43,8 @@ Dispatcher.register(action => {
 
 		case Constants.SONOS_SERVICE_TOPOLOGY_UPDATE:
 			ZoneGroupStore.setAll(action.groups);
-			ZoneGroupStore.emitChange();		
+			ZoneGroupStore.emitChange();
 			break;
-
-		// case Constants.SONOS_SERVICE_ZONEGROUPS_UPDATE:
-		// 	ZoneGroupStore.setAll(action.groups);
-		// 	ZoneGroupStore.emitChange();
-		// 	break;
 
 		case Constants.ZONE_GROUP_SELECT:
 		case Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT:

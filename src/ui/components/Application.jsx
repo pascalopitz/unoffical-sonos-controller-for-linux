@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 import SonosService from '../services/SonosService';
@@ -12,7 +14,7 @@ import ZoneGroupList from './ZoneGroupList';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
 
-var history = [];
+let history = [];
 
 class Application extends React.Component {
 

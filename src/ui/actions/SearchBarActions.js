@@ -1,3 +1,5 @@
+"use strict";
+
 import Dispatcher from '../dispatcher/AppDispatcher'
 import Constants  from '../constants/Constants'
 
@@ -5,11 +7,17 @@ import SonosService from '../services/SonosService'
 
 function createSearchPromise(type, term, options) {
 	return new Promise((resolve, reject) => {
+		term = escape(term);
+
 		let sonos = SonosService._currentDevice;
 		sonos.searchMusicLibrary(type, term, options || {}, (err, result) => {
 
 			if(err) {
-				reject(err);
+				resolve({
+					returned: 0,
+					total: 0,
+					items: []
+				});
 				return;
 			}
 
@@ -32,7 +40,7 @@ export default {
 
 		Promise.all([
 			createSearchPromise('albums', term),
-			createSearchPromise('artists', term),
+			createSearchPromise('albumArtists', term),
 			createSearchPromise('tracks', term),
 		]).then((res) => {
 
@@ -46,8 +54,8 @@ export default {
 				},
 			});
 		}, () => {
-			//debugger;
-		})
+			debugger;
+		});
 	},
 
 };

@@ -1,3 +1,5 @@
+"use strict";
+
 import events from 'events';
 import _ from "lodash";
 
@@ -26,13 +28,8 @@ var VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
 	intializeGroup (group) {
 		this._players = {};
 		let topology = ZoneGroupStore.getAll();
-		console.log(group, topology);
 
-		let members = _(topology).findWhere({
-			group: group.group
-		}) || [];
-
-		console.log(members);
+		let members = topology[group.group] || [];
 
 		members.forEach((m) => {
 			let matches = REG.exec(m.location);

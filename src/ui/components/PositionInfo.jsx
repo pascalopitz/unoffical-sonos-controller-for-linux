@@ -1,3 +1,5 @@
+"use strict";
+
 import moment from 'moment';
 import React from 'react/addons';
 
@@ -88,27 +90,27 @@ class PositionInfo extends React.Component {
 
 	render () {
 
-		var info = this.state.info;
-		var offset = this.state.offset;
-		var percent = 0;
-		var from = '00:00';
-		var to = '-0:00';
+		let info = this.state.info;
+		let offset = this.state.offset;
+		let percent = 0;
+		let from = '00:00';
+		let to = '-0:00';
 
 		if(info) {
-			var r = info.RelTime.split(':');
-			var d = info.TrackDuration.split(':');
+			let r = info.RelTime.split(':');
+			let d = info.TrackDuration.split(':');
 
-			var start = moment().startOf('day');
-			var now = moment().startOf('day').add(r[0], 'h').add(r[1], 'm').add(Number(r[2]) + offset, 's');
-			var end = moment().startOf('day').add(d[0], 'h').add(d[1], 'm').add(d[2], 's');
+			let start = moment().startOf('day');
+			let now = moment().startOf('day').add(r[0], 'h').add(r[1], 'm').add(Number(r[2]) + offset, 's');
+			let end = moment().startOf('day').add(d[0], 'h').add(d[1], 'm').add(d[2], 's');
 
-			var from = now.format('mm:ss');
-			var to = '-' + end.clone().subtract(now).format('mm:ss');
+			let from = now.format('mm:ss');
+			let to = '-' + end.clone().subtract(now).format('mm:ss');
 
 			percent = 100/ (end - start) * (now - start);
 		}
 
-		var styles = {
+		let styles = {
 			left: String(Math.round(percent)) + '%'
 		};
 

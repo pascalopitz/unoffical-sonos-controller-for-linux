@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 import AlbumArt from './AlbumArt';
@@ -8,7 +10,7 @@ class BrowserListItem extends React.Component  {
 	constructor () {
 		super();
 		this.state = {
-			expanded: false
+			isExpanded: false,
 		};
 	}
 
@@ -28,39 +30,39 @@ class BrowserListItem extends React.Component  {
 	_playNow (e) {
 		let item = this.props.model;
 		BrowserListActions.playNow(item);
-		return this._toggle();
+		this._toggle(e);
 	}
 
 	_playNext (e) {
 		let item = this.props.model;
 		BrowserListActions.playNext(item);
-		return this._toggle();
+		this._toggle(e);
 	}
 
 	_addQueue (e) {
 		let item = this.props.model;
 		BrowserListActions.addQueue(item);
-		return this._toggle();
+		this._toggle(e);
 	}
 
 	_replaceQueue (e) {
 		let item = this.props.model;
 		BrowserListActions.replaceQueue(item);
-		return this._toggle();
+		this._toggle(e);
 	}
 
 	_toggle (e) {
 		this.setState({
-			expanded: !this.state.expanded
+			isExpanded: !this.state.isExpanded
 		});
 		e.preventDefault();
 		e.stopPropagation();
 	}
 
 	_hideMenu (e) {
-		if(this.state.expanded) {
+		if(this.state.isExpanded) {
 			this.setState({
-				expanded: false
+				isExpanded: false
 			});
 		}
 	}
@@ -80,11 +82,12 @@ class BrowserListItem extends React.Component  {
 	}
 
 	render () {
-		var item = this.props.model;
-		var inlineMenu, inlineMenuButton;
-		var className = 'trackinfo';
+		let inlineMenu;
+		let inlineMenuButton;
+		let item = this.props.model;
+		let className = 'trackinfo';
 
-		var artistInfo;
+		let artistInfo;
 
 		if(item.class) {
 			className = className + ' playable ' + /\.(\w+)$/gi.exec(item.class)[1];
@@ -93,7 +96,7 @@ class BrowserListItem extends React.Component  {
 				<i className="material-icons arrow" onClick={this._toggle.bind(this)}>arrow_drop_down_circle</i>
 			);
 
-			if(this.state.expanded) {
+			if(this.state.isExpanded) {
 				inlineMenu = (
 					<ul className="inline-menu"
 						onMouseOut={this._onMouseOut.bind(this)}

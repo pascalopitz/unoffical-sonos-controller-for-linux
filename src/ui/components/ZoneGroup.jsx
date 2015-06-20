@@ -1,3 +1,5 @@
+"use strict";
+
 import _ from 'lodash';
 import React from 'react/addons';
 
@@ -9,25 +11,25 @@ import ZoneGroupMember from './ZoneGroupMember';
 class ZoneGroup extends React.Component {
 
 	render () {
-		var items = this.props.group;
+		let items = this.props.group;
 
 		if(!items) {
 			return null;
 		}
 
-		var coordinator = _(items).findWhere({
+		let coordinator = _(items).findWhere({
 			coordinator: "true"
 		});
 
-		var zoneNodes = items.map(function (item, index) {
+		let zoneNodes = items.map(function (item, index) {
 			return (
 				<ZoneGroupMember member={item} />
 			);
 		});
 
-		var classString = 'not-selected'
+		let classString = 'not-selected'
 
-		if(this.props.currentZone && coordinator.uid === this.props.currentZone.uid) {
+		if(this.props.currentZone && coordinator.uuid === this.props.currentZone.uuid) {
 			classString = 'selected';
 		}
 

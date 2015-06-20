@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 import PlayerActions from '../actions/PlayerActions';
@@ -28,7 +30,7 @@ class PlayControls extends React.Component {
 	}
 
 	render () {
-		var src = this.state.playing ? "svg/pause.svg" : "svg/play.svg";
+		let src = this.state.playing ? "svg/pause.svg" : "svg/play.svg";
 
 		return (
 			<div id="controls">

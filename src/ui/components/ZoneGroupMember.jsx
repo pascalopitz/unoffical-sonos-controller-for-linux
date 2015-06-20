@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 class ZoneGroupMember extends React.Component {

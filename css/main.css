@@ -87,14 +87,14 @@ body {
 	height: 10px;
 }
 ::-webkit-scrollbar-track {
-	background: #021B2E;
+	background: #1B1B1B;
 }
 ::-webkit-scrollbar-thumb {
-	background: #053A66;
+	background: #3A3A3A;
 	border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-	background: #07569B;
+	background: #565656;
 }
 
 h4 {
@@ -201,7 +201,7 @@ h4 {
 	right: 3px;
 	top: 2px;
 	z-index: 1;
-	color: #002C4D;
+	color: #2C2C2C;
 	text-shadow: none;
 	font-size: 18px;
 	cursor: pointer;
@@ -218,11 +218,11 @@ h4 {
 #zone-container h4,
 #status-container h4,
 #music-sources-container h4 {
-	background-image: -moz-linear-gradient(top, #002C4D 2%, #001C38 90%);
-	background-image: -webkit-linear-gradient(top, #002C4D 2%, #001C38 90%);
-	background-image: linear-gradient(top, #002C4D 2%, #001C38 90%);
+	background-image: -moz-linear-gradient(top, #2C2C2C 2%, #1C1C1C 90%);
+	background-image: -webkit-linear-gradient(top, #2C2C2C 2%, #1C1C1C 90%);
+	background-image: linear-gradient(top, #2C2C2C 2%, #1C1C1C 90%);
 	margin: 0;
-	color: #0A97FF;
+	color: #979797;
 	font-size: 15px;
 }
 
@@ -239,14 +239,14 @@ h4 {
 	padding: 10px;
 	font-size: 15px;
 	text-align: center;
-	color: #0A97FF;
+	color: #979797;
 	font-weight: bold;
 	cursor: pointer;
 	text-transform: capitalize;
 }
 
 #music-sources-container ul.with-search li.active {
-	background-image: -webkit-linear-gradient(top, #07558C 0px, #0A4069 24px);
+	background-image: -webkit-linear-gradient(top, #555555 0px, #404040 24px);
 	color: #fff;
 }
 
@@ -269,6 +269,7 @@ h4 {
 
 #music-sources-container h4.with-history > span {
 	margin-left: 30px;
+	margin-right: 30px;
 	display: block;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -276,10 +277,10 @@ h4 {
 }
 
 #status-container h4#now-playing {
-	background-image: -moz-linear-gradient(top, rgb(7,79,131) 0%, rgb(9,58,94) 100%);
-	background-image: -webkit-linear-gradient(top, rgb(7,79,131) 0%, rgb(9,58,94) 100%);
-	background-image: linear-gradient(top, rgb(7,79,131) 0%, rgb(9,58,94) 100%);
-	border-bottom: 1px solid rgb(1,36,64);
+	background-image: -moz-linear-gradient(top, rgb(79,79,79) 0%, rgb(58,58,58) 100%);
+	background-image: -webkit-linear-gradient(top, rgb(79,79,79) 0%, rgb(58,58,58) 100%);
+	background-image: linear-gradient(top, rgb(79,79,79) 0%, rgb(58,58,58) 100%);
+	border-bottom: 1px solid rgb(36,36,36);
 	color: #fff;
 }
 
@@ -288,9 +289,9 @@ h4 {
 }
 
 #status-container #current-track-info {
-	background-image: -moz-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 100%);
-	background-image: -webkit-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 100%);
-	border-top: 1px solid rgb(37,85,125);
+	background-image: -moz-linear-gradient(top, rgb(68,68,68) 10%, #1B1B1B 100%);
+	background-image: -webkit-linear-gradient(top, rgb(68,68,68) 10%, #1B1B1B 100%);
+	border-top: 1px solid rgb(85,85,85);
 	height: 224px;
 	padding-top: 10px;
 	padding-left: 5px;
@@ -330,14 +331,14 @@ h4 {
 }
 
 #status-container h6 {
-	color: rgb(4,90,218);
+	color: rgb(90,90,90);
 	font-weight: normal;
 	font-size: 14px;
 	margin: 0;
 }
 
 #status-container h5 {
-	color: rgb(4,90,218);
+	color: rgb(90,90,90);
 	font-size: 14px;
 	margin: 0;
 	margin-top: 4px;
@@ -371,7 +372,7 @@ h4 {
 	display: inline-block;
 	height: 100%;
 	height: calc(100vh - 105px);
-	background: #021B2E;
+	background: #1B1B1B;
 	vertical-align: top;
 	overflow: hidden;
 }
@@ -395,12 +396,11 @@ h4 {
 }
 
 #zone-wrapper {
-	border-top: #012947 solid 1px;
+	border-top: #292929 solid 1px;
 }
 
 #music-sources-container {
 	position: relative;
-	background-image: url(../images/s_bloom_20.png), radial-gradient(circle at bottom right, #043B63 0, #021B2E 180px);
 	background-position: bottom right;
 	background-repeat: no-repeat;
 
@@ -562,8 +562,8 @@ h4 {
 }
 
 #position-bar-scrubber:hover {
-	background: linear-gradient(to bottom, #4399CC, #086EAA);
-	box-shadow: 0px 0px 1px 1px #4399CC;
+	background: linear-gradient(to bottom, #999999, #6E6E6E);
+	box-shadow: 0px 0px 1px 1px #999999;
 }
 
 #position-bar-scrubber.sliding {
@@ -582,30 +582,30 @@ h4 {
 }
 
 #zone-wrapper ul {
-	background-image: -moz-linear-gradient(top, #04304F 0px, #032540 24px);
-	background-image: -webkit-linear-gradient(top, #04304F 0px, #032540 24px);
+	background-image: -moz-linear-gradient(top, #303030 0px, #252525 24px);
+	background-image: -webkit-linear-gradient(top, #303030 0px, #252525 24px);
 	margin: 10px;
 	padding: 10px 10px 10px 10px;
 	border-radius: 5px;
-	border-top: 1px solid #054367;
-	border-right: 1px solid #032B4A;
-	border-left: 1px solid #032C4B;
-	border-bottom: 1px solid #032B4A;
+	border-top: 1px solid #434343;
+	border-right: 1px solid #2B2B2B;
+	border-left: 1px solid #2C2C2C;
+	border-bottom: 1px solid #2B2B2B;
 	position: relative;
 }
 
 #zone-wrapper ul.selected {
-	background-image: -moz-linear-gradient(top, #07558C 0px, #0A4069 24px);
-	background-image: -webkit-linear-gradient(top, #07558C 0px, #0A4069 24px);
-	border-top: 1px solid #086EAA;
-	border-right: 1px solid #003F6C;
-	border-left: 1px solid #02375E;
-	border-bottom: 1px solid #01365D;
+	background-image: -moz-linear-gradient(top, #555555 0px, #404040 24px);
+	background-image: -webkit-linear-gradient(top, #555555 0px, #404040 24px);
+	border-top: 1px solid #6E6E6E;
+	border-right: 1px solid #3F3F3F;
+	border-left: 1px solid #373737;
+	border-bottom: 1px solid #363636;
 }
 
 #zone-wrapper ul:hover {
-	background-image: -moz-linear-gradient(top, #096EB6 0px, #0E568D 24px);
-	background-image: -webkit-linear-gradient(top, #096EB6 0px, #0E568D 24px);
+	background-image: -moz-linear-gradient(top, #6E6E6E 0px, #565656 24px);
+	background-image: -webkit-linear-gradient(top, #6E6E6E 0px, #565656 24px);
 }
 
 
@@ -631,7 +631,7 @@ h4 {
 	padding: 0;
 	cursor: pointer;
 	height: calc(100% - 40px);
-	border-top: 1px solid #012947;
+	border-top: 1px solid #292929;
 	position: relative;
 }
 
@@ -654,7 +654,7 @@ h4 {
 	right: 5px;
 	display: block;
 	text-align: right;
-	color: #0A97FF;
+	color: #979797;
 	cursor: pointer;
 }
 
@@ -676,18 +676,22 @@ h4 {
 
 #browser-container li:hover,
 #queue-container li:hover {
-	background: rgba(255,255,255,0.05);
+	background: rgba(255,255,255,0.07);
 	outline: none;
 }
 
 #browser-container li:focus,
 #queue-container li:focus,
-#queue-container li[data-is-current=true] {
+body #queue-container li[data-is-current=true] {
 	background: rgba(255,255,255,0.10);
 	outline: none;
 }
 
-#browser-container li.top-action i.material-icons,
+#queue-container li[data-is-selected=true] {
+	background: rgba(255,255,255,0.02);
+	outline: none;
+}
+
 #browser-container li img,
 #queue-container li img {
 	width: 50px;
@@ -695,17 +699,6 @@ h4 {
 	vertical-align: top;
 	margin-right: 3px;
 	display: inline-block;
-}
-
-#browser-container .top-action {
-	overflow: hidden;
-	cursor: pointer;
-}
-
-#browser-container .top-action i.material-icons {
-	float: left;
-	font-size: 33px;
-	padding: 5px;
 }
 
 #browser-container li div,
@@ -738,6 +731,11 @@ h4 {
 	height: calc(100% - 316px);
 }
 
+#queue-container .trackinfo {
+	position: relative;
+	width: calc(100% - 53px - 80px);
+}
+
 #browser-container .playable.trackinfo {
 	position: relative;
 	width: calc(100% - 53px - 40px);
@@ -750,7 +748,8 @@ h4 {
 	text-overflow: ellipsis;
 }
 
-#browser-container i.material-icons.arrow {
+#browser-container i.material-icons.arrow, 
+#queue-container i.material-icons.arrow {
 	height: 20px;
 	width: 20px;
 	vertical-align: top;
@@ -759,11 +758,23 @@ h4 {
 	transition: all .3s;
 }
 
-#browser-container :hover i.material-icons.arrow {
+#queue-container i.material-icons.checkbox {
+	height: 20px;
+	width: 20px;
+	vertical-align: top;
+	margin-top: 10px;
+	opacity: .3;
+	transition: all .3s;
+	margin-right: 20px;
+}
+
+#browser-container :hover i.material-icons.arrow,
+#queue-container :hover i.material-icons.arrow,
+#queue-container :hover i.material-icons.checkbox {
 	opacity: .8;
 }
 
-#browser-container .inline-menu {
+.inline-menu {
 	position: absolute;
 	background: #ddd;
 	z-index: 100;
@@ -772,11 +783,11 @@ h4 {
 	padding: 0;
 	top: 35px;
 	right: 15px;
-	box-shadow: 0px 0px 1px 1px #4399CC;
+	box-shadow: 0px 0px 1px 1px #999999;
 }
 
 
-#browser-container .inline-menu > li {
+.inline-menu > li {
 	color: #222;
 	margin: 0;
 	padding: 10px;
@@ -785,6 +796,11 @@ h4 {
 	list-style: none;
 }
 
-#browser-container .inline-menu > li:not(:last-child) {
+.inline-menu > li:not(:last-child),
+.inline-menu > li:not(:last-child) {
 	border-bottom: 1px #666 solid;
+}
+
+.list-item-placeholder {
+	min-height: 53px;
 }

@@ -1,9 +1,11 @@
+"use strict";
+
 import React from 'react/addons';
 
 class MuteButton extends React.Component {
 
 	render () {
-		var src = this.props.muted ? 'svg/mute_on.svg' : 'svg/mute_off.svg'; 
+		let src = this.props.muted ? 'svg/mute_on.svg' : 'svg/mute_off.svg'; 
 
 		return (
 			<img 

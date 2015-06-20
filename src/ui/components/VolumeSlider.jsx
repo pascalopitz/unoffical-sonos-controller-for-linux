@@ -1,3 +1,5 @@
+"use strict";
+
 import _ from 'lodash';
 
 import React from 'react/addons';
@@ -14,8 +16,8 @@ class VolumeSlider extends React.Component {
 	}
 
 	render () {
-		var left = (this.state.dragging) ?  (this.state.left) : ((WIDTH - ADJUST) / 100 * this.props.volume);
-		var pos = { x: left, y: 0 };
+		let left = (this.state.dragging) ?  (this.state.left) : ((WIDTH - ADJUST) / 100 * this.props.volume);
+		let pos = { x: left, y: 0 };
 
 		return (
 			<div className="volume-bar">

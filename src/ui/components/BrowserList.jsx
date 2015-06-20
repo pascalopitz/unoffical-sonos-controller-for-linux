@@ -1,3 +1,5 @@
+"use strict";
+
 import _ from 'lodash';
 
 import React from 'react/addons';
@@ -83,17 +85,17 @@ class BrowserList extends React.Component {
 
 	render () {
 
-		var searching = this.state.searching;
-		var searchMode = this.state.searchMode;
-		var history = this.state.history;
-		var items = this.state.currentState.items || [];
-		var title = this.state.currentState.title;
+		let searching = this.state.searching;
+		let searchMode = this.state.searchMode;
+		let history = this.state.history;
+		let items = this.state.currentState.items || [];
+		let title = this.state.currentState.title;
 
-		var headlineNodes;
-		var actionNodes;
+		let headlineNodes;
+		let actionNodes;
 
-		var listItemNodes = items.map((item, p) => {
-			var position = p + 1;
+		let listItemNodes = items.map((item, p) => {
+			let position = p + 1;
 			return (
 				<BrowserListItem model={item} position={position} viewport={this.state.boundingRect} />
 			);
@@ -130,13 +132,12 @@ class BrowserList extends React.Component {
 		}
 
 		if(this.state.currentState.class === 'object.container.album.musicAlbum') {
+			let albumState = this.state.currentState;
+			albumState.creator = null;
+			albumState.title = `Complete Album (${items.length} Tracks)`;
+
 			actionNodes = (
-				<li onClick={this._playAlbum.bind(this)} className="top-action">
-					<i className="material-icons">playlist_add</i>
-					<p>
-						Queue Album
-					</p>
-				</li>
+				<BrowserListItem model={albumState} viewport={this.state.boundingRect} />
 			);
 		}
 

@@ -3,13 +3,17 @@
 Tinkering with chrome apps and sonos.
 The project is written in ES6 and utilizes react and flux to manage the UI
 
+You can install it via the [chrome store](https://chrome.google.com/webstore/detail/sonos-controller-for-chro/cojfokmeikpnickdpoopoockilamcmoc).
+
+![](screenshots/screenshot_1.png?raw=true)
+
 ##Why?
 
 I have recently started to use Ubuntu as my main OS, and there's no decent controller app.
-So I am aiming to at some point provide a usable sonos controller that can run on Linux also, installed via chrome store.
+So I am aiming to at some point provide a usable sonos controller that can run on Linux also, installed via [chrome store](https://chrome.google.com/webstore/detail/sonos-controller-for-chro/cojfokmeikpnickdpoopoockilamcmoc).
 Maybe it won't have all the functions of the real sonos player, but if I can browse the library and manage the queue, I'll be pretty damn happy.
 
-##Install and Run
+##Install and Run locally
 
 You will need node.js for this.
 
@@ -56,15 +60,17 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Search for artists / tracks / albums
 - [x] Play, add to/replace queue from library browser
 - [x] Highlight currently playing track
-- [ ] Drag and drop to the queue
-- [ ] Fix image ghosting issues
-- [ ] Make sure searches don't fire too often
+- [x] Fix image ghosting issues
+- [x] Display Loading message if there's no players
+- [x] Play and remove from to the queue
+- [x] Select and group remove from to the queue
+- [ ] Drag and drop to reorder the queue
 - [ ] Infinite scroll for search results
+- [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin
+- [ ] Fix broken image issues (data url too long?)
 - [ ] Fix interaction glitch when dragging group volume slider
 - [ ] Find out how to query for next track
 - [ ] Jump to places in the alphabet in media library
-- [ ] Sort things in the queue (drag & drop?)
-- [ ] Display Loading message if there's no players
 - [ ] Integrate services???
 
 

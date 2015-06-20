@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 import SonosService from '../services/SonosService';
@@ -13,8 +15,8 @@ class AlbumArt extends React.Component {
 		};
 	}
 
-	_isVisible () {
-		let vp = this.props.viewport;
+	_isVisible (props) {
+		let vp = props.viewport;
 		let rect = React.findDOMNode(this).getBoundingClientRect();
 
 		if(rect.bottom > vp.top && rect.top < vp.bottom) {
@@ -30,7 +32,7 @@ class AlbumArt extends React.Component {
 
 	_loadImage () {
 		// here we make sure it's still visible, a URL and hasn't failed previously
-		if(!this._isVisible() || !this.props.src || this.state.failed) {
+		if(!this.state.visible || !this.props.src || this.state.failed) {
 			return;
 		}
 
@@ -38,7 +40,8 @@ class AlbumArt extends React.Component {
 		let url = this.props.src;
 		let srcUrl = (url.indexOf('http://') === 0) ? url : 'http://' + sonos.host + ':' + sonos.port + decodeURIComponent(url);
 
-		resourceLoader.add(srcUrl).then((data) => {
+		this.srcUrl = srcUrl;
+		this.promise = resourceLoader.add(srcUrl).then((data) => {
 			if(this.props.src === url) {
 				this.setState({
 					src: data
@@ -54,34 +57,41 @@ class AlbumArt extends React.Component {
 		resourceLoader.start();
 	}
 
-	componentDidUpdate () {
-		let visible = this._isVisible();
-		let url = this.props.src;
+	componentDidMount () {
+		this.setState({
+			visible: this._isVisible(this.props)
+		});
+	}
 
-		if(visible && !this.state.src) {
+	componentDidUpdate () {
+		if(this.state.visible && !this.state.src) {
 			// wait half a second, to prevent random scrolling fast through viewport 
 			// stuff to get loaded
-			this.timeout = window.setTimeout(this._loadImage.bind(this), 500)
+			this.timeout = window.setTimeout(this._loadImage.bind(this), 100)
 		}
 
-		if(!visible && this.timeout) {
+		if(!this.state.visible && this.timeout) {
 			window.clearTimeout(this.timeout);
-		}
-
-		if(this.state.visible !== visible) {
-			this.setState({
-				visible : visible
-			});
 		}
 	}
 
 	componentWillUnmount () {
+		if(this.promise) {
+			resourceLoader.remove(this.promise, this.srcUrl);
+			this.promise = null;
+			this.srcUrl = null;
+		}
+
 		if(this.timeout) {
 			window.clearTimeout(this.timeout);
 		}
 	}
 
 	componentWillReceiveProps(props) {
+		this.setState({
+			visible: this._isVisible(props)
+		});
+
 		// HACK: prevent image ghosting when pressing back button
 		if(props.src !== this.props.src) {
 			this.setState({

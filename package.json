@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-for-chrome",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "Sonos Controller for Chrome",
   "main": "dist/background.js",
   "scripts": {
@@ -11,6 +11,7 @@
     "minify-bg": "./node_modules/.bin/browserify -t babelify -e src/background/background.js > js/background.js",
     "compile": "npm run-script cleanup && npm run-script minify-ui && npm run-script minify-bg",
     "cleanup": "rm -Rf ./fonts & rm -Rf ./js && mkdir fonts && mkdir js && cp ./node_modules/material-design-icons/iconfont/* ./fonts/",
+    "package": "rm ./package.zip & npm run-script compile && zip -r ./package.zip js/ css/ images/ svg/ icons/ fonts/ manifest.json window.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

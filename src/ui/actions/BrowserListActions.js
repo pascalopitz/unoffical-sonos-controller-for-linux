@@ -1,3 +1,5 @@
+"use strict";
+
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants  from '../constants/Constants';
 
@@ -19,6 +21,10 @@ export default {
 		sonos.getMusicLibrary(state.searchType, {
 			start: state.items.length
 		}, (err, result) => {
+			if(err || !result || !result.items) {
+				return;
+			}
+
 			state.items = state.items.concat(result.items);
 
 			Dispatcher.dispatch({

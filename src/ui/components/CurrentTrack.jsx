@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react/addons';
 
 import CurrentTrackStore from '../stores/CurrentTrackStore';
@@ -33,10 +35,10 @@ class CurrentTrack extends React.Component {
 	}
 
 	render () {
-		var currentTrack = this.state.currentTrack;
-		var nextTrack = this.state.nextTrack;
+		let currentTrack = this.state.currentTrack;
+		let nextTrack = this.state.nextTrack;
 
-		var nextTrackInfo;
+		let nextTrackInfo;
 
 		if(!currentTrack || !currentTrack.title) {
 			return <div id="current-track-info">No Music</div>
