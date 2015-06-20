@@ -104,8 +104,8 @@ class PositionInfo extends React.Component {
 			let now = moment().startOf('day').add(r[0], 'h').add(r[1], 'm').add(Number(r[2]) + offset, 's');
 			let end = moment().startOf('day').add(d[0], 'h').add(d[1], 'm').add(d[2], 's');
 
-			let from = now.format('mm:ss');
-			let to = '-' + end.clone().subtract(now).format('mm:ss');
+			from = now.format('mm:ss');
+			to = '-' + end.clone().subtract(now).format('mm:ss');
 
 			percent = 100/ (end - start) * (now - start);
 		}
