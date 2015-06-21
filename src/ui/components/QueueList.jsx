@@ -1,5 +1,6 @@
 "use strict";
 
+import _ from "lodash";
 import React from 'react/addons';
 
 import QueueActions from '../actions/QueueActions';
@@ -14,7 +15,6 @@ class QueueList extends React.Component {
 		this.state = {
 			tracks: QueueStore.getTracks(),
 			position: QueueStore.getPosition(),
-			selected: QueueStore.getSelected(),
 		};
 	}
 
@@ -39,7 +39,6 @@ class QueueList extends React.Component {
 			boundingRect : React.findDOMNode(this).getBoundingClientRect(),
 			tracks: QueueStore.getTracks(),
 			position: QueueStore.getPosition(),
-			selected: QueueStore.getSelected(),
 		});
 	}
 
@@ -57,7 +56,7 @@ class QueueList extends React.Component {
 
 	render () {
 		let tracks = this.state.tracks;
-		let selected = this.state.selected;
+		let selectionContext = _.filter(tracks, {selected: true}).length > 0;
 		let currentPosition = this.state.position;
 		let queueItemNodes;
 		let clearNode;
@@ -76,8 +75,8 @@ class QueueList extends React.Component {
 				return (
 					<QueueListItem track={track}
 									position={position}
-									selected={selected}
 									isCurrent={isCurrent}
+									selectionContext={selectionContext}
 									viewport={this.state.boundingRect} />
 				);
 			});

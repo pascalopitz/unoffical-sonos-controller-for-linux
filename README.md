@@ -42,7 +42,7 @@ For development, you can run the watch task, which will re-compile on change:
 
 - Dealing with the UPNP notifications needs a webserver, and https://github.com/kzahel/web-server-chrome provided a good insight and many snippets
 
-##Todo / Bugs / Features
+##Done
 
 - [x] Create app shell and manifest
 - [x] Make all ES6 compile into a JS via npm script
@@ -73,10 +73,17 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Display Loading message if there's no players
 - [x] Play and remove from to the queue
 - [x] Select and group remove from to the queue
+- [x] Label for clear queue button
+- [x] Faster topology lookup
 - [x] BUG: Sometimes menu click adds track twice to queue
 - [x] BUG: Volume slider snapping back after dragging on single player groups
-- [ ] BUG: Same track in queue multiple times and selecting one selects all
+- [x] BUG: Expanded player volumes sometimes hiding prematurely
+- [x] BUG: Same track in queue multiple times and selecting one selects all
+- [x] BUG: Changing group topology doesn't reflect in volume controls
+
+##TODO:
 - [ ] Drag and drop to reorder the queue
+- [ ] Group management
 - [ ] Infinite scroll for search results
 - [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin
 - [ ] Fix broken image issues (data url too long?)

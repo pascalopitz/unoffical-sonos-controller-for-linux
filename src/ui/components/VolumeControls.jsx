@@ -40,7 +40,9 @@ class VolumeControls extends React.Component {
 
 	_changeGroupVolume (volume) {
 		let keys = Object.keys(this.state.players);
-		let state = this.state;
+		let state = _.cloneDeep(this.state);
+
+		state.isExpanded = true;
 
 		// adjust all players in group
 		let volumeLevel = volume;
@@ -168,7 +170,8 @@ class VolumeControls extends React.Component {
 				};
 
 				let changeVolume = (volume) => {
-					let state = this.state;
+					let state = _.cloneDeep(this.state);
+					state.isExpanded = true;
 					state.players[key].volume = volume;
 
 					this.setState(state);

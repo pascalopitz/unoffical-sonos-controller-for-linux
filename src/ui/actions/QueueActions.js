@@ -39,23 +39,22 @@ export default {
 		});
 	},
 
-	select (track) {
+	select (position) {
 		Dispatcher.dispatch({
 			actionType: Constants.QUEUE_SELECT,
-			track: track,
+			position: position,
 		});
 	},
 
-	deselect (track) {
+	deselect (position) {
 		Dispatcher.dispatch({
 			actionType: Constants.QUEUE_DESELECT,
-			track: track,
+			position: position,
 		});
 	},
 
 	_getSeries() {
 		let tracks = QueueStore.getTracks();
-		let selected = QueueStore.getSelected();
 
 		let series = [];
 
@@ -63,7 +62,7 @@ export default {
 		let newRequired = true;
 
 		tracks.forEach((track, i) => {
-			let isSelected = _.filter(selected, _.matches(track)).length > 0;
+			let isSelected =track.selected;
 
 			if(isSelected) {
 

@@ -9,7 +9,7 @@ const CHANGE_EVENT = 'change';
 
 var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 
-	_selected : [],
+	// _selected : [],
 	_tracks : [],
 	_position: null,
 
@@ -30,7 +30,20 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	setTracks (tracks) {
-		this._tracks = tracks || [];
+		track = tracks || [];
+		// preserve selection if direct match
+		let old = this._tracks;
+		let oldIDs = old.map((t) => { return t.uri });
+		let newIDs = tracks.map((t) => { return t.uri });
+
+		tracks.forEach((t, i) => {
+			if(oldIDs[i] === newIDs[i] && oldIDs[i] && old[i].selected) {
+				t.selected = true;
+				return;
+			} 
+		});
+
+		this._tracks = tracks;
 	},
 
 	getTracks () {
@@ -45,25 +58,27 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 		this._selected = [];
 	},
 
-	addToSelection (track) {
-		this._selected.push(track);
+	addToSelection (track, position) {
+		this._tracks[position - 1].selected = true;
+		// this._selected.push(track);
 	},
 
-	removeFromSelection (track) {
-		let matches = _.filter(this._selected, _.matches(track));
-		_.pull(this._selected, matches[0]);
+	removeFromSelection (track, position) {
+		this._tracks[position - 1].selected = false;
+		// let matches = _.filter(this._selected, _.matches(track));
+		// _.pull(this._selected, matches[0]);
 	},
 });
 
 Dispatcher.register(action => {
 	switch (action.actionType) {
 		case Constants.QUEUE_SELECT:
-			QueueStore.addToSelection(action.track);
+			QueueStore.addToSelection(action.track, action.position);
 			QueueStore.emitChange();
 			break;
 
 		case Constants.QUEUE_DESELECT:
-			QueueStore.removeFromSelection(action.track);
+			QueueStore.removeFromSelection(action.track, action.position);
 			QueueStore.emitChange();
 			break;
 

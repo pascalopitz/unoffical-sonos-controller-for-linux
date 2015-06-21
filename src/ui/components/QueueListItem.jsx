@@ -17,10 +17,7 @@ class QueueListItem extends React.Component {
 	}
 
 	_isSelected () {
-		let selected = this.props.selected;
-		let track = this.props.track;
-
-		return _.filter(selected, _.matches(track)).length > 0;
+		return this.props.track.selected;
 	}
 
 	_hideMenu (e) {
@@ -72,9 +69,9 @@ class QueueListItem extends React.Component {
 		let isSelected = this._isSelected();
 
 		if(!isSelected) {
-			QueueActions.select(this.props.track);
+			QueueActions.select(this.props.position);
 		} else {
-			QueueActions.deselect(this.props.track);
+			QueueActions.deselect(this.props.position);
 		}
 
 		e.preventDefault();
@@ -87,10 +84,9 @@ class QueueListItem extends React.Component {
 		let selectionToggle;
 
 		let isCurrent = this.props.isCurrent;
-		let selected = this.props.selected;
 		let track = this.props.track;
 
-		let selectionContext = selected.length > 0;
+		let selectionContext = this.props.selectionContext;
 		let isSelected = this._isSelected();
 
 		let checkboxSymbol = isSelected ? 'check_box' : 'check_box_outline_blank';
