@@ -40,7 +40,6 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 
 Dispatcher.register(action => {
 	switch (action.actionType) {
-
 		case Constants.SONOS_SERVICE_TOPOLOGY_UPDATE:
 			ZoneGroupStore.setAll(action.groups);
 			ZoneGroupStore.emitChange();

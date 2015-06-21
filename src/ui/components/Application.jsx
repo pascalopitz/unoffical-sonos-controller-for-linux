@@ -11,6 +11,7 @@ import PlayControls from './PlayControls';
 import PositionInfo from './PositionInfo';
 import VolumeControls from './VolumeControls';
 import ZoneGroupList from './ZoneGroupList';
+import GroupManagement from './GroupManagement';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
 
@@ -50,6 +51,7 @@ class Application extends React.Component {
 						<BrowserList />
 					</div>
 				</div>
+				<GroupManagement />
 				<Loader />
 			</div>
 		);

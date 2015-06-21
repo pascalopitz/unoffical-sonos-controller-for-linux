@@ -36,12 +36,20 @@ class ZoneGroup extends React.Component {
 		return (
 			<ul className={classString} onClick={this._onClick.bind(this)}>
 				{{zoneNodes}}
+
+				<div className="group-button" onClick={this._showGroupManagement.bind(this)}>Group</div>
 			</ul>
 		);
 	}
 
 	_onClick () {
 		ZoneGroupActions.selectGroup(this.props.group);
+	}
+
+	_showGroupManagement (e) {
+		ZoneGroupActions.showManagement(this.props.group);
+		e.preventDefault();
+		e.stopPropagation();
 	}
 }
 

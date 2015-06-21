@@ -26,4 +26,11 @@ export default {
 		SonosService.queryTopology();
 	},
 
+	showManagement (group) {
+		Dispatcher.dispatch({
+			actionType: Constants.ZONE_GROUP_MANAGEMENT_SHOW,
+			group: group,
+		});
+	},
+
 };
