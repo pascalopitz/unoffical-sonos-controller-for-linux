@@ -30,7 +30,7 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	setTracks (tracks) {
-		track = tracks || [];
+		tracks = tracks || [];
 		// preserve selection if direct match
 		let old = this._tracks;
 		let oldIDs = old.map((t) => { return t.uri });
