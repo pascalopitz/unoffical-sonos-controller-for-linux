@@ -80,10 +80,10 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] BUG: Expanded player volumes sometimes hiding prematurely
 - [x] BUG: Same track in queue multiple times and selecting one selects all
 - [x] BUG: Changing group topology doesn't reflect in volume controls
+- [x] Group management
 
 ##TODO:
 - [ ] Drag and drop to reorder the queue
-- [ ] Group management
 - [ ] Infinite scroll for search results
 - [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin
 - [ ] Fix broken image issues (data url too long?)
