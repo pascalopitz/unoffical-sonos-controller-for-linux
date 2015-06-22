@@ -6,8 +6,8 @@ import xml2json from 'jquery-xml2json';
 import Search from '../sonos/Search';
 import Listener from '../sonos/events/listener';
 
-import Dispatcher from '../dispatcher/AppDispatcher'
-import Constants from '../constants/Constants'
+import Dispatcher from '../dispatcher/AppDispatcher';
+import Constants from '../constants/Constants';
 
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
@@ -30,6 +30,8 @@ let SonosService = {
 	},
 
 	searchForDevices () {
+		let firstResultProcessed = false;
+
 		new Search((sonos) => {
 
 			if(this._searchInterval) {
@@ -57,8 +59,18 @@ let SonosService = {
 					}
 				});
 
-				if(!this._currentDevice) {
+				if(!firstResultProcessed) {
 					this.queryTopology(sonos);
+					listener.addService('/ZoneGroupTopology/Event', (err, sid) => {
+						if(!err) {
+							this._persistentSubscriptions.push({
+								sid: sid,
+								host: sonos.host,
+								sonos: sonos,
+							});
+						}
+					});
+					firstResultProcessed = true;
 				}
 			});
 
@@ -122,7 +134,7 @@ let SonosService = {
 		let zone = ZoneGroupStore.getCurrent();
 		let topology = ZoneGroupStore.getAll();
 
-		if(!topology.length || !group) {
+		if(!topology.length) {
 			return;
 		}
 
@@ -171,7 +183,6 @@ let SonosService = {
 		});
 
 		this.queryVolumeInfo();
-		// this.queryTopology(sonos);
 
 		sonos.currentTrack((err, track) => {
 			if(err) {
@@ -227,7 +238,39 @@ let SonosService = {
 
 			case '/ZoneGroupTopology/Event':
 				{
-					this.queryTopology();
+					// Transform the message into the same format as sonos.getTopology
+					let topology = xml2json(data.ZoneGroupState, {
+						explicitArray: true
+					});
+
+					let zones = [];
+
+					_.forEach(topology.ZoneGroups.ZoneGroup, (zg) => {
+						let cId = zg.$.Coordinator;
+						let gId = zg.$.ID;
+
+						_.forEach(zg.ZoneGroupMember, (z) => {
+							let zone = {};
+							zone.group = gId;
+							Object.keys(z.$).forEach((k) => {
+								zone[String(k).toLowerCase()] = String(z.$[k]);
+							});
+							zone.name = zone.zonename;
+							delete zone.zonename;
+
+
+							if(cId === zone.uuid) {
+								zone.coordinator = "true";
+							}
+
+							zones.push(zone);
+						});
+					});
+
+					Dispatcher.dispatch({
+						actionType: Constants.SONOS_SERVICE_TOPOLOGY_EVENT,
+						groups: zones,
+					});
 				}
 				break;
 
@@ -282,11 +325,10 @@ let SonosService = {
 		let x = this._listeners[sonos.host];
 
 		let cb = (error, sid) => {
-			if (error) throw err;
+			if (error) throw error;
 			this._currentSubscriptions.push(sid);
-		}
+		};
 
-		x.addService('/ZoneGroupTopology/Event', cb);
 		x.addService('/MediaRenderer/AVTransport/Event', cb);
 		x.addService('/MediaRenderer/GroupRenderingControl/Event', cb);
 		x.addService('/MediaServer/ContentDirectory/Event', cb);

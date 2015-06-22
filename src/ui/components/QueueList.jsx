@@ -29,7 +29,11 @@ class QueueList extends React.Component {
 	componentWillUpdate (nextProps, nextState) {
 		if(nextState.position && nextState.position !== this.state.position) {
 			window.setTimeout(() => {
-				let current = root.querySelector('*[data-is-current=true]').scrollIntoViewIfNeeded();
+				let current = root.querySelector('*[data-is-current=true]');
+
+				if(current) {
+					current.scrollIntoViewIfNeeded();
+				}
 			}, 1000);
 		}
 	}

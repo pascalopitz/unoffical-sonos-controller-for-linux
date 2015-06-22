@@ -23,7 +23,6 @@ export default {
 		});
 
 		SonosService.queryState();
-		SonosService.queryTopology();
 	},
 
 	showManagement (group) {

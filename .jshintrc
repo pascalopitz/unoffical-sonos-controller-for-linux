@@ -1,4 +1,11 @@
 {
 	"esnext": true,
-	"globalstrict": true
+	"globalstrict": true,
+	"predef": [
+		"window",
+		"chrome",
+		"console",
+		"escape",
+		"xml2js"
+	]
 }

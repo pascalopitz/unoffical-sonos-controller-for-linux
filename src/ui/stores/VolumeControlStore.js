@@ -85,6 +85,7 @@ Dispatcher.register(action => {
 			VolumeControlStore.emitChange();
 			break;
 
+		case Constants.SONOS_SERVICE_TOPOLOGY_EVENT:
 		case Constants.SONOS_SERVICE_TOPOLOGY_UPDATE:
 			// HACK: we really ought to use a flux dispatch token here;
 			window.setTimeout(() => {
