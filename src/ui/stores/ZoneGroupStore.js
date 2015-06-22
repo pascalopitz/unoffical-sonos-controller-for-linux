@@ -22,7 +22,10 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	setAll (groups) {
-		this._groups = _(groups).sortBy('name').groupBy('group').value();
+		this._groups = _(groups).reject({ iszonebridge: "true" })
+								.sortBy('name')
+								.groupBy('group')
+								.value();
 	},
 
 	getAll () {
