@@ -62,9 +62,9 @@ export default {
 			}
 		});
 
-		let coordinatorRemoved = !!_.findWhere(removed, { uuid: coordinator.uuid });
-
 		let promises = [];
+		let coordinatorRemoved = !!_.findWhere(removed, { uuid: coordinator.uuid });
+		let lastModified;
 
 		added.forEach((p) => {
 			let matches = REG.exec(p.location);
@@ -80,8 +80,9 @@ export default {
 					CurrentURIMetaData: '',
 				}, (err) => {
 					if(err) {
-						reject();
+						reject(err);
 					} else {
+						lastModified = sonos;
 						resolve();
 					}
 				});
@@ -100,8 +101,9 @@ export default {
 					InstanceID: 0,
 				}, (err) => {
 					if(err) {
-						reject();
+						reject(err);
 					} else {
+						lastModified = sonos;
 						resolve();
 					}
 				});
@@ -109,13 +111,14 @@ export default {
 		});
 
 		Promise.all(promises).then(() => {
-			Dispatcher.dispatch({
-				actionType: Constants.GROUP_MANAGEMENT_CHANGED,
-			});
-		}, () => {
-			Dispatcher.dispatch({
-				actionType: Constants.GROUP_MANAGEMENT_CHANGED,
-			});
+			window.setTimeout(() => {
+				Dispatcher.dispatch({
+					actionType: Constants.GROUP_MANAGEMENT_CHANGED,
+				});
+				SonosService.queryTopology(lastModified);
+			}, 500);
+		}, (err) => {
+			debugger;
 		});
 	}
 
