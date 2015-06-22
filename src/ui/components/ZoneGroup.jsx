@@ -29,7 +29,7 @@ class ZoneGroup extends React.Component {
 
 		let classString = 'not-selected'
 
-		if(this.props.currentZone && coordinator.uuid === this.props.currentZone.uuid) {
+		if(this.props.currentZone && coordinator && coordinator.uuid === this.props.currentZone.uuid) {
 			classString = 'selected';
 		}
 
