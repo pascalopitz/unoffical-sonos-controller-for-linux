@@ -150,7 +150,7 @@ class VolumeControls extends React.Component {
 			groupVolume = this._calculateGroupVolume();
 		}
 
-		if(this.state.isExpanded) {
+		if(this.state.isExpanded && keys.length > 1) {
 
 			let playerRows = Object.keys(this.state.players).map((key) => {
 

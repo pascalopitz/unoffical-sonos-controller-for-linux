@@ -453,8 +453,8 @@ h4 {
 #player-volumes {
 	width: 245px;
 	position: absolute;
-	top: 34px;
-	left: -12px;
+	top: 35px;
+	left: 35px;
 	background: #ddd;
 	z-index: 100;
 	border-radius: 10px;

@@ -25,6 +25,10 @@ var VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	intializeGroup (group) {
+		if(!group) {
+			return;
+		}
+
 		this._players = {};
 		let topology = ZoneGroupStore.getAll();
 
