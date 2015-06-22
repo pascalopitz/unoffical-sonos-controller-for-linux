@@ -1,9 +1,9 @@
 "use strict";
 
-import Dispatcher from '../dispatcher/AppDispatcher'
-import Constants  from '../constants/Constants'
+import Dispatcher from '../dispatcher/AppDispatcher';
+import Constants  from '../constants/Constants';
 
-import SonosService from '../services/SonosService'
+import SonosService from '../services/SonosService';
 
 function createSearchPromise(type, term, options) {
 	return new Promise((resolve, reject) => {
@@ -23,7 +23,7 @@ function createSearchPromise(type, term, options) {
 
 			resolve(result);
 		});
-	})
+	});
 }
 
 export default {
@@ -54,7 +54,7 @@ export default {
 				},
 			});
 		}, () => {
-			debugger;
+			//debugger;
 		});
 	},
 

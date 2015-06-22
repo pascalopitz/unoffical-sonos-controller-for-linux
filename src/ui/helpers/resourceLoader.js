@@ -6,7 +6,7 @@ import request from './request';
 const MAX_CONNECTIONS = 2;
 
 let heap = [];
-let pending = {}
+let pending = {};
 let connections = 0;
 let cache = {};
 

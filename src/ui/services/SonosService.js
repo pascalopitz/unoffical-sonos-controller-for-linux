@@ -68,7 +68,7 @@ let SonosService = {
 
 	queryTopology (sonos) {
 
-		sonos = sonos || this._currentDevice;
+		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
 		let currentZone = ZoneGroupStore.getCurrent();
 		let currentGroupMatch;

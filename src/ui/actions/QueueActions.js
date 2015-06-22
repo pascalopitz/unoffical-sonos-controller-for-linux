@@ -108,7 +108,7 @@ export default {
 					if(err) {
 						reject();
 					} else {
-						resolve()
+						resolve();
 					}
 				});
 			}));

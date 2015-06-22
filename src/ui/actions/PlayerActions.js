@@ -1,7 +1,9 @@
-import Dispatcher from '../dispatcher/AppDispatcher'
-import Constants  from '../constants/Constants'
+"use strict";
 
-import SonosService from '../services/SonosService'
+import Dispatcher from '../dispatcher/AppDispatcher';
+import Constants  from '../constants/Constants';
+
+import SonosService from '../services/SonosService';
 
 export default {
 

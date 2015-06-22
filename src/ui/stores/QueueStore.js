@@ -1,9 +1,10 @@
+"use strict";
+
 import events from 'events';
 import _ from "lodash";
 
-import Dispatcher from '../dispatcher/AppDispatcher'
-import Constants  from '../constants/Constants'
-"use strict";
+import Dispatcher from '../dispatcher/AppDispatcher';
+import Constants  from '../constants/Constants';
 
 const CHANGE_EVENT = 'change';
 
@@ -33,8 +34,8 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 		tracks = tracks || [];
 		// preserve selection if direct match
 		let old = this._tracks;
-		let oldIDs = old.map((t) => { return t.uri });
-		let newIDs = tracks.map((t) => { return t.uri });
+		let oldIDs = old.map((t) => { return t.uri; });
+		let newIDs = tracks.map((t) => { return t.uri; });
 
 		tracks.forEach((t, i) => {
 			if(oldIDs[i] === newIDs[i] && oldIDs[i] && old[i].selected) {

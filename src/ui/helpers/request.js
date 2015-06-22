@@ -9,7 +9,7 @@ var request = function (options, callback) {
 	if(typeof options === 'string') {
 		options = {
 			uri: options,
-		}
+		};
 	}
 
 	xhr.open(options.method || 'GET', options.uri || options.url);
@@ -55,7 +55,7 @@ var request = function (options, callback) {
 				}, response);
 			}
 		}
-	}
+	};
 
 	xhr.send(options.body || null);
 };

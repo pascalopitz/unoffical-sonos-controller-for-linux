@@ -22,8 +22,8 @@ class GroupManagement extends React.Component {
 	}
 
 	_getUpdatedState() {
-		let players = GroupManagementStore.getPlayers()
-		let current = GroupManagementStore.getCurrent()
+		let players = GroupManagementStore.getPlayers();
+		let current = GroupManagementStore.getCurrent();
 
 		return {
 			players: players,

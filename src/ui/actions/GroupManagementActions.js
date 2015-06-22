@@ -2,8 +2,8 @@
 
 import _ from 'lodash';
 
-import Dispatcher from '../dispatcher/AppDispatcher'
-import Constants  from '../constants/Constants'
+import Dispatcher from '../dispatcher/AppDispatcher';
+import Constants  from '../constants/Constants';
 
 import SonosService  from '../services/SonosService';
 import Services from '../sonos/helpers/Services';
@@ -84,7 +84,7 @@ export default {
 					} else {
 						resolve();
 					}
-				})
+				});
 			}));
 		});
 
@@ -104,7 +104,7 @@ export default {
 					} else {
 						resolve();
 					}
-				})
+				});
 			}));
 		});
 
