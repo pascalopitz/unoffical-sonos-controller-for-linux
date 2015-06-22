@@ -88,6 +88,11 @@ Dispatcher.register(action => {
 		case Constants.GROUP_MANAGEMENT_DESELECT:
 			{
 				let players = GroupManagementStore.getPlayers();
+				let selectCount = _.filter(players, {selected: true }).length;
+
+				if(selectCount === 1) {
+					return;
+				}
 
 				players.forEach((p) => {
 					if(p.uuid === action.player.uuid) {

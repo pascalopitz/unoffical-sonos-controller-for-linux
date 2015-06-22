@@ -62,9 +62,10 @@ export default {
 			}
 		});
 
-		let promises = [];
 		let coordinatorRemoved = !!_.findWhere(removed, { uuid: coordinator.uuid });
 		let lastModified;
+
+		let promise = Promise.resolve();
 
 		added.forEach((p) => {
 			let matches = REG.exec(p.location);
@@ -73,20 +74,22 @@ export default {
 			let sonos = SonosService._deviceSearches[host];
 			let avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
-			promises.push(new Promise((resolve, reject) => {
-				avTransport.SetAVTransportURI({
-					InstanceID: 0,
-					CurrentURI: 'x-rincon:' + coordinator.uuid,
-					CurrentURIMetaData: '',
-				}, (err) => {
-					if(err) {
-						reject(err);
-					} else {
-						lastModified = sonos;
-						resolve();
-					}
+			promise.then(() => {
+				return new Promise((resolve, reject) => {
+					avTransport.SetAVTransportURI({
+						InstanceID: 0,
+						CurrentURI: 'x-rincon:' + coordinator.uuid,
+						CurrentURIMetaData: '',
+					}, (err) => {
+						if(err) {
+							reject(err);
+						} else {
+							lastModified = sonos;
+							resolve();
+						}
+					});
 				});
-			}));
+			});
 		});
 
 		removed.forEach((p) => {
@@ -96,27 +99,32 @@ export default {
 			let sonos = SonosService._deviceSearches[host];
 			let avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
-			promises.push(new Promise((resolve, reject) => {
-				avTransport.BecomeCoordinatorOfStandaloneGroup({
-					InstanceID: 0,
-				}, (err) => {
-					if(err) {
-						reject(err);
-					} else {
-						lastModified = sonos;
-						resolve();
-					}
+			promise.then(() => {
+				return new Promise((resolve, reject) => {
+					avTransport.BecomeCoordinatorOfStandaloneGroup({
+						InstanceID: 0,
+					}, (err) => {
+						if(err) {
+							reject(err);
+						} else {
+							lastModified = sonos;
+							resolve();
+						}
+					});
 				});
-			}));
+			});
 		});
 
-		Promise.all(promises).then(() => {
-			window.setTimeout(() => {
-				Dispatcher.dispatch({
-					actionType: Constants.GROUP_MANAGEMENT_CHANGED,
-				});
-				SonosService.queryTopology(lastModified);
-			}, 500);
+		promise.then(() => {
+			Dispatcher.dispatch({
+				actionType: Constants.GROUP_MANAGEMENT_CHANGED,
+			});
+
+			[1,500,1000,1500,2000].forEach((num) => {
+				window.setTimeout(() => {
+					SonosService.queryTopology(lastModified);
+				}, num);
+			});
 		}, (err) => {
 			debugger;
 		});
