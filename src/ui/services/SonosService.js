@@ -114,12 +114,15 @@ let SonosService = {
 						zone = match || zone;
 					}
 
-					this.selectCurrentZone(zone);
+					//HACK: trying to prevent listener not having server throw, race condition?
+					window.setTimeout(() => {
+						this.selectCurrentZone(zone);
 
-					Dispatcher.dispatch({
-						actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
-						zone: zone,
-					});
+						Dispatcher.dispatch({
+							actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
+							zone: zone,
+						});
+					}, 100);
 				});
 			}
 

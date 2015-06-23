@@ -81,8 +81,10 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] BUG: Same track in queue multiple times and selecting one selects all
 - [x] BUG: Changing group topology doesn't reflect in volume controls
 - [x] Group management
+- [x] BUG: App gets stuck during startup ("...can only be added after listen() is called")
 
 ##TODO:
+- [ ] BUG: group mute button sometimes flickers with wrong state
 - [ ] Drag and drop to reorder the queue
 - [ ] Infinite scroll for search results
 - [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin

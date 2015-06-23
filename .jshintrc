@@ -6,6 +6,7 @@
 		"chrome",
 		"console",
 		"escape",
-		"xml2js"
+		"xml2js",
+		"document"
 	]
 }
