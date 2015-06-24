@@ -51,8 +51,8 @@ remoteLogger.init(() => {
 
 
 	// log uncaught errors
-	window.onerror = (err) => {
-		remoteLogger.log('error', err);
+	window.onerror = (errorMsg, url, lineNumber, column, errorObj) => {
+		remoteLogger.log('error', errorObj);
 	};
 });
 
