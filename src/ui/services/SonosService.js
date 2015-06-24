@@ -137,7 +137,7 @@ let SonosService = {
 		let zone = ZoneGroupStore.getCurrent();
 		let topology = ZoneGroupStore.getAll();
 
-		if(!topology.length) {
+		if(!zone) {
 			return;
 		}
 
