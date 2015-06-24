@@ -11,6 +11,9 @@ import Constants from '../constants/Constants';
 
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
+import remoteLogger from '../helpers/remoteLogger';
+
+
 const REG = /^http:\/\/([\d\.]+)/;
 const QUERY_INTERVAL = 10000;
 

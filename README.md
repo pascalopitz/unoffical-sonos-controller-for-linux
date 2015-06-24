@@ -84,6 +84,7 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] BUG: App gets stuck during startup ("...can only be added after listen() is called")
 - [x] Drag and drop to reorder the queue
 - [x] BUG: group mute button sometimes flickers with wrong state
+- [x] Get some basic device logging to debug network interface bug
 
 ##TODO:
 - [ ] Infinite scroll for search results
