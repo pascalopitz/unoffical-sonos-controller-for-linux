@@ -87,24 +87,28 @@ class QueueList extends React.Component {
 
 	_onDragOver (e) {
 		let li = getClosest(e.target, 'li');
-		let rect = li.getBoundingClientRect();
-		let midPoint = rect.top + (rect.height / 2);
 
-		let mode = e.clientY > midPoint ? 'after' : 'before';
+		if(li) {
+			let rect = li.getBoundingClientRect();
+			let midPoint = rect.top + (rect.height / 2);
 
-		this.setState({
-			dragOverPosition: Number(li.getAttribute('data-position')),
-			dragOverMode: mode,
-		});
-	}
+			let mode = e.clientY > midPoint ? 'after' : 'before';
+			let position = Number(li.getAttribute('data-position'));
 
-	_onDragOut (e) {
-		let li = getClosest(e.target, 'li');
+			if(mode === this.state.dragOverMode && position === this.state.dragOverPosition) {
+				return;
+			}
 
-		this.setState({
-			dragOverPosition: null,
-			dragOverMode: null,
-		});
+			this.setState({
+				dragOverPosition: position,
+				dragOverMode: mode,
+			});
+		} else if(this.state.dragOverMode || this.state.dragOverPosition) {
+			this.setState({
+				dragOverPosition: null,
+				dragOverMode: null,
+			});
+		}
 	}
 
 	render () {
@@ -144,7 +148,6 @@ class QueueList extends React.Component {
 				{{clearNode}}
 				<ul id="queue-container"
 					onDragOver={this._onDragOver.bind(this)}
-					onDragOut={this._onDragOut.bind(this)}
 					onDragStart={this._onDragStart.bind(this)}
 					onDragEnd={this._onDragEnd.bind(this)}
 					onScroll={this._onScroll.bind(this)}>

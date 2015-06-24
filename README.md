@@ -85,6 +85,7 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Drag and drop to reorder the queue
 - [x] BUG: group mute button sometimes flickers with wrong state
 - [x] Get some basic device logging to debug network interface bug
+- [x] BUG: drag and drop locking up on older apple mac core duo
 
 ##TODO:
 - [ ] Infinite scroll for search results
