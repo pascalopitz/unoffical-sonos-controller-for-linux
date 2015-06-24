@@ -141,6 +141,28 @@ export default {
 			});
 			SonosService.queryState();
 		});
+	},
 
+	changePosition(position, newPosition) {
+		let sonos = SonosService._currentDevice;
+
+		let params = {
+			InstanceID: 0,
+			StartingIndex: position,
+			InsertBefore: newPosition,
+			NumberOfTracks: 1,
+			UpdateID: QueueStore.getUpdateID(),
+		};
+
+		var avTransport = new Services.AVTransport(sonos.host, sonos.port);
+
+		avTransport.ReorderTracksInQueue(params, () => {
+			Dispatcher.dispatch({
+				actionType: Constants.QUEUE_REORDER,
+				position: position,
+				newPosition: newPosition,
+			});
+			SonosService.queryState();
+		});
 	}
 };

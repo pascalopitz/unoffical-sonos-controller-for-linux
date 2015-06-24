@@ -82,6 +82,7 @@ class QueueListItem extends React.Component {
 		let inlineMenuButton;
 		let inlineMenu;
 		let selectionToggle;
+		let dragOver = false;
 
 		let isCurrent = this.props.isCurrent;
 		let track = this.props.track;
@@ -125,13 +126,21 @@ class QueueListItem extends React.Component {
 			}
 		}
 
+		if(this.props.isDragOver) {
+			dragOver = this.props.dragOverMode;
+		}
+
 		return (
 			<li onDoubleClick={this._playNow.bind(this)}
 				onMouseOut={this._onMouseOut.bind(this)}
 				onMouseOver={this._onMouseOver.bind(this)}
 				data-position={this.props.position}
+				data-dragging={this.props.isDragging}
+				data-dragover={dragOver}
 				data-is-selected={isSelected} 
-				data-is-current={this.props.isCurrent}>
+				data-is-current={this.props.isCurrent}
+				draggable="true"
+				>
 
 				<AlbumArt src={track.albumArtURI} viewport={this.props.viewport} />
 				<div className="trackinfo">

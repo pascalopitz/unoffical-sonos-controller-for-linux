@@ -702,6 +702,17 @@ body #queue-container li[data-is-current=true] {
 	outline: none;
 }
 
+#queue-container li[data-dragover=before]:before,
+#queue-container li[data-dragover=after]:after {
+	content: '';
+	display: block;
+	height: 53px;
+	background: rgba(255, 255, 255, .2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 #browser-container li img,
 #queue-container li img {
 	width: 50px;

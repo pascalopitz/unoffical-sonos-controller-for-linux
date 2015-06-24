@@ -13,6 +13,7 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 	// _selected : [],
 	_tracks : [],
 	_position: null,
+	_updateID: null,
 
 	emitChange () {
 		this.emit(CHANGE_EVENT);
@@ -30,6 +31,14 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 		return this._position;
 	},
 
+	setUpdateID (id) {
+		this._updateID = id;
+	},
+
+	getUpdateID (id) {
+		return this._updateID;
+	},
+
 	setTracks (tracks) {
 		tracks = tracks || [];
 		// preserve selection if direct match
@@ -45,6 +54,11 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 		});
 
 		this._tracks = tracks;
+	},
+
+	moveTrack (position, newPosition) {
+		let slice = this._tracks.splice(position - 1, 1);
+		this._tracks.splice(newPosition - 1, 0, slice[0]);
 	},
 
 	getTracks () {
@@ -73,6 +87,11 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 
 Dispatcher.register(action => {
 	switch (action.actionType) {
+		case Constants.QUEUE_REORDER:
+			QueueStore.moveTrack(action.position, action.newPosition);
+			QueueStore.emitChange();
+			break;
+
 		case Constants.QUEUE_SELECT:
 			QueueStore.addToSelection(action.track, action.position);
 			QueueStore.emitChange();
@@ -90,6 +109,7 @@ Dispatcher.register(action => {
 
 		case Constants.SONOS_SERVICE_QUEUE_UPDATE:
 			QueueStore.setTracks(action.result.items);
+			QueueStore.setUpdateID(action.result.updateID);
 			QueueStore.emitChange();
 			break;
 

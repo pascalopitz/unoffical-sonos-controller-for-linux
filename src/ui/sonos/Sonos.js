@@ -129,6 +129,7 @@ class Sonos {
 				});
 
 				var result = {
+					updateID: data.UpdateID,
 					returned: data.NumberReturned,
 					total: data.TotalMatches,
 					items: items

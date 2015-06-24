@@ -170,8 +170,22 @@ let SonosService = {
 		});
 	},
 
+	queryMusicLibrary (sonos) {
+		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
+
+		sonos.getMusicLibrary('queue', {}, (err, result) => {
+			if(err) {
+				return;
+			}
+			Dispatcher.dispatch({
+				actionType: Constants.SONOS_SERVICE_QUEUE_UPDATE,
+				result: result,
+			});
+		});
+	},
+
 	queryState (sonos) {
-		sonos = sonos || this._currentDevice;
+		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
 		// TODO: I should be able to do all of these in a promise based op
 		// i.e. seek->getPosition
@@ -186,6 +200,7 @@ let SonosService = {
 		});
 
 		this.queryVolumeInfo();
+		this.queryMusicLibrary(sonos);
 
 		sonos.currentTrack((err, track) => {
 			if(err) {
@@ -202,16 +217,6 @@ let SonosService = {
 				return;
 			}
 			this.processPlaystateUpdate(state);
-		});
-
-		sonos.getMusicLibrary('queue', {}, (err, result) => {
-			if(err) {
-				return;
-			}
-			Dispatcher.dispatch({
-				actionType: Constants.SONOS_SERVICE_QUEUE_UPDATE,
-				result: result,
-			});
 		});
 	},
 
@@ -319,6 +324,12 @@ let SonosService = {
 					});
 
 					this.processPlaystateUpdate(this._currentDevice.translateState(lastChange.Event.InstanceID.TransportState.$.val));
+				}
+				break;
+
+			case '/MediaServer/ContentDirectory/Event':
+				{
+					this.queryMusicLibrary();
 				}
 				break;
 		}

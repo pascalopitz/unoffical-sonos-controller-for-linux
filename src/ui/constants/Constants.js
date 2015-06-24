@@ -25,6 +25,7 @@ let Constants = {
 	QUEUE_REMOVE: '',
 	QUEUE_SELECT: '',
 	QUEUE_DESELECT: '',
+	QUEUE_REORDER: '',
 
 	ZONE_GROUP_SELECT: '',
 	ZONE_GROUP_SET: '',
