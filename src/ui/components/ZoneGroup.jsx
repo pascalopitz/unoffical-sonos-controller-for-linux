@@ -3,7 +3,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
 
-import sort from '../helpers/sort';
 import ZoneGroupActions from '../actions/ZoneGroupActions';
 
 import ZoneGroupMember from './ZoneGroupMember'; 

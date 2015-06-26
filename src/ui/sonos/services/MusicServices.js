@@ -7,8 +7,8 @@ class MusicServices extends Service {
 			name : 'MusicServices',
 			host : host,
 			port : port || 1400,
-			controlURL : '/MediaRenderer/MusicServices/Control',
-			eventSubURL : '/MediaRenderer/MusicServices/Event',
+			controlURL : '/MusicServices/Control',
+			eventSubURL : '/MusicServices/Event',
 			SCPDURL : '/xml/MusicServices1.xml',
 		});
 	}
