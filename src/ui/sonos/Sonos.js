@@ -833,6 +833,34 @@ class Sonos {
 	}
 
 	/**
+	 * Gets accountd data for Player
+	 * @param	{Function} callback (err, data)
+	 */
+	getAccountStatus (callback) {
+		debug('Sonos.getAccountStatus(%j)', callback);
+		requestHelper('http://' + this.host + ':' + this.port + '/status/accounts', function(err, res, body) {
+			if(err) return callback(err);
+			debug(body);
+			(new xml2js.Parser()).parseString(body, function(err, data) {
+				if(err) return callback(err);
+
+				let accounts = [];
+
+				if(data.ZPSupportInfo && data.ZPSupportInfo.Accounts && data.ZPSupportInfo.Accounts[0].Account) {
+					accounts = data.ZPSupportInfo.Accounts[0].Account.map((a) => {
+						return _.extend(a.$, {
+							Username: a.UN[0]
+						}, {
+							Key: a.Key[0]
+						});
+					})
+				}
+				callback(null, accounts);
+			});
+		});
+	}
+
+	/**
 	 * Get Current Playback State
 	 * @param	{Function} callback (err, state)
 	 */
