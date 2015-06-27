@@ -88,6 +88,7 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] BUG: drag and drop locking up on older apple mac core duo
 
 ##TODO:
+- [ ] BUG: bridge shows up in player list
 - [ ] Infinite scroll for search results
 - [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin
 - [ ] Fix broken image issues (data url too long?)
