@@ -39,6 +39,11 @@ class Service {
 			(new xml2js.Parser()).parseString(body, function(err, json) {
 				if (err) return callback(err);
 
+				if(!json['s:Envelope']) {
+					callback('Body undefined', null);
+					return;
+				}
+
 				if(typeof json['s:Envelope']['s:Body'][0]['s:Fault'] !== 'undefined') {
 					return callback(new Error(json['s:Envelope']['s:Body'][0]['s:Fault'][0].faultstring[0] +
 					': ' + json['s:Envelope']['s:Body'][0]['s:Fault'][0].detail[0].UPnPError[0].errorCode[0]));
