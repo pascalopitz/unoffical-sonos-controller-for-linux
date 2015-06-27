@@ -7,8 +7,8 @@ class SystemProperties extends Service {
 			name : 'SystemProperties',
 			host : host,
 			port : port || 1400,
-			controlURL : '/MediaRenderer/SystemProperties/Control',
-			eventSubURL : '/MediaRenderer/SystemProperties/Event',
+			controlURL : '/SystemProperties/Control',
+			eventSubURL : '/SystemProperties/Event',
 			SCPDURL : '/xml/SystemProperties1.xml',
 		});
 	}
