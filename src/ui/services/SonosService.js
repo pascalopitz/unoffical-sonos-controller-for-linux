@@ -125,7 +125,7 @@ let SonosService = {
 							actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
 							zone: zone,
 						});
-					}, 100);
+					}, 500);
 				});
 			}
 
