@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-for-chrome",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Sonos Controller for Chrome",
   "main": "dist/background.js",
   "scripts": {

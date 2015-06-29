@@ -93,7 +93,7 @@ class BrowserListItem extends React.Component  {
 		let artistInfo;
 
 		if(item.class) {
-			className = className + ' playable ' + /\.(\w+)$/gi.exec(item.class)[1];
+			className = className + ' playable ' + /\.([-\w]+)$/gi.exec(item.class)[1];
 
 			inlineMenuButton = (
 				<i className="material-icons arrow" onClick={this._toggle.bind(this)}>arrow_drop_down_circle</i>

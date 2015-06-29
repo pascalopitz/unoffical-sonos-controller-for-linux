@@ -8,21 +8,29 @@ import Constants from '../constants/Constants';
 
 const CHANGE_EVENT = 'change';
 
-// const START_STATE = {
-// 	source: null,
-// 	searchType: null,
-// 	title: 'Select a Music Source',
-// 	items: [
-// 		{
-// 			title: 'Sonos Favourites',
-// 			source: 'favourites'
-// 		},
-// 		{
-// 			title: 'Music Library',
-// 			source: 'library'
-// 		}
-// 	]
-// };
+const START_STATE = {
+	source: null,
+	searchType: null,
+	title: 'Select a Music Source',
+	items: [
+		{
+			title: 'Sonos Favourites',
+			searchType: 'FV:2'
+		},
+		{
+			title: 'Music Library',
+			action: 'library'
+		},
+		{
+			title: 'Sonos Playlists',
+			searchType: 'SQ:'
+		},
+		{
+			title: 'Line-in',
+			action: 'linein'
+		}
+	]
+};
 
 const LIBRARY_STATE = {
 	title: 'Browse Music Library',
@@ -59,7 +67,8 @@ const DEFAULT_SEARCH_TARGET = 'artists';
 
 var BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 
-	_state : LIBRARY_STATE,
+	LIBRARY_STATE: LIBRARY_STATE,
+	_state : START_STATE,
 	_search :  false,
 	_searchResults :  null,
 	_searchTarget :  DEFAULT_SEARCH_TARGET,

@@ -89,7 +89,7 @@ let SonosService = {
 		let currentGroupMatch;
 
 		sonos.getTopology((err, info) => {
-			
+
 			if(err) {
 				return;
 			}

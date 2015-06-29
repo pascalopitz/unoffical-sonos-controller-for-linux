@@ -89,6 +89,12 @@ For development, you can run the watch task, which will re-compile on change:
 
 ##TODO:
 - [ ] BUG: bridge shows up in player list
+- [ ] Support Line In
+- [ ] Add track to favourites
+- [ ] Save Queues
+
+- [ ] Show what's playing in zone list for all zones
+- [ ] Browse music on phones (is that possible)?
 - [ ] Infinite scroll for search results
 - [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin
 - [ ] Fix broken image issues (data url too long?)

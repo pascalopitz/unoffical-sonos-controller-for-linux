@@ -1,11 +1,14 @@
 "use strict";
 
+import _ from 'lodash';
+
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants  from '../constants/Constants';
 
 import SonosService from '../services/SonosService';
 
 import QueueStore from '../stores/QueueStore';
+import BrowserListStore from '../stores/BrowserListStore';
 
 export default {
 
@@ -89,11 +92,49 @@ export default {
 		});
 	},
 
+	_fetchLineIns () {
+		let promises = [];
+
+		Object.keys(SonosService._deviceSearches).forEach((host) => {
+			promises.push(new Promise((resolve, reject) => {
+				let sonos = SonosService._deviceSearches[host];
+
+				sonos.getMusicLibrary('AI:', {}, (err, result) => {
+					let items = (result && result.items) ? result.items : [];
+					resolve(items);
+				});
+			}));
+		});
+
+		return Promise.all(promises);
+	},
+
 	select (item) {
 
 		let sonos = SonosService._currentDevice;
 		let prendinBrowserUpdate;
 		let objectId = item.searchType;
+
+		if(item.action && item.action === 'library') {
+			Dispatcher.dispatch({
+				actionType: Constants.BROWSER_SELECT_ITEM,
+				state: BrowserListStore.LIBRARY_STATE,
+			});
+			return;
+		}
+
+		if(item.action && item.action === 'linein') {
+			this._fetchLineIns().then((results) => {
+				let state = _.cloneDeep(item);
+				state.items = [];
+
+				Dispatcher.dispatch({
+					actionType: Constants.BROWSER_SELECT_ITEM,
+					state: state,
+				});
+			});
+			return;
+		}
 
 		if(item.searchType) {
 			prendinBrowserUpdate = {
@@ -105,7 +146,7 @@ export default {
 		}
 
 		if(item.class) {
-			objectId = item.uri.split('#')[1];
+			objectId = (item.id) ? item.id : item.uri.split('#')[1];
 		}
 
 		sonos.getMusicLibrary(objectId, {}, (err, result) => {

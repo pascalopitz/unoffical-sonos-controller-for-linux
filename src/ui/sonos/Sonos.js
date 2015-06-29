@@ -117,6 +117,8 @@ class Sonos {
 				_.each(didl['DIDL-Lite'].container || didl['DIDL-Lite'].item, function(item){
 					items.push(
 						{
+							'id': item.$.id,
+							'parentID': item.$.parentID,
 							'title': Array.isArray(item['dc:title']) ? item['dc:title'][0]: null,
 							'creator': Array.isArray(item['dc:creator']) ? item['dc:creator'][0]: null,
 							'album': Array.isArray(item['upnp:album']) ? item['upnp:album'][0]: null,
