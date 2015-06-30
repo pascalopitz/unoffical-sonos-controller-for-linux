@@ -41,7 +41,6 @@ export default {
 		let sonos = SonosService._currentDevice;
 
 		if(item.class && item.class === 'object.item.audioItem') {
-			debugger;
 			sonos.play(item.uri, () => {
 				SonosService.queryState(sonos);
 			});
