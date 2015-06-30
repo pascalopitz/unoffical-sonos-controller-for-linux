@@ -22,7 +22,8 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	setAll (groups) {
-		this._groups = _(groups).reject({ iszonebridge: "true" })
+		console.log(groups);
+		this._groups = _(groups).reject({ name: "BRIDGE" })
 								.sortBy('name')
 								.groupBy('group')
 								.value();
@@ -58,4 +59,3 @@ Dispatcher.register(action => {
 });
 
 export default ZoneGroupStore;
-

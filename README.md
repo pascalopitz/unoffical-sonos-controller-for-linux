@@ -86,13 +86,12 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] BUG: group mute button sometimes flickers with wrong state
 - [x] Get some basic device logging to debug network interface bug
 - [x] BUG: drag and drop locking up on older apple mac core duo
+- [x] Support Line In
+- [x] BUG: bridge shows up in player list
 
 ##TODO:
-- [ ] BUG: bridge shows up in player list
-- [ ] Support Line In
 - [ ] Add track to favourites
 - [ ] Save Queues
-
 - [ ] Show what's playing in zone list for all zones
 - [ ] Browse music on phones (is that possible)?
 - [ ] Infinite scroll for search results
