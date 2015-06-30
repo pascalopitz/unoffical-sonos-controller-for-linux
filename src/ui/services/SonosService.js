@@ -104,12 +104,12 @@ let SonosService = {
 			if(!currentGroupMatch || !currentZone) {
 				chrome.storage.local.get(['zone'], (vals) => {
 
-					let zone = _(info.zones).findWhere({
+					let zone = _(info.zones).reject({ name: "BRIDGE" }).findWhere({
 						coordinator: "true"
 					});
 
 					if(vals.zone) {
-						let match = _(info.zones).findWhere({
+						let match = _(info.zones).reject({ name: "BRIDGE" }).findWhere({
 							uuid: vals.zone,
 							coordinator: "true"
 						});

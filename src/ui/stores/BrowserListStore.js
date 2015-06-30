@@ -133,7 +133,7 @@ Dispatcher.register(action => {
 				BrowserListStore.endSearch();
 				BrowserListStore.setSearchResults(null);
 				BrowserListStore._searchTarget = DEFAULT_SEARCH_TARGET;
-				BrowserListStore.setState(LIBRARY_STATE);
+				BrowserListStore.setState(START_STATE);
 			} else {
 				BrowserListStore._history = [];
 				BrowserListStore.startSearch();
@@ -170,4 +170,3 @@ Dispatcher.register(action => {
 });
 
 export default BrowserListStore;
-
