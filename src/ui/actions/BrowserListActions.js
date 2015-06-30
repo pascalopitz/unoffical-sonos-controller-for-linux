@@ -40,23 +40,30 @@ export default {
 	playNow (item) {
 		let sonos = SonosService._currentDevice;
 
-		sonos.getMusicLibrary('queue', {total: 0}, (err, res) => {
-			if(err) {
-				return;
-			}
+		if(item.class && item.class === 'object.item.audioItem') {
+			debugger;
+			sonos.play(item.uri, () => {
+				SonosService.queryState(sonos);
+			});
+		} else {
+			sonos.getMusicLibrary('queue', {total: 0}, (err, res) => {
+				if(err) {
+					return;
+				}
 
-			let pos = 1;
-			if(res.total) {
-				pos = Number(res.total) + 1;
-			}
-			sonos.queue(item, () => {
-				sonos.goto(pos, () => {
-					sonos.play(() => {
-						SonosService.queryState(sonos);
+				let pos = 1;
+				if(res.total) {
+					pos = Number(res.total) + 1;
+				}
+				sonos.queue(item, () => {
+					sonos.goto(pos, () => {
+						sonos.play(() => {
+							SonosService.queryState(sonos);
+						});
 					});
 				});
 			});
-		});
+		}
 	},
 
 	playNext (item) {
@@ -101,12 +108,25 @@ export default {
 
 				sonos.getMusicLibrary('AI:', {}, (err, result) => {
 					let items = (result && result.items) ? result.items : [];
-					resolve(items);
-				});
+
+					if(items.length === 0) {
+						resolve(items);
+						return;
+					}
+
+					sonos.getZoneAttrs((err1, data) => {
+						items.forEach((i) => {
+							i.title = i.title + ': ' + data.CurrentZoneName;
+						});
+						resolve(items);
+					});
+				})
 			}));
 		});
 
-		return Promise.all(promises);
+		return Promise.all(promises).then((arr) => {
+			return _.flatten(arr);
+		});
 	},
 
 	select (item) {
@@ -126,7 +146,7 @@ export default {
 		if(item.action && item.action === 'linein') {
 			this._fetchLineIns().then((results) => {
 				let state = _.cloneDeep(item);
-				state.items = [];
+				state.items = results || [];
 
 				Dispatcher.dispatch({
 					actionType: Constants.BROWSER_SELECT_ITEM,

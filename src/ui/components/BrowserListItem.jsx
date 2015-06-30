@@ -20,7 +20,7 @@ class BrowserListItem extends React.Component  {
 
 		let item = this.props.model;
 
-		if(item.class === 'object.item.audioItem.musicTrack') {
+		if(item.class === 'object.item.audioItem.musicTrack' || item.class === 'object.item.audioItem') {
 			BrowserListActions.playNow(item);
 		} else {
 			let node = React.findDOMNode(this);
@@ -99,7 +99,16 @@ class BrowserListItem extends React.Component  {
 				<i className="material-icons arrow" onClick={this._toggle.bind(this)}>arrow_drop_down_circle</i>
 			);
 
-			if(this.state.isExpanded) {
+			if(this.state.isExpanded && item.class === 'object.item.audioItem') {
+				inlineMenu = (
+					<ul className="inline-menu"
+						onMouseOut={this._onMouseOut.bind(this)}
+						onMouseOver={this._onMouseOver.bind(this)}>
+
+						<li onClick={this._playNow.bind(this)}>Play Now</li>
+					</ul>
+				)
+			} else if(this.state.isExpanded) {
 				inlineMenu = (
 					<ul className="inline-menu"
 						onMouseOut={this._onMouseOut.bind(this)}
