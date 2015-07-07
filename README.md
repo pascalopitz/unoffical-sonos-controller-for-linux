@@ -90,6 +90,8 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] BUG: bridge shows up in player list
 
 ##TODO:
+- [ ] BUG: stereo pairs show as separate
+- [ ] BUG: BOOST shows as group
 - [ ] Add track to favourites
 - [ ] Save Queues
 - [ ] Show what's playing in zone list for all zones
