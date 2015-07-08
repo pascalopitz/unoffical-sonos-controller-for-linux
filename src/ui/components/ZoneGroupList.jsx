@@ -11,6 +11,7 @@ class ZoneGroupList extends React.Component {
 		super(props);
 		this.state = {
 			groups: ZoneGroupStore.getAll(),
+			playStates: ZoneGroupStore.getPlayStates(),
 			current: ZoneGroupStore.getCurrent(),
 		};
 	}
@@ -22,6 +23,7 @@ class ZoneGroupList extends React.Component {
 	_onChange() {
 		this.setState({
 			groups: ZoneGroupStore.getAll(),
+			playStates: ZoneGroupStore.getPlayStates(),
 			current: ZoneGroupStore.getCurrent(),
 		});
 	}
@@ -39,7 +41,7 @@ class ZoneGroupList extends React.Component {
 			let item = this.state.groups[key];
 
 			return (
-				<ZoneGroup group={item} currentZone={this.state.current} />
+				<ZoneGroup playStates={this.state.playStates} group={item} currentZone={this.state.current} />
 			);
 		});
 

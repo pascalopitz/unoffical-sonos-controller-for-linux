@@ -51,8 +51,7 @@ let SonosService = {
 
 				listener.onServiceEvent(this.onServiceEvent.bind(this));
 
-				// these events happen for all players
-				listener.addService('/MediaRenderer/RenderingControl/Event', (err, sid) => {
+				let persistSubscription = (err, sid) => {
 					if(!err) {
 						this._persistentSubscriptions.push({
 							sid: sid,
@@ -60,19 +59,17 @@ let SonosService = {
 							sonos: sonos,
 						});
 					}
-				});
+				};
+
+				// these events happen for all players
+				listener.addService('/MediaRenderer/RenderingControl/Event', persistSubscription);
+				listener.addService('/MediaRenderer/AVTransport/Event', persistSubscription);
+
+				this.queryCurrentTrackAndPlaystate(sonos)
 
 				if(!firstResultProcessed) {
 					this.queryTopology(sonos);
-					listener.addService('/ZoneGroupTopology/Event', (err, sid) => {
-						if(!err) {
-							this._persistentSubscriptions.push({
-								sid: sid,
-								host: sonos.host,
-								sonos: sonos,
-							});
-						}
-					});
+					listener.addService('/ZoneGroupTopology/Event', persistSubscription);
 					firstResultProcessed = true;
 				}
 			});
@@ -187,7 +184,70 @@ let SonosService = {
 		});
 	},
 
-	queryState (sonos) {
+	queryCurrentTrackAndPlaystate (sonos) {
+		sonos.getCurrentState((err, state) => {
+
+			if(state === 'transitioning') {
+				window.setTimeout(() => {
+					this.queryCurrentTrackAndPlaystate(sonos);
+				}, 100);
+				return;
+			}
+
+			if(err) {
+				return;
+			}
+
+			sonos.currentTrack((err, track) => {
+				if(err) {
+					return;
+				}
+
+				Dispatcher.dispatch({
+					actionType: Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE,
+					track: track,
+					host: sonos.host,
+					state: state,
+				});
+			});
+		});
+	},
+
+	queryCurrentTrack (sonos) {
+		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
+
+		sonos.currentTrack((err, track) => {
+			if(err) {
+				return;
+			}
+
+			if(track.class === 'object.item') {
+				// skip here because it's radio, and the info is garbage
+				return;
+			}
+
+			if(this._currentDevice && sonos.host === this._currentDevice.host) {
+				Dispatcher.dispatch({
+					actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
+					track: track,
+					host: sonos.host,
+				});
+			}
+		});
+	},
+
+	queryPlayState (sonos) {
+		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
+
+		sonos.getCurrentState((err, state) => {
+			if(err) {
+				return;
+			}
+			this.processPlaystateUpdate(sonos, state);
+		});
+	},
+
+	queryPositionInfo (sonos) {
 		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
 		// TODO: I should be able to do all of these in a promise based op
@@ -196,48 +256,39 @@ let SonosService = {
 			if(err) {
 				return;
 			}
-			Dispatcher.dispatch({
-				actionType: Constants.SONOS_SERVICE_POSITION_INFO_UPDATE,
-				info: info,
-			});
-		});
 
-		this.queryVolumeInfo();
-		this.queryMusicLibrary(sonos);
-
-		sonos.currentTrack((err, track) => {
-			if(err) {
-				return;
+			if(this._currentDevice && sonos.host === this._currentDevice.host) {
+				Dispatcher.dispatch({
+					actionType: Constants.SONOS_SERVICE_POSITION_INFO_UPDATE,
+					info: info,
+				});
 			}
-			Dispatcher.dispatch({
-				actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
-				track: track,
-			});
-		});
-
-		sonos.getCurrentState((err, state) => {
-			if(err) {
-				return;
-			}
-			this.processPlaystateUpdate(state);
 		});
 	},
 
-	processPlaystateUpdate (state) {
+	queryState (sonos) {
+		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
+		this.queryVolumeInfo();
+
+		this.queryPositionInfo(sonos);
+		this.queryMusicLibrary(sonos);
+		this.queryCurrentTrack(sonos);
+		this.queryPlayState(sonos);
+		this.queryCurrentTrackAndPlaystate(sonos);
+	},
+
+	processPlaystateUpdate (sonos, state) {
 		let publishState = (state) => {
 			Dispatcher.dispatch({
 				actionType: Constants.SONOS_SERVICE_PLAYSTATE_UPDATE,
 				state: state,
+				host: sonos.host,
 			});
 		};
 
 		if(state === 'transitioning') {
-			window.setTimeout(() => {
-				this._currentDevice.getCurrentState((err, state) => {
-					this.processPlaystateUpdate(state);
-				});
-			}, 100);
+			window.setTimeout(() => this.queryPlayState(sonos), 100);
 		}
 
 		publishState(state);
@@ -308,6 +359,12 @@ let SonosService = {
 				{
 					let lastChange = xml2json(data.LastChange);
 
+					let subscription = _(this._persistentSubscriptions).findWhere({sid: sid});
+
+					let avTransportMetaDIDL = xml2json(lastChange.Event.InstanceID.AVTransportURIMetaData.$.val, {
+						explicitArray: true
+					});
+
 					let currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
 						explicitArray: true
 					});
@@ -316,17 +373,32 @@ let SonosService = {
 						explicitArray: true
 					});
 
-					Dispatcher.dispatch({
-						actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
-						track: this._currentDevice.parseDIDL(currentTrackDIDL),
-					});
+					if(subscription) {
+						let transportState = subscription.sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val);
 
-					Dispatcher.dispatch({
-						actionType: Constants.SONOS_SERVICE_NEXT_TRACK_UPDATE,
-						track: this._currentDevice.parseDIDL(nextTrackDIDL),
-					});
+						Dispatcher.dispatch({
+							actionType: Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE,
+							track: subscription.sonos.parseDIDL(currentTrackDIDL),
+							avTransportMeta: this._currentDevice.parseDIDL(avTransportMetaDIDL),
+							host: subscription.host,
+							state: transportState,
+						});
 
-					this.processPlaystateUpdate(this._currentDevice.translateState(lastChange.Event.InstanceID.TransportState.$.val));
+						if(this._currentDevice && subscription.host === this._currentDevice.host) {
+							Dispatcher.dispatch({
+								actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
+								track: this._currentDevice.parseDIDL(currentTrackDIDL),
+								avTransportMeta: this._currentDevice.parseDIDL(avTransportMetaDIDL),
+							});
+
+							Dispatcher.dispatch({
+								actionType: Constants.SONOS_SERVICE_NEXT_TRACK_UPDATE,
+								track: this._currentDevice.parseDIDL(nextTrackDIDL),
+							});
+
+							this.processPlaystateUpdate(subscription.sonos, transportState);
+						}
+					}
 				}
 				break;
 
@@ -346,7 +418,6 @@ let SonosService = {
 			this._currentSubscriptions.push(sid);
 		};
 
-		x.addService('/MediaRenderer/AVTransport/Event', cb);
 		x.addService('/MediaRenderer/GroupRenderingControl/Event', cb);
 		x.addService('/MediaServer/ContentDirectory/Event', cb);
 	},
@@ -398,6 +469,13 @@ let SonosService = {
 	},
 
 	excludeStereoPairs (zones) {
+
+		// TODO: find a better place for this
+		zones.forEach((z) => {
+			let matches = REG.exec(z.location);
+			z.host = matches[1];
+		});
+
 		return _(zones).groupBy('name').map((g) => {
 			// TODO: what happens when a sub is added?
 			if(g.length === 2) {

@@ -5,12 +5,14 @@ import React from 'react/addons';
 
 import ZoneGroupActions from '../actions/ZoneGroupActions';
 
-import ZoneGroupMember from './ZoneGroupMember'; 
+import ZoneGroupMember from './ZoneGroupMember';
 
 class ZoneGroup extends React.Component {
 
 	render () {
 		let items = this.props.group;
+		let playStates = this.props.playStates;
+		let playState;
 
 		if(!items) {
 			return null;
@@ -20,11 +22,32 @@ class ZoneGroup extends React.Component {
 			coordinator: "true"
 		});
 
+		if(coordinator) {
+			playState = playStates[coordinator.host] || {};
+		}
+
 		let zoneNodes = items.map(function (item, index) {
 			return (
 				<ZoneGroupMember member={item} />
 			);
 		});
+
+		let currentPlayStateNode = <div className="play-state"></div>;
+
+		if(playState && playState.track && playState.track.title) {
+			let icon = (playState.isPlaying) ? (<i className="material-icons">play_arrow</i>) : (<i className="material-icons">pause</i>);
+			let info = playState.track.title;
+
+			if(playState.track.artist) {
+				info = info + ' - ' + playState.track.artist;
+			}
+
+			currentPlayStateNode = (
+				<div className="play-state">
+					{{icon}} {info}
+				</div>
+			);
+		}
 
 		let classString = 'not-selected'
 
@@ -32,12 +55,18 @@ class ZoneGroup extends React.Component {
 			classString = 'selected';
 		}
 
+		classString += ' zone-group';
+
 		return (
-			<ul className={classString} onClick={this._onClick.bind(this)}>
-				{{zoneNodes}}
+			<div className={classString} onClick={this._onClick.bind(this)}>
+				<ul>
+					{{zoneNodes}}
+				</ul>
 
 				<div className="group-button" onClick={this._showGroupManagement.bind(this)}>Group</div>
-			</ul>
+
+				{{currentPlayStateNode}}
+			</div>
 		);
 	}
 

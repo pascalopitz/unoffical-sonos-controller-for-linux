@@ -64,7 +64,7 @@ body {
 	top: 5px;
 	bottom: 0;
 	left: 5px;
-	right: 5px;	
+	right: 5px;
 	z-index: 20000;
 
 	background: rgba(0, 0, 0, .7);
@@ -571,6 +571,12 @@ h4 {
 	box-shadow: 0px 0px 1px 1px white;
 }
 
+#position-info .content #position-info-control,
+#position-info .content #position-info-control div {
+    margin: 0;
+}
+
+
 #position-bar {
 	height: 4px;
 	width: 150px;
@@ -581,21 +587,39 @@ h4 {
 	position: relative;
 }
 
-#zone-wrapper ul {
+#zone-wrapper .zone-group {
 	background-image: -moz-linear-gradient(top, #303030 0px, #252525 24px);
 	background-image: -webkit-linear-gradient(top, #303030 0px, #252525 24px);
 	margin: 10px;
-	padding: 10px 10px 10px 10px;
 	border-radius: 5px;
 	border-top: 1px solid #434343;
 	border-right: 1px solid #2B2B2B;
 	border-left: 1px solid #2C2C2C;
 	border-bottom: 1px solid #2B2B2B;
 	position: relative;
-	min-height: 35px;
+    overflow: hidden;
 }
 
-#zone-wrapper ul.selected {
+#zone-wrapper .zone-group .play-state {
+    border-top: 1px solid #434343;
+    padding: 5px;
+    overflow: hidden;
+	width: 100%;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+    height: 20px;
+}
+
+#zone-wrapper .zone-group .play-state * {
+    font-size: 12px;
+    vertical-align: top;
+}
+
+#zone-wrapper .zone-group .play-state i {
+    font-size: 14px;
+}
+
+#zone-wrapper .zone-group.selected {
 	background-image: -moz-linear-gradient(top, #555555 0px, #404040 24px);
 	background-image: -webkit-linear-gradient(top, #555555 0px, #404040 24px);
 	border-top: 1px solid #6E6E6E;
@@ -604,12 +628,12 @@ h4 {
 	border-bottom: 1px solid #363636;
 }
 
-#zone-wrapper ul:hover {
+#zone-wrapper .zone-group:hover {
 	background-image: -moz-linear-gradient(top, #6E6E6E 0px, #565656 24px);
 	background-image: -webkit-linear-gradient(top, #6E6E6E 0px, #565656 24px);
 }
 
-#zone-wrapper ul div.group-button {
+#zone-wrapper .zone-group div.group-button {
 	background-image: -webkit-linear-gradient(top, #404040 0px, #303030 24px);
 	border: 1px solid black;
 	position: absolute;
@@ -619,7 +643,14 @@ h4 {
 	border-radius: 5px;
 }
 
-#zone-wrapper ul li {
+#zone-wrapper .zone-group ul {
+    min-height: 35px;
+    list-style: none;
+    margin: 0;
+    padding: 10px 10px 10px 10px;
+}
+
+#zone-wrapper .zone-group ul li {
 	list-style: none;
 	padding-top: 3px;
 	cursor: pointer;
@@ -770,7 +801,7 @@ body #queue-container li[data-is-current=true] {
 	text-overflow: ellipsis;
 }
 
-#browser-container i.material-icons.arrow, 
+#browser-container i.material-icons.arrow,
 #queue-container i.material-icons.arrow {
 	height: 20px;
 	width: 20px;
@@ -832,7 +863,7 @@ body #queue-container li[data-is-current=true] {
 	top: 5px;
 	bottom: 0;
 	left: 5px;
-	right: 5px;	
+	right: 5px;
 	z-index: 20000;
 
 	background: rgba(0, 0, 0, .7);

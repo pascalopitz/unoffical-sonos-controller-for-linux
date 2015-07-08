@@ -88,19 +88,20 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] BUG: drag and drop locking up on older apple mac core duo
 - [x] Support Line In
 - [x] BUG: bridge shows up in player list
+- [x] BUG: stereo pairs show as separate
+- [x] BUG: BOOST shows as group
+- [x] Show what's playing in zone list for all zones
+- [x] BUG: Position info out of bounds
+- [x] BUG: Radio stream playing now seems to skip between values
 
 ##TODO:
-- [ ] BUG: stereo pairs show as separate
-- [ ] BUG: BOOST shows as group
-- [ ] BUG: Radio stream playing now seems to skip between values
 - [ ] Add track to favourites
 - [ ] Save Queues
-- [ ] Show what's playing in zone list for all zones
-- [ ] Browse music on phones (is that possible)?
 - [ ] Infinite scroll for search results
 - [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin
 - [ ] Fix broken image issues (data url too long?)
 - [ ] Fix interaction glitch when dragging group volume slider
 - [ ] Find out how to query for next track
 - [ ] Jump to places in the alphabet in media library
+- [ ] Browse music on phones (is that possible)?
 - [ ] Integrate services???

@@ -11,6 +11,7 @@ const CHANGE_EVENT = 'change';
 var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 
 	_groups : [],
+	_playStates : {},
 	_current : null,
 
 	emitChange () {
@@ -27,6 +28,17 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 								.sortBy('name')
 								.groupBy('group')
 								.value();
+	},
+
+	setPlayState (host, state, track) {
+		this._playStates[host] = {
+			track: track,
+			isPlaying: state === 'playing',
+		};
+	},
+
+	getPlayStates () {
+		return this._playStates;
 	},
 
 	getAll () {
@@ -53,6 +65,25 @@ Dispatcher.register(action => {
 		case Constants.ZONE_GROUP_SELECT:
 		case Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT:
 			ZoneGroupStore.setCurrent(action.zone);
+			ZoneGroupStore.emitChange();
+			break;
+
+		case Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE:
+			let trackInfo = action.track
+
+			if(trackInfo.class === 'object.item' && !action.avTransportMeta) {
+				// skip because it's radio with no meta, so garbage
+				return;
+			}
+
+			if(trackInfo.class === 'object.item' && action.avTransportMeta) {
+				trackInfo = {
+					title: action.avTransportMeta.title,
+					albumArtURI: action.track.albumArtURI,
+				};
+			}
+
+			ZoneGroupStore.setPlayState(action.host, action.state, trackInfo);
 			ZoneGroupStore.emitChange();
 			break;
 	}

@@ -41,7 +41,14 @@ var CurrentTrackStore = _.assign({}, events.EventEmitter.prototype, {
 Dispatcher.register(action => {
 	switch (action.actionType) {
 		case Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE:
-			CurrentTrackStore.setCurrentTrack(action.track);
+			if(action.track.class === 'object.item' && action.avTransportMeta) {
+				CurrentTrackStore.setCurrentTrack({
+					title: action.avTransportMeta.title,
+					albumArtURI: action.track.albumArtURI,
+				});
+			} else {
+				CurrentTrackStore.setCurrentTrack(action.track);
+			}
 			CurrentTrackStore.emitChange();
 			break;
 
@@ -59,4 +66,3 @@ Dispatcher.register(action => {
 });
 
 export default CurrentTrackStore;
-

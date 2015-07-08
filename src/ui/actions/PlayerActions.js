@@ -59,4 +59,12 @@ export default {
 			SonosService.queryState();
 		});
 	},
+
+	refreshPosition () {
+		let sonos = SonosService._currentDevice;
+
+		window.setTimeout(() => {
+			SonosService.queryState();
+		}, 100)
+	},
 };
