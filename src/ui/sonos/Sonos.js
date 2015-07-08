@@ -171,7 +171,7 @@ class Sonos {
 		var opts = {
 			ObjectID: searches
 		}
-		
+
 		opts = _.extend(defaultOptions, opts)
 		var contentDirectory = new Services.ContentDirectory(this.host, this.port)
 		return contentDirectory.Browse(opts, function (err, data) {

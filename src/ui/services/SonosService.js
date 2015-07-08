@@ -104,12 +104,12 @@ let SonosService = {
 			if(!currentGroupMatch || !currentZone) {
 				chrome.storage.local.get(['zone'], (vals) => {
 
-					let zone = _(info.zones).reject({ name: "BRIDGE" }).findWhere({
+					let zone = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
 						coordinator: "true"
 					});
 
 					if(vals.zone) {
-						let match = _(info.zones).reject({ name: "BRIDGE" }).findWhere({
+						let match = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
 							uuid: vals.zone,
 							coordinator: "true"
 						});
@@ -131,7 +131,7 @@ let SonosService = {
 
 			Dispatcher.dispatch({
 				actionType: Constants.SONOS_SERVICE_TOPOLOGY_UPDATE,
-				groups: info.zones,
+				groups: this.excludeStereoPairs(info.zones),
 			});
 		});
 	},
@@ -280,7 +280,7 @@ let SonosService = {
 
 					Dispatcher.dispatch({
 						actionType: Constants.SONOS_SERVICE_TOPOLOGY_EVENT,
-						groups: zones,
+						groups: this.excludeStereoPairs(zones),
 					});
 				}
 				break;
@@ -396,6 +396,17 @@ let SonosService = {
 			this._queryInterval = window.setInterval(() =>  this.queryState(), QUERY_INTERVAL);
 		}
 	},
+
+	excludeStereoPairs (zones) {
+		return _(zones).groupBy('name').map((g) => {
+			// TODO: what happens when a sub is added?
+			if(g.length === 2) {
+				g[0].name = g[0].name + ' (L + R)';
+			}
+			return _.findWhere(g, 'coordinator', 'true') || g[0];
+		}).value();
+		return zones;
+	}
 };
 
 export default SonosService;
