@@ -1,9 +1,12 @@
 import withinEnvelope from './helpers/withinEnvelope';
 import htmlEntities from './helpers/htmlEntities';
 import xml2js from './helpers/xml2js';
+import xml2json from 'jquery-xml2json';
 import requestHelper from './helpers/request';
 
 import Services from './helpers/Services';
+
+window.Services = Services;
 
 import _ from 'lodash';
 
@@ -73,6 +76,7 @@ class Sonos {
 	 * @param	{Function} callback (err, result) result - {returned: {String}, total: {String}, items:[{title:{String}, uri: {String}}]}
 	 */
 	getMusicLibrary (searchType, options, callback){
+		var self = this;
 		var searches = {
 			'artists': 'A:ARTIST',
 			'albumArtists': 'A:ALBUMARTIST',
@@ -121,11 +125,15 @@ class Sonos {
 							'parentID': item.$.parentID,
 							'title': Array.isArray(item['dc:title']) ? item['dc:title'][0]: null,
 							'creator': Array.isArray(item['dc:creator']) ? item['dc:creator'][0]: null,
+							'metadata': Array.isArray(item['r:resMD']) ? self.parseDIDL(xml2json(item['r:resMD'][0], {
+								explicitArray: true
+							})): null,
+							'metadataRaw': Array.isArray(item['r:resMD']) ? item['r:resMD'][0]: null,
 							'album': Array.isArray(item['upnp:album']) ? item['upnp:album'][0]: null,
 							'albumArtURI': Array.isArray(item['upnp:albumArtURI']) ? item['upnp:albumArtURI'][0]: null,
 							'class': Array.isArray(item['upnp:class']) ? item['upnp:class'][0]: null,
 							'originalTrackNumber': Array.isArray(item['upnp:originalTrackNumber']) ? item['upnp:originalTrackNumber'][0]: null,
-							'uri': Array.isArray(item.res) ? item.res[0]._: null
+							'uri': Array.isArray(item.res) ? htmlEntities(item.res[0]._): null
 						}
 					);
 				});
@@ -150,6 +158,7 @@ class Sonos {
 	 * @param	{Function}	callback (err, result) result - {returned: {String}, total: {String}, items:[{title:{String}, uri: {String}}]}
 	 */
 	searchMusicLibrary (searchType, searchTerm, options, callback) {
+		var self = this;
 		var searches = {
 			'artists': 'A:ARTIST',
 			'albumArtists': 'A:ALBUMARTIST',
@@ -183,16 +192,19 @@ class Sonos {
 					callback(new Error('Cannot parse DIDTL result'), data)
 				}
 				_.each(didl['DIDL-Lite'].item || didl['DIDL-Lite'].container, function (item) {
-					var albumArtURL = null
 					items.push(
 						{
 							'title': Array.isArray(item['dc:title']) ? item['dc:title'][0]: null,
 							'creator': Array.isArray(item['dc:creator']) ? item['dc:creator'][0]: null,
+							'metadata': Array.isArray(item['r:resMD']) ? self.parseDIDL(xml2json(item['r:resMD'][0], {
+								explicitArray: true
+							})): null,
+							'metadataRaw': Array.isArray(item['r:resMD']) ? item['r:resMD'][0]: null,
 							'album': Array.isArray(item['upnp:album']) ? item['upnp:album'][0]: null,
 							'albumArtURI': Array.isArray(item['upnp:albumArtURI']) ? item['upnp:albumArtURI'][0]: null,
 							'class': Array.isArray(item['upnp:class']) ? item['upnp:class'][0]: null,
 							'originalTrackNumber': Array.isArray(item['upnp:originalTrackNumber']) ? item['upnp:originalTrackNumber'][0]: null,
-							'uri': Array.isArray(item.res) ? item.res[0]._: null
+							'uri': Array.isArray(item.res) ? htmlEntities(item.res[0]._): null
 						}
 					)
 				})

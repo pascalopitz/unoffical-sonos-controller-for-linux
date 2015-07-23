@@ -99,7 +99,7 @@ class BrowserListItem extends React.Component  {
 				<i className="material-icons arrow" onClick={this._toggle.bind(this)}>arrow_drop_down_circle</i>
 			);
 
-			if(this.state.isExpanded && item.class === 'object.item.audioItem') {
+			if(this.state.isExpanded && (item.class === 'object.item.audioItem' || (item.metadata  && item.metadata.class === 'object.item.audioItem.audioBroadcast'))) {
 				inlineMenu = (
 					<ul className="inline-menu"
 						onMouseOut={this._onMouseOut.bind(this)}

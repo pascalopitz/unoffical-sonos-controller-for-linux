@@ -93,6 +93,7 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] Show what's playing in zone list for all zones
 - [x] BUG: Position info out of bounds
 - [x] BUG: Radio stream playing now seems to skip between values
+- [x] BUG: Radio station can be played from favourites
 
 ##TODO:
 - [ ] Add track to favourites

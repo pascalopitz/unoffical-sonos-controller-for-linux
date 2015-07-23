@@ -40,7 +40,14 @@ export default {
 	playNow (item) {
 		let sonos = SonosService._currentDevice;
 
-		if(item.class && item.class === 'object.item.audioItem') {
+		if(item.metadata && item.metadata.class === 'object.item.audioItem.audioBroadcast') {
+			sonos.play({
+				uri: item.uri,
+				metadata: item.metadataRaw,
+			}, () => {
+				SonosService.queryState(sonos);
+			});
+		} else if(item.class && item.class === 'object.item.audioItem') {
 			sonos.play(item.uri, () => {
 				SonosService.queryState(sonos);
 			});

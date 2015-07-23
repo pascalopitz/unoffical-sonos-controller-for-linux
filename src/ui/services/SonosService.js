@@ -487,4 +487,5 @@ let SonosService = {
 	}
 };
 
+window.SonosService = SonosService;
 export default SonosService;
