@@ -142,6 +142,18 @@ export default {
 		});
 	},
 
+	_fetchMusicServices () {
+		let sonos = SonosService._currentDevice;
+
+		let promise= new Promise((resolve, reject) => {
+			sonos.getAvailableServices((err, data) => {
+				resolve(data);
+			});
+		});
+
+		return promise;
+	},
+
 	select (item) {
 
 		let sonos = SonosService._currentDevice;
@@ -158,6 +170,19 @@ export default {
 
 		if(item.action && item.action === 'linein') {
 			this._fetchLineIns().then((results) => {
+				let state = _.cloneDeep(item);
+				state.items = results || [];
+
+				Dispatcher.dispatch({
+					actionType: Constants.BROWSER_SELECT_ITEM,
+					state: state,
+				});
+			});
+			return;
+		}
+
+		if(item.action && item.action === 'services') {
+			this._fetchMusicServices().then((results) => {
 				let state = _.cloneDeep(item);
 				state.items = results || [];
 

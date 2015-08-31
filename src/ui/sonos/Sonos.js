@@ -926,6 +926,44 @@ class Sonos {
 		}
 	}
 
+	getAvailableServices (callback) {
+		new Services.MusicServices(this.host).ListAvailableServices({ }, (err, data) => {
+			if(err) {
+				callback(err);
+				return;
+			}
+
+			let servicesObj = xml2json(data.AvailableServiceDescriptorList, {
+				explicitArray: true
+			});
+
+			let serviceDescriptors = servicesObj.Services.Service.map((obj) => {
+				let out = _.assign({}, obj.$, obj.Policy[0].$);
+
+				return {
+					class: 'object.MusicService',
+					title: out.Name,
+					id: Number(out.Id),
+					data: out,
+				};
+			});
+
+			let services = [];
+
+			data.AvailableServiceTypeList.split(',').forEach((t) => {
+				let serviceId = Math.floor(Math.abs((t - 7) / 256)) || Number(t);
+				let match = _.findWhere(serviceDescriptors, { id: serviceId });
+
+				if(match) {
+					services.push(match);
+				}
+			});
+
+			console.log(services);
+			callback(null, services);
+		});
+	}
+
 }
 
 export default Sonos;

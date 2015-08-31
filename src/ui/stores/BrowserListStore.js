@@ -28,6 +28,10 @@ const START_STATE = {
 		{
 			title: 'Line-in',
 			action: 'linein'
+		},
+		{
+			title: 'Music Services',
+			action: 'services'
 		}
 	]
 };
