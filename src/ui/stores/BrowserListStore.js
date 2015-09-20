@@ -8,32 +8,34 @@ import Constants from '../constants/Constants';
 
 const CHANGE_EVENT = 'change';
 
-const START_STATE = {
+const START_STATE_ITEMS = [
+	{
+		title: 'Sonos Favourites',
+		searchType: 'FV:2'
+	},
+	{
+		title: 'Music Library',
+		action: 'library'
+	},
+	{
+		title: 'Sonos Playlists',
+		searchType: 'SQ:'
+	},
+	{
+		title: 'Line-in',
+		action: 'linein'
+	},
+	{
+		title: 'Music Services',
+		action: 'browseServices'
+	}
+];
+
+let START_STATE = {
 	source: null,
 	searchType: null,
 	title: 'Select a Music Source',
-	items: [
-		{
-			title: 'Sonos Favourites',
-			searchType: 'FV:2'
-		},
-		{
-			title: 'Music Library',
-			action: 'library'
-		},
-		{
-			title: 'Sonos Playlists',
-			searchType: 'SQ:'
-		},
-		{
-			title: 'Line-in',
-			action: 'linein'
-		},
-		{
-			title: 'Music Services',
-			action: 'services'
-		}
-	]
+	items: _.clone(START_STATE_ITEMS),
 };
 
 const LIBRARY_STATE = {
@@ -80,6 +82,7 @@ var BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 	_search :  false,
 	_searchResults :  null,
 	_searchTarget :  DEFAULT_SEARCH_TARGET,
+	_knownServices: null,
 	_history: [],
 
 	emitChange () {
@@ -108,6 +111,21 @@ var BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 
 	setSearchResults (results) {
 		this._searchResults = results;
+	},
+
+	setMusicServices (services) {
+		this._musicServices = services;
+
+		START_STATE.items = _.clone(START_STATE_ITEMS);
+
+		this._musicServices.forEach((ser) => {
+			START_STATE.items.push({
+				title: ser.service.Name,
+				action: 'service',
+				service: ser,
+			})
+		});
+
 	},
 
 	getState () {
@@ -181,6 +199,20 @@ Dispatcher.register(action => {
 		case Constants.BROWSER_SELECT_ITEM:
 			BrowserListStore.addToHistory(BrowserListStore.getState());
 			BrowserListStore.setState(action.state);
+			BrowserListStore.emitChange();
+			break;
+
+		case Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE:
+			BrowserListStore.setMusicServices(action.musicServices);
+			BrowserListStore.emitChange();
+			break;
+
+		case Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED:
+			BrowserListStore.setState(START_STATE);
+			BrowserListStore._history = [];
+			BrowserListStore.endSearch();
+			BrowserListStore.setSearchResults(null);
+			BrowserListStore._searchTarget = DEFAULT_SEARCH_TARGET;
 			BrowserListStore.emitChange();
 			break;
 	}

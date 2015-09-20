@@ -86,9 +86,11 @@ class MusicServiceClient {
             .then((res) => {
                 let resp = xml2json(res);
 				let obj = resp['s:Envelope']['s:Body']['ns:getDeviceAuthTokenResponse']['ns:getDeviceAuthTokenResult'];
-				console.log(obj);
-            }, (err) => {
-				console.log(err);
+
+				return {
+					authToken: obj['ns:authToken'],
+					privateKey: obj['ns:privateKey'],
+				};
 			});
     }
 

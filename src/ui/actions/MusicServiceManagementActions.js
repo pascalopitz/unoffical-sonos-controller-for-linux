@@ -3,6 +3,8 @@
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants  from '../constants/Constants';
 
+import SonosService  from '../services/SonosService';
+
 let poll;
 
 export default {
@@ -26,12 +28,19 @@ export default {
                 });
 
                 poll = window.setInterval(() => {
-                    client.getDeviceAuthToken(link.linkCode).then((token) => {
-                        Dispatcher.dispatch({
-                            actionType: Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED,
-                            authToken: authToken
+                    client.getDeviceAuthToken(link.linkCode).then((authToken) => {
+
+                        if(!authToken) {
+                            return;
+                        }
+
+                        SonosService.rememberMusicService(client._serviceDefinition, authToken).then(() => {
+                            Dispatcher.dispatch({
+                                actionType: Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED,
+                                authToken: authToken
+                            });
+                            window.clearInterval(poll);
                         });
-                        window.clearInterval(poll);
                     })
                 }, 5000);
             });

@@ -54,6 +54,12 @@ Dispatcher.register(action => {
 			MusicServiceManagementStore.setLink(action.link);
 			MusicServiceManagementStore.emitChange();
 			break;
+
+		case Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED:
+			MusicServiceManagementStore.setClient(null);
+			MusicServiceManagementStore.setLink(null);
+			MusicServiceManagementStore.emitChange();
+			break;
 	}
 });
 

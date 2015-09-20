@@ -148,7 +148,14 @@ export default {
 
 		let promise= new Promise((resolve, reject) => {
 			sonos.getAvailableServices((err, data) => {
-				resolve(data);
+				resolve(data.map((out) => {
+					return {
+						action: 'addService',
+						title: out.Name,
+						id: Number(out.Id),
+						data: out,
+					};
+				}));
 			});
 		});
 
@@ -182,7 +189,7 @@ export default {
 			return;
 		}
 
-		if(item.action && item.action === 'services') {
+		if(item.action && item.action === 'browseServices') {
 			this._fetchMusicServices().then((results) => {
 				let state = _.cloneDeep(item);
 				state.items = results || [];
@@ -195,7 +202,7 @@ export default {
 			return;
 		}
 
-		if(item.action && item.action === 'service') {
+		if(item.action && item.action === 'addService') {
 			Dispatcher.dispatch({
 				actionType: Constants.BROWSER_ADD_MUSICSERVICE,
 				service: new MusicServiceClient(item.data)
@@ -203,6 +210,10 @@ export default {
 			return;
 		}
 
+		if(item.action && item.action === 'service') {
+			console.log(item);
+			return;
+		}
 
 		if(item.searchType) {
 			prendinBrowserUpdate = {

@@ -26,10 +26,12 @@ let SonosService = {
 	_persistentSubscriptions: [],
 	_currentSubscriptions: [],
 	_searchInterval: null,
+	_musicServices: [],
 
 	mount () {
 		this._searchInterval = window.setInterval(this.searchForDevices.bind(this), 1000);
 		this.searchForDevices();
+		this.restoreMusicServices();
 	},
 
 	searchForDevices () {
@@ -522,6 +524,41 @@ let SonosService = {
 			return _.findWhere(g, { 'coordinator': 'true' }) || g[0];
 		}).value();
 		return zones;
+	},
+
+	rememberMusicService (service, authToken) {
+		this._musicServices.push({
+			service: service,
+			authToken: authToken,
+		});
+
+		return new Promise((resolve, reject) => {
+			chrome.storage.local.set({
+				musicServices: this._musicServices,
+			}, (err) => {
+				if(err) {
+					reject(err);
+				}
+
+				Dispatcher.dispatch({
+					actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
+					musicServices: this._musicServices,
+				});
+
+				resolve();
+			});
+		});
+	},
+
+	restoreMusicServices () {
+		chrome.storage.local.get(['musicServices'], (vals) => {
+			this._musicServices = vals.musicServices || [];
+
+			Dispatcher.dispatch({
+				actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
+				musicServices: this._musicServices,
+			});
+		});
 	}
 };
 

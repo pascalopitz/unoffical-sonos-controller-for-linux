@@ -955,28 +955,20 @@ class Sonos {
 			});
 
 			let serviceDescriptors = servicesObj.Services.Service.map((obj) => {
-				let out = _.assign({}, obj.$, obj.Policy[0].$);
-
-				return {
-					action: 'service',
-					title: out.Name,
-					id: Number(out.Id),
-					data: out,
-				};
+				return _.assign({}, obj.$, obj.Policy[0].$);
 			});
 
 			let services = [];
 
 			data.AvailableServiceTypeList.split(',').forEach((t) => {
 				let serviceId = Math.floor(Math.abs((t - 7) / 256)) || Number(t);
-				let match = _.findWhere(serviceDescriptors, { id: serviceId });
+				let match = _.findWhere(serviceDescriptors, { Id: String(serviceId) });
 
 				if(match) {
 					services.push(match);
 				}
 			});
 
-			console.log(services);
 			callback(null, services);
 		});
 	}
