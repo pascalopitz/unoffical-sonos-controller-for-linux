@@ -869,6 +869,7 @@ body #queue-container li[data-is-current=true] {
 	min-height: 53px;
 }
 
+#music-service-management,
 #zone-group-management {
 	position: absolute;
 	top: 5px;
@@ -886,6 +887,7 @@ body #queue-container li[data-is-current=true] {
 	font-size: 20px;
 }
 
+#music-service-management-container,
 #zone-group-management-container {
 	min-width: 200px;
 	min-height: 300px;
@@ -925,6 +927,7 @@ body #queue-container li[data-is-current=true] {
 	margin-right: 20px;
 }
 
+#music-service-management-container button,
 #zone-group-management-container button {
 	background-image: -webkit-linear-gradient(top, #404040 0px, #303030 24px);
 	border: 1px solid black;
@@ -936,10 +939,12 @@ body #queue-container li[data-is-current=true] {
 	font-size: 15px;
 }
 
+#music-service-management-container button.cancel-button,
 #zone-group-management-container button.cancel-button {
 	left: 10px;
 }
 
+#music-service-management-container button.next-button,
 #zone-group-management-container button.save-button {
 	right: 10px;
 }

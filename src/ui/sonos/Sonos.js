@@ -875,6 +875,23 @@ class Sonos {
 	}
 
 	/**
+	 * Gets household ID
+	 * @param	{Function} callback (err, data)
+	 */
+	getHouseholdId (callback) {
+		debug('Sonos.getHouseholdId(%j)', callback);
+		requestHelper('http://' + this.host + ':' + this.port + '/status/netsettings.txt', function(err, res, body) {
+			if(err) return callback(err);
+			debug(body);
+			(new xml2js.Parser()).parseString(body, function(err, data) {
+				if(err) return callback(err);
+
+				callback(null, /HouseholdID\: \[(.*)\]/gi.exec(data.ZPSupportInfo.NetSettings[0])[1]);
+			});
+		});
+	}
+
+	/**
 	 * Get Current Playback State
 	 * @param	{Function} callback (err, state)
 	 */
@@ -941,7 +958,7 @@ class Sonos {
 				let out = _.assign({}, obj.$, obj.Policy[0].$);
 
 				return {
-					class: 'object.MusicService',
+					action: 'service',
 					title: out.Name,
 					id: Number(out.Id),
 					data: out,

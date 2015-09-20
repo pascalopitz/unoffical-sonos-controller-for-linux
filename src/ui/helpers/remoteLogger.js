@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import uuid from 'uuid';
 
-import request from './request';
+import request from '../sonos/helpers/request';
 
 let origin = 'https://docs.google.com/forms/d/1Eu7bJ7xPBG4Yjmd6Q-qFNJcPEkIZtcvLXDU1rIden5c/viewform';
 let url = 'https://docs.google.com/forms/d/1Eu7bJ7xPBG4Yjmd6Q-qFNJcPEkIZtcvLXDU1rIden5c/formResponse';

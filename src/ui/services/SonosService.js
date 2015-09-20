@@ -69,6 +69,9 @@ let SonosService = {
 
 				if(!firstResultProcessed) {
 					this.queryTopology(sonos);
+					sonos.getHouseholdId((err, hhid) => {
+						this.householdId = hhid;
+					});
 					listener.addService('/ZoneGroupTopology/Event', persistSubscription);
 					firstResultProcessed = true;
 				}

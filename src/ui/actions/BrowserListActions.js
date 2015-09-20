@@ -6,6 +6,7 @@ import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants  from '../constants/Constants';
 
 import SonosService from '../services/SonosService';
+import MusicServiceClient from '../services/MusicServiceClient';
 
 import QueueStore from '../stores/QueueStore';
 import BrowserListStore from '../stores/BrowserListStore';
@@ -193,6 +194,15 @@ export default {
 			});
 			return;
 		}
+
+		if(item.action && item.action === 'service') {
+			Dispatcher.dispatch({
+				actionType: Constants.BROWSER_ADD_MUSICSERVICE,
+				service: new MusicServiceClient(item.data)
+			});
+			return;
+		}
+
 
 		if(item.searchType) {
 			prendinBrowserUpdate = {

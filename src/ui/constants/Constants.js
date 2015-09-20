@@ -14,6 +14,7 @@ let Constants = {
 	BROWSER_HOME: '',
 	BROWSER_PLAY: '',
 	BROWSER_CHANGE_SEARCH_MODE: '',
+	BROWSER_ADD_MUSICSERVICE: '',
 
 	PLAYER_PAUSE: '',
 	PLAYER_PLAY: '',
@@ -57,10 +58,14 @@ let Constants = {
 
 	OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE: '',
 	OPTIMISTIC_CURRENT_CROSSFADE_MODE_UPDATE: '',
+
+	MUSICSERVICE_ADD_CANCEL: '',
+	MUSICSERVICE_ADD_LINK_RECEIVED: '',
+	MUSICSERVICE_AUTH_TOKEN_RECEIVED: '',
 };
 
 Object.keys(Constants).forEach((k) => {
-	Constants[k] = k;
+	Constants[k] = Symbol(k);
 });
 
 export default Constants;

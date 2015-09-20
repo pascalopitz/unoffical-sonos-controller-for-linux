@@ -19,14 +19,13 @@ var request = function (options, callback) {
 	if(options.headers) {
 		for(var k in options.headers) {
 			if(options.headers.hasOwnProperty(k)) {
-			xhr.setRequestHeader(k, options.headers[k]);
+				xhr.setRequestHeader(k, options.headers[k]);
 			}
 		}
 	}
 
 	xhr.onreadystatechange = function() {
 		var headers = {};
-
 
 		if (xhr.readyState == 4) {
 

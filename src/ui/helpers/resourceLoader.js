@@ -1,7 +1,7 @@
 "use strict";
 
 import _ from 'lodash';
-import request from './request';
+import request from '../sonos/helpers/request';
 
 const MAX_CONNECTIONS = 2;
 
