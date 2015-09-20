@@ -39,7 +39,7 @@ class AlbumArt extends React.Component {
 
 		let sonos = SonosService._currentDevice;
 		let url = this.props.src;
-		let srcUrl = (url.indexOf('http://') === 0) ? url : 'http://' + sonos.host + ':' + sonos.port + decodeURIComponent(url);
+		let srcUrl = (url.indexOf('https://') === 0 || url.indexOf('http://') === 0) ? url : 'http://' + sonos.host + ':' + sonos.port + decodeURIComponent(url);
 
 		this.srcUrl = srcUrl;
 		this.promise = resourceLoader.add(srcUrl).then((data) => {

@@ -211,7 +211,72 @@ export default {
 		}
 
 		if(item.action && item.action === 'service') {
-			console.log(item);
+			let client = new MusicServiceClient(item.service.service);
+			client.setAuthToken(item.service.authToken.authToken);
+			client.setKey(item.service.authToken.privateKey);
+
+			client.getMetadata('root', 0, 100)
+				.then((res) => {
+					let state = {
+						title: client.name,
+						items: res.mediaCollection.map((i) => {
+							i.serviceClient = client;
+							return i;
+						}),
+					};
+
+					Dispatcher.dispatch({
+						actionType: Constants.BROWSER_SELECT_ITEM,
+						state: state,
+					});
+				});
+			return;
+		}
+
+
+		if(item.serviceClient && item.itemType === 'track') {
+			let client = item.serviceClient;
+
+			client.getMediaURI(item.id, 0, 100)
+				.then((res) => {
+					console.log(res);
+				});
+
+			return;
+		}
+
+		if(item.serviceClient && item.itemType !== 'track') {
+			let client = item.serviceClient;
+
+			client.getMetadata(item.id, 0, 100)
+				.then((res) => {
+					let items = [];
+
+					if(res.mediaMetadata) {
+						items = res.mediaMetadata.map((i) => {
+							i.serviceClient = client;
+							return i;
+						})
+					}
+
+					if(res.mediaCollection) {
+						items = res.mediaCollection.map((i) => {
+							i.serviceClient = client;
+							return i;
+						})
+					}
+
+					let state = {
+						title: item.title,
+						items: items,
+					};
+
+					Dispatcher.dispatch({
+						actionType: Constants.BROWSER_SELECT_ITEM,
+						state: state,
+					});
+				})
+
 			return;
 		}
 
