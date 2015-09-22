@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 import requestHelper from '../sonos/helpers/request';
 import xml2json from 'jquery-xml2json';
@@ -52,20 +53,26 @@ class MusicServiceClient {
         this.auth = serviceDefinition.Auth;
     }
 
-	encodeItemMetadata(item) {
+	encodeItemMetadata(uri, item) {
+
 		let id = item.serviceClient._serviceDefinition.ServiceIDEncoded;
-return `<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
+		let duration = moment().startOf('day').add(item.trackMetadata.duration, 'seconds').format('HH:mm:ss');
+
+let didl = `<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
 xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
 xmlns:r="urn:schemas-rinconnetworks-com:metadata-1-0/"
 xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
 <item id="-1" parentID="-1" restricted="true">
+<res protocolInfo="${uri.match(/^[\w\-]+:/)[0]}*${item.mimeType}*" duration="${duration}">${_.escape(uri)}</res>
 <dc:title>${_.escape(item.title)}</dc:title>
-<dc:creator>${_.escape(item.trackMetadata.rtist)}</dc:creator>
+<dc:creator>${_.escape(item.trackMetadata.artist)}</dc:creator>
 <upnp:class>object.item.audioItem.musicTrack</upnp:class>
 <upnp:albumArtURI>${item.trackMetadata.albumArtURI}</upnp:albumArtURI>
 <upnp:album></upnp:album>
 </item>
 </DIDL-Lite>`;
+
+		return didl;
 	}
 
 	setAuthToken(token) {

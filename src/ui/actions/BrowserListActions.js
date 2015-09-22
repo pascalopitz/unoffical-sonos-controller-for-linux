@@ -24,7 +24,7 @@ export default {
 				.then((uri) => {
 					return {
 						uri: _.escape(uri),
-						metadata: client.encodeItemMetadata(item),
+						metadata: client.encodeItemMetadata(uri, item),
 					};
 				});
 	},
