@@ -21,7 +21,7 @@ class BrowserListItem extends React.Component  {
 
 		let item = this.props.model;
 
-		if(item.class === 'object.item.audioItem.musicTrack' || item.class === 'object.item.audioItem') {
+		if(item.class === 'object.item.audioItem.musicTrack' || item.class === 'object.item.audioItem' || (item.trackMetadata && item.trackMetadata.canPlay === "true")) {
 			BrowserListActions.playNow(item);
 		} else {
 			let node = ReactDOM.findDOMNode(this);
@@ -93,8 +93,18 @@ class BrowserListItem extends React.Component  {
 
 		let artistInfo;
 
-		if(item.class) {
-			className = className + ' playable ' + /\.([-\w]+)$/gi.exec(item.class)[1];
+		if(item.class || (item.trackMetadata && item.trackMetadata.canPlay === "true")) {
+
+
+			className = className + ' playable ';
+
+			if(item.class) {
+				className = className + /\.([-\w]+)$/gi.exec(item.class)[1];
+			}
+
+			if(item.itemType) {
+				className = className + item.itemType
+			}
 
 			inlineMenuButton = (
 				<i className="material-icons arrow" onClick={this._toggle.bind(this)}>arrow_drop_down_circle</i>
@@ -132,13 +142,15 @@ class BrowserListItem extends React.Component  {
 			);
 		}
 
+		let albumArtURI = (item.trackMetadata && item.trackMetadata.albumArtURI) ? item.trackMetadata.albumArtURI : item.albumArtURI;
+
 		return (
 			<li onClick={this._onClick.bind(this)}
 				onMouseOut={this._onMouseOut.bind(this)}
 				onMouseOver={this._onMouseOver.bind(this)}
 				data-position={this.props.position}>
 
-				<AlbumArt viewport={this.props.viewport} src={item.albumArtURI} />
+				<AlbumArt viewport={this.props.viewport} src={albumArtURI} />
 				<div className={className}>
 					<p className="title" title={item.title}>{item.title}</p>
 					{artistInfo}

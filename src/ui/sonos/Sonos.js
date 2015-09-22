@@ -965,6 +965,7 @@ class Sonos {
 				let match = _.findWhere(serviceDescriptors, { Id: String(serviceId) });
 
 				if(match) {
+					match.ServiceIDEncoded = Number(t);
 					services.push(match);
 				}
 			});

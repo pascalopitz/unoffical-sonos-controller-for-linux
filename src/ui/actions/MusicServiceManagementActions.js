@@ -45,5 +45,14 @@ export default {
                 }, 5000);
             });
         }
+    },
+
+    addAnonymousService (client) {
+        SonosService.rememberMusicService(client._serviceDefinition, {}).then(() => {
+            Dispatcher.dispatch({
+                actionType: Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED,
+                authToken: {}
+            });
+        });
     }
 };

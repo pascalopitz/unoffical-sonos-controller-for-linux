@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import requestHelper from '../sonos/helpers/request';
 import xml2json from 'jquery-xml2json';
 
@@ -15,7 +17,7 @@ function withinEnvelope(body, headers='') {
 }
 
 function stripNamespaces(xml) {
-	return xml.replace(/\<\/\w+:/gi, '</').replace(/\<\w+:/gi, '<');
+	return xml.replace(/\<\/[\w\d-]+:/gi, '</').replace(/\<[\w\d-]+:/gi, '<');
 }
 
 function _doRequest(uri, action, body, headers) {
@@ -50,8 +52,24 @@ class MusicServiceClient {
         this.auth = serviceDefinition.Auth;
     }
 
+	encodeItemMetadata(item) {
+		let id = item.serviceClient._serviceDefinition.ServiceIDEncoded;
+return `<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+xmlns:r="urn:schemas-rinconnetworks-com:metadata-1-0/"
+xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
+<item id="-1" parentID="-1" restricted="true">
+<dc:title>${_.escape(item.title)}</dc:title>
+<dc:creator>${_.escape(item.trackMetadata.rtist)}</dc:creator>
+<upnp:class>object.item.audioItem.musicTrack</upnp:class>
+<upnp:albumArtURI>${item.trackMetadata.albumArtURI}</upnp:albumArtURI>
+<upnp:album></upnp:album>
+</item>
+</DIDL-Lite>`;
+	}
+
 	setAuthToken(token) {
-		this.authToken = token;
+		this.authToken = token; //'2:a7sPc9SYlRkw31FGQm8CLTg9Gmo6GG6MjkXE1XdGmB/JZQsw5swAc+ZHONIBSxAW5MPTk577ncqmlCSBoixGNg==';
 	}
 
 	setKey(key) {
@@ -61,7 +79,7 @@ class MusicServiceClient {
     getDeviceLinkCode() {
 
         let headers = ['<ns:credentials>',
-             '<ns:deviceId>00:00:00:00:00</ns:deviceId>',
+             '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
              '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
           '</ns:credentials>'].join('');
 
@@ -80,7 +98,7 @@ class MusicServiceClient {
 	getDeviceAuthToken(linkCode) {
 
         let headers = ['<ns:credentials>',
-             '<ns:deviceId>00:00:00:00:00</ns:deviceId>',
+             '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
              '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
           '</ns:credentials>'].join('');
 
@@ -100,7 +118,7 @@ class MusicServiceClient {
 	getMetadata(id, index, count) {
 
         let headers = ['<ns:credentials>',
-             '<ns:deviceId>00:00:00:00:00</ns:deviceId>',
+             '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
              '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
 			 '<ns:loginToken>',
             	'<ns:token>', this.authToken ,'</ns:token>',
@@ -126,7 +144,7 @@ class MusicServiceClient {
 	getMediaURI(id) {
 
         let headers = ['<ns:credentials>',
-             '<ns:deviceId>00:00:00:00:00</ns:deviceId>',
+             '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
              '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
 			 '<ns:loginToken>',
             	'<ns:token>', this.authToken ,'</ns:token>',

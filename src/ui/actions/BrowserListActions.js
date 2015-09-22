@@ -13,6 +13,22 @@ import BrowserListStore from '../stores/BrowserListStore';
 
 export default {
 
+	_getItem (item) {
+		if(!item.serviceClient) {
+			return Promise.resolve(item);
+		}
+
+		let client = item.serviceClient;
+
+		return client.getMediaURI(item.id)
+				.then((uri) => {
+					return {
+						uri: _.escape(uri),
+						metadata: client.encodeItemMetadata(item),
+					};
+				});
+	},
+
 	back () {
 		Dispatcher.dispatch({
 			actionType: Constants.BROWSER_BACK,
@@ -45,69 +61,77 @@ export default {
 		});
 	},
 
-	playNow (item) {
-		let sonos = SonosService._currentDevice;
+	playNow (eventTarget) {
+		this._getItem(eventTarget).then((item) => {
+			let sonos = SonosService._currentDevice;
 
-		if(item.metadata && item.metadata.class === 'object.item.audioItem.audioBroadcast') {
-			sonos.play({
-				uri: item.uri,
-				metadata: item.metadataRaw,
-			}, () => {
-				SonosService.queryState(sonos);
-			});
-		} else if(item.class && item.class === 'object.item.audioItem') {
-			sonos.play(item.uri, () => {
-				SonosService.queryState(sonos);
-			});
-		} else {
-			sonos.getMusicLibrary('queue', {total: 0}, (err, res) => {
-				if(err) {
-					return;
-				}
+			if(item.metadata && item.metadataRaw && item.metadata.class === 'object.item.audioItem.audioBroadcast') {
+				sonos.play({
+					uri: item.uri,
+					metadata: item.metadataRaw,
+				}, () => {
+					SonosService.queryState(sonos);
+				});
+			} else if(item.class && item.class === 'object.item.audioItem') {
+				sonos.play(item.uri, () => {
+					SonosService.queryState(sonos);
+				});
+			} else {
+				sonos.getMusicLibrary('queue', {total: 0}, (err, res) => {
+					if(err) {
+						return;
+					}
 
-				let pos = 1;
-				if(res.total) {
-					pos = Number(res.total) + 1;
-				}
-				sonos.queue(item, () => {
-					sonos.goto(pos, () => {
-						sonos.play(() => {
-							SonosService.queryState(sonos);
+					let pos = 1;
+					if(res.total) {
+						pos = Number(res.total) + 1;
+					}
+					sonos.queue(item, () => {
+						sonos.goto(pos, () => {
+							sonos.play(() => {
+								SonosService.queryState(sonos);
+							});
 						});
 					});
 				});
-			});
-		}
+			}
+		});
 	},
 
-	playNext (item) {
-		let sonos = SonosService._currentDevice;
+	playNext (eventTarget) {
+		this._getItem(eventTarget).then((item) => {
+			let sonos = SonosService._currentDevice;
 
-		sonos.getPositionInfo((err, info) => {
-			let pos = Number(info.Track) + 1;
-			sonos.queue(item, pos, () => {
+			sonos.getPositionInfo((err, info) => {
+				let pos = Number(info.Track) + 1;
+				sonos.queue(item, pos, () => {
+					SonosService.queryState(sonos);
+				});
+			});
+		});
+	},
+
+
+	addQueue (eventTarget) {
+		this._getItem(eventTarget).then((item) => {
+			let sonos = SonosService._currentDevice;
+
+			sonos.queue(item, () => {
 				SonosService.queryState(sonos);
 			});
 		});
 	},
 
 
-	addQueue (item) {
-		let sonos = SonosService._currentDevice;
+	replaceQueue (eventTarget) {
+		this._getItem(eventTarget).then((item) => {
+			let sonos = SonosService._currentDevice;
 
-		sonos.queue(item, () => {
-			SonosService.queryState(sonos);
-		});
-	},
-
-
-	replaceQueue (item) {
-		let sonos = SonosService._currentDevice;
-
-		sonos.flush(() => {
-			sonos.queue(item, () => {
-				sonos.play(() => {
-					SonosService.queryState(sonos);
+			sonos.flush(() => {
+				sonos.queue(item, () => {
+					sonos.play(() => {
+						SonosService.queryState(sonos);
+					});
 				});
 			});
 		});
@@ -233,18 +257,6 @@ export default {
 			return;
 		}
 
-
-		if(item.serviceClient && item.itemType === 'track') {
-			let client = item.serviceClient;
-
-			client.getMediaURI(item.id, 0, 100)
-				.then((res) => {
-					console.log(res);
-				});
-
-			return;
-		}
-
 		if(item.serviceClient && item.itemType !== 'track') {
 			let client = item.serviceClient;
 
@@ -253,16 +265,16 @@ export default {
 					let items = [];
 
 					if(res.mediaMetadata) {
-						items = res.mediaMetadata.map((i) => {
+						res.mediaMetadata.forEach((i) => {
 							i.serviceClient = client;
-							return i;
+							items[i.$$position] =  i;
 						})
 					}
 
 					if(res.mediaCollection) {
-						items = res.mediaCollection.map((i) => {
+						res.mediaCollection.forEach((i) => {
 							i.serviceClient = client;
-							return i;
+							items[i.$$position] =  i;
 						})
 					}
 
