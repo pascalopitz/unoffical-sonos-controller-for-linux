@@ -71,6 +71,8 @@ let SonosService = {
 
 				if(!firstResultProcessed) {
 					this.queryTopology(sonos);
+					this.queryAccounts(sonos);
+
 					sonos.getHouseholdId((err, hhid) => {
 						this.householdId = hhid;
 					});
@@ -302,6 +304,19 @@ let SonosService = {
 		this.queryCurrentTrack(sonos);
 		this.queryPlayState(sonos);
 		this.queryCurrentTrackAndPlaystate(sonos);
+	},
+
+	queryAccounts (sonos) {
+		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
+
+		sonos.getAccountStatus((err, info) => {
+			if(err) {
+				return;
+			}
+
+			console.log(info);
+			this._accountInfo = info;
+		});
 	},
 
 	processPlaystateUpdate (sonos, state) {

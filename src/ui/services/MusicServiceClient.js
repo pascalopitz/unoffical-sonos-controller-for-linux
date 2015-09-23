@@ -53,22 +53,48 @@ class MusicServiceClient {
         this.auth = serviceDefinition.Auth;
     }
 
-	encodeItemMetadata(uri, item) {
+	getTrackURI(trackId, serviceId, sn) {
+		let protocol = 'x-sonos-http';
+		let suffix = '.mp3';
 
-		let id = item.serviceClient._serviceDefinition.ServiceIDEncoded;
+		if(String(serviceId) === "12") {
+			protocol = 'x-sonos-spotify';
+			suffix = '';
+		}
+
+		return `${protocol}:${escape(trackId)}${suffix}?sid=${serviceId}&sn=${sn}&flags=8224`;
+	}
+
+	getServiceString(serviceType, token) {
+		return `SA_RINCON${serviceType}_${token}`;
+	}
+
+	encodeItemMetadata(uri, item, serviceString) {
+
+		let resourceString, id;
+		let servceId = item.serviceClient._serviceDefinition.ServiceIDEncoded;
 		let duration = moment().startOf('day').add(item.trackMetadata.duration, 'seconds').format('HH:mm:ss');
+
+		if(serviceString) {
+			id = '00032020' + escape(item.id);
+			resourceString = `<desc id="cdudn" nameSpace="urn:schemas-rinconnetworks-com:metadata-1-0/">${serviceString}</desc>`
+		} else {
+			id = '-1';
+			resourceString = `<res protocolInfo="${uri.match(/^[\w\-]+:/)[0]}*${item.mimeType}*" duration="${duration}">${_.escape(uri)}</res>`;
+		}
+
 
 let didl = `<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
 xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
 xmlns:r="urn:schemas-rinconnetworks-com:metadata-1-0/"
 xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
-<item id="-1" parentID="-1" restricted="true">
-<res protocolInfo="${uri.match(/^[\w\-]+:/)[0]}*${item.mimeType}*" duration="${duration}">${_.escape(uri)}</res>
+<item id="${id}" parentID="-1" restricted="true">
+${resourceString}
 <dc:title>${_.escape(item.title)}</dc:title>
 <dc:creator>${_.escape(item.trackMetadata.artist)}</dc:creator>
 <upnp:class>object.item.audioItem.musicTrack</upnp:class>
-<upnp:albumArtURI>${item.trackMetadata.albumArtURI}</upnp:albumArtURI>
-<upnp:album></upnp:album>
+<upnp:albumArtURI>${item.trackMetadata.albumArtURI || ''}</upnp:albumArtURI>
+<upnp:album>${_.escape(item.trackMetadata.album || '')}</upnp:album>
 </item>
 </DIDL-Lite>`;
 

@@ -19,6 +19,21 @@ export default {
 		}
 
 		let client = item.serviceClient;
+		let serviceType = client._serviceDefinition.ServiceIDEncoded
+
+		let settingsMatch = _.findWhere(SonosService._accountInfo, { Type: String(serviceType) } );
+
+		if(settingsMatch) {
+			let uri = client.getTrackURI(item.id, client._serviceDefinition.Id, settingsMatch.SerialNum);
+			let token = client.getServiceString(serviceType, settingsMatch.Username);
+			let meta = client.encodeItemMetadata(uri, item, token);
+
+			return Promise.resolve({
+				uri: _.escape(uri),
+				metadata: meta,
+			});
+		}
+
 
 		return client.getMediaURI(item.id)
 				.then((uri) => {
