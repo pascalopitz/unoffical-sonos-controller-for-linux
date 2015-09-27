@@ -184,9 +184,16 @@ export default {
 
 	_fetchMusicServices () {
 		let sonos = SonosService._currentDevice;
+		let existingIds = SonosService._musicServices.map(s => s.service.Id);
 
 		let promise= new Promise((resolve, reject) => {
 			sonos.getAvailableServices((err, data) => {
+
+				data = _.reject(data, { Auth: "UserId" });
+				data = _.reject(data, (item) => {
+					return _.contains(existingIds, item.Id);
+				});
+
 				resolve(data.map((out) => {
 					return {
 						action: 'addService',

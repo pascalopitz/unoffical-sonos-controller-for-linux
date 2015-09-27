@@ -174,6 +174,33 @@ ${resourceString}
 			});
     }
 
+	search(id, term, index, count) {
+
+        let headers = ['<ns:credentials>',
+             '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
+             '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
+			 '<ns:loginToken>',
+            	'<ns:token>', this.authToken ,'</ns:token>',
+				'<ns:key>', this.key ,'</ns:key>',
+				'<ns:householdId>', SonosService.householdId, '</ns:householdId>',
+         	'</ns:loginToken>',
+          '</ns:credentials>'].join('');
+
+        let body = ['<ns:search>',
+         '<ns:id>', id, '</ns:id>',
+		 '<ns:term>', _.escape(term), '</ns:term>',
+		 '<ns:index>', index, '</ns:index>',
+		 '<ns:count>', count, '</ns:count>',
+      '</ns:search>'].join('');
+
+        return _doRequest(this._serviceDefinition.SecureUri, 'search', body, headers)
+            .then((res) => {
+				let resp = xml2json(stripNamespaces(res));
+				let obj = resp['Envelope']['Body']['searchResponse']['searchResult'];
+				return obj;
+			});
+    }
+
 	getMediaURI(id) {
 
         let headers = ['<ns:credentials>',
