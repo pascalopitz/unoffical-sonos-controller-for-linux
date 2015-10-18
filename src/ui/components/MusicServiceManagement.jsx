@@ -1,7 +1,5 @@
-"use strict";
-
 import _ from 'lodash';
-import React from 'react/addons';
+import React from 'react';
 
 import MusicServiceManagementStore from '../stores/MusicServiceManagementStore';
 import MusicServiceManagementActions from '../actions/MusicServiceManagementActions';
