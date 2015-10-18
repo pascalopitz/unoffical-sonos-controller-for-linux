@@ -1,6 +1,5 @@
-"use strict";
-
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import CurrentTrackStore from '../stores/CurrentTrackStore';
 
@@ -20,7 +19,7 @@ class CurrentTrack extends React.Component {
 		CurrentTrackStore.addChangeListener(this._onChange.bind(this));
 
 		this.setState({
-			boundingRect : React.findDOMNode(this).getBoundingClientRect()
+			boundingRect : ReactDOM.findDOMNode(this).getBoundingClientRect()
 		});
 	}
 

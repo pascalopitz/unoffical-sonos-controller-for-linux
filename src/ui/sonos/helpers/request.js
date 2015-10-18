@@ -21,7 +21,7 @@ var request = function (options, callback) {
 			if(options.headers.hasOwnProperty(k)) {
 			xhr.setRequestHeader(k, options.headers[k]);
 			}
-		}		
+		}
 	}
 
 	xhr.onreadystatechange = function() {
@@ -33,7 +33,7 @@ var request = function (options, callback) {
 			let response = xhr.responseType === 'blob' ? xhr.response : xhr.responseText;
 
 			if (xhr.status === 200) {
-		
+
 				xhr.getAllResponseHeaders().split('\n').forEach(function (l) {
 					var matches = reg.exec(l);
 
@@ -42,12 +42,12 @@ var request = function (options, callback) {
 					}
 				});
 
-				callback(null, { 
+				callback(null, {
 					statusCode: xhr.status,
 					headers: headers
 				}, response);
 			} else {
-				callback(xhr.status, { 
+				callback(xhr.status, {
 					statusCode: xhr.status,
 					headers: headers
 				}, response);

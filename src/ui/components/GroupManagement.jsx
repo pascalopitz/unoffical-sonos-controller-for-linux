@@ -1,7 +1,7 @@
 "use strict";
 
 import _ from 'lodash';
-import React from 'react/addons';
+import React from 'react';
 
 import GroupManagementStore from '../stores/GroupManagementStore';
 import GroupManagementActions from '../actions/GroupManagementActions';
@@ -69,7 +69,7 @@ class GroupManagement extends React.Component {
 			<div id="zone-group-management">
 				<div id="zone-group-management-container">
 					<ul>
-						{{zoneGroupNodes}}
+						{zoneGroupNodes}
 					</ul>
 
 					<button onClick={this._cancel.bind(this)} className="cancel-button">Cancel</button>

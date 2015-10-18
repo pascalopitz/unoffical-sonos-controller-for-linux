@@ -1,6 +1,6 @@
 "use strict";
 
-import React from 'react/addons';
+import React from 'react';
 
 class ZoneGroupMember extends React.Component {
 	render () {

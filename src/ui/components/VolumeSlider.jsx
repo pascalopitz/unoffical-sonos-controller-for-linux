@@ -1,8 +1,6 @@
-"use strict";
-
 import _ from 'lodash';
 
-import React from 'react/addons';
+import React from 'react';
 import Draggable from 'react-draggable2';
 
 const WIDTH = 180;

@@ -1,6 +1,6 @@
 "use strict";
 
-import React from 'react/addons';
+import React from 'react';
 
 import ZoneGroup from './ZoneGroup';
 import ZoneGroupStore from '../stores/ZoneGroupStore';
@@ -47,7 +47,7 @@ class ZoneGroupList extends React.Component {
 
 		return (
 			<div id="zone-wrapper">
-				{{zoneGroupNodes}}
+				{zoneGroupNodes}
 			</div>
 		);
 	}

@@ -1,6 +1,7 @@
 "use strict";
 
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import AlbumArt from './AlbumArt';
 import BrowserListActions from '../actions/BrowserListActions';
@@ -23,7 +24,7 @@ class BrowserListItem extends React.Component  {
 		if(item.class === 'object.item.audioItem.musicTrack' || item.class === 'object.item.audioItem') {
 			BrowserListActions.playNow(item);
 		} else {
-			let node = React.findDOMNode(this);
+			let node = ReactDOM.findDOMNode(this);
 			node.parentNode.scrollTop = 0;
 
 			BrowserListActions.select(item);
@@ -140,10 +141,10 @@ class BrowserListItem extends React.Component  {
 				<AlbumArt viewport={this.props.viewport} src={item.albumArtURI} />
 				<div className={className}>
 					<p className="title" title={item.title}>{item.title}</p>
-					{{artistInfo}}
+					{artistInfo}
 				</div>
-				{{inlineMenu}}
-				{{inlineMenuButton}}
+				{inlineMenu}
+				{inlineMenuButton}
 			</li>
 		);
 	}

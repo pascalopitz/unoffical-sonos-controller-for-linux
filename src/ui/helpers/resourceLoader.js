@@ -21,7 +21,7 @@ export default {
 		let url = heap.shift();
 
 		request({
-			method: 'GET', 
+			method: 'GET',
 			url: url,
 			responseType: 'blob',
 		}, (err, meta, response) => {

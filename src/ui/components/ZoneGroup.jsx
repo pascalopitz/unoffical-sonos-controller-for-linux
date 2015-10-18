@@ -1,7 +1,7 @@
 "use strict";
 
 import _ from 'lodash';
-import React from 'react/addons';
+import React from 'react';
 
 import ZoneGroupActions from '../actions/ZoneGroupActions';
 
@@ -44,7 +44,7 @@ class ZoneGroup extends React.Component {
 
 			currentPlayStateNode = (
 				<div className="play-state">
-					{{icon}} {info}
+					{icon} {info}
 				</div>
 			);
 		}
@@ -60,12 +60,12 @@ class ZoneGroup extends React.Component {
 		return (
 			<div className={classString} onClick={this._onClick.bind(this)}>
 				<ul>
-					{{zoneNodes}}
+					{zoneNodes}
 				</ul>
 
 				<div className="group-button" onClick={this._showGroupManagement.bind(this)}>Group</div>
 
-				{{currentPlayStateNode}}
+				{currentPlayStateNode}
 			</div>
 		);
 	}

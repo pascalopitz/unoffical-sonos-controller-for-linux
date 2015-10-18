@@ -1,10 +1,10 @@
 "use strict";
 
 import _ from 'lodash';
-import React from 'react/addons';
+import React from 'react';
 
-import MuteButton from './MuteButton'; 
-import VolumeSlider from './VolumeSlider'; 
+import MuteButton from './MuteButton';
+import VolumeSlider from './VolumeSlider';
 
 import VolumeControlActions from '../actions/VolumeControlActions';
 import VolumeControlStore from '../stores/VolumeControlStore';
@@ -186,7 +186,7 @@ class VolumeControls extends React.Component {
 					<div>
 						<h6>{name}</h6>
 
-						<MuteButton muted={muted} 
+						<MuteButton muted={muted}
 							clickHandler={toggleMute} />
 
 						<VolumeSlider volume={volume}
@@ -208,7 +208,7 @@ class VolumeControls extends React.Component {
 
 		return (
 			<div id="master-volume">
-				<MuteButton muted={groupMuted} 
+				<MuteButton muted={groupMuted}
 							clickHandler={this._toggleGoupMute.bind(this)} />
 
 				<VolumeSlider volume={groupVolume}

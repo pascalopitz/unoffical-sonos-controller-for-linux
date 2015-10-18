@@ -1,7 +1,8 @@
 "use strict";
 
 import _ from "lodash";
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import QueueActions from '../actions/QueueActions';
 import QueueStore from '../stores/QueueStore';
@@ -25,7 +26,7 @@ class QueueList extends React.Component {
 		QueueStore.addChangeListener(this._onChange.bind(this));
 
 		this.setState({
-			boundingRect : React.findDOMNode(this).getBoundingClientRect()
+			boundingRect : ReactDOM.findDOMNode(this).getBoundingClientRect()
 		});
 	}
 
@@ -47,7 +48,7 @@ class QueueList extends React.Component {
 		}
 
 		this.setState({
-			boundingRect : React.findDOMNode(this).getBoundingClientRect(),
+			boundingRect : ReactDOM.findDOMNode(this).getBoundingClientRect(),
 			tracks: QueueStore.getTracks(),
 			position: QueueStore.getPosition(),
 		});
@@ -145,13 +146,13 @@ class QueueList extends React.Component {
 
 		return (
 			<div id="queue-list-container">
-				{{clearNode}}
+				{clearNode}
 				<ul id="queue-container"
 					onDragOver={this._onDragOver.bind(this)}
 					onDragStart={this._onDragStart.bind(this)}
 					onDragEnd={this._onDragEnd.bind(this)}
 					onScroll={this._onScroll.bind(this)}>
-					{{queueItemNodes}}
+					{queueItemNodes}
 				</ul>
 			</div>
 		);

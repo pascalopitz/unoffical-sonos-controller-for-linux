@@ -1,6 +1,6 @@
 "use strict";
 
-import React from 'react/addons';
+import React from 'react';
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
 class Loader extends React.Component {

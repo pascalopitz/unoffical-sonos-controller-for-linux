@@ -1,7 +1,7 @@
 "use strict";
 
 import moment from 'moment';
-import React from 'react/addons';
+import React from 'react';
 
 import PlayerActions from '../actions/PlayerActions';
 import PlayerStore from '../stores/PlayerStore';

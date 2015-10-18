@@ -1,6 +1,5 @@
-"use strict";
-
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import Application from './components/Application';
 
 import remoteLogger from './helpers/remoteLogger';
@@ -8,12 +7,12 @@ import remoteLogger from './helpers/remoteLogger';
 // initialise deviceID from local storage
 remoteLogger.init(() => {
 
-	React.render(
+	ReactDOM.render(
 		React.createElement(Application, null),
 		document.getElementById('root')
 	);
 
-	/* 
+	/*
 	Should you wonder what this  stuff below is, and why there is remote logging:
 
 	I had bad reviews on the Chrome Store for the app not starting up.
@@ -55,4 +54,3 @@ remoteLogger.init(() => {
 		remoteLogger.log('error', errorObj.stack);
 	};
 });
-

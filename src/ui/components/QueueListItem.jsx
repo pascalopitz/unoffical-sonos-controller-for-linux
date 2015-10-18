@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 
-import React from 'react/addons';
+import React from 'react';
 import AlbumArt from './AlbumArt';
 
 import QueueActions from '../actions/QueueActions';
@@ -137,9 +137,8 @@ class QueueListItem extends React.Component {
 				data-position={this.props.position}
 				data-dragging={this.props.isDragging}
 				data-dragover={dragOver}
-				data-is-selected={isSelected} 
+				data-is-selected={isSelected}
 				data-is-current={this.props.isCurrent}
-				draggable="true"
 				>
 
 				<AlbumArt src={track.albumArtURI} viewport={this.props.viewport} />
@@ -147,9 +146,9 @@ class QueueListItem extends React.Component {
 					<p className="title">{track.title}</p>
 					<p className="artist">{track.creator}</p>
 				</div>
-				{{selectionToggle}}
-				{{inlineMenu}}
-				{{inlineMenuButton}}
+				{selectionToggle}
+				{inlineMenu}
+				{inlineMenuButton}
 			</li>
 		);
 	}

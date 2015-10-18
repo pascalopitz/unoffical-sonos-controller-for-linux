@@ -34,6 +34,9 @@
     "react-draggable2": "^0.5.1",
     "reactify": "^1.0.0",
     "uuid": "^2.0.1",
-    "watch": "^0.13.0"
+    "watch": "^0.13.0",
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
+    "react-draggable2": "^0.7.0-alpha1"
   }
 }

@@ -2,7 +2,8 @@
 
 import _ from 'lodash';
 
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import BrowserListItem from './BrowserListItem';
 
@@ -30,7 +31,7 @@ class BrowserList extends React.Component {
 		BrowserListStore.addChangeListener(this._onChange.bind(this));
 
 		this.setState({
-			boundingRect : React.findDOMNode(this).getBoundingClientRect()
+			boundingRect : ReactDOM.findDOMNode(this).getBoundingClientRect()
 		});
 	}
 
@@ -45,7 +46,7 @@ class BrowserList extends React.Component {
 			history: history,
 			searching: searching,
 			searchMode: searchMode,
-			boundingRect : React.findDOMNode(this).getBoundingClientRect(),
+			boundingRect : ReactDOM.findDOMNode(this).getBoundingClientRect(),
 		});
 	}
 
@@ -117,14 +118,14 @@ class BrowserList extends React.Component {
 
 				return (
 					<li className={className}
-						onClick={this._searchModeChange.bind(this)} 
+						onClick={this._searchModeChange.bind(this)}
 						data-mode={mode}>{mode}</li>
 				);
 			})
 
 			headlineNodes = (
 				<ul className="with-search">
-					{{links}}
+					{links}
 				</ul>
 			);
 		} else {
@@ -143,10 +144,10 @@ class BrowserList extends React.Component {
 
 		return (
 			<div id="music-sources-container" onScroll={this._onScroll.bind(this)}>
-				{{headlineNodes}}
+				{headlineNodes}
 				<ul id="browser-container">
-					{{actionNodes}}
-					{{listItemNodes}}
+					{actionNodes}
+					{listItemNodes}
 				</ul>
 			</div>
 		);
