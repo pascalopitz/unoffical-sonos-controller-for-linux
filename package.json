@@ -16,7 +16,15 @@
     "package": "rm ./package.zip & npm run-script compile-clean && zip -r ./package.zip js/ css/ images/ svg/ icons/ fonts/ manifest.json window.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": {
+    "name": "Pascal Opitz",
+    "email": "contact@pascalopitz.com",
+    "url": "http://github.com/pascalopitz"
+  },
+  "contributors": [{
+      "name": "leanto",
+      "url": "https://github.com/leanto"
+  }],
   "license": "ISC",
   "devDependencies": {
     "array-union": "^1.0.0",
