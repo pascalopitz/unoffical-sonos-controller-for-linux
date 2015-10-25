@@ -96,7 +96,7 @@ class MusicServiceManagement extends React.Component {
 						{this.state.client.name}
 					</p>
 
-                    {{link}}
+                    {link}
 
 					<button onClick={this._cancel.bind(this)} className="cancel-button">Cancel</button>
                     <button onClick={this._next.bind(this)} className="next-button">Next</button>

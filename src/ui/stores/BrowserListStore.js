@@ -26,7 +26,7 @@ const START_STATE_ITEMS = [
 		action: 'linein'
 	},
 	{
-		title: 'Music Services',
+		title: 'Add New Music Services',
 		action: 'browseServices'
 	}
 ];

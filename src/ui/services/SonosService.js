@@ -65,7 +65,9 @@ let SonosService = {
 
 				// these events happen for all players
 				listener.addService('/MediaRenderer/RenderingControl/Event', persistSubscription);
+				listener.addService('/MusicServices/Event', persistSubscription);
 				listener.addService('/MediaRenderer/AVTransport/Event', persistSubscription);
+				listener.addService('/SystemProperties/Event', persistSubscription);
 
 				this.queryCurrentTrackAndPlaystate(sonos)
 
@@ -338,6 +340,13 @@ let SonosService = {
 	onServiceEvent (endpoint, sid, data) {
 
 		switch (endpoint) {
+
+			case '/SystemProperties/Event':
+			case '/MusicServices/Event':
+			case '/MediaRenderer/DeviceProperties/Event':
+				console.log(endpoint, data);
+				break;
+
 
 			case '/ZoneGroupTopology/Event':
 				{

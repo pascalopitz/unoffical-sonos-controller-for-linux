@@ -21,28 +21,6 @@ function stripNamespaces(xml) {
 	return xml.replace(/\<\/[\w\d-]+:/gi, '</').replace(/\<[\w\d-]+:/gi, '<');
 }
 
-function _doRequest(uri, action, body, headers) {
-    return new Promise((resolve, reject) => {
-        requestHelper({
-            uri: uri,
-            method: 'POST',
-            headers: {
-                'SOAPAction': '"' + NS + '#' + action + '"',
-                'Content-type': 'text/xml; charset=utf8'
-            },
-            body: withinEnvelope(body, headers)
-        }, function(err, res, body) {
-
-            if(err) {
-                return reject(err, res);
-            }
-
-            resolve(body);
-        });
-
-    });
-}
-
 
 class MusicServiceClient {
 
@@ -52,6 +30,36 @@ class MusicServiceClient {
         this.name = serviceDefinition.Name;
         this.auth = serviceDefinition.Auth;
     }
+
+	_doRequest(uri, action, body, headers) {
+	    return new Promise((resolve, reject) => {
+	        requestHelper({
+	            uri: uri,
+	            method: 'POST',
+	            headers: {
+	                'SOAPAction': '"' + NS + '#' + action + '"',
+	                'Content-type': 'text/xml; charset=utf8'
+	            },
+	            body: withinEnvelope(body, headers)
+	        }, (err, res, body) => {
+
+	            if(err) {
+					let e = xml2json(stripNamespaces(body));
+
+					if(_.get(e, 'Envelope.Body.Fault.faultstring') === 'TokenRefreshRequired') {
+						let refreshDetails = _.get(e, 'Envelope.Body.Fault.detail.refreshAuthTokenResult');
+						this.setAuthToken(refreshDetails.authToken);
+						return reject(refreshDetails.authToken);
+					} else {
+						return reject(null);
+					}
+	            }
+
+	            resolve(body);
+	        });
+
+	    });
+	}
 
 	getTrackURI(trackId, serviceId, sn) {
 		let protocol = 'x-sonos-http';
@@ -102,7 +110,7 @@ ${resourceString}
 	}
 
 	setAuthToken(token) {
-		this.authToken = token; //'2:a7sPc9SYlRkw31FGQm8CLTg9Gmo6GG6MjkXE1XdGmB/JZQsw5swAc+ZHONIBSxAW5MPTk577ncqmlCSBoixGNg==';
+		this.authToken = token;
 	}
 
 	setKey(key) {
@@ -120,7 +128,7 @@ ${resourceString}
          '<ns:householdId>', SonosService.householdId, '</ns:householdId>',
       '</ns:getDeviceLinkCode>'].join('');
 
-        return _doRequest(this._serviceDefinition.SecureUri, 'getDeviceLinkCode', body, headers)
+        return this._doRequest(this._serviceDefinition.SecureUri, 'getDeviceLinkCode', body, headers)
             .then((res) => {
                 let resp = xml2json(stripNamespaces(res));
 				let obj = resp['Envelope']['Body']['getDeviceLinkCodeResponse']['getDeviceLinkCodeResult'];
@@ -140,7 +148,7 @@ ${resourceString}
 		 '<ns:linkCode>', linkCode, '</ns:linkCode>',
       '</ns:getDeviceAuthToken>'].join('');
 
-        return _doRequest(this._serviceDefinition.SecureUri, 'getDeviceAuthToken', body, headers)
+        return this._doRequest(this._serviceDefinition.SecureUri, 'getDeviceAuthToken', body, headers)
             .then((res) => {
                 let resp = xml2json(stripNamespaces(res));
 				let obj = resp['Envelope']['Body']['getDeviceAuthTokenResponse']['getDeviceAuthTokenResult'];
@@ -148,7 +156,7 @@ ${resourceString}
 			});
     }
 
-	getMetadata(id, index, count) {
+	getMetadata(id, index=0, count=200) {
 
         let headers = ['<ns:credentials>',
              '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
@@ -166,15 +174,26 @@ ${resourceString}
 		 '<ns:count>', count, '</ns:count>',
       '</ns:getMetadata>'].join('');
 
-        return _doRequest(this._serviceDefinition.SecureUri, 'getMetadata', body, headers)
+	  return new Promise((resolve, reject) => {
+        this._doRequest(this._serviceDefinition.SecureUri, 'getMetadata', body, headers)
             .then((res) => {
 				let resp = xml2json(stripNamespaces(res));
 				let obj = resp['Envelope']['Body']['getMetadataResponse']['getMetadataResult'];
-				return obj;
+				resolve(obj);
+			})
+			.catch((authToken) => {
+				if(authToken) {
+					this.getMetadata(id, index, count).then((obj) => {
+						resolve(obj);
+					});
+				} else {
+					reject();
+				}
 			});
+		});
     }
 
-	search(id, term, index, count) {
+	search(id, term, index=0, count=200) {
 
         let headers = ['<ns:credentials>',
              '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
@@ -193,12 +212,23 @@ ${resourceString}
 		 '<ns:count>', count, '</ns:count>',
       '</ns:search>'].join('');
 
-        return _doRequest(this._serviceDefinition.SecureUri, 'search', body, headers)
+	  return new Promise((resolve, reject) => {
+        return this._doRequest(this._serviceDefinition.SecureUri, 'search', body, headers)
             .then((res) => {
 				let resp = xml2json(stripNamespaces(res));
 				let obj = resp['Envelope']['Body']['searchResponse']['searchResult'];
-				return obj;
+				resolve(obj);
+			})
+			.catch((authToken) => {
+				if(authToken) {
+					this.search(id, term, index, count).then((obj) => {
+						resolve(obj);
+					});
+				} else {
+					reject();
+				}
 			});
+		});
     }
 
 	getMediaURI(id) {
@@ -217,12 +247,23 @@ ${resourceString}
          '<ns:id>', id, '</ns:id>',
       '</ns:getMediaURI>'].join('');
 
-        return _doRequest(this._serviceDefinition.SecureUri, 'getMediaURI', body, headers)
+	  return new Promise((resolve, reject) => {
+        return this._doRequest(this._serviceDefinition.SecureUri, 'getMediaURI', body, headers)
             .then((res) => {
 				let resp = xml2json(stripNamespaces(res));
 				let obj = resp['Envelope']['Body']['getMediaURIResponse']['getMediaURIResult'];
-				return obj;
+				return resolve(obj);
+			})
+			.catch((authToken) => {
+				if(authToken) {
+					this.getMediaURI(id).then((obj) => {
+						resolve(obj);
+					});
+				} else {
+					reject();
+				}
 			});
+		});
     }
 
     getSessionId(username, password) {
