@@ -1,7 +1,7 @@
 {
   "name": "Sonos Controller for Chrome",
   "description": "Sonos Controller for Chrome",
-  "version": "0.12",
+  "version": "0.13",
   "manifest_version": 2,
   "app": {
     "background": {
