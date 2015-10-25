@@ -481,7 +481,7 @@ let SonosService = {
 			if(g.length === 2) {
 				g[0].name = g[0].name + ' (L + R)';
 			}
-			return _.findWhere(g, 'coordinator', 'true') || g[0];
+			return _.findWhere(g, { 'coordinator', 'true' }) || g[0];
 		}).value();
 		return zones;
 	}

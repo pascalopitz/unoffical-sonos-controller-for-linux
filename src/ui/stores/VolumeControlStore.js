@@ -24,7 +24,7 @@ var VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
 		this.on(CHANGE_EVENT, listener);
 	},
 
-	intializeGroup (group) {
+	initializeGroup (group) {
 		if(!group) {
 			return;
 		}
@@ -85,7 +85,7 @@ Dispatcher.register(action => {
 
 		case Constants.ZONE_GROUP_SELECT:
 		case Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT:
-			VolumeControlStore.intializeGroup(action.zone);
+			VolumeControlStore.initializeGroup(action.zone);
 			VolumeControlStore.emitChange();
 			break;
 
@@ -94,7 +94,7 @@ Dispatcher.register(action => {
 			// HACK: we really ought to use a flux dispatch token here;
 			window.setTimeout(() => {
 				let current = ZoneGroupStore.getCurrent();
-				VolumeControlStore.intializeGroup(current);
+				VolumeControlStore.initializeGroup(current);
 				VolumeControlStore.emitChange();
 			}, 200);
 			break;
@@ -110,4 +110,3 @@ Dispatcher.register(action => {
 });
 
 export default VolumeControlStore;
-
