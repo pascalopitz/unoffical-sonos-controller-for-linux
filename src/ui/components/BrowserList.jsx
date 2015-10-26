@@ -54,6 +54,10 @@ class BrowserList extends React.Component {
 		BrowserListActions.back();
 	}
 
+	_home() {
+		BrowserListActions.home();
+	}
+
 	_onScroll(e) {
 		let node = e.target;
 		let height = node.scrollHeight - node.offsetHeight;
@@ -105,8 +109,11 @@ class BrowserList extends React.Component {
 		if(history.length) {
 			headlineNodes = (
 				<h4 className="with-history">
-					<a onClick={this._back.bind(this)} className="back-arrow">
+					<a onClick={this._back.bind(this)} className="back-arrow" title="back">
 						<i className="material-icons">keyboard_arrow_left</i>
+					</a>
+					<a onClick={this._home.bind(this)} className="home-button" title="home">
+						<i className="material-icons">library_music</i>
 					</a>
 					<span>{title}</span>
 				</h4>

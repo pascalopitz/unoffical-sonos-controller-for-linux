@@ -18,12 +18,19 @@ export default {
 		});
 	},
 
+	home () {
+		Dispatcher.dispatch({
+			actionType: Constants.BROWSER_HOME,
+		});
+	},
+
 	more (state) {
 		let sonos = SonosService._currentDevice;
-
-		sonos.getMusicLibrary(state.searchType, {
+		let params = {
 			start: state.items.length
-		}, (err, result) => {
+		};
+
+		sonos.getMusicLibrary(state.id || state.searchType, params, (err, result) => {
 			if(err || !result || !result.items) {
 				return;
 			}

@@ -262,9 +262,19 @@ h4 {
 	top: 3px;
 }
 
+#music-sources-container h4.with-history .home-button {
+	position: absolute;
+	right: 4px;
+	top: 7px;
+}
+
 #music-sources-container h4.with-history .material-icons {
 	font-size: 33px;
 	cursor: pointer;
+}
+
+#music-sources-container h4.with-history .home-button .material-icons {
+    font-size: 25px;
 }
 
 #music-sources-container h4.with-history > span {
