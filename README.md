@@ -94,6 +94,9 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] BUG: Position info out of bounds
 - [x] BUG: Radio stream playing now seems to skip between values
 - [x] BUG: Radio station can be played from favourites
+- [x] BUG: Volume control glitchy
+- [x] Browsing music via file structure
+- [x] BUG: Drag and drop in queue stopped working
 
 ##TODO:
 - [ ] Add track to favourites
@@ -101,7 +104,6 @@ For development, you can run the watch task, which will re-compile on change:
 - [ ] Infinite scroll for search results
 - [ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin
 - [ ] Fix broken image issues (data url too long?)
-- [ ] Fix interaction glitch when dragging group volume slider
 - [ ] Find out how to query for next track
 - [ ] Jump to places in the alphabet in media library
 - [ ] Browse music on phones (is that possible)?

@@ -139,6 +139,7 @@ class QueueListItem extends React.Component {
 				data-dragover={dragOver}
 				data-is-selected={isSelected}
 				data-is-current={this.props.isCurrent}
+				draggable="true"
 				>
 
 				<AlbumArt src={track.albumArtURI} viewport={this.props.viewport} />
