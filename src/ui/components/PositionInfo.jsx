@@ -3,6 +3,8 @@
 import moment from 'moment';
 import React from 'react';
 
+import _ from 'lodash';
+
 import PlayerActions from '../actions/PlayerActions';
 import PlayerStore from '../stores/PlayerStore';
 
@@ -12,6 +14,8 @@ class PositionInfo extends React.Component {
 		super();
 		this.state = {
 			isPlaying: false,
+			playMode: 'NORMAL',
+			isCrossfade: false,
 			info: null,
 			offset: 0,
 		};
@@ -38,13 +42,29 @@ class PositionInfo extends React.Component {
 		this._interval = null;
 	}
 
+	_toggleRepeat () {
+
+	}
+
+	_toggleShuffle () {
+
+	}
+
+	_toggleCrossfade () {
+		PlayerActions.setCrossfade(!this.state.isCrossfade);
+	}
+
 	_onChange () {
 		let info = PlayerStore.getPositionInfo();
 		let isPlaying = PlayerStore.isPlaying()
+		let playMode = PlayerStore.getPlayMode()
+		let isCrossfade = PlayerStore.isCrossfade()
 		let offset = this.state.offset;
 
 		this.setState({
-			isPlaying: isPlaying,
+			isPlaying,
+			playMode,
+			isCrossfade,
 		});
 
 		if(info !== this.state.info) {
@@ -119,16 +139,44 @@ class PositionInfo extends React.Component {
 			left: String(Math.round(percent)) + '%'
 		};
 
+		let repeat = <i className="material-icons repeat">repeat</i>;
+		let shuffle = <i className="material-icons shuffle">shuffle</i>;
+
+		switch(this.state.playMode) {
+			case 'NORMAL':
+				break;
+
+			case 'SHUFFLE':
+			case 'REPEAT_ALL':
+				repeat = <i className="material-icons repeat active">repeat</i>;
+				break;
+
+			case 'REPEAT_ONE':
+			case 'SHUFFLE_REPEAT_ONE':
+				repeat = <i className="material-icons repeat active">repeat_one</i>;
+				break;
+
+			case 'SHUFFLE':
+			case 'SHUFFLE_NOREPEAT':
+				shuffle = <i className="material-icons shuffle active">shuffle</i>;
+				break;
+		}
+
+		let crossfade = <i className="material-icons crossfade">import_export</i>;
+
+		if(this.state.isCrossfade) {
+			crossfade = <i className="material-icons crossfade active">import_export</i>;
+		}
+
 		return (
 			<div id="position-info">
 				<img className="left" src="images/tc_progress_container_left.png" />
 				<img className="right" src="images/tc_progress_container_right.png" />
 				<div className="content">
-					{/*
-					<img id="repeat" className="playback-mode" src="images/tc_progress_repeat_normal_off.png" />
-					<img id="shuffle"  className="playback-mode" src="images/tc_progress_shuffle_normal_off.png" />
-					<img id="crossfade"  className="playback-mode" src="images/tc_progress_crossfade_normal_off.png" />
-					*/}
+					<a onClick={this._toggleRepeat.bind(this)}>{repeat}</a>
+					<a onClick={this._toggleShuffle.bind(this)}>{shuffle}</a>
+					<a onClick={this._toggleCrossfade.bind(this)}>{crossfade}</a>
+
 					<span id="countup">{from}</span>
 					<div id="position-info-control">
 						<div id="position-bar" onClick={this._onClick.bind(this)}>

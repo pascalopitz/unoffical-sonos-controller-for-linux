@@ -448,18 +448,6 @@ h4 {
 	margin: -1px 1px;
 }
 
-#top-control #repeat,
-#top-control #shuffle,
-#top-control #crossfade {
-	transition: background 0.1s;
-}
-
-#top-control #repeat:active,
-#top-control #shuffle:active,
-#top-control #crossfade:active {
-	background: #aaa;
-}
-
 #player-volumes {
 	width: 245px;
 	position: absolute;
@@ -543,12 +531,25 @@ h4 {
 	line-height: 2;
 }
 
+#position-info .content i,
 #position-info .content span,
 #position-info .content img,
 #position-info .content div {
 	margin: 0px 5px;
 	display: inline-block;
 	vertical-align: middle;
+}
+
+#position-info .content i {
+    font-size: 18px;
+}
+
+#position-info .content i.active {
+    color: gold;
+}
+
+#position-info .content i.crossfade {
+    transform: rotate(90deg);
 }
 
 #position-info .content #countup {

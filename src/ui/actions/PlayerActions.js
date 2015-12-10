@@ -60,6 +60,16 @@ export default {
 		});
 	},
 
+	setPlayMode (mode) {
+
+	},
+
+	setCrossfade (state) {
+		// let sonos = SonosService._currentDevice;
+		// let avTransport = new Services.AVTransport(sonos.host, sonos.port);
+
+	},
+
 	refreshPosition () {
 		let sonos = SonosService._currentDevice;
 

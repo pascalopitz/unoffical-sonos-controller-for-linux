@@ -373,6 +373,9 @@ let SonosService = {
 						explicitArray: true
 					});
 
+					let currentPlayMode = lastChange.Event.InstanceID.CurrentPlayMode.$.val;
+					let currentCrossfadeMode = Boolean(Number(lastChange.Event.InstanceID.CurrentCrossfadeMode.$.val));
+
 					if(subscription) {
 						let transportState = subscription.sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val);
 
@@ -385,10 +388,21 @@ let SonosService = {
 						});
 
 						if(this._currentDevice && subscription.host === this._currentDevice.host) {
+
 							Dispatcher.dispatch({
 								actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
 								track: this._currentDevice.parseDIDL(currentTrackDIDL),
 								avTransportMeta: this._currentDevice.parseDIDL(avTransportMetaDIDL),
+							});
+
+							Dispatcher.dispatch({
+								actionType: Constants.SONOS_SERVICE_CURRENT_PLAY_MODE_UPDATE,
+								mode: currentPlayMode,
+							});
+
+							Dispatcher.dispatch({
+								actionType: Constants.SONOS_SERVICE_CURRENT_CROSSFADE_MODE_UPDATE,
+								mode: currentCrossfadeMode,
 							});
 
 							Dispatcher.dispatch({

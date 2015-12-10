@@ -47,7 +47,7 @@ export default {
 			Dispatcher.dispatch({
 				actionType: Constants.SEARCH,
 				term: term,
-				results: { 
+				results: {
 					albums: res[0],
 					artists: res[1],
 					tracks: res[2]

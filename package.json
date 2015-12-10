@@ -21,10 +21,12 @@
     "email": "contact@pascalopitz.com",
     "url": "http://github.com/pascalopitz"
   },
-  "contributors": [{
+  "contributors": [
+    {
       "name": "leanto",
       "url": "https://github.com/leanto"
-  }],
+    }
+  ],
   "license": "ISC",
   "devDependencies": {
     "array-union": "^1.0.0",
@@ -32,19 +34,18 @@
     "babelify": "^6.1.2",
     "browserify": "^8.1.1",
     "deep-equal": "^0.2.1",
+    "eslint": "^1.10.3",
     "flux": "^2.0.3",
     "jquery-xml2json": "git+https://github.com/pascalopitz/jQuery-xml2json.git",
     "lodash": "^3.0.0",
     "material-design-icons": "^2.0.0",
     "moment": "^2.9.0",
     "omit-keys": "^0.1.0",
-    "react": "^0.13.3",
-    "react-draggable2": "^0.5.1",
-    "reactify": "^1.0.0",
-    "uuid": "^2.0.1",
-    "watch": "^0.13.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
-    "react-draggable2": "^0.7.0-alpha1"
+    "react-draggable2": "^0.7.0-alpha1",
+    "reactify": "^1.0.0",
+    "uuid": "^2.0.1",
+    "watch": "^0.13.0"
   }
 }
