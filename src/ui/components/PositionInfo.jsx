@@ -43,11 +43,57 @@ class PositionInfo extends React.Component {
 	}
 
 	_toggleRepeat () {
+		let newMode;
 
+		if(this.state.playMode === 'NORMAL') {
+			PlayerActions.setPlayMode('REPEAT_ALL');
+		}
+
+		if(this.state.playMode === 'REPEAT_ALL') {
+			PlayerActions.setPlayMode('REPEAT_ONE');
+		}
+
+		if(this.state.playMode === 'REPEAT_ONE') {
+			PlayerActions.setPlayMode('NORMAL');
+		}
+
+		if(this.state.playMode === 'SHUFFLE') {
+			PlayerActions.setPlayMode('SHUFFLE_REPEAT_ONE');
+		}
+
+		if(this.state.playMode === 'SHUFFLE_REPEAT_ONE') {
+			PlayerActions.setPlayMode('SHUFFLE_NOREPEAT');
+		}
+
+		if(this.state.playMode === 'SHUFFLE_NOREPEAT') {
+			PlayerActions.setPlayMode('SHUFFLE');
+		}
 	}
 
 	_toggleShuffle () {
+		if(this.state.playMode === 'NORMAL') {
+			PlayerActions.setPlayMode('SHUFFLE_NOREPEAT');
+		}
 
+		if(this.state.playMode === 'REPEAT_ALL') {
+			PlayerActions.setPlayMode('SHUFFLE');
+		}
+
+		if(this.state.playMode === 'REPEAT_ONE') {
+			PlayerActions.setPlayMode('SHUFFLE_REPEAT_ONE');
+		}
+
+		if(this.state.playMode === 'SHUFFLE') {
+			PlayerActions.setPlayMode('REPEAT_ALL');
+		}
+
+		if(this.state.playMode === 'SHUFFLE_REPEAT_ONE') {
+			PlayerActions.setPlayMode('REPEAT_ONE');
+		}
+
+		if(this.state.playMode === 'SHUFFLE_NOREPEAT') {
+			PlayerActions.setPlayMode('NORMAL');
+		}
 	}
 
 	_toggleCrossfade () {

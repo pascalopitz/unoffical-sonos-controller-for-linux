@@ -61,13 +61,27 @@ export default {
 	},
 
 	setPlayMode (mode) {
+		let sonos = SonosService._currentDevice;
+		let avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
+		avTransport.SetPlayMode({
+			InstanceID: 0,
+			NewPlayMode: mode,
+		}, (err) => {
+
+		});
 	},
 
 	setCrossfade (state) {
-		// let sonos = SonosService._currentDevice;
-		// let avTransport = new Services.AVTransport(sonos.host, sonos.port);
+		let sonos = SonosService._currentDevice;
+		let avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
+		avTransport.SetCrossfadeMode({
+			InstanceID: 0,
+			CrossfadeMode: Number(state),
+		}, (err) => {
+
+		});
 	},
 
 	refreshPosition () {
