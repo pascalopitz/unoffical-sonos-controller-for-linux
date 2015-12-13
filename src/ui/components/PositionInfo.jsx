@@ -201,9 +201,12 @@ class PositionInfo extends React.Component {
 			case 'SHUFFLE_REPEAT_ONE':
 				repeat = <i className="material-icons repeat active">repeat_one</i>;
 				break;
+		}
 
+		switch(this.state.playMode) {
 			case 'SHUFFLE':
 			case 'SHUFFLE_NOREPEAT':
+			case 'SHUFFLE_REPEAT_ONE':
 				shuffle = <i className="material-icons shuffle active">shuffle</i>;
 				break;
 		}

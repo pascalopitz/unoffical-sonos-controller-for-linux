@@ -68,7 +68,10 @@ export default {
 			InstanceID: 0,
 			NewPlayMode: mode,
 		}, (err) => {
-
+			Dispatcher.dispatch({
+				actionType: Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE,
+				mode: mode,
+			});
 		});
 	},
 
@@ -79,8 +82,13 @@ export default {
 		avTransport.SetCrossfadeMode({
 			InstanceID: 0,
 			CrossfadeMode: Number(state),
-		}, (err) => {
+		}, (err, info) => {
+			let mode = state;
 
+			Dispatcher.dispatch({
+				actionType: Constants.OPTIMISTIC_CURRENT_CROSSFADE_MODE_UPDATE,
+				mode: mode,
+			});
 		});
 	},
 

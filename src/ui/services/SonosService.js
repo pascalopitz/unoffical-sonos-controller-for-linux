@@ -266,6 +266,27 @@ let SonosService = {
 		});
 	},
 
+	queryCrossfadeMode (sonos) {
+		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
+
+		let avTransport = new Services.AVTransport(sonos.host, sonos.port);
+
+		avTransport.GetCrossfadeMode({
+			InstanceID: 0,
+		}, (err, info) => {
+			if(err) {
+				return;
+			}
+
+			if(this._currentDevice && sonos.host === this._currentDevice.host) {
+				Dispatcher.dispatch({
+					actionType: Constants.SONOS_SERVICE_CURRENT_CROSSFADE_MODE_UPDATE,
+					info: Boolean(Number(info.CrossfadeMode)),
+				});
+			}
+		});
+	},
+
 	queryState (sonos) {
 		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
@@ -358,26 +379,18 @@ let SonosService = {
 			case'/MediaRenderer/AVTransport/Event':
 				{
 					let lastChange = xml2json(data.LastChange);
-
 					let subscription = _(this._persistentSubscriptions).findWhere({sid: sid});
-
-					let avTransportMetaDIDL = xml2json(lastChange.Event.InstanceID.AVTransportURIMetaData.$.val, {
-						explicitArray: true
-					});
-
-					let currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
-						explicitArray: true
-					});
-
-					let nextTrackDIDL = xml2json(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val, {
-						explicitArray: true
-					});
-
-					let currentPlayMode = lastChange.Event.InstanceID.CurrentPlayMode.$.val;
-					let currentCrossfadeMode = Boolean(Number(lastChange.Event.InstanceID.CurrentCrossfadeMode.$.val));
 
 					if(subscription) {
 						let transportState = subscription.sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val);
+
+						let avTransportMetaDIDL = xml2json(lastChange.Event.InstanceID.AVTransportURIMetaData.$.val, {
+							explicitArray: true
+						});
+
+						let currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
+							explicitArray: true
+						});
 
 						Dispatcher.dispatch({
 							actionType: Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE,
@@ -388,6 +401,14 @@ let SonosService = {
 						});
 
 						if(this._currentDevice && subscription.host === this._currentDevice.host) {
+
+
+							let currentPlayMode = lastChange.Event.InstanceID.CurrentPlayMode.$.val;
+							let currentCrossfadeMode = Boolean(Number(lastChange.Event.InstanceID.CurrentCrossfadeMode.$.val));
+
+							let nextTrackDIDL = xml2json(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val, {
+								explicitArray: true
+							});
 
 							Dispatcher.dispatch({
 								actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,

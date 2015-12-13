@@ -68,11 +68,13 @@ Dispatcher.register(action => {
 			PlayerStore.emitChange();
 			break;
 
+		case Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE:
 		case Constants.SONOS_SERVICE_CURRENT_PLAY_MODE_UPDATE:
 			PlayerStore._playMode = action.mode;
 			PlayerStore.emitChange();
 			break;
 
+		case Constants.OPTIMISTIC_CURRENT_CROSSFADE_MODE_UPDATE:
 		case Constants.SONOS_SERVICE_CURRENT_CROSSFADE_MODE_UPDATE:
 			PlayerStore._crossfade = action.mode;
 			PlayerStore.emitChange();
