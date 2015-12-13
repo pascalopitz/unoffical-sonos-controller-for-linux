@@ -132,7 +132,8 @@ class QueueList extends React.Component {
 				let isDragOver = position === this.state.dragOverPosition;
 
 				return (
-					<QueueListItem track={track}
+					<QueueListItem  key={position}
+									track={track}
 									position={position}
 									isCurrent={isCurrent}
 									isDragging={isDragging}

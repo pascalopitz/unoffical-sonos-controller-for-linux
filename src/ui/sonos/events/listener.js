@@ -13,7 +13,7 @@ chrome.sockets.tcpServer.onAccept.addListener(function (info) {
 	var stream = new Stream(info.clientSocketId, function (request) {
 
 		if(listeners[info.socketId]) {
-			listeners[info.socketId]._messageHandler(request); 
+			listeners[info.socketId]._messageHandler(request);
 		}
 
 	});
@@ -44,11 +44,11 @@ class Listener {
 						listeners[info.socketId] = self;
 
 						// TODO: figure why this throws 412
-						//setInterval(self._renewServices.bind(self), 1 * 1000);
+						setInterval(self._renewServices.bind(self), 1 * 1000);
 						callback();
 					});
 
-			 });	
+			 });
 		});
 	}
 
@@ -108,7 +108,7 @@ class Listener {
 				method: 'SUBSCRIBE',
 				headers: {
 					SID: sid,
-					Timeout: 'Second-3600'
+					Timeout: 'Second-600'
 				}
 			};
 
@@ -132,7 +132,7 @@ class Listener {
 				headers: {
 					callback: '<http://' + ip.address() + ':' + this.port + '/notify>',
 					NT: 'upnp:event',
-					Timeout: 'Second-3600'
+					Timeout: 'Second-600'
 				}
 			};
 
@@ -145,7 +145,7 @@ class Listener {
 
 					this.services[response.headers.sid] = {
 						// TODO: figure why this throws 412
-						// renew: this.renew_at(response.headers.timeout),
+						renew: this.renew_at(response.headers.timeout),
 						endpoint: serviceEndpoint,
 						data: {}
 					};

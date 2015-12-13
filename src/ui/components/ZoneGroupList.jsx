@@ -41,7 +41,10 @@ class ZoneGroupList extends React.Component {
 			let item = this.state.groups[key];
 
 			return (
-				<ZoneGroup playStates={this.state.playStates} group={item} currentZone={this.state.current} />
+				<ZoneGroup 	key={key}
+							playStates={this.state.playStates}
+							group={item}
+							currentZone={this.state.current} />
 			);
 		});
 

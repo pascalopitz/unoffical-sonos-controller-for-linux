@@ -15,7 +15,7 @@ import remoteLogger from '../helpers/remoteLogger';
 
 
 const REG = /^http:\/\/([\d\.]+)/;
-const QUERY_INTERVAL = 10000;
+const QUERY_INTERVAL = 5000;
 
 let SonosService = {
 
@@ -491,15 +491,15 @@ let SonosService = {
 				this.unsubscribeServiceEvents(this._currentDevice);
 			}
 
-			if(this._queryInterval) {
-				window.clearInterval(this._queryInterval);
-			}
+			// if(this._queryInterval) {
+			// 	window.clearInterval(this._queryInterval);
+			// }
 
 			this._currentDevice = sonos;
 
 			this.subscribeServiceEvents(sonos);
 			this.queryState(sonos);
-			this._queryInterval = window.setInterval(() =>  this.queryState(), QUERY_INTERVAL);
+			// this._queryInterval = window.setInterval(() =>  this.queryState(), QUERY_INTERVAL);
 		}
 	},
 

@@ -172,7 +172,7 @@ class PositionInfo extends React.Component {
 
 			if(now > end) {
 				now = end;
-				//PlayerActions.refreshPosition()
+				PlayerActions.refreshPosition()
 			}
 
 			to = '-' + end.clone().subtract(now).format('mm:ss');

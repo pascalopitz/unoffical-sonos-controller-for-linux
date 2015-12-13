@@ -102,7 +102,7 @@ class BrowserList extends React.Component {
 		let listItemNodes = items.map((item, p) => {
 			let position = p + 1;
 			return (
-				<BrowserListItem model={item} position={position} viewport={this.state.boundingRect} />
+				<BrowserListItem key={position} model={item} position={position} viewport={this.state.boundingRect} />
 			);
 		});
 
@@ -124,7 +124,8 @@ class BrowserList extends React.Component {
 				let className = (mode === searchMode) ? 'active' : 'not-active';
 
 				return (
-					<li className={className}
+					<li key={mode}
+						className={className}
 						onClick={this._searchModeChange.bind(this)}
 						data-mode={mode}>{mode}</li>
 				);

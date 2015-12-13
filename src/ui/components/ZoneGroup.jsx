@@ -28,7 +28,7 @@ class ZoneGroup extends React.Component {
 
 		let zoneNodes = items.map(function (item, index) {
 			return (
-				<ZoneGroupMember member={item} />
+				<ZoneGroupMember member={item} key={index} />
 			);
 		});
 
