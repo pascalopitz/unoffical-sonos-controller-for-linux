@@ -65,6 +65,7 @@ export default {
 				actionType: Constants.SEARCH,
 				term: null,
 			});
+			return;
 		}
 
 		let currentState = BrowserListStore.getState();

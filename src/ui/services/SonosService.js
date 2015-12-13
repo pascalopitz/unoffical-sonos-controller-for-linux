@@ -306,6 +306,7 @@ let SonosService = {
 		this.queryCurrentTrack(sonos);
 		this.queryPlayState(sonos);
 		this.queryCurrentTrackAndPlaystate(sonos);
+		this.queryCrossfadeMode(sonos);
 	},
 
 	queryAccounts (sonos) {
@@ -316,7 +317,6 @@ let SonosService = {
 				return;
 			}
 
-			console.log(info);
 			this._accountInfo = info;
 		});
 	},

@@ -129,7 +129,7 @@ var BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	getState () {
-		if(this._search && this._history.length === 0) {
+		if(this._search) {
 			return this._searchResults[this._searchTarget];
 		}
 		return this._state;
@@ -154,14 +154,18 @@ Dispatcher.register(action => {
 	switch (action.actionType) {
 
 		case Constants.SEARCH:
-			if(!action.term) {
-				BrowserListStore._history = [];
+			let currentState = BrowserListStore._state;
+
+			if(!action.term && !currentState.serviceClient) {
 				BrowserListStore.endSearch();
 				BrowserListStore.setSearchResults(null);
 				BrowserListStore._searchTarget = DEFAULT_SEARCH_TARGET;
-				BrowserListStore.setState(START_STATE);
+				BrowserListStore.setState(currentState);
+			} else if(!action.term && currentState.serviceClient) {
+				BrowserListStore.endSearch();
+				BrowserListStore.setSearchResults(null);
+				BrowserListStore.setState(currentState);
 			} else {
-				BrowserListStore._history = [];
 				BrowserListStore.startSearch();
 				BrowserListStore.setSearchResults(action.results);
 			}

@@ -106,19 +106,7 @@ class BrowserList extends React.Component {
 			);
 		});
 
-		if(history.length) {
-			headlineNodes = (
-				<h4 className="with-history">
-					<a onClick={this._back.bind(this)} className="back-arrow" title="back">
-						<i className="material-icons">keyboard_arrow_left</i>
-					</a>
-					<a onClick={this._home.bind(this)} className="home-button" title="home">
-						<i className="material-icons">library_music</i>
-					</a>
-					<span>{title}</span>
-				</h4>
-			);
-		} else if(searching) {
+		if(searching) {
 			let links = ["artists", "albums", "tracks"].map((mode) => {
 
 				let className = (mode === searchMode) ? 'active' : 'not-active';
@@ -136,7 +124,19 @@ class BrowserList extends React.Component {
 					{links}
 				</ul>
 			);
-		} else {
+		} else if(history.length) {
+			headlineNodes = (
+				<h4 className="with-history">
+					<a onClick={this._back.bind(this)} className="back-arrow" title="back">
+						<i className="material-icons">keyboard_arrow_left</i>
+					</a>
+					<a onClick={this._home.bind(this)} className="home-button" title="home">
+						<i className="material-icons">library_music</i>
+					</a>
+					<span>{title}</span>
+				</h4>
+			);
+		}  else {
 			headlineNodes = <h4>{title}</h4>;
 		}
 
