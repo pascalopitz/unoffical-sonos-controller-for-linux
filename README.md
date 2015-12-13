@@ -97,6 +97,7 @@ For development, you can run the watch task, which will re-compile on change:
 - [x] BUG: Volume control glitchy
 - [x] Browsing music via file structure
 - [x] BUG: Drag and drop in queue stopped working
+- [x] Crossfade and play mode controls
 
 ##TODO:
 - [ ] Add track to favourites
