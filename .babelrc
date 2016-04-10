@@ -1,0 +1,12 @@
+{
+  "retainLines": true,
+  "compact": false,
+  "comments": false,
+  "presets": [
+    "es2015",
+    "react",
+    "stage-0",
+    "stage-1"
+  ],
+  "sourceMaps": false
+}
