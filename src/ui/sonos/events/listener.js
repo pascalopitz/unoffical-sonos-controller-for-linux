@@ -7,6 +7,8 @@ import Stream from './IncomingStream';
 import _ from 'lodash';
 
 
+const SONOS_INCOMING_PORT = 3400;
+
 var listeners = {};
 
 chrome.sockets.tcpServer.onAccept.addListener(function (info) {
@@ -18,8 +20,6 @@ chrome.sockets.tcpServer.onAccept.addListener(function (info) {
 
 	});
 });
-
-
 
 class Listener {
 
@@ -33,8 +33,10 @@ class Listener {
 	_startInternalServer (callback) {
 		var self = this;
 
-		chrome.sockets.tcpServer.create(null, function (info) {
-			 chrome.sockets.tcpServer.listen(info.socketId, ip.address(), 0, null, function () {
+		chrome.sockets.tcpServer.create({
+			name: 'SonosControllerForChrome-UPnP'
+		}, function (info) {
+			 chrome.sockets.tcpServer.listen(info.socketId, ip.address(), 0, SONOS_INCOMING_PORT, function () {
 
 					chrome.sockets.tcpServer.getInfo(info.socketId, function (i) {
 

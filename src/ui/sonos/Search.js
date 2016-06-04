@@ -23,11 +23,13 @@ class Search {
 		'MX: 1',
 		'ST: urn:schemas-upnp-org:device:ZonePlayer:1'].join('\r\n'));
 
-		chrome.sockets.udp.create({}, function (info) {
+		chrome.sockets.udp.create({
+			name: 'SonosControllerForChrome-UDP'
+		}, function (info) {
 
 			self.socketId = info.socketId;
 
-			chrome.sockets.udp.bind(info.socketId, "0.0.0.0", 0, function (bindResult) {
+			chrome.sockets.udp.bind(info.socketId, "0.0.0.0", 1901, function (bindResult) {
 
 				if(bindResult < 0) {
 					throw new Error('could not bind socket');

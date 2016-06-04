@@ -33,6 +33,15 @@ For development, you can run the watch task, which will re-compile on change:
 
 	npm run-script watch
 
+##Firewall settings
+
+You will need to whitelist these if you run Ubuntu firewall for example:
+
+- UDP 1900
+- UDP 1901
+- TCP 3400
+- TCP 1400
+
 ##Thanks to other projects
 
 - I ported nearly all of https://github.com/bencevans/node-sonos/ so that it works in chrome.
