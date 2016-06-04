@@ -32,6 +32,10 @@ function transformSMAPI(res, client) {
 	let items = [];
 
 	if(res.mediaMetadata) {
+		if(!Array.isArray(res.mediaMetadata)) {
+			res.mediaMetadata = [res.mediaMetadata];
+		}
+		
 		res.mediaMetadata.forEach((i) => {
 			i.serviceClient = client;
 			items[i.$$position] =  i;
@@ -39,6 +43,11 @@ function transformSMAPI(res, client) {
 	}
 
 	if(res.mediaCollection) {
+
+		if(!Array.isArray(res.mediaCollection)) {
+			res.mediaCollection = [res.mediaCollection];
+		}
+
 		res.mediaCollection.forEach((i) => {
 			i.serviceClient = client;
 			items[i.$$position] =  i;
