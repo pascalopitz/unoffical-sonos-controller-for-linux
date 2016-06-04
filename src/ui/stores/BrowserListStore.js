@@ -155,6 +155,7 @@ Dispatcher.register(action => {
 
 		case Constants.SEARCH:
 			let currentState = BrowserListStore._state;
+			BrowserListStore.addToHistory('search');
 
 			if(!action.term && !currentState.serviceClient) {
 				BrowserListStore.endSearch();
@@ -201,6 +202,7 @@ Dispatcher.register(action => {
 			break;
 
 		case Constants.BROWSER_SELECT_ITEM:
+			BrowserListStore.endSearch();
 			BrowserListStore.addToHistory(BrowserListStore.getState());
 			BrowserListStore.setState(action.state);
 			BrowserListStore.emitChange();

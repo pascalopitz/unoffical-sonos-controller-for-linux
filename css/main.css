@@ -948,3 +948,22 @@ body #queue-container li[data-is-current=true] {
 #zone-group-management-container button.save-button {
 	right: 10px;
 }
+
+
+body #music-service-management-container {
+	width: 80vw;
+}
+
+
+body #music-service-management h3  {
+	font-weight: bold; 
+}
+
+body #music-service-management p,
+body #music-service-management a,
+body #music-service-management h3  {
+	width: 100%;
+	text-shadow: none !important;
+	color: #111111 !important;
+	font-size: 16px;
+}

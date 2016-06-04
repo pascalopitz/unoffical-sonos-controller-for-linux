@@ -64,11 +64,14 @@ class MusicServiceManagement extends React.Component {
 		}
 
         if(this.state.client.auth === 'Anonymous') {
-            link = <p>Click next to add Service</p>;
+            link = (
+                <p>Click next to add the Service at your own risk.</p>
+            );
         }
 
         if(this.state.client.auth === 'UserId') {
             link = (<form>
+                <p>Click next to add the Service at your own risk.</p>
                 <div>
                     <label>Username</label>
                     <input type="text" onChange={this._changeUserName.bind(this)} />
@@ -82,19 +85,31 @@ class MusicServiceManagement extends React.Component {
         }
 
         if(this.state.client.auth === 'DeviceLink' && !this.state.link) {
-            link = <p>Click next to create a link to the Service</p>;
+            link = (
+                <p>Click next to add the Service at your own risk.</p>
+            );
         }
 
         if(this.state.client.auth === 'DeviceLink' && this.state.link) {
-            link = <a href={this.state.link.regUrl} target="_blank">{this.state.link.regUrl}</a>;
+            link = (
+                <div>
+                    <p>Click the link below to authorize this app to use the Service.</p>
+                    <a href={this.state.link.regUrl} target="_blank">{this.state.link.regUrl}</a>
+                </div>
+            );
         }
 
 		return (
 			<div id="music-service-management">
 				<div id="music-service-management-container">
-					<p>
+					<h3>
 						{this.state.client.name}
-					</p>
+					</h3>
+
+                    <div>
+                        <p>This feature is super experimental and untested mostly. It might not work at all or lead to unexpected behaviour.</p>
+                        <p>Unlike the offical Sonos apps, this will require you to authenticate against the music service again, as auth tokens cannot be retrieved from the sonos players.</p>
+                    </div>
 
                     {link}
 
