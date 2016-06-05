@@ -1,5 +1,8 @@
 import Sonos from './Sonos';
 
+const SONOS_UPNP_BROADCAST_PORT = 1900;
+const SONOS_UPNP_RECEIVE_PORT = 1901;
+
 var socketReceive;
 
 chrome.sockets.udp.onReceive.addListener(function () {
@@ -29,13 +32,13 @@ class Search {
 
 			self.socketId = info.socketId;
 
-			chrome.sockets.udp.bind(info.socketId, "0.0.0.0", 1901, function (bindResult) {
+			chrome.sockets.udp.bind(info.socketId, "0.0.0.0", SONOS_UPNP_RECEIVE_PORT, function (bindResult) {
 
 				if(bindResult < 0) {
 					throw new Error('could not bind socket');
 				}
 
-				chrome.sockets.udp.send(info.socketId, PLAYER_SEARCH.buffer, '239.255.255.250', 1900, function socketResponse (sendInfo) {
+				chrome.sockets.udp.send(info.socketId, PLAYER_SEARCH.buffer, '239.255.255.250', SONOS_UPNP_BROADCAST_PORT, function socketResponse (sendInfo) {
 					//console.log(sendInfo);
 				});
 

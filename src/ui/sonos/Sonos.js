@@ -6,6 +6,8 @@ import requestHelper from './helpers/request';
 
 import Services from './helpers/Services';
 
+const SONOS_PLAYER_DEFAULT_PORT = 1400;
+
 window.Services = Services;
 
 import _ from 'lodash';
@@ -33,7 +35,7 @@ class Sonos {
 	 */
 	constructor (host, port) {
 		this.host = host;
-		this.port = port || 1400;
+		this.port = port || SONOS_PLAYER_DEFAULT_PORT;
 	}
 
 	/**
