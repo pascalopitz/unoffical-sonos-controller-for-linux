@@ -1,15 +1,22 @@
-var firstInterface;
+import _ from 'lodash';
+import os from 'os';
+const ifaces = os.networkInterfaces();
 
-chrome.system.network.getNetworkInterfaces((interfaces) => {
-	// TODO: don't just get the first one,
-	// but the one that is in the same subnet as the sonos devices
-	interfaces.forEach((i) => {
-		// test to exclude ipv6
-		if(!firstInterface && i.address.match(/\d+\.\d+\.\d+\.\d+/)) {
-			firstInterface = i;
+let firstInterface;
+
+Object.keys(ifaces).forEach(function (ifname) {
+	var alias = 0;
+
+	ifaces[ifname].forEach(function (iface) {
+		if (firstInterface || 'IPv4' !== iface.family || iface.internal !== false) {
+			return;
 		}
+
+		firstInterface = iface;
 	});
 });
+
+console.log(firstInterface);
 
 var ip = {
 	address: function () {

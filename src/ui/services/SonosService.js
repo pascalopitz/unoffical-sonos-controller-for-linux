@@ -105,20 +105,20 @@ let SonosService = {
 			}
 
 			if(!currentGroupMatch || !currentZone) {
-				chrome.storage.local.get(['zone'], (vals) => {
+				// chrome.storage.local.get(['zone'], (vals) => {
 
 					let zone = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
 						coordinator: "true"
 					});
 
-					if(vals.zone) {
-						let match = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
-							uuid: vals.zone,
-							coordinator: "true"
-						});
+					// if(vals.zone) {
+					// 	let match = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
+					// 		uuid: vals.zone,
+					// 		coordinator: "true"
+					// 	});
 
-						zone = match || zone;
-					}
+					// 	zone = match || zone;
+					// }
 
 					//HACK: trying to prevent listener not having server throw, race condition?
 					window.setTimeout(() => {
@@ -129,7 +129,7 @@ let SonosService = {
 							zone: zone,
 						});
 					}, 500);
-				});
+				// });
 			}
 
 			Dispatcher.dispatch({
@@ -508,9 +508,9 @@ let SonosService = {
 			return;
 		}
 
-		chrome.storage.local.set({
-			zone: value.uuid
-		}, () => {});
+		// chrome.storage.local.set({
+		// 	zone: value.uuid
+		// }, () => {});
 
 		if(sonos) {
 			if(this._currentDevice) {
@@ -548,6 +548,7 @@ let SonosService = {
 	},
 
 	rememberMusicService (service, authToken) {
+        return Promise.resolve();
 		this._musicServices.push({
 			service: service,
 			authToken: authToken,
@@ -572,6 +573,7 @@ let SonosService = {
 	},
 
 	restoreMusicServices () {
+        return Promise.resolve();
 		chrome.storage.local.get(['musicServices'], (vals) => {
 			this._musicServices = vals.musicServices || [];
 

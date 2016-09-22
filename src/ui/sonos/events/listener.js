@@ -2,7 +2,7 @@ import xml2js from '../helpers/xml2js';
 import request from '../helpers/request';
 import ip from '../helpers/ip';
 
-import Stream from './IncomingStream';
+import http from 'http';
 
 import _ from 'lodash';
 
@@ -11,53 +11,45 @@ const SONOS_INCOMING_PORT = 3400;
 
 var listeners = {};
 
-chrome.sockets.tcpServer.onAccept.addListener(function (info) {
-	var stream = new Stream(info.clientSocketId, function (request) {
-
-		if(listeners[info.socketId]) {
-			listeners[info.socketId]._messageHandler(request);
-		}
-
-	});
-});
-
 class Listener {
 
 	constructor (device) {
 		this.device = device;
 		this.parser = new xml2js.Parser();
 		this.services = {};
+        this.port = SONOS_INCOMING_PORT;
 	}
 
 
 	_startInternalServer (callback) {
 		var self = this;
 
-		chrome.sockets.tcpServer.create({
-			name: 'SonosControllerForChrome-UPnP'
-		}, function (info) {
-			 chrome.sockets.tcpServer.listen(info.socketId, ip.address(), 0, SONOS_INCOMING_PORT, function () {
 
-					chrome.sockets.tcpServer.getInfo(info.socketId, function (i) {
+  this.server = http.createServer(function (req, res) {
+    var buffer = ''
+    req.on('data', function (d) {
+      buffer += d
+    })
 
-						self.server = true;
-						self.port = i.localPort;
+    req.on('end', function () {
+      req.body = buffer
+      console.log(req);
+      this._messageHandler(req, res)
+    }.bind(this))
+  }.bind(this)).listen(this.port, function () {
+    if (this.port === 0) {
+      this.port = this.server.address().port
+    }
+    callback(null, this.port)
 
-						listeners[info.socketId] = self;
-
-						// TODO: figure why this throws 412
-						setInterval(self._renewServices.bind(self), 1 * 1000);
-						callback();
-					});
-
-			 });
-		});
+    setInterval(this._renewServices.bind(this), 1 * 1000)
+  }.bind(this))
 	}
 
 
 	_messageHandler (req) {
 
-		if (req.method.toUpperCase() === 'NOTIFY' && req.uri.toLowerCase() === '/notify') {
+		if (req.method.toUpperCase() === 'NOTIFY' && req.url.toLowerCase() === '/notify') {
 
 			if (!this.services[req.headers.sid])
 				return;
