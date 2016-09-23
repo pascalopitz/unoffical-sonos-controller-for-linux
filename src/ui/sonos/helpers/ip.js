@@ -16,8 +16,6 @@ Object.keys(ifaces).forEach(function (ifname) {
 	});
 });
 
-console.log(firstInterface);
-
 var ip = {
 	address: function () {
 		return firstInterface.address;

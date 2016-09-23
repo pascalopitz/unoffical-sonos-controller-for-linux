@@ -6,3 +6,5 @@ npm-debug.log
 node_modules
 bower_components
 package.zip
+*.map
+js/*

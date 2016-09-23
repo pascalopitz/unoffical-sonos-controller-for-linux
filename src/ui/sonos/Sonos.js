@@ -869,7 +869,7 @@ class Sonos {
 						return _.extend(a.$, {
 							Username: a.UN[0]
 						}, {
-							Key: a.Key[0]
+							Key: _.get(a, 'Key.0'),
 						});
 					})
 				}

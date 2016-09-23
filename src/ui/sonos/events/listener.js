@@ -9,7 +9,41 @@ import _ from 'lodash';
 
 const SONOS_INCOMING_PORT = 3400;
 
-var listeners = {};
+let listeners = {};
+let server;
+
+
+function startServer() {
+
+	if(server) {
+		return Promise.resolve(server);
+	}
+
+	return new Promise((resolve, reject) => {
+		server = http.createServer((req, res) => {
+			let buffer = ''
+
+			req.on('data', function (d) {
+				buffer += d;
+			})
+
+			req.on('end', function () {
+				req.body = buffer
+
+				Object.keys(listeners).forEach((k) => {
+					let l = listeners[k];
+					l(req);
+				});
+			});
+		})
+
+		server.listen(SONOS_INCOMING_PORT, ip.address(), () => {
+			resolve(server);
+		});
+	});
+}
+
+
 
 class Listener {
 
@@ -17,35 +51,18 @@ class Listener {
 		this.device = device;
 		this.parser = new xml2js.Parser();
 		this.services = {};
-        this.port = SONOS_INCOMING_PORT;
+		this.port = SONOS_INCOMING_PORT;
 	}
 
 
 	_startInternalServer (callback) {
-		var self = this;
-
-
-  this.server = http.createServer(function (req, res) {
-    var buffer = ''
-    req.on('data', function (d) {
-      buffer += d
-    })
-
-    req.on('end', function () {
-      req.body = buffer
-      console.log(req);
-      this._messageHandler(req, res)
-    }.bind(this))
-  }.bind(this)).listen(this.port, function () {
-    if (this.port === 0) {
-      this.port = this.server.address().port
-    }
-    callback(null, this.port)
-
-    setInterval(this._renewServices.bind(this), 1 * 1000)
-  }.bind(this))
+		startServer().then((server) => {
+			this.server = server;
+			listeners[this.device.ip] = this._messageHandler.bind(this);
+			setInterval(this._renewServices, 1 * 1000);
+			callback();
+		});
 	}
-
 
 	_messageHandler (req) {
 
@@ -132,7 +149,6 @@ class Listener {
 
 			request(opt, function(err, response) {
 				if (err || response.statusCode !== 200) {
-					console.log(response.message || response.statusCode);
 					callback(err || response.statusMessage);
 				} else {
 					callback(null, response.headers.sid);

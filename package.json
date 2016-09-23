@@ -4,7 +4,10 @@
   "description": "Sonos Controller for Chrome",
   "main": "main.js",
   "scripts": {
+    "develop": "npm run transpile && npm run start",
     "start": "electron .",
+    "watch": "babel -d ./js -s true -w ./src",
+    "transpile": "babel -d ./js -s true ./src",
     "fonts": "cp ./node_modules/material-design-icons/iconfont/* ./fonts/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,13 +26,12 @@
   "devDependencies": {
     "array-union": "^1.0.1",
     "babel": "^6.5.2",
+    "babel-cli": "^6.14.0",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
     "babel-register": "^6.14.0",
-    "babelify": "^7.3.0",
-    "browserify": "^13.0.1",
     "deep-equal": "^0.2.2",
     "electron": "^1.4.0",
     "eslint": "^1.10.3",
@@ -42,7 +44,6 @@
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-draggable2": "^0.7.0-alpha1",
-    "reactify": "^1.1.1",
     "uuid": "^2.0.2",
     "watch": "^0.13.0"
   },
