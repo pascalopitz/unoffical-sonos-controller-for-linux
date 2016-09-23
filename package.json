@@ -45,5 +45,8 @@
     "reactify": "^1.1.1",
     "uuid": "^2.0.2",
     "watch": "^0.13.0"
+  },
+  "dependencies": {
+    "request": "^2.75.0"
   }
 }

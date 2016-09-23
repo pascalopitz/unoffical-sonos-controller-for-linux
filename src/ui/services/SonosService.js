@@ -105,31 +105,30 @@ let SonosService = {
 			}
 
 			if(!currentGroupMatch || !currentZone) {
-				// chrome.storage.local.get(['zone'], (vals) => {
 
-					let zone = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
+				let zone = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
+					coordinator: "true"
+				});
+
+				if(window.localStorage.zone) {
+					let match = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
+						uuid: window.localStorage.zone,
 						coordinator: "true"
 					});
 
-					// if(vals.zone) {
-					// 	let match = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
-					// 		uuid: vals.zone,
-					// 		coordinator: "true"
-					// 	});
+					zone = match || zone;
+				}
 
-					// 	zone = match || zone;
-					// }
+				//HACK: trying to prevent listener not having server throw, race condition?
+				window.setTimeout(() => {
+					this.selectCurrentZone(zone);
 
-					//HACK: trying to prevent listener not having server throw, race condition?
-					window.setTimeout(() => {
-						this.selectCurrentZone(zone);
+					Dispatcher.dispatch({
+						actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
+						zone: zone,
+					});
+				}, 500);
 
-						Dispatcher.dispatch({
-							actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
-							zone: zone,
-						});
-					}, 500);
-				// });
 			}
 
 			Dispatcher.dispatch({
@@ -508,9 +507,7 @@ let SonosService = {
 			return;
 		}
 
-		// chrome.storage.local.set({
-		// 	zone: value.uuid
-		// }, () => {});
+        window.localStorage.zone = value.uuid;
 
 		if(sonos) {
 			if(this._currentDevice) {
@@ -548,39 +545,30 @@ let SonosService = {
 	},
 
 	rememberMusicService (service, authToken) {
-        return Promise.resolve();
 		this._musicServices.push({
 			service: service,
 			authToken: authToken,
 		});
 
 		return new Promise((resolve, reject) => {
-			chrome.storage.local.set({
-				musicServices: this._musicServices,
-			}, (err) => {
-				if(err) {
-					reject(err);
-				}
 
-				Dispatcher.dispatch({
-					actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
-					musicServices: this._musicServices,
-				});
-
-				resolve();
-			});
-		});
-	},
-
-	restoreMusicServices () {
-        return Promise.resolve();
-		chrome.storage.local.get(['musicServices'], (vals) => {
-			this._musicServices = vals.musicServices || [];
+            window.localStorage.musicServices = JSON.stringify(this._musicServices);
 
 			Dispatcher.dispatch({
 				actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
 				musicServices: this._musicServices,
 			});
+
+			resolve();
+		});
+	},
+
+	restoreMusicServices () {
+		this._musicServices = window.localStorage.musicServices ? JSON.parse(window.localStorage.musicServices) : [];
+
+		Dispatcher.dispatch({
+			actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
+			musicServices: this._musicServices,
 		});
 	}
 };

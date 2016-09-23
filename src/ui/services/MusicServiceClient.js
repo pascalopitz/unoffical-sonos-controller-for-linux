@@ -1,13 +1,14 @@
 import _ from 'lodash';
 import moment from 'moment';
 
-import requestHelper from '../sonos/helpers/request';
+import requestHelper from 'request';
 import xml2json from 'jquery-xml2json';
 
 import SonosService from '../services/SonosService';
 
 const NS = 'http://www.sonos.com/Services/1.1';
 const deviceProviderName =  'SonosControllerForChrome';
+const RUNTIME_ID = 'pascal-sonos-app';
 
 function withinEnvelope(body, headers='') {
 	return ['<?xml version="1.0" encoding="utf-8"?>',
@@ -120,7 +121,7 @@ ${resourceString}
     getDeviceLinkCode() {
 
         let headers = ['<ns:credentials>',
-             '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
+             '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
              '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
           '</ns:credentials>'].join('');
 
@@ -139,7 +140,7 @@ ${resourceString}
 	getDeviceAuthToken(linkCode) {
 
         let headers = ['<ns:credentials>',
-             '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
+             '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
              '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
           '</ns:credentials>'].join('');
 
@@ -159,7 +160,7 @@ ${resourceString}
 	getMetadata(id, index=0, count=200) {
 
         let headers = ['<ns:credentials>',
-             '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
+             '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
              '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
 			 '<ns:loginToken>',
             	'<ns:token>', this.authToken ,'</ns:token>',
@@ -196,7 +197,7 @@ ${resourceString}
 	search(id, term, index=0, count=200) {
 
         let headers = ['<ns:credentials>',
-             '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
+             '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
              '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
 			 '<ns:loginToken>',
             	'<ns:token>', this.authToken ,'</ns:token>',
@@ -234,7 +235,7 @@ ${resourceString}
 	getMediaURI(id) {
 
         let headers = ['<ns:credentials>',
-             '<ns:deviceId>', chrome.runtime.id ,'</ns:deviceId>',
+             '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
              '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
 			 '<ns:loginToken>',
             	'<ns:token>', this.authToken ,'</ns:token>',
