@@ -3,8 +3,6 @@
 Tinkering with chrome apps and sonos.
 The project is written in ES6 and utilizes react and flux to manage the UI
 
-You can install it via the [chrome store](https://chrome.google.com/webstore/detail/sonos-controller-for-chro/cojfokmeikpnickdpoopoockilamcmoc).
-
 ![](screenshots/screenshot_1.png?raw=true)
 
 ##Why?
