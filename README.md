@@ -8,7 +8,7 @@ The project is written in ES6 and utilizes react and flux to manage the UI
 ##Why?
 
 I have recently started to use Ubuntu as my main OS, and there's no decent controller app.
-So I am aiming to at some point provide a usable sonos controller that can run on Linux also, installed via [chrome store](https://chrome.google.com/webstore/detail/sonos-controller-for-chro/cojfokmeikpnickdpoopoockilamcmoc).
+So I am aiming to at some point provide a usable sonos controller that can run on Linux also.
 Maybe it won't have all the functions of the real sonos player, but if I can browse the library and manage the queue, I'll be pretty damn happy.
 
 ##Install and Run locally
