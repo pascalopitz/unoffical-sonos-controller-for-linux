@@ -44,7 +44,7 @@ class MusicServiceClient {
 	            body: withinEnvelope(body, headers)
 	        }, (err, res, body) => {
 
-	            if(err) {
+	            if(err || res.statusCode >= 400) {
 					let e = xml2json(stripNamespaces(body));
 
 					if(_.get(e, 'Envelope.Body.Fault.faultstring') === 'TokenRefreshRequired') {
