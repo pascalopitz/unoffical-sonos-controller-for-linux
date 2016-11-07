@@ -2,13 +2,16 @@
   "name": "sonos-controller-for-chrome",
   "version": "0.0.18",
   "description": "Sonos Controller for Chrome",
-  "main": "main.js",
+  "main": "app/main.js",
   "scripts": {
-    "develop": "npm run transpile && npm run start",
+    "postinstall": "install-app-deps",
+    "pack": "build --dir",
+    "dist": "build",
+    "develop": "npm run fonts && npm run transpile && npm run start",
     "start": "electron .",
-    "watch": "babel -d ./js -s true -w ./src",
-    "transpile": "babel -d ./js -s true ./src",
-    "fonts": "cp ./node_modules/material-design-icons/iconfont/* ./fonts/",
+    "watch": "babel -d ./app/js -s true -w ./src",
+    "transpile": "babel -d ./app/js -s true ./src",
+    "fonts": "mkdir -p ./app/fonts && cp ./node_modules/material-design-icons/iconfont/* ./app/fonts/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
@@ -22,6 +25,13 @@
       "url": "https://github.com/leanto"
     }
   ],
+  "build": {
+    "appId": "com.electron.unoffcial.sonos.controller",
+    "app-category-type": "Audio",
+    "linux": {
+      "target": "deb"
+    }
+  },
   "license": "ISC",
   "devDependencies": {
     "array-union": "^1.0.1",
@@ -33,7 +43,8 @@
     "babel-preset-stage-1": "^6.5.0",
     "babel-register": "^6.14.0",
     "deep-equal": "^0.2.2",
-    "electron": "^1.4.0",
+    "electron": "^1.4.1",
+    "electron-builder": "^7.9.0",
     "eslint": "^1.10.3",
     "flux": "^2.1.1",
     "jquery-xml2json": "git+https://github.com/pascalopitz/jQuery-xml2json.git",

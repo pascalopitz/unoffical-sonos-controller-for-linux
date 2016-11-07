@@ -17,7 +17,7 @@ class SearchBar extends React.Component {
 		super();
 		this.state = {
 			searching: false,
-			term: null,
+			term: undefined,
 		};
 	}
 

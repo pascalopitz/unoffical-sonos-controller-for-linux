@@ -147,7 +147,7 @@ let SonosService = {
 		}
 
 		Object.keys(topology).forEach((key) => {
-			let m = topology[key];
+			let [ m ] = topology[key];
 
 			if(m.group !== zone.group) {
 				return;

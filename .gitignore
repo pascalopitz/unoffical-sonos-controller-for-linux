@@ -1,5 +1,5 @@
-js/*.js
-fonts
+app/js/*
+app/fonts
 .git
 tmp
 npm-debug.log

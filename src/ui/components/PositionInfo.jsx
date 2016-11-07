@@ -8,6 +8,10 @@ import _ from 'lodash';
 import PlayerActions from '../actions/PlayerActions';
 import PlayerStore from '../stores/PlayerStore';
 
+function formatTime(d) {
+	return `${_.padLeft(d.minutes(), 2, '0')}:${_.padLeft(d.seconds(), 2, '0')}`;
+}
+
 class PositionInfo extends React.Component {
 
 	constructor () {
@@ -157,28 +161,27 @@ class PositionInfo extends React.Component {
 	render () {
 
 		let info = this.state.info;
-		let offset = this.state.offset;
+		let offset = this.state.offset || 0;
 		let percent = 0;
-		let from = '00:00';
-		let to = '-0:00';
+		let fromStr = '00:00';
+		let toStr = '-00:00';
 
 		if(info) {
-			let r = info.RelTime.split(':');
-			let d = info.TrackDuration.split(':');
-
-			let start = moment().startOf('day');
-			let now = moment().startOf('day').add(r[0], 'h').add(r[1], 'm').add(Number(r[2]) + offset, 's');
-			let end = moment().startOf('day').add(d[0], 'h').add(d[1], 'm').add(d[2], 's');
+			let start = moment.duration();
+			let now = moment.duration(info.RelTime).add(offset, 's');
+			let end = moment.duration(info.TrackDuration);
 
 			if(now > end) {
-				now = end;
+				now = moment.duration(info.TrackDuration);
 				PlayerActions.refreshPosition()
 			}
 
-			to = '-' + end.clone().subtract(now).format('mm:ss');
-			from = now.format('mm:ss');
+			let to = moment.duration(end.asSeconds(), 'seconds').subtract(now.asSeconds(), 's');
 
-			percent = 100/ (end - start) * (now - start);
+			toStr = `-${formatTime(to)}`;
+			fromStr = `${formatTime(now)}`;
+
+			percent = 100 / end.asSeconds() * now.asSeconds();
 		}
 
 		let styles = {
@@ -226,13 +229,13 @@ class PositionInfo extends React.Component {
 					<a onClick={this._toggleShuffle.bind(this)}>{shuffle}</a>
 					<a onClick={this._toggleCrossfade.bind(this)}>{crossfade}</a>
 
-					<span id="countup">{from}</span>
+					<span id="countup">{fromStr}</span>
 					<div id="position-info-control">
 						<div id="position-bar" onClick={this._onClick.bind(this)}>
 							<div id="position-bar-scrubber" style={styles}></div>
 						</div>
 					</div>
-					<span id="countdown">{to}</span>
+					<span id="countdown">{toStr}</span>
 				</div>
 
 			</div>
