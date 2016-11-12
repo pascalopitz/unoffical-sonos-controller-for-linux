@@ -1,5 +1,3 @@
-"use strict";
-
 import _ from 'lodash';
 import xml2json from 'jquery-xml2json';
 
@@ -12,12 +10,12 @@ import Constants from '../constants/Constants';
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
 const REG = /^http:\/\/([\d\.]+)/;
-const QUERY_INTERVAL = 5000;
+const SECOND_QUERY_TIMEOUT = 2000;
 
 let SonosService = {
 
 	_currentDevice: null,
-	_queryInterval: null,
+	_queryTimeout: null,
 	_deviceSearches: {},
 	_listeners: {},
 	_persistentSubscriptions: [],
@@ -147,28 +145,31 @@ let SonosService = {
 		}
 
 		Object.keys(topology).forEach((key) => {
-			let [ m ] = topology[key];
+			let players = topology[key];
 
-			if(m.group !== zone.group) {
-				return;
-			}
+			players.forEach((m) => {
 
-			let matches = REG.exec(m.location);
-			let sonos = this._deviceSearches[matches[1]];
-
-			sonos.getMuted((err, muted) => {
-				if(err) {
+				if(m.group !== zone.group) {
 					return;
 				}
-				sonos.getVolume((err, volume) => {
+
+				let matches = REG.exec(m.location);
+				let sonos = this._deviceSearches[matches[1]];
+
+				sonos.getMuted((err, muted) => {
 					if(err) {
 						return;
 					}
-					Dispatcher.dispatch({
-						actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
-						volume: volume,
-						muted: muted,
-						sonos: sonos,
+					sonos.getVolume((err, volume) => {
+						if(err) {
+							return;
+						}
+						Dispatcher.dispatch({
+							actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
+							volume: volume,
+							muted: muted,
+							sonos: sonos,
+						});
 					});
 				});
 			});
@@ -195,7 +196,7 @@ let SonosService = {
 			if(state === 'transitioning') {
 				window.setTimeout(() => {
 					this.queryCurrentTrackAndPlaystate(sonos);
-				}, 100);
+				}, 1000);
 				return;
 			}
 
@@ -507,22 +508,22 @@ let SonosService = {
 			return;
 		}
 
-        window.localStorage.zone = value.uuid;
+		window.localStorage.zone = value.uuid;
 
 		if(sonos) {
 			if(this._currentDevice) {
 				this.unsubscribeServiceEvents(this._currentDevice);
 			}
 
-			// if(this._queryInterval) {
-			// 	window.clearInterval(this._queryInterval);
-			// }
+			if(this._queryTimeout) {
+				window.clearTimeout(this._queryTimeout);
+			}
 
 			this._currentDevice = sonos;
 
 			this.subscribeServiceEvents(sonos);
 			this.queryState(sonos);
-			// this._queryInterval = window.setInterval(() =>  this.queryState(), QUERY_INTERVAL);
+			this._queryTimeout = window.setTimeout(() =>  this.queryState(), SECOND_QUERY_TIMEOUT);
 		}
 	},
 
@@ -552,7 +553,7 @@ let SonosService = {
 
 		return new Promise((resolve, reject) => {
 
-            window.localStorage.musicServices = JSON.stringify(this._musicServices);
+			window.localStorage.musicServices = JSON.stringify(this._musicServices);
 
 			Dispatcher.dispatch({
 				actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,

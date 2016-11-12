@@ -173,7 +173,7 @@ class PositionInfo extends React.Component {
 
 			if(now > end) {
 				now = moment.duration(info.TrackDuration);
-				PlayerActions.refreshPosition()
+				// PlayerActions.refreshPosition()
 			}
 
 			let to = moment.duration(end.asSeconds(), 'seconds').subtract(now.asSeconds(), 's');
