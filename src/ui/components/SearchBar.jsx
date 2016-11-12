@@ -17,7 +17,7 @@ class SearchBar extends React.Component {
 		super();
 		this.state = {
 			searching: false,
-			term: null,
+			term: '',
 		};
 	}
 
@@ -43,7 +43,7 @@ class SearchBar extends React.Component {
 		term = null;
 		this.setState({
 			searching: false,
-			term: term,
+			term: term || '',
 		});
 		func();
 	}
@@ -52,7 +52,7 @@ class SearchBar extends React.Component {
 		term = e.target.value;
 		this.setState({
 			searching: term.length > 0,
-			term: term,
+			term: term || '',
 		});
 		func();
 		e.preventDefault();

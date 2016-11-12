@@ -32,11 +32,13 @@ class Sonos {
 	/**
 	 * @param {String} host IP/DNS
 	 * @param {Number} port
+     * @param {String} model
 	 */
-	constructor (host, port) {
+	constructor (host, port, model) {
 		this.host = host;
 		this.port = port || SONOS_PLAYER_DEFAULT_PORT;
-	}
+        this.model = model;
+    }
 
 	/**
 	 * UPnP HTTP Request
@@ -867,7 +869,7 @@ class Sonos {
 						return _.extend(a.$, {
 							Username: a.UN[0]
 						}, {
-							Key: a.Key[0]
+							Key: _.get(a, 'Key.0'),
 						});
 					})
 				}

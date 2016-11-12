@@ -1,72 +1,69 @@
 import Sonos from './Sonos';
+import dgram from 'dgram';
 
+import ip from './helpers/ip';
+
+const SONOS_UPNP_BROADCAST_IP = '239.255.255.250';
 const SONOS_UPNP_BROADCAST_PORT = 1900;
-const SONOS_UPNP_RECEIVE_PORT = 1901;
-
-var socketReceive;
-
-chrome.sockets.udp.onReceive.addListener(function () {
-	if(socketReceive) {
-		socketReceive.apply(null, arguments);
-	}
-});
+const SONOS_UPNP_RECEIVE_PORT = 1905;
 
 class Search {
 
-	constructor (discoveryCallback) {
+	constructor (discoveryCallback, options={}) {
 
 		var self = this;
 
-		var encoder = new TextEncoder();
-		var decoder = new TextDecoder();
+		this.foundSonosDevices = {};
 
-		var PLAYER_SEARCH = encoder.encode(['M-SEARCH * HTTP/1.1',
+		var PLAYER_SEARCH = new Buffer(['M-SEARCH * HTTP/1.1',
 		'HOST: 239.255.255.250:reservedSSDPport',
 		'MAN: ssdp:discover',
 		'MX: 1',
 		'ST: urn:schemas-upnp-org:device:ZonePlayer:1'].join('\r\n'));
 
-		chrome.sockets.udp.create({
-			name: 'SonosControllerForChrome-UDP'
-		}, function (info) {
 
-			self.socketId = info.socketId;
-
-			chrome.sockets.udp.bind(info.socketId, "0.0.0.0", SONOS_UPNP_RECEIVE_PORT, function (bindResult) {
-
-				if(bindResult < 0) {
-					throw new Error('could not bind socket');
-				}
-
-				chrome.sockets.udp.send(info.socketId, PLAYER_SEARCH.buffer, '239.255.255.250', SONOS_UPNP_BROADCAST_PORT, function socketResponse (sendInfo) {
-					//console.log(sendInfo);
-				});
-
+		var sendDiscover = function () {
+			['239.255.255.250', '255.255.255.255'].map(function (addr) {
+				self.socket.send(PLAYER_SEARCH, 0, PLAYER_SEARCH.length, SONOS_UPNP_BROADCAST_PORT, addr);
 			});
+			// Periodically send discover packet to find newly added devices
+			self.pollTimer = setTimeout(sendDiscover, 10000)
+		}
 
-			socketReceive = function(receiveInfo) {
+		this.socket = dgram.createSocket('udp4', function (buffer, rinfo) {
+			buffer = buffer.toString();
 
-				if(receiveInfo.socketId === info.socketId) {
+			if (buffer.match(/.+Sonos.+/)) {
+				var modelCheck = buffer.match(/SERVER.*\((.*)\)/);
+				var model = (modelCheck.length > 1 ? modelCheck[1] : null);
+				var addr = rinfo.address;
 
-					var buffer = decoder.decode(new DataView(receiveInfo.data));
-
-					if(buffer.match(/.+Sonos.+/)) {
-						var modelCheck = buffer.match(/SERVER.*\((.*)\)/);
-						var model = (modelCheck.length > 1 ? modelCheck[1] : null);
-
-						discoveryCallback(new Sonos(receiveInfo.remoteAddress))
-					}
+				if (!(addr in self.foundSonosDevices)) {
+					let sonos = self.foundSonosDevices[addr] = new Sonos(addr, null, model);
+					discoveryCallback(sonos);
 				}
-
-			};
-
+			}
 		});
+
+		this.socket.on('error', function (err) {
+			self.emit('error', err)
+		});
+
+		this.socket.bind(options, function () {
+			self.socket.setBroadcast(true);
+			sendDiscover();
+		});
+
+		if (options.timeout) {
+			self.searchTimer = setTimeout(function () {
+				self.socket.close()
+				self.emit('timeout')
+			}, options.timeout);
+		}
 	}
 
 	destroy () {
-		chrome.sockets.udp.close(this.socketId, function () {
-			console.log('socket cleaned up');
-		});
+		this.server.close();
 	}
 };
 

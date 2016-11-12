@@ -2,24 +2,48 @@ import xml2js from '../helpers/xml2js';
 import request from '../helpers/request';
 import ip from '../helpers/ip';
 
-import Stream from './IncomingStream';
+import http from 'http';
 
 import _ from 'lodash';
 
 
 const SONOS_INCOMING_PORT = 3400;
 
-var listeners = {};
+let listeners = {};
+let server;
 
-chrome.sockets.tcpServer.onAccept.addListener(function (info) {
-	var stream = new Stream(info.clientSocketId, function (request) {
 
-		if(listeners[info.socketId]) {
-			listeners[info.socketId]._messageHandler(request);
-		}
+function startServer() {
 
+	if(server) {
+		return Promise.resolve(server);
+	}
+
+	return new Promise((resolve, reject) => {
+		server = http.createServer((req, res) => {
+			let buffer = ''
+
+			req.on('data', function (d) {
+				buffer += d;
+			})
+
+			req.on('end', function () {
+				req.body = buffer
+
+				Object.keys(listeners).forEach((k) => {
+					let l = listeners[k];
+					l(req);
+				});
+			});
+		})
+
+		server.listen(SONOS_INCOMING_PORT, ip.address(), () => {
+			resolve(server);
+		});
 	});
-});
+}
+
+
 
 class Listener {
 
@@ -27,37 +51,22 @@ class Listener {
 		this.device = device;
 		this.parser = new xml2js.Parser();
 		this.services = {};
+		this.port = SONOS_INCOMING_PORT;
 	}
 
 
 	_startInternalServer (callback) {
-		var self = this;
-
-		chrome.sockets.tcpServer.create({
-			name: 'SonosControllerForChrome-UPnP'
-		}, function (info) {
-			 chrome.sockets.tcpServer.listen(info.socketId, ip.address(), 0, SONOS_INCOMING_PORT, function () {
-
-					chrome.sockets.tcpServer.getInfo(info.socketId, function (i) {
-
-						self.server = true;
-						self.port = i.localPort;
-
-						listeners[info.socketId] = self;
-
-						// TODO: figure why this throws 412
-						setInterval(self._renewServices.bind(self), 1 * 1000);
-						callback();
-					});
-
-			 });
+		startServer().then((server) => {
+			this.server = server;
+			listeners[this.device.ip] = this._messageHandler.bind(this);
+			setInterval(this._renewServices, 1 * 1000);
+			callback();
 		});
 	}
 
-
 	_messageHandler (req) {
 
-		if (req.method.toUpperCase() === 'NOTIFY' && req.uri.toLowerCase() === '/notify') {
+		if (req.method.toUpperCase() === 'NOTIFY' && req.url.toLowerCase() === '/notify') {
 
 			if (!this.services[req.headers.sid])
 				return;
@@ -140,7 +149,6 @@ class Listener {
 
 			request(opt, function(err, response) {
 				if (err || response.statusCode !== 200) {
-					console.log(response.message || response.statusCode);
 					callback(err || response.statusMessage);
 				} else {
 					callback(null, response.headers.sid);

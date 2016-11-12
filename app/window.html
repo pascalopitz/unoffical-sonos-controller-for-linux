@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-csp>
+<html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/common.css" />
 		<link rel="stylesheet" type="text/css" href="css/main.css" />
@@ -7,9 +7,11 @@
 		<title id="page-title">Sonos Controller for Chrome</title>
 	</head>
 <body>
-	
+
 	<div id="root"></div>
 
-	<script type="text/javascript" src="js/ui.js"></script>
+	<script type="text/javascript">
+		require('./js/ui/app');
+	</script>
 </body>
 </html>

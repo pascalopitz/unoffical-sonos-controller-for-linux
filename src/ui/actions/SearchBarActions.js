@@ -35,7 +35,7 @@ function transformSMAPI(res, client) {
 		if(!Array.isArray(res.mediaMetadata)) {
 			res.mediaMetadata = [res.mediaMetadata];
 		}
-		
+
 		res.mediaMetadata.forEach((i) => {
 			i.serviceClient = client;
 			items[i.$$position] =  i;
@@ -72,7 +72,7 @@ export default {
 		if(!term || !term.length) {
 			Dispatcher.dispatch({
 				actionType: Constants.SEARCH,
-				term: null,
+				term: '',
 			});
 			return;
 		}

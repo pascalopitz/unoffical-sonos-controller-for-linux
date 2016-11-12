@@ -1,5 +1,3 @@
-"use strict";
-
 import _ from 'lodash';
 import xml2json from 'jquery-xml2json';
 
@@ -12,12 +10,12 @@ import Constants from '../constants/Constants';
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
 const REG = /^http:\/\/([\d\.]+)/;
-const QUERY_INTERVAL = 5000;
+const SECOND_QUERY_TIMEOUT = 2000;
 
 let SonosService = {
 
 	_currentDevice: null,
-	_queryInterval: null,
+	_queryTimeout: null,
 	_deviceSearches: {},
 	_listeners: {},
 	_persistentSubscriptions: [],
@@ -105,31 +103,30 @@ let SonosService = {
 			}
 
 			if(!currentGroupMatch || !currentZone) {
-				chrome.storage.local.get(['zone'], (vals) => {
 
-					let zone = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
+				let zone = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
+					coordinator: "true"
+				});
+
+				if(window.localStorage.zone) {
+					let match = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
+						uuid: window.localStorage.zone,
 						coordinator: "true"
 					});
 
-					if(vals.zone) {
-						let match = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
-							uuid: vals.zone,
-							coordinator: "true"
-						});
+					zone = match || zone;
+				}
 
-						zone = match || zone;
-					}
+				//HACK: trying to prevent listener not having server throw, race condition?
+				window.setTimeout(() => {
+					this.selectCurrentZone(zone);
 
-					//HACK: trying to prevent listener not having server throw, race condition?
-					window.setTimeout(() => {
-						this.selectCurrentZone(zone);
+					Dispatcher.dispatch({
+						actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
+						zone: zone,
+					});
+				}, 500);
 
-						Dispatcher.dispatch({
-							actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
-							zone: zone,
-						});
-					}, 500);
-				});
 			}
 
 			Dispatcher.dispatch({
@@ -148,28 +145,31 @@ let SonosService = {
 		}
 
 		Object.keys(topology).forEach((key) => {
-			let m = topology[key];
+			let players = topology[key];
 
-			if(m.group !== zone.group) {
-				return;
-			}
+			players.forEach((m) => {
 
-			let matches = REG.exec(m.location);
-			let sonos = this._deviceSearches[matches[1]];
-
-			sonos.getMuted((err, muted) => {
-				if(err) {
+				if(m.group !== zone.group) {
 					return;
 				}
-				sonos.getVolume((err, volume) => {
+
+				let matches = REG.exec(m.location);
+				let sonos = this._deviceSearches[matches[1]];
+
+				sonos.getMuted((err, muted) => {
 					if(err) {
 						return;
 					}
-					Dispatcher.dispatch({
-						actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
-						volume: volume,
-						muted: muted,
-						sonos: sonos,
+					sonos.getVolume((err, volume) => {
+						if(err) {
+							return;
+						}
+						Dispatcher.dispatch({
+							actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
+							volume: volume,
+							muted: muted,
+							sonos: sonos,
+						});
 					});
 				});
 			});
@@ -196,7 +196,7 @@ let SonosService = {
 			if(state === 'transitioning') {
 				window.setTimeout(() => {
 					this.queryCurrentTrackAndPlaystate(sonos);
-				}, 100);
+				}, 1000);
 				return;
 			}
 
@@ -508,24 +508,22 @@ let SonosService = {
 			return;
 		}
 
-		chrome.storage.local.set({
-			zone: value.uuid
-		}, () => {});
+		window.localStorage.zone = value.uuid;
 
 		if(sonos) {
 			if(this._currentDevice) {
 				this.unsubscribeServiceEvents(this._currentDevice);
 			}
 
-			// if(this._queryInterval) {
-			// 	window.clearInterval(this._queryInterval);
-			// }
+			if(this._queryTimeout) {
+				window.clearTimeout(this._queryTimeout);
+			}
 
 			this._currentDevice = sonos;
 
 			this.subscribeServiceEvents(sonos);
 			this.queryState(sonos);
-			// this._queryInterval = window.setInterval(() =>  this.queryState(), QUERY_INTERVAL);
+			this._queryTimeout = window.setTimeout(() =>  this.queryState(), SECOND_QUERY_TIMEOUT);
 		}
 	},
 
@@ -554,31 +552,24 @@ let SonosService = {
 		});
 
 		return new Promise((resolve, reject) => {
-			chrome.storage.local.set({
-				musicServices: this._musicServices,
-			}, (err) => {
-				if(err) {
-					reject(err);
-				}
 
-				Dispatcher.dispatch({
-					actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
-					musicServices: this._musicServices,
-				});
-
-				resolve();
-			});
-		});
-	},
-
-	restoreMusicServices () {
-		chrome.storage.local.get(['musicServices'], (vals) => {
-			this._musicServices = vals.musicServices || [];
+			window.localStorage.musicServices = JSON.stringify(this._musicServices);
 
 			Dispatcher.dispatch({
 				actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
 				musicServices: this._musicServices,
 			});
+
+			resolve();
+		});
+	},
+
+	restoreMusicServices () {
+		this._musicServices = window.localStorage.musicServices ? JSON.parse(window.localStorage.musicServices) : [];
+
+		Dispatcher.dispatch({
+			actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
+			musicServices: this._musicServices,
 		});
 	}
 };
