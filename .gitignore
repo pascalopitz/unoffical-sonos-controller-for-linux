@@ -1,5 +1,6 @@
 app/js/*
 app/fonts
+dist/*
 .git
 tmp
 npm-debug.log
