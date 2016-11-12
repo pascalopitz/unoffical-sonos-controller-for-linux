@@ -171,17 +171,19 @@ class PositionInfo extends React.Component {
 			let now = moment.duration(info.RelTime).add(offset, 's');
 			let end = moment.duration(info.TrackDuration);
 
-			if(now > end) {
-				now = moment.duration(info.TrackDuration);
-				// PlayerActions.refreshPosition()
+			if(info.AbsTime !== 'NOT_IMPLEMENTED') {
+				if(now > end) {
+					now = moment.duration(info.TrackDuration);
+					PlayerActions.refreshPosition()
+				}
+
+				let to = moment.duration(end.asSeconds(), 'seconds').subtract(now.asSeconds(), 's');
+
+				toStr = `-${formatTime(to)}`;
+				percent = 100 / end.asSeconds() * now.asSeconds();
 			}
 
-			let to = moment.duration(end.asSeconds(), 'seconds').subtract(now.asSeconds(), 's');
-
-			toStr = `-${formatTime(to)}`;
 			fromStr = `${formatTime(now)}`;
-
-			percent = 100 / end.asSeconds() * now.asSeconds();
 		}
 
 		let styles = {
