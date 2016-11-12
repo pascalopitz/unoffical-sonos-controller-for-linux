@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Unoffical-sonos-controller-for-linux by pascalopitz</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Unoffical-sonos-controller-for-linux</h1>
+        <p>Unofficial Sonos Controller for Linux</p>
+
+        <p class="view"><a href="https://github.com/pascalopitz/unoffical-sonos-controller-for-linux">View the Project on GitHub <small>pascalopitz/unoffical-sonos-controller-for-linux</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/pascalopitz/unoffical-sonos-controller-for-linux">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="sonos-controller-for-chrome" class="anchor" href="#sonos-controller-for-chrome" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sonos Controller for Chrome</h1>
+
+<p>Tinkering with chrome apps and sonos.
+The project is written in ES6 and utilizes react and flux to manage the UI</p>
+
+<p>You can install it via the <a href="https://chrome.google.com/webstore/detail/sonos-controller-for-chro/cojfokmeikpnickdpoopoockilamcmoc">chrome store</a>.</p>
+
+<p><img src="screenshots/screenshot_1.png?raw=true" alt=""></p>
+
+<h2>
+<a id="why" class="anchor" href="#why" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why?</h2>
+
+<p>I have recently started to use Ubuntu as my main OS, and there's no decent controller app.
+So I am aiming to at some point provide a usable sonos controller that can run on Linux also, installed via <a href="https://chrome.google.com/webstore/detail/sonos-controller-for-chro/cojfokmeikpnickdpoopoockilamcmoc">chrome store</a>.
+Maybe it won't have all the functions of the real sonos player, but if I can browse the library and manage the queue, I'll be pretty damn happy.</p>
+
+<h2>
+<a id="install-and-run-locally" class="anchor" href="#install-and-run-locally" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install and Run locally</h2>
+
+<p>You will need node.js for this.</p>
+
+<p>First, initialize the project:</p>
+
+<pre><code>npm install
+</code></pre>
+
+<p>Second, build the compiled files into the js folder:</p>
+
+<pre><code>npm run-script compile
+</code></pre>
+
+<p>Third, add the app in the extensions tab of chrome, via "Load unpacked extension". Select the project folder.
+You will need to check the developer mode check box in order to be able to do that.
+Now you should be able to run the app, and inspect console messages coming through via the window inspector.</p>
+
+<p>For development, you can run the watch task, which will re-compile on change:</p>
+
+<pre><code>npm run-script watch
+</code></pre>
+
+<h2>
+<a id="firewall-settings" class="anchor" href="#firewall-settings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Firewall settings</h2>
+
+<p>You will need to whitelist these if you run Ubuntu firewall for example:</p>
+
+<ul>
+<li>UDP 1900</li>
+<li>UDP 1901</li>
+<li>TCP 3400</li>
+<li>TCP 1400</li>
+</ul>
+
+<h2>
+<a id="thanks-to-other-projects" class="anchor" href="#thanks-to-other-projects" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Thanks to other projects</h2>
+
+<ul>
+<li><p>I ported nearly all of <a href="https://github.com/bencevans/node-sonos/">https://github.com/bencevans/node-sonos/</a> so that it works in chrome.
+Also made it into an ES6 code base where it was easy to do.</p></li>
+<li><p>The web interface markup and css is poached from <a href="https://github.com/jishi/node-sonos-web-controller/">https://github.com/jishi/node-sonos-web-controller/</a></p></li>
+<li><p>Dealing with the UPNP notifications needs a webserver, and <a href="https://github.com/kzahel/web-server-chrome">https://github.com/kzahel/web-server-chrome</a> provided a good insight and many snippets</p></li>
+</ul>
+
+<h2>
+<a id="done" class="anchor" href="#done" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Done</h2>
+
+<ul>
+<li>[x] Create app shell and manifest</li>
+<li>[x] Make all ES6 compile into a JS via npm script</li>
+<li>[x] Single output JS</li>
+<li>[x] Port node-sonos discovery message via</li>
+<li>[x] Port node-sonos UPNP message</li>
+<li>[x] ES6ify the Sonos class</li>
+<li>[x] Port node-sonos UPNP Event Listener UPNP subscribe messages</li>
+<li>[x] Port node-sonos UPNP Event Listener UPNP incoming message handling</li>
+<li>[x] Make sense of topology messages</li>
+<li>[x] ES6ify Event Listener class</li>
+<li>[x] UPNP subscriptions for selected zone</li>
+<li>[x] Remember last selected room</li>
+<li>[x] Display and interact with rooms/zones UI</li>
+<li>[x] Display and interact with volume controls for single player zones</li>
+<li>[x] Display and interact with volume controls for multi player zones</li>
+<li>[x] Display and interact with mute button</li>
+<li>[x] Display and interact with queue</li>
+<li>[x] Display and interact with current play time UI</li>
+<li>[x] Display and interact with UI to start / stop / back / next</li>
+<li>[x] UI to browse artists / tracks / albums</li>
+<li>[x] Drill down from artists / tracks / albums</li>
+<li>[x] Load and display images</li>
+<li>[x] Search for artists / tracks / albums</li>
+<li>[x] Play, add to/replace queue from library browser</li>
+<li>[x] Highlight currently playing track</li>
+<li>[x] Fix image ghosting issues</li>
+<li>[x] Display Loading message if there's no players</li>
+<li>[x] Play and remove from to the queue</li>
+<li>[x] Select and group remove from to the queue</li>
+<li>[x] Label for clear queue button</li>
+<li>[x] Faster topology lookup</li>
+<li>[x] BUG: Sometimes menu click adds track twice to queue</li>
+<li>[x] BUG: Volume slider snapping back after dragging on single player groups</li>
+<li>[x] BUG: Expanded player volumes sometimes hiding prematurely</li>
+<li>[x] BUG: Same track in queue multiple times and selecting one selects all</li>
+<li>[x] BUG: Changing group topology doesn't reflect in volume controls</li>
+<li>[x] Group management</li>
+<li>[x] BUG: App gets stuck during startup ("...can only be added after listen() is called")</li>
+<li>[x] Drag and drop to reorder the queue</li>
+<li>[x] BUG: group mute button sometimes flickers with wrong state</li>
+<li>[x] Get some basic device logging to debug network interface bug</li>
+<li>[x] BUG: drag and drop locking up on older apple mac core duo</li>
+<li>[x] Support Line In</li>
+<li>[x] BUG: bridge shows up in player list</li>
+<li>[x] BUG: stereo pairs show as separate</li>
+<li>[x] BUG: BOOST shows as group</li>
+<li>[x] Show what's playing in zone list for all zones</li>
+<li>[x] BUG: Position info out of bounds</li>
+<li>[x] BUG: Radio stream playing now seems to skip between values</li>
+<li>[x] BUG: Radio station can be played from favourites</li>
+<li>[x] BUG: Volume control glitchy</li>
+<li>[x] Browsing music via file structure</li>
+<li>[x] BUG: Drag and drop in queue stopped working</li>
+<li>[x] Crossfade and play mode controls</li>
+</ul>
+
+<h2>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TODO:</h2>
+
+<ul>
+<li>[ ] Add track to favourites</li>
+<li>[ ] Save Queues</li>
+<li>[ ] Infinite scroll for search results</li>
+<li>[ ] Reduce amount of DOM nodes when scrolling long list with placeholder/margin</li>
+<li>[ ] Fix broken image issues (data url too long?)</li>
+<li>[ ] Find out how to query for next track</li>
+<li>[ ] Jump to places in the alphabet in media library</li>
+<li>[ ] Browse music on phones (is that possible)?</li>
+<li>[ ] Integrate services???</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/pascalopitz">pascalopitz</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
