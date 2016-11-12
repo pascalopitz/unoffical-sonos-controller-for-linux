@@ -12,7 +12,7 @@ So I am aiming to at some point provide a usable sonos controller that can run o
 Maybe it won't have all the functions of the real sonos player, but if I can browse the library and manage the queue, I'll be pretty damn happy.
 Previously this was a chrome app, and I had a good 70k users on the chrome store.
 
-##Install via .deb file
+##Install via [.deb file](http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/dist/sonos-controller-unofficial-latest-amd64.deb)
 
 	wget http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/dist/sonos-controller-unofficial-latest-amd64.deb
 	sudo dpkg -i sonos-controller-unofficial-latest-amd64.deb
