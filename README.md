@@ -1,15 +1,21 @@
-#Sonos Controller for Chrome
+#Unofficial Sonos Controller for Linux
 
-Tinkering with chrome apps and sonos.
+First I was tinkering with chrome apps and sonos, but chrome apps are a dying platform, so I've moved over to Electron.
 The project is written in ES6 and utilizes react and flux to manage the UI
 
 ![](screenshots/screenshot_1.png?raw=true)
 
 ##Why?
 
-I have recently started to use Ubuntu as my main OS, and there's no decent controller app.
-So I am aiming to at some point provide a usable sonos controller that can run on Linux also.
+I use Ubuntu as my main OS, and there's no decent controller app.
+So I am aiming to at some point provide a usable sonos controller that can run on Linux also, installed via deb file.
 Maybe it won't have all the functions of the real sonos player, but if I can browse the library and manage the queue, I'll be pretty damn happy.
+Previously this was a chrome app, and I had a good 70k users on the chrome store.
+
+##Install via .deb file
+
+	wget http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/dist/sonos-controller-unofficial-latest-amd64.deb
+	sudo dpkg -i sonos-controller-unofficial-latest-amd64.deb
 
 ##Install and Run locally
 
@@ -19,17 +25,15 @@ First, initialize the project:
 
 	npm install
 
-Second, build the compiled files into the js folder:
+Second, start the electron app in develop mode:
 
-	npm run-script compile
+	npm run develop
 
-Third, add the app in the extensions tab of chrome, via "Load unpacked extension". Select the project folder.
-You will need to check the developer mode check box in order to be able to do that.
-Now you should be able to run the app, and inspect console messages coming through via the window inspector.
+Building a deb:
 
-For development, you can run the watch task, which will re-compile on change:
+	npm run dist
 
-	npm run-script watch
+This might require some additional binaries, like graphicsMagick and icnsutils, which you can install via apt
 
 ##Firewall settings
 
@@ -106,6 +110,9 @@ You will need to whitelist these if you run Ubuntu firewall for example:
 - [x] BUG: Drag and drop in queue stopped working
 - [x] Crossfade and play mode controls
 
+##EXPERIMENTAL:
+- [ ] Integrate services???
+
 ##TODO:
 - [ ] Add track to favourites
 - [ ] Save Queues
@@ -115,4 +122,3 @@ You will need to whitelist these if you run Ubuntu firewall for example:
 - [ ] Find out how to query for next track
 - [ ] Jump to places in the alphabet in media library
 - [ ] Browse music on phones (is that possible)?
-- [ ] Integrate services???
