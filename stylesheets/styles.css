@@ -182,6 +182,7 @@ header li {
 }
 
 header li:first-child a {
+  width:178px;
   border-radius:5px 0 0 5px;
 }
 
@@ -212,7 +213,7 @@ strong {
   font-weight:700;
 }
 
-header ul li + li + li {
+header ul li + li {
   border-right:none;
   width:89px;
 }
