@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import bb from 'bluebird';
 import xml2json from 'jquery-xml2json';
 
 import Search from '../sonos/Search';
@@ -34,6 +35,8 @@ let SonosService = {
 
 		new Search((sonos) => {
 
+			bb.promisifyAll(sonos);
+
 			if(this._searchInterval) {
 				window.clearInterval(this._searchInterval);
 			}
@@ -43,7 +46,7 @@ let SonosService = {
 			this._deviceSearches[sonos.host] = sonos;
 			this._listeners[sonos.host] = listener;
 
-			listener.listen((err) => {
+			listener.listen(async (err) => {
 				if (err) throw err;
 
 				listener.onServiceEvent(this.onServiceEvent.bind(this));
@@ -190,8 +193,10 @@ let SonosService = {
 		});
 	},
 
-	queryCurrentTrackAndPlaystate (sonos) {
-		sonos.getCurrentState((err, state) => {
+	async queryCurrentTrackAndPlaystate (sonos) {
+
+		try {
+			let state = await sonos.getCurrentStateAsync()
 
 			if(state === 'transitioning') {
 				window.setTimeout(() => {
@@ -200,36 +205,45 @@ let SonosService = {
 				return;
 			}
 
-			if(err) {
-				return;
-			}
-
-			sonos.currentTrack((err, track) => {
-				if(err) {
-					return;
-				}
-
-				Dispatcher.dispatch({
-					actionType: Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE,
-					track: track,
-					host: sonos.host,
-					state: state,
-				});
-			});
-		});
-	},
-
-	queryCurrentTrack (sonos) {
-		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
-
-		sonos.currentTrack((err, track) => {
-			if(err) {
-				return;
-			}
+			let track = await sonos.currentTrackAsync();
 
 			if(track.class === 'object.item') {
-				// skip here because it's radio, and the info is garbage
-				return;
+				let mediaInfo = await sonos.getMediaInfoAsync();
+
+				let trackMeta = sonos.parseDIDL(xml2json(mediaInfo.CurrentURIMetaData, {
+					explicitArray: true
+				}));
+
+				track = Object.assign(track, trackMeta);
+			}
+
+			Dispatcher.dispatch({
+				actionType: Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE,
+				track: track,
+				host: sonos.host,
+				state: state,
+			});
+
+		} catch(e) {
+			console.error(e);
+		}
+
+	},
+
+	async queryCurrentTrack (sonos) {
+		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
+
+		try {
+			let track = await sonos.currentTrackAsync();
+
+			if(track.class === 'object.item') {
+				let mediaInfo = await sonos.getMediaInfoAsync();
+
+				let trackMeta = sonos.parseDIDL(xml2json(mediaInfo.CurrentURIMetaData, {
+					explicitArray: true
+				}));
+
+				track = Object.assign(track, trackMeta);
 			}
 
 			if(this._currentDevice && sonos.host === this._currentDevice.host) {
@@ -239,7 +253,9 @@ let SonosService = {
 					host: sonos.host,
 				});
 			}
-		});
+		} catch (e) {
+			console.error(e);
+		}
 	},
 
 	queryPlayState (sonos) {
@@ -293,7 +309,7 @@ let SonosService = {
 		});
 	},
 
-	queryState (sonos) {
+	async queryState (sonos) {
 		sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
 		this.queryVolumeInfo();

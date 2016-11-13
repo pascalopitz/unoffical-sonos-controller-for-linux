@@ -3,10 +3,15 @@
   "compact": false,
   "comments": false,
   "presets": [
-    "es2015",
-    "react",
-    "stage-0",
-    "stage-1"
+    "node5",
+    "react"
+  ],
+  "plugins": [
+    "syntax-async-functions",
+    ["transform-async-to-module-method", {
+        "module": "bluebird",
+        "method": "coroutine"
+    }]
   ],
   "sourceMaps": true
 }

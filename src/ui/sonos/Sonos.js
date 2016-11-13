@@ -935,6 +935,22 @@ class Sonos {
 	}
 
 	/**
+	* Get Current Media Info
+	* @param	{Function} callback (err, info)
+	*/
+	getMediaInfo (callback) {
+		debug('Sonos.positionInfo(%j)', callback);
+
+		var avTransport = new Services.AVTransport(this.host, this.port);
+
+		avTransport.GetMediaInfo({
+			InstanceID: 0
+		}, function (err, data) {
+			callback(err, data);
+		});
+	}
+
+	/**
 	 * @param {String}
 	 */
 	translateState	(inputState) {
