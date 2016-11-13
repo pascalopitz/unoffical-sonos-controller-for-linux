@@ -171,7 +171,7 @@ class PositionInfo extends React.Component {
 			let now = moment.duration(info.RelTime).add(offset, 's');
 			let end = moment.duration(info.TrackDuration);
 
-			if(info.AbsTime !== 'NOT_IMPLEMENTED') {
+			if(end.asSeconds() > 0) {
 				if(now > end) {
 					now = moment.duration(info.TrackDuration);
 					PlayerActions.refreshPosition()

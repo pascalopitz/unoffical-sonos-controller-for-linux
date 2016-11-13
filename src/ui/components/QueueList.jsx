@@ -33,14 +33,14 @@ class QueueList extends React.Component {
 	componentWillUpdate (nextProps, nextState) {
 		if(nextState.position && nextState.position !== this.state.position) {
 
-            // TODO:
-			// window.setTimeout(() => {
-			// 	let current = global.querySelector('*[data-is-current=true]');
+			// HACK, can this be done cleanly?
+			window.setTimeout(() => {
+				let current = document.querySelector('*[data-is-current=true]');
 
-			// 	if(current) {
-			// 		current.scrollIntoViewIfNeeded();
-			// 	}
-			// }, 1000);
+				if(current) {
+					current.scrollIntoViewIfNeeded();
+				}
+			}, 1000);
 		}
 	}
 
