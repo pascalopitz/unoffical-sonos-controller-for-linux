@@ -183,7 +183,7 @@ class VolumeControls extends React.Component {
 				};
 
 				return (
-					<div>
+					<div key={key}>
 						<h6>{name}</h6>
 
 						<MuteButton muted={muted}
