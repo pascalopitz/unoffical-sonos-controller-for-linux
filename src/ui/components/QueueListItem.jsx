@@ -142,7 +142,7 @@ class QueueListItem extends React.Component {
 				draggable="true"
 				>
 
-				<AlbumArt src={track.albumArtURI} viewport={this.props.viewport} />
+				<AlbumArt src={track.albumArtURI} />
 				<div className="trackinfo">
 					<p className="title">{track.title}</p>
 					<p className="artist">{track.creator}</p>

@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import request from '../sonos/helpers/request';
 
-const MAX_CONNECTIONS = 2;
+const MAX_CONNECTIONS = 5;
 
 let heap = [];
 let pending = {};
@@ -17,35 +17,32 @@ export default {
 		}
 
 		connections++;
-
 		let url = heap.shift();
+		let img = new Image();
+		img.src = url;
 
-		request({
-			method: 'GET',
-			url: url,
-			responseType: 'blob',
-		}, (err, meta, response) => {
+		let tryNext = () => {
 			connections--;
-
-			pending[url].forEach((p) => {
-				if(err !== null) {
-					cache[url] = false;
-					p.reject(response);
-				} else {
-					let reader = new FileReader();
-					reader.onloadend = (data) => {
-						cache[url] = data.currentTarget.result;
-						p.resolve(data.currentTarget.result);
-					};
-					reader.readAsDataURL(response);
-				}
-			});
 			delete pending[url];
-
 			if(heap.length) {
 				this.start();
 			}
+		}
+
+		img.addEventListener('load', () => {
+			pending[url].forEach((p) => {
+				p.resolve(url);
+			});
+			tryNext();
 		});
+
+		img.addEventListener('error', () => {
+			pending[url].forEach((p) => {
+				p.reject(url);
+			});
+			tryNext()
+		});
+
 	},
 
 	add(url) {

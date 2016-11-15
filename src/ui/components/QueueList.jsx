@@ -26,7 +26,7 @@ class QueueList extends React.Component {
 		QueueStore.addChangeListener(this._onChange.bind(this));
 
 		this.setState({
-			boundingRect : ReactDOM.findDOMNode(this).getBoundingClientRect()
+
 		});
 	}
 
@@ -50,7 +50,6 @@ class QueueList extends React.Component {
 		}
 
 		this.setState({
-			boundingRect : ReactDOM.findDOMNode(this).getBoundingClientRect(),
 			tracks: QueueStore.getTracks(),
 			position: QueueStore.getPosition(),
 		});
@@ -64,7 +63,7 @@ class QueueList extends React.Component {
 		let node = e.target;
 
 		this.setState({
-			boundingRect : node.getBoundingClientRect()
+
 		});
 	}
 
@@ -141,8 +140,7 @@ class QueueList extends React.Component {
 									isDragging={isDragging}
 									isDragOver={isDragOver}
 									dragOverMode={this.state.dragOverMode}
-									selectionContext={selectionContext}
-									viewport={this.state.boundingRect} />
+									selectionContext={selectionContext} />
 				);
 			});
 		}

@@ -19,7 +19,7 @@ class CurrentTrack extends React.Component {
 		CurrentTrackStore.addChangeListener(this._onChange.bind(this));
 
 		this.setState({
-			boundingRect : ReactDOM.findDOMNode(this).getBoundingClientRect()
+
 		});
 	}
 
@@ -49,8 +49,7 @@ class CurrentTrack extends React.Component {
 
 		return (
 			<div id="current-track-info">
-				<AlbumArt id="current-track-art" src={currentTrack.albumArtURI}
-												 viewport={this.state.boundingRect} />
+				<AlbumArt id="current-track-art" src={currentTrack.albumArtURI} parentType="#current-track-info" />
 				<div>
 					<h6>Track</h6>
 					<p id="track">{currentTrack.title}</p>

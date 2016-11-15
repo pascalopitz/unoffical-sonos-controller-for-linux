@@ -150,7 +150,7 @@ class BrowserListItem extends React.Component  {
 				onMouseOver={this._onMouseOver.bind(this)}
 				data-position={this.props.position}>
 
-				<AlbumArt viewport={this.props.viewport} src={albumArtURI} />
+				<AlbumArt src={albumArtURI} />
 				<div className={className}>
 					<p className="title" title={item.title}>{item.title}</p>
 					{artistInfo}

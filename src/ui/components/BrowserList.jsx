@@ -31,7 +31,7 @@ class BrowserList extends React.Component {
 		BrowserListStore.addChangeListener(this._onChange.bind(this));
 
 		this.setState({
-			boundingRect : ReactDOM.findDOMNode(this).getBoundingClientRect()
+
 		});
 	}
 
@@ -46,7 +46,6 @@ class BrowserList extends React.Component {
 			history: history,
 			searching: searching,
 			searchMode: searchMode,
-			boundingRect : ReactDOM.findDOMNode(this).getBoundingClientRect(),
 		});
 	}
 
@@ -63,7 +62,7 @@ class BrowserList extends React.Component {
 		let height = node.scrollHeight - node.offsetHeight;
 
 		this.setState({
-			boundingRect : node.getBoundingClientRect()
+
 		});
 
 		// HACK: this happens when we press the back button for some reason
@@ -102,7 +101,7 @@ class BrowserList extends React.Component {
 		let listItemNodes = items.map((item, p) => {
 			let position = p + 1;
 			return (
-				<BrowserListItem key={position} model={item} position={position} viewport={this.state.boundingRect} />
+				<BrowserListItem key={position} model={item} position={position} />
 			);
 		});
 
@@ -146,7 +145,7 @@ class BrowserList extends React.Component {
 			albumState.title = `Complete Album (${items.length} Tracks)`;
 
 			actionNodes = (
-				<BrowserListItem model={albumState} viewport={this.state.boundingRect} />
+				<BrowserListItem model={albumState} />
 			);
 		}
 

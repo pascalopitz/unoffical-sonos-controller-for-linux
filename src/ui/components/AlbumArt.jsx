@@ -6,6 +6,10 @@ import ReactDOM from 'react-dom';
 import SonosService from '../services/SonosService';
 import resourceLoader from '../helpers/resourceLoader';
 
+import { getClosest } from '../helpers/dom-utility';
+
+const MIN_RATIO = 0.5;
+
 class AlbumArt extends React.Component {
 
 	constructor () {
@@ -14,21 +18,6 @@ class AlbumArt extends React.Component {
 			src: null,
 			visible: false,
 		};
-	}
-
-	_isVisible (props) {
-		let vp = props.viewport;
-		let rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-
-		if(rect.bottom > vp.top && rect.top < vp.bottom) {
-			return true;
-		}
-
-		if(rect.bottom > vp.top && rect.bottom < vp.bottom) {
-			return true;
-		}
-
-		return false;
 	}
 
 	_loadImage () {
@@ -55,20 +44,35 @@ class AlbumArt extends React.Component {
 				});
 			}
 		});
+
 		resourceLoader.start();
 	}
 
 	componentDidMount () {
-		this.setState({
-			visible: this._isVisible(this.props)
-		});
+
+		let node = ReactDOM.findDOMNode(this);
+
+		let options = {
+			root: getClosest(node, this.props.parentType || 'ul'),
+			rootMargin: '0px',
+			threshold: MIN_RATIO,
+		}
+
+		let callback = ([ entry ], observer) => {
+			this.setState({
+				visible: entry.intersectionRatio >= MIN_RATIO,
+			});
+		};
+
+		this.observer = new IntersectionObserver(callback, options);
+		this.observer.observe(node);
 	}
 
 	componentDidUpdate () {
 		if(this.state.visible && !this.state.src) {
-			// wait half a second, to prevent random scrolling fast through viewport
+			// wait some time, to prevent random scrolling fast through viewport
 			// stuff to get loaded
-			this.timeout = window.setTimeout(this._loadImage.bind(this), 100)
+			this.timeout = window.setTimeout(this._loadImage.bind(this), 500)
 		}
 
 		if(!this.state.visible && this.timeout) {
@@ -83,16 +87,17 @@ class AlbumArt extends React.Component {
 			this.srcUrl = null;
 		}
 
+		if(this.observer) {
+			this.observer.disconnect();
+			this.observer = null;
+		}
+
 		if(this.timeout) {
 			window.clearTimeout(this.timeout);
 		}
 	}
 
 	componentWillReceiveProps(props) {
-		this.setState({
-			visible: this._isVisible(props)
-		});
-
 		// HACK: prevent image ghosting when pressing back button
 		if(props.src !== this.props.src) {
 			this.setState({
