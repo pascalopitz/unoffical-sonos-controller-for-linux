@@ -104,6 +104,10 @@ class AlbumArt extends React.Component {
 				src: null,
 				failed: null
 			});
+
+			if(this.state.visible) {
+				this.timeout = window.setTimeout(this._loadImage.bind(this), 500)
+			}
 		}
 	}
 
@@ -111,10 +115,16 @@ class AlbumArt extends React.Component {
 
 		let src = this.state.src || 'images/browse_missing_album_art.png';
 
+		let css = {
+			backgroundImage: `url(${src})`,
+			backgroundSize: 'contain',
+		};
+
 		return (
-			<img
+			<div
+			className="img"
 			data-visible={this.state.visible}
-			src={src} />
+			style={css} />
 		);
 	}
 }

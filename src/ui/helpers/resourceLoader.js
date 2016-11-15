@@ -31,6 +31,7 @@ export default {
 
 		img.addEventListener('load', () => {
 			pending[url].forEach((p) => {
+				cache[url] = true;
 				p.resolve(url);
 			});
 			tryNext();
@@ -38,6 +39,7 @@ export default {
 
 		img.addEventListener('error', () => {
 			pending[url].forEach((p) => {
+				cache[url] = false;
 				p.reject(url);
 			});
 			tryNext()
@@ -51,7 +53,7 @@ export default {
 		}
 
 		if(cache[url]) {
-			return Promise.resolve(cache[url]);
+			return Promise.resolve(url);
 		} else if(cache[url] === false) {
 			return Promise.reject(false);
 		}

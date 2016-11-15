@@ -308,7 +308,7 @@ h4 {
 }
 
 #status-container #current-track-info div,
-#status-container #current-track-info img {
+#status-container #current-track-info .img {
 	display: inline-block;
 	vertical-align: top;
 }
@@ -322,9 +322,13 @@ h4 {
 	word-wrap: nowrap;
 }
 
-#status-container #current-track-info img {
-	max-height: 180px;
-	max-width: 180px;
+#status-container #current-track-info .img {
+	height: 180px;
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	-webkit-transition: background-image 0.2s ease-in-out;
+	transition: background-image 0.2s ease-in-out;
 }
 
 #status-container #current-track-info div p {
@@ -755,13 +759,15 @@ body #queue-container li[data-is-current=true] {
 	justify-content: center;
 }
 
-#browser-container li img,
-#queue-container li img {
+#browser-container li .img,
+#queue-container li .img {
 	width: 50px;
 	height: 50px;
 	vertical-align: top;
 	margin-right: 3px;
 	display: inline-block;
+	-webkit-transition: background-image 0.2s ease-in-out;
+	transition: background-image 0.2s ease-in-out;
 }
 
 #browser-container li div,
@@ -956,7 +962,7 @@ body #music-service-management-container {
 
 
 body #music-service-management h3  {
-	font-weight: bold; 
+	font-weight: bold;
 }
 
 body #music-service-management p,
