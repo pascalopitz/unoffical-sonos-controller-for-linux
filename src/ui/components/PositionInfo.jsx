@@ -9,7 +9,7 @@ import PlayerActions from '../actions/PlayerActions';
 import PlayerStore from '../stores/PlayerStore';
 
 function formatTime(d) {
-	return `${_.padLeft(d.minutes(), 2, '0')}:${_.padLeft(d.seconds(), 2, '0')}`;
+	return `${_.padLeft(((d.hours() * 60) + d.minutes()), 2, '0')}:${_.padLeft(d.seconds(), 2, '0')}`;
 }
 
 class PositionInfo extends React.Component {

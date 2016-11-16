@@ -119,7 +119,7 @@ class Listener {
 				method: 'SUBSCRIBE',
 				headers: {
 					SID: sid,
-					Timeout: 'Second-600'
+					Timeout: 'Second-3600'
 				}
 			};
 
@@ -143,7 +143,7 @@ class Listener {
 				headers: {
 					callback: '<http://' + ip.address() + ':' + this.port + '/notify>',
 					NT: 'upnp:event',
-					Timeout: 'Second-600'
+					Timeout: 'Second-3600'
 				}
 			};
 

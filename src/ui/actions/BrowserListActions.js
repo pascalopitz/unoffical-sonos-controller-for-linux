@@ -311,6 +311,7 @@ export default {
 
 					let state = {
 						title: item.title,
+						parent: item,
 						serviceClient: client,
 						items: items,
 					};

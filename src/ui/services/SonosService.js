@@ -558,7 +558,6 @@ let SonosService = {
 			}
 			return _.findWhere(g, { 'coordinator': 'true' }) || g[0];
 		}).value();
-		return zones;
 	},
 
 	rememberMusicService (service, authToken) {
