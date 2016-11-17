@@ -5,6 +5,9 @@ sudo: required
 dist: trusty
 language: node_js
 addons:
+  artifacts:
+    paths:
+      - $(ls $HOME/dist/*deb)
   apt:
     packages:
     - icnsutils
@@ -15,14 +18,3 @@ install:
 - npm install
 script:
 - npm run dist
-deploy:
-  provider: s3
-  access_key_id: AKIAIU46BXVZCSGJ3D5A
-  skip_cleanup: true
-  secret_access_key:
-    secure: FokHn3uvvVj2n3gz94q0PgQfHYdUJoujQPKIFrOQPtoE9P++Uej6lVcEsDWd+4hSc81CJgQpLNm7vsGc0tKmnOee1fJeWtOajTCNUzrA+XtR8HDmroD7AchS8EDy7WR3iQFMWxmsn6VPVmFH7LCqk+ykbmYcZNxwkL+obaT+S6I=
-  bucket: unoffical-sonos-controller-for-linux
-  acl: public_read,bucket_owner_full_control
-  on:
-    banch: master
-    repo: pascalopitz/unoffical-sonos-controller-for-linux
