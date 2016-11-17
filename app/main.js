@@ -1,14 +1,56 @@
-const {app, BrowserWindow} = require('electron')
+const { app, Menu, BrowserWindow } = require('electron')
 const path = require('path')
 const url = require('url')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win
+let win;
 
 function createWindow () {
 	// Create the browser window.
 	win = new BrowserWindow({width: 800, height: 600})
+
+	const menu = Menu.buildFromTemplate([
+		{
+			label: 'View',
+			submenu: [
+				{
+					label: 'Reload',
+					accelerator: 'CmdOrCtrl+R',
+					click (item, focusedWindow) {
+						if (focusedWindow) focusedWindow.reload()
+					}
+				},
+				{
+					label: 'Toggle Developer Tools',
+					accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+					click (item, focusedWindow) {
+						if (focusedWindow) focusedWindow.webContents.toggleDevTools()
+					}
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'resetzoom'
+				},
+				{
+					role: 'zoomin'
+				},
+				{
+					role: 'zoomout'
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'togglefullscreen'
+				}
+			]
+		},
+	]);
+
+	Menu.setApplicationMenu(menu)
 
 	// and load the index.html of the app.
 	win.loadURL(url.format({
@@ -17,11 +59,6 @@ function createWindow () {
 		slashes: true
 	}))
 
-	// Open the DevTools.
-	if(process.env.NODE_ENV === 'development') {
-		win.webContents.openDevTools()
-	}
-
 	// Emitted when the window is closed.
 	win.on('closed', () => {
 		// Dereference the window object, usually you would store windows
@@ -29,6 +66,18 @@ function createWindow () {
 		// when you should delete the corresponding element.
 		win = null
 	})
+}
+
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+	// Someone tried to run a second instance, we should focus our window.
+	if (win) {
+		if (win.isMinimized()) win.restore()
+		win.focus()
+	}
+})
+
+if (shouldQuit) {
+	app.quit()
 }
 
 // This method will be called when Electron has finished
