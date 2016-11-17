@@ -1,6 +1,6 @@
 branches:
-  only:
-  - master
+	only:
+	- master
 sudo: required
 dist: trusty
 language: node_js
