@@ -5,9 +5,6 @@ sudo: required
 dist: trusty
 language: node_js
 addons:
-  artifacts:
-    paths:
-      - $(ls dist/*deb)
   apt:
     packages:
     - icnsutils
@@ -18,3 +15,11 @@ install:
 - npm install
 script:
 - npm run dist
+deploy:
+  provider: releases
+  api_key:
+    secure: Pr4/K3blDB1eS21B9tp9XIYXvhlHaDP5Z6PkK8qwSmPFzBZ+swiMuTqLZDjCF5aBDL5SS7Jh7xK4iNuuPH0BOvRy4m0IxR7l9TRA2XN2Fw5PgEUBg5SqnCqivECCd4MHdL9ZLBtE4Khcf9uD5BEEZbPDp0bwas2sZsWl0wmACsk=
+  file: dist/*.deb
+  on:
+    tags: true
+    repo: pascalopitz/unoffical-sonos-controller-for-linux
