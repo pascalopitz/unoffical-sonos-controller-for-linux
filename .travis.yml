@@ -5,7 +5,7 @@ sudo: required
 dist: trusty
 language: node_js
 addons:
-  artifacts: true
+  artifacts:
     paths:
       - $(ls dist/*deb)
   apt:
