@@ -126,7 +126,6 @@ export default {
 		});
 	},
 
-
 	addQueue (eventTarget) {
 		this._getItem(eventTarget).then((item) => {
 			let sonos = SonosService._currentDevice;
@@ -136,7 +135,6 @@ export default {
 			});
 		});
 	},
-
 
 	replaceQueue (eventTarget) {
 		this._getItem(eventTarget).then((item) => {
@@ -151,6 +149,11 @@ export default {
 			});
 		});
 	},
+
+	removeService (service) {
+		SonosService.removeMusicService(service.service);
+	},
+
 
 	_fetchLineIns () {
 		let promises = [];
@@ -183,6 +186,7 @@ export default {
 	},
 
 	_fetchMusicServices () {
+		const ALLOWED_SERVICES = [12, 160]; // 12 is spotify, 160 soundcloud
 		let sonos = SonosService._currentDevice;
 		let existingIds = SonosService._musicServices.map(s => s.service.Id);
 
@@ -192,6 +196,9 @@ export default {
 				data = _.reject(data, { Auth: "UserId" });
 				data = _.reject(data, (item) => {
 					return _.contains(existingIds, item.Id);
+				});
+				data = _.filter(data, (item) => {
+					return _.contains(ALLOWED_SERVICES, Number(item.Id));
 				});
 
 				resolve(data.map((out) => {

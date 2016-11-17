@@ -579,6 +579,22 @@ let SonosService = {
 		});
 	},
 
+	removeMusicService (service) {
+		let currentServices = JSON.parse(window.localStorage.musicServices);
+
+		currentServices = _.reject(currentServices, (s) => {
+			return s.service.Id == service.Id;
+		});
+
+		window.localStorage.musicServices = JSON.stringify(currentServices);
+		this._musicServices = currentServices;
+
+		Dispatcher.dispatch({
+			actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
+			musicServices: this._musicServices,
+		});
+	},
+
 	restoreMusicServices () {
 		this._musicServices = window.localStorage.musicServices ? JSON.parse(window.localStorage.musicServices) : [];
 

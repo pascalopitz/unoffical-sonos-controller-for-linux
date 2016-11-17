@@ -54,6 +54,12 @@ class BrowserListItem extends React.Component  {
 		this._toggle(e);
 	}
 
+	_removeService (e) {
+		let item = this.props.model;
+		BrowserListActions.removeService(item.service);
+		this._toggle(e);
+	}
+
 	_toggle (e) {
 		this.setState({
 			isExpanded: !this.state.isExpanded
@@ -92,7 +98,7 @@ class BrowserListItem extends React.Component  {
 
 		let artistInfo;
 
-		if(item.class || item.trackMetadata || JSON.parse(String(item.canPlay || 'false'))) {
+		if(item.class || item.action === 'service' || item.trackMetadata || JSON.parse(String(item.canPlay || 'false'))) {
 
 
 			className = className + ' playable ';
@@ -116,6 +122,15 @@ class BrowserListItem extends React.Component  {
 						onMouseOver={this._onMouseOver.bind(this)}>
 
 						<li onClick={this._playNow.bind(this)}>Play Now</li>
+					</ul>
+				)
+			} else if(this.state.isExpanded && item.action === 'service') {
+				inlineMenu = (
+					<ul className="inline-menu"
+						onMouseOut={this._onMouseOut.bind(this)}
+						onMouseOver={this._onMouseOver.bind(this)}>
+
+						<li onClick={this._removeService.bind(this)}>Remove</li>
 					</ul>
 				)
 			} else if(this.state.isExpanded) {

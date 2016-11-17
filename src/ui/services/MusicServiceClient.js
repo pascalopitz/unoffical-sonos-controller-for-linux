@@ -91,6 +91,20 @@ class MusicServiceClient {
 			}
 		}
 
+		if(String(serviceId) === '160') {
+			if (trackId.startsWith('user-tracks:')) {
+				return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+			}
+
+			if (trackId.startsWith('user-fav:')) {
+				return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+			}
+
+			if (trackId.startsWith('browse:stream')) {
+				return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+			}
+		}
+
 		return `${protocol}:${escape(trackId)}${suffix}?sid=${serviceId}&sn=${sn}&flags=8224`;
 	}
 
@@ -113,7 +127,19 @@ class MusicServiceClient {
 				type: 'object.container.playlistContainer',
 				token: '000e206c',
 			},
+			albumList: {
+				type: 'object.container.playlistContainer',
+				token: '0006206c',
+			},
 			playList: {
+				type: 'object.container.playlistContainer',
+				token: '0006206c',
+			},
+			playlist: {
+				type: 'object.container.playlistContainer',
+				token: '0006206c',
+			},
+			artistTrackList: {
 				type: 'object.container.playlistContainer',
 				token: '0006206c',
 			},
@@ -124,10 +150,11 @@ class MusicServiceClient {
 		};
 
 		let resourceString, id, trackData;
-		let servceId = item.serviceClient._serviceDefinition.ServiceIDEncoded;
+		//let servceId = item.serviceClient._serviceDefinition.ServiceIDEncoded;
 
 		if(serviceString) {
-			id = TYPE_MAPPINGS[item.itemType].token + escape(item.id);
+			let prefix = TYPE_MAPPINGS[item.itemType].token;
+			id = prefix + escape(item.id);
 			resourceString = `<desc id="cdudn" nameSpace="urn:schemas-rinconnetworks-com:metadata-1-0/">${serviceString}</desc>`
 		} else {
 			id = '-1';
