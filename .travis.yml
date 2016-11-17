@@ -2,13 +2,13 @@ sudo: required
 dist: trusty
 language: node_js
 addons:
-	apt:
-		packages:
-			- icnsutils
-			- graphicsmagick
+  apt:
+    packages:
+      - icnsutils
+      - graphicsmagick
 node_js:
-	- "6"
+  - "6"
 install:
-	- npm install
+  - npm install
 script:
-	- npm run dist
+  - npm run dist
