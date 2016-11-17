@@ -11,6 +11,8 @@ node_js:
 install:
 - npm install
 script:
+- npm run fonts
+- npm run transpile
 - npm run dist
 deploy:
   overwrite: true
