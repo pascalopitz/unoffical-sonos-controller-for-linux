@@ -5,9 +5,7 @@ sudo: required
 dist: trusty
 language: node_js
 addons:
-  artifacts:
-    paths:
-      - $(ls $HOME/dist/*deb)
+  artifacts: true
   apt:
     packages:
     - icnsutils
