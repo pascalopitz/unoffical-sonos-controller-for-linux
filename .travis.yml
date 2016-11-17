@@ -1,0 +1,14 @@
+sudo: required
+dist: trusty
+language: node_js
+addons:
+	apt:
+		packages:
+			- icnsutils
+			- graphicsmagick
+node_js:
+	- "6"
+install:
+	- npm install
+script:
+	- npm run dist
