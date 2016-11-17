@@ -6,6 +6,8 @@ dist: trusty
 language: node_js
 addons:
   artifacts: true
+    paths:
+      - $(ls dist/*deb)
   apt:
     packages:
     - icnsutils
