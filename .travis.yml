@@ -14,7 +14,7 @@ script:
 - npm run fonts
 - npm run transpile
 - npm run dist
-- cp dist/*.deb dist/sonos-controller-unofficial-amd64.deb
+- mv dist/*.deb dist/sonos-controller-unofficial-amd64.deb
 deploy:
   overwrite: true
   provider: releases
