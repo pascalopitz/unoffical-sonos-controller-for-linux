@@ -1,5 +1,3 @@
-"use strict";
-
 import _ from 'lodash';
 import request from '../sonos/helpers/request';
 

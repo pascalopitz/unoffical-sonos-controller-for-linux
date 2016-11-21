@@ -1,5 +1,3 @@
-"use strict";
-
 import _ from 'lodash';
 
 import React from 'react';
@@ -139,10 +137,19 @@ class BrowserList extends React.Component {
 			headlineNodes = <h4>{title}</h4>;
 		}
 
-		if(this.state.currentState.class === 'object.container.album.musicAlbum') {
+		if(
+			this.state.currentState.class === 'object.container.album.musicAlbum'
+			|| this.state.currentState.class === 'object.container.playlistContainer'
+			|| JSON.parse(String(_.get(this, 'state.currentState.parent.canPlay') || 'false'))
+		) {
 			let albumState = _.cloneDeep(this.state.currentState);
 			albumState.creator = null;
-			albumState.title = `Complete Album (${items.length} Tracks)`;
+			albumState.title = `${items.length} Tracks`;
+
+			if(_.get(albumState, 'parent.serviceClient')) {
+				albumState.serviceClient = this.state.currentState.serviceClient;
+				albumState.parent.serviceClient = this.state.currentState.parent.serviceClient;
+			}
 
 			actionNodes = (
 				<BrowserListItem model={albumState} />

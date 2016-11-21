@@ -1,4 +1,4 @@
-"use strict";
+import _ from 'lodash';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -31,25 +31,25 @@ class BrowserListItem extends React.Component  {
 	}
 
 	_playNow (e) {
-		let item = this.props.model;
+		let item = _.get(this, 'props.model.parent') || this.props.model;
 		BrowserListActions.playNow(item);
 		this._toggle(e);
 	}
 
 	_playNext (e) {
-		let item = this.props.model;
+		let item =  _.get(this, 'props.model.parent') || this.props.model;
 		BrowserListActions.playNext(item);
 		this._toggle(e);
 	}
 
 	_addQueue (e) {
-		let item = this.props.model;
+		let item =  _.get(this, 'props.model.parent') || this.props.model;
 		BrowserListActions.addQueue(item);
 		this._toggle(e);
 	}
 
 	_replaceQueue (e) {
-		let item = this.props.model;
+		let item =  _.get(this, 'props.model.parent') || this.props.model;
 		BrowserListActions.replaceQueue(item);
 		this._toggle(e);
 	}
@@ -98,7 +98,7 @@ class BrowserListItem extends React.Component  {
 
 		let artistInfo;
 
-		if(item.class || item.action === 'service' || item.trackMetadata || JSON.parse(String(item.canPlay || 'false'))) {
+		if(item.class || item.action === 'service' || item.trackMetadata || JSON.parse(String(item.canPlay || 'false')) || JSON.parse(String(_.get(item, 'parent.canPlay') || 'false'))) {
 
 
 			className = className + ' playable ';

@@ -1,5 +1,3 @@
-"use strict";
-
 import _ from 'lodash';
 
 import Dispatcher from '../dispatcher/AppDispatcher';
