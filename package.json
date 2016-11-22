@@ -28,8 +28,8 @@
   ],
   "build": {
     "appId": "com.electron.unoffcial.sonos.controller",
-    "app-category-type": "Audio",
     "linux": {
+      "category": "Audio",
       "target": "deb",
       "executableName": "sonos-controller-unofficial.deb"
     }
