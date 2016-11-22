@@ -51,6 +51,29 @@ function createWindow () {
 				}
 			]
 		},
+		{
+			role: 'help',
+			submenu: [
+				{
+					label: 'Project page',
+					click () {
+						electron.shell.openExternal('https://github.com/pascalopitz/unoffical-sonos-controller-for-linux')
+					}
+				},
+				{
+					label: 'Report an Issue',
+					click () {
+						electron.shell.openExternal('https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/issues')
+					}
+				},
+				{
+					label: 'Latest Releases',
+					click () {
+						electron.shell.openExternal('https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/releases')
+					}
+				},
+			]
+		}
 	]);
 
 	Menu.setApplicationMenu(menu);
