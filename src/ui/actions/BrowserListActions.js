@@ -318,7 +318,7 @@ export default {
 						title: item.title,
 						parent: item,
 						serviceClient: client,
-						items: items,
+						items: _.without(items, undefined),
 					};
 
 					Dispatcher.dispatch({

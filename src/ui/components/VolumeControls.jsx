@@ -131,11 +131,6 @@ class VolumeControls extends React.Component {
 		}
 
 		let volume = Math.floor(_.sum(_.map(this.state.players, (p) => Number(p.volume))) / keys.length);
-
-		console.trace({
-			volume
-		});
-
 		return volume;
 	}
 
