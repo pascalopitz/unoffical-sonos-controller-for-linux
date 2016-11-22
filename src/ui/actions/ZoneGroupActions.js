@@ -9,7 +9,7 @@ export default {
 
 	selectGroup(group) {
 
-		let zone = _(group).findWhere({
+		let zone = _(group).find({
 			coordinator: 'true'
 		});
 

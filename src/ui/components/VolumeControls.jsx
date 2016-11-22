@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import React from 'react';
 
 import MuteButton from './MuteButton';
@@ -119,7 +120,7 @@ class VolumeControls extends React.Component {
 	}
 
 	_calculateGroupMuted () {
-		return _.where(this.state.players, { muted: false }).length === 0;
+		return _.filter(this.state.players, { muted: false }).length === 0;
 	}
 
 	_calculateGroupVolume () {
@@ -129,7 +130,13 @@ class VolumeControls extends React.Component {
 			return 0;
 		}
 
-		return Math.floor(_.sum(_.pluck(this.state.players, 'volume')) / keys.length);
+		let volume = Math.floor(_.sum(_.map(this.state.players, (p) => Number(p.volume))) / keys.length);
+
+		console.trace({
+			volume
+		});
+
+		return volume;
 	}
 
 	render () {

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import withinEnvelope from './helpers/withinEnvelope';
 import htmlEntities from './helpers/htmlEntities';
 import xml2js from './helpers/xml2js';
@@ -9,8 +11,6 @@ import Services from './helpers/Services';
 const SONOS_PLAYER_DEFAULT_PORT = 1400;
 
 window.Services = Services;
-
-import _ from 'lodash';
 
 /**
  * Constants
@@ -982,7 +982,7 @@ class Sonos {
 
 			data.AvailableServiceTypeList.split(',').forEach((t) => {
 				let serviceId = Math.floor(Math.abs((t - 7) / 256)) || Number(t);
-				let match = _.findWhere(serviceDescriptors, { Id: String(serviceId) });
+				let match = _.find(serviceDescriptors, { Id: String(serviceId) });
 
 				if(match) {
 					match.ServiceIDEncoded = Number(t);

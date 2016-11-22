@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import bb from 'bluebird';
 import xml2json from 'jquery-xml2json';
 
@@ -100,19 +101,19 @@ let SonosService = {
 
 			// find out whether current group still exists
 			if(currentZone) {
-				currentGroupMatch = _(info.zones).findWhere({
+				currentGroupMatch = _(info.zones).find({
 					group: currentZone.group
 				});
 			}
 
 			if(!currentGroupMatch || !currentZone) {
 
-				let zone = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
+				let zone = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).find({
 					coordinator: "true"
 				});
 
 				if(window.localStorage.zone) {
-					let match = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).findWhere({
+					let match = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).find({
 						uuid: window.localStorage.zone,
 						coordinator: "true"
 					});
@@ -405,7 +406,7 @@ let SonosService = {
 						explicitArray: false
 					});
 
-					let subscription = _(this._persistentSubscriptions).findWhere({sid: sid});
+					let subscription = _(this._persistentSubscriptions).find({sid: sid});
 
 					if(subscription) {
 						Dispatcher.dispatch({
@@ -421,7 +422,7 @@ let SonosService = {
 			case'/MediaRenderer/AVTransport/Event':
 				{
 					let lastChange = xml2json(data.LastChange);
-					let subscription = _(this._persistentSubscriptions).findWhere({sid: sid});
+					let subscription = _(this._persistentSubscriptions).find({sid: sid});
 
 					if(subscription) {
 						let transportState = subscription.sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val);
@@ -556,7 +557,7 @@ let SonosService = {
 			if(g.length === 2) {
 				g[0].name = g[0].name + ' (L + R)';
 			}
-			return _.findWhere(g, { 'coordinator': 'true' }) || g[0];
+			return _.find(g, { 'coordinator': 'true' }) || g[0];
 		}).value();
 	},
 

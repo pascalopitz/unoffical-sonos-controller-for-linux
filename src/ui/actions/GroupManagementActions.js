@@ -41,7 +41,7 @@ export default {
 
 	save () {
 		let current = GroupManagementStore.getCurrent();
-		let coordinator = _.findWhere(current, { coordinator: "true" });
+		let coordinator = _.find(current, { coordinator: "true" });
 
 		let players = GroupManagementStore.getPlayers();
 
@@ -49,7 +49,7 @@ export default {
 		let added = [];
 
 		players.forEach((p) => {
-			let wasPresent = !!_.findWhere(current, { uuid: p.uuid });
+			let wasPresent = !!_.find(current, { uuid: p.uuid });
 
 			if(p.selected && !wasPresent) {
 				added.push(p);
@@ -60,7 +60,7 @@ export default {
 			}
 		});
 
-		let coordinatorRemoved = !!_.findWhere(removed, { uuid: coordinator.uuid });
+		let coordinatorRemoved = !!_.find(removed, { uuid: coordinator.uuid });
 		let lastModified;
 
 		let promise = Promise.resolve();

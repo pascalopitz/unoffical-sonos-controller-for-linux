@@ -4,10 +4,10 @@
   font-weight: 400;
   src: url(../fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
   src: local('Material Icons'),
-       local('MaterialIcons-Regular'),
-       url(../fonts/MaterialIcons-Regular.woff2) format('woff2'),
-       url(../fonts/MaterialIcons-Regular.woff) format('woff'),
-       url(../fonts/MaterialIcons-Regular.ttf) format('truetype');
+	   local('MaterialIcons-Regular'),
+	   url(../fonts/MaterialIcons-Regular.woff2) format('woff2'),
+	   url(../fonts/MaterialIcons-Regular.woff) format('woff'),
+	   url(../fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
 
 .material-icons {
@@ -274,7 +274,7 @@ h4 {
 }
 
 #music-sources-container h4.with-history .home-button .material-icons {
-    font-size: 25px;
+	font-size: 25px;
 }
 
 #music-sources-container h4.with-history > span {
@@ -438,18 +438,40 @@ h4 {
 #top-control .volume-bar {
 	width: 180px;
 	height: 21px;
+}
+
+input[type=range] {
+	-webkit-appearance: none;
+	width: 100%;
+	height: 100%;
+	background: transparent;
+	color: transparent;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+	height: 21px;
 	border-radius: 15px;
 	border-top: 1px solid #303030;
 	border-bottom: 1px solid #707070;
 	position: relative;
-	background-image: -moz-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
 	background-image: -webkit-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
-
+	background-color: transparent;
 }
-#top-control .volume-bar img {
+
+
+input[type=range]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	border: none;
+	height: 23px;
+	width: 21px;
+	border-radius: 50%;
+	background: url(../images/popover_vol_scrubber_normal.png) no-repeat;
+	margin-top: -2px;
 	cursor: pointer;
-	position: absolute;
-	margin: -1px 1px;
+}
+
+input[type=range]:focus {
+	outline: none;
 }
 
 #player-volumes {
@@ -545,15 +567,15 @@ h4 {
 }
 
 #position-info .content i {
-    font-size: 18px;
+	font-size: 18px;
 }
 
 #position-info .content i.active {
-    color: gold;
+	color: gold;
 }
 
 #position-info .content i.crossfade {
-    transform: rotate(90deg);
+	transform: rotate(90deg);
 }
 
 #position-info .content #countup {
@@ -588,7 +610,7 @@ h4 {
 
 #position-info .content #position-info-control,
 #position-info .content #position-info-control div {
-    margin: 0;
+	margin: 0;
 }
 
 
@@ -612,26 +634,26 @@ h4 {
 	border-left: 1px solid #2C2C2C;
 	border-bottom: 1px solid #2B2B2B;
 	position: relative;
-    overflow: hidden;
+	overflow: hidden;
 }
 
 #zone-wrapper .zone-group .play-state {
-    border-top: 1px solid #434343;
-    padding: 5px;
-    overflow: hidden;
+	border-top: 1px solid #434343;
+	padding: 5px;
+	overflow: hidden;
 	width: 100%;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-    height: 20px;
+	height: 20px;
 }
 
 #zone-wrapper .zone-group .play-state * {
-    font-size: 12px;
-    vertical-align: top;
+	font-size: 12px;
+	vertical-align: top;
 }
 
 #zone-wrapper .zone-group .play-state i {
-    font-size: 14px;
+	font-size: 14px;
 }
 
 #zone-wrapper .zone-group.selected {
@@ -659,10 +681,10 @@ h4 {
 }
 
 #zone-wrapper .zone-group ul {
-    min-height: 35px;
-    list-style: none;
-    margin: 0;
-    padding: 10px 10px 10px 10px;
+	min-height: 35px;
+	list-style: none;
+	margin: 0;
+	padding: 10px 10px 10px 10px;
 }
 
 #zone-wrapper .zone-group ul li {

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import React from 'react';
 
 import ZoneGroupActions from '../actions/ZoneGroupActions';
@@ -16,7 +17,7 @@ class ZoneGroup extends React.Component {
 			return null;
 		}
 
-		let coordinator = _(items).findWhere({
+		let coordinator = _(items).find({
 			coordinator: "true"
 		});
 

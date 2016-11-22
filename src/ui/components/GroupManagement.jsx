@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import React from 'react';
 
 import GroupManagementStore from '../stores/GroupManagementStore';
@@ -42,7 +43,7 @@ class GroupManagement extends React.Component {
 			return null;
 		}
 
-		let zoneGroupNodes = this.state.players.map((item) => {
+		let zoneGroupNodes = this.state.players.map((item, idx) => {
 
 			let checkboxSymbol = item.selected ? 'check_box' : 'check_box_outline_blank';
 
@@ -55,7 +56,7 @@ class GroupManagement extends React.Component {
 			};
 
 			return (
-				<li>
+				<li key={idx}>
 					<span>{item.name}</span>
 					<i className="material-icons checkbox"
 						onClick={_toggleSelection.bind(this)}>{checkboxSymbol}</i>

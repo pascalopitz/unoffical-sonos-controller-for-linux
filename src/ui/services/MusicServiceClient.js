@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import moment from 'moment';
 
 import requestHelper from 'request';
@@ -160,7 +161,7 @@ class MusicServiceClient {
 			id = '-1';
 			let duration = moment.duration(item.trackMetadata.duration || 0);
 			resourceString = `<res protocolInfo="${uri.match(/^[\w\-]+:/)[0]}*${item.mimeType}*"
-				duration="${_.padLeft(d.hours(), 2, '0')}:${_.padLeft(d.minutes(), 2, '0')}:${_.padLeft(d.seconds(), 2, '0')}">${_.escape(uri)}</res>`;
+				duration="${_.padStart(d.hours(), 2, '0')}:${_.padStart(d.minutes(), 2, '0')}:${_.padStart(d.seconds(), 2, '0')}">${_.escape(uri)}</res>`;
 		}
 
 		if(item.trackMetadata) {

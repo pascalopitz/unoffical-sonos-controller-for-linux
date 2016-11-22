@@ -19,7 +19,7 @@ export default {
 		let client = item.serviceClient;
 		let serviceType = client._serviceDefinition.ServiceIDEncoded
 
-		let settingsMatch = _.findWhere(SonosService._accountInfo, { Type: String(serviceType) } );
+		let settingsMatch = _.find(SonosService._accountInfo, { Type: String(serviceType) } );
 
 		if(settingsMatch) {
 			let uri = client.getTrackURI(item.id, client._serviceDefinition.Id, settingsMatch.SerialNum);

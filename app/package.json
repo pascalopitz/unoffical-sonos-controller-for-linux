@@ -10,12 +10,11 @@
     "deep-equal": "^1.0.1",
     "flux": "^3.1.0",
     "jquery-xml2json": "git+https://github.com/pascalopitz/jQuery-xml2json.git",
-    "lodash": "^3.10.1",
+    "lodash": "^4.17.2",
     "moment": "^2.15.2",
     "omit-keys": "^0.1.0",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
-    "react-draggable2": "^0.7.0-alpha1",
     "request": "^2.79.0",
     "uuid": "^3.0.0"
   }

@@ -49,5 +49,6 @@
     "eslint": "^3.10.2",
     "material-design-icons": "^2.2.3",
     "watch": "^1.0.1"
-  }
+  },
+  "dependencies": {}
 }
