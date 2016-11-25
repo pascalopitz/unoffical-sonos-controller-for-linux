@@ -148,15 +148,17 @@ class BrowserListItem extends React.Component  {
 			}
 		}
 
-		if(item.creator) {
+		let creator = item.creator || item.artist || _.get(item, 'trackMetadata.artist');
+		let albumArtURI = item.albumArtURI || _.get(item, 'trackMetadata.albumArtURI');
+
+		if(creator) {
 			className += ' with-creator';
 
 			artistInfo = (
-				<p className="creator" title={item.creator}>{item.creator}</p>
+				<p className="creator" title={creator}>{creator}</p>
 			);
 		}
 
-		let albumArtURI = (item.trackMetadata && item.trackMetadata.albumArtURI) ? item.trackMetadata.albumArtURI : item.albumArtURI;
 
 		return (
 			<li onClick={this._onClick.bind(this)}
