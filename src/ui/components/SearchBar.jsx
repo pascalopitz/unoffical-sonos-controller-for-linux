@@ -7,7 +7,7 @@ let term;
 
 let func = _.debounce(() => {
 	SearchBarActions.search(term);
-}, 100);
+}, 200);
 
 class SearchBar extends React.Component {
 

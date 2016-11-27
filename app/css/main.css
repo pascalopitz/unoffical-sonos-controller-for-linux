@@ -809,6 +809,7 @@ body #queue-container li[data-is-current=true] {
 	text-overflow: ellipsis;
 }
 
+#browser-container li div p.creator,
 #browser-container li div p.artist,
 #queue-container li div p.artist {
 	color: #aaa;

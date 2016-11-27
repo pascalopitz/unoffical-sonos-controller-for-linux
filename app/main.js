@@ -3,6 +3,9 @@ const { app, Menu, BrowserWindow } = electron;
 const path = require('path')
 const url = require('url')
 
+const wakeEvent = require('wake-event');
+
+
 let win;
 
 function createWindow () {
@@ -88,7 +91,7 @@ function createWindow () {
 		win = null;
 	});
 
-	electron.powerMonitor.on('resume', () => {
+	wakeEvent(() => {
 		if (win) {
 			win.reload();
 		}

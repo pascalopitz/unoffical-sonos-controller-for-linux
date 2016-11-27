@@ -269,6 +269,41 @@ class MusicServiceClient {
 		});
 	}
 
+	getExtendedMetadata(id) {
+
+		let headers = ['<ns:credentials>',
+			 '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
+			 '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
+			 '<ns:loginToken>',
+				'<ns:token>', this.authToken ,'</ns:token>',
+				'<ns:key>', this.key ,'</ns:key>',
+				'<ns:householdId>', SonosService.householdId, '</ns:householdId>',
+		 	'</ns:loginToken>',
+		  '</ns:credentials>'].join('');
+
+		let body = ['<ns:getExtendedMetadata>',
+		 '<ns:id>', id, '</ns:id>',
+	  '</ns:getExtendedMetadata>'].join('');
+
+	  return new Promise((resolve, reject) => {
+		this._doRequest(this._serviceDefinition.SecureUri, 'getExtendedMetadata', body, headers)
+			.then((res) => {
+				let resp = xml2json(stripNamespaces(res));
+				let obj = resp['Envelope']['Body']['getExtendedMetadataResponse']['getExtendedMetadataResult'];
+				resolve(obj);
+			})
+			.catch((authToken) => {
+				if(authToken) {
+					this.getExtendedMetadata(id).then((obj) => {
+						resolve(obj);
+					});
+				} else {
+					reject();
+				}
+			});
+		});
+	}
+
 	search(id, term, index=0, count=200) {
 
 		let headers = ['<ns:credentials>',

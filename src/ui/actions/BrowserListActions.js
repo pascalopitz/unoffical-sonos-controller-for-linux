@@ -32,7 +32,6 @@ export default {
 			});
 		}
 
-
 		return client.getMediaURI(item.id)
 				.then((uri) => {
 					return {
