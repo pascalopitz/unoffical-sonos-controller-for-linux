@@ -3,7 +3,7 @@
 #Unofficial Sonos Controller for Linux
 
 First I was tinkering with chrome apps and sonos, but chrome apps are a dying platform, so I've moved over to Electron.
-The project is written in ES6 and utilizes react and flux to manage the UI
+The project is written in ES6 and utilizes Preact and flux to manage the UI
 
 ![](http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/screenshots/screenshot_1.png?raw=true)
 
