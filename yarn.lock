@@ -1025,14 +1025,14 @@ electron-macos-sign@1.0.1:
     plist "^2.0.1"
     tempfile "^1.1.1"
 
-electron-prebuilt@^1.3.9:
+electron-prebuilt@^1.4.10:
   version "1.4.10"
   resolved "https://registry.yarnpkg.com/electron-prebuilt/-/electron-prebuilt-1.4.10.tgz#1e6df4be8103a7f7de3db1f4e870bfcecd8fbcf8"
   dependencies:
     electron-download "^3.0.1"
     extract-zip "^1.0.3"
 
-electron@^1.4.7:
+electron@^1.4.10:
   version "1.4.10"
   resolved "https://registry.yarnpkg.com/electron/-/electron-1.4.10.tgz#11492d82eb1d92fa36006c2376404d13a790f393"
   dependencies:

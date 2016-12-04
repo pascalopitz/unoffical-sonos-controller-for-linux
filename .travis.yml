@@ -8,6 +8,7 @@ addons:
     - graphicsmagick
 node_js:
 - '6'
+cache: yarn
 install:
 - npm install -g yarn
 - yarn
