@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import React from 'react';
+import { h, Component } from 'preact';
 
 const WIDTH = 180;
 const ADJUST = 21;
 
-class VolumeSlider extends React.Component {
+class VolumeSlider extends Component {
 
 	constructor () {
 		super();
@@ -48,9 +48,9 @@ class VolumeSlider extends React.Component {
 		return (
 			<div className="volume-bar">
 				<input type="range" min="0" max="100" value={Number(volume)}
-					onMouseDown={this._onStart.bind(this)}
-					onMouseUp={this._onStop.bind(this)}
-					onChange={_.throttle(this._onChange.bind(this), 100)}
+					onmousedown={this._onStart.bind(this)}
+					onmouseup={this._onStop.bind(this)}
+					oninput={_.throttle(this._onChange.bind(this), 100)}
 				 />
 			</div>
 		);

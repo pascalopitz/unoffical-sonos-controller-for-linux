@@ -1,12 +1,11 @@
 import _ from 'lodash';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { h, Component } from 'preact';
 
 import AlbumArt from './AlbumArt';
 import BrowserListActions from '../actions/BrowserListActions';
 
-class BrowserListItem extends React.Component  {
+class BrowserListItem extends Component  {
 
 	constructor () {
 		super();

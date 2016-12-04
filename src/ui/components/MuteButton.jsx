@@ -1,6 +1,6 @@
-import React from 'react';
+import { h, Component } from 'preact';
 
-class MuteButton extends React.Component {
+class MuteButton extends Component {
 
 	render () {
 		let src = this.props.muted ? 'svg/mute_on.svg' : 'svg/mute_off.svg'; 

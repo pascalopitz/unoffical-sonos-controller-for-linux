@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { h, Component } from 'preact';
 
 import SonosService from '../services/SonosService';
 import resourceLoader from '../helpers/resourceLoader';
@@ -8,7 +7,7 @@ import { getClosest } from '../helpers/dom-utility';
 
 const MIN_RATIO = 0.5;
 
-class AlbumArt extends React.Component {
+class AlbumArt extends Component {
 
 	constructor () {
 		super();
@@ -47,8 +46,7 @@ class AlbumArt extends React.Component {
 	}
 
 	componentDidMount () {
-
-		let node = ReactDOM.findDOMNode(this);
+		let node = this.base;
 
 		let options = {
 			root: getClosest(node, this.props.parentType || 'ul'),

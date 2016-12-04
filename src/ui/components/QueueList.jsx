@@ -1,6 +1,5 @@
 import _ from "lodash";
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { h, Component } from 'preact';
 
 import QueueActions from '../actions/QueueActions';
 import QueueStore from '../stores/QueueStore';
@@ -9,7 +8,7 @@ import QueueListItem from './QueueListItem';
 
 import { getClosest } from '../helpers/dom-utility';
 
-class QueueList extends React.Component {
+class QueueList extends Component {
 
 	constructor (props) {
 		super(props);

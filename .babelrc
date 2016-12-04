@@ -8,6 +8,7 @@
   ],
   "plugins": [
     "syntax-async-functions",
+    ["transform-react-jsx", { "pragma":"h" }],
     ["transform-async-to-module-method", {
         "module": "bluebird",
         "method": "coroutine"

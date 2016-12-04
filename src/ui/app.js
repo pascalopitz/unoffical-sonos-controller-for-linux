@@ -1,8 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { h, render } from 'preact';
 import Application from './components/Application';
 
-ReactDOM.render(
-	React.createElement(Application, null),
+render(
+	h(Application, null),
 	document.getElementById('root')
 );

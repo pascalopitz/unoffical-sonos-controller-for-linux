@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import { h, Component } from 'preact';
 
 import SearchBarActions from '../actions/SearchBarActions';
 
@@ -9,7 +9,7 @@ let func = _.debounce(() => {
 	SearchBarActions.search(term);
 }, 200);
 
-class SearchBar extends React.Component {
+class SearchBar extends Component {
 
 	constructor() {
 		super();

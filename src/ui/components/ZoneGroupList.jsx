@@ -1,9 +1,9 @@
-import React from 'react';
+import { h, Component } from 'preact';
 
 import ZoneGroup from './ZoneGroup';
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
-class ZoneGroupList extends React.Component {
+class ZoneGroupList extends Component {
 
 	constructor(props) {
 		super(props);

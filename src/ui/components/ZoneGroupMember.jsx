@@ -1,6 +1,6 @@
-import React from 'react';
+import { h, Component } from 'preact';
 
-class ZoneGroupMember extends React.Component {
+class ZoneGroupMember extends Component {
 	render () {
 		return (
 			<li>

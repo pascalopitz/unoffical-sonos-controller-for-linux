@@ -1,11 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { h, Component } from 'preact';
 
 import CurrentTrackStore from '../stores/CurrentTrackStore';
 
 import AlbumArt from './AlbumArt';
 
-class CurrentTrack extends React.Component {
+class CurrentTrack extends Component {
 
 	constructor(props) {
 		super(props);

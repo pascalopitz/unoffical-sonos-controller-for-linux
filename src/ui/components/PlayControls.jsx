@@ -1,9 +1,9 @@
-import React from 'react';
+import { h, Component } from 'preact';
 
 import PlayerActions from '../actions/PlayerActions';
 import PlayerStore from '../stores/PlayerStore';
 
-class PlayControls extends React.Component {
+class PlayControls extends Component {
 
 	constructor(props) {
 		super(props);

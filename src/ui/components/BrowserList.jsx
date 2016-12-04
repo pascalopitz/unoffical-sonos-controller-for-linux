@@ -1,14 +1,13 @@
 import _ from 'lodash';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { h, Component } from 'preact';
 
 import BrowserListItem from './BrowserListItem';
 
 import BrowserListActions from '../actions/BrowserListActions';
 import BrowserListStore from '../stores/BrowserListStore';
 
-class BrowserList extends React.Component {
+class BrowserList extends Component {
 
 	constructor (props) {
 		super(props);

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import React from 'react';
+import { h, Component } from 'preact';
 
 import MuteButton from './MuteButton';
 import VolumeSlider from './VolumeSlider';
@@ -8,7 +8,7 @@ import VolumeSlider from './VolumeSlider';
 import VolumeControlActions from '../actions/VolumeControlActions';
 import VolumeControlStore from '../stores/VolumeControlStore';
 
-class VolumeControls extends React.Component {
+class VolumeControls extends Component {
 
 	constructor (props) {
 		super(props);

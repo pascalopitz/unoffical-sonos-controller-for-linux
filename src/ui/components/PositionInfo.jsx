@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import moment from 'moment';
-import React from 'react';
+import { h, Component } from 'preact';
 
 import PlayerActions from '../actions/PlayerActions';
 import PlayerStore from '../stores/PlayerStore';
@@ -10,7 +10,7 @@ function formatTime(d) {
 	return `${_.padStart(((d.hours() * 60) + d.minutes()), 2, '0')}:${_.padStart(d.seconds(), 2, '0')}`;
 }
 
-class PositionInfo extends React.Component {
+class PositionInfo extends Component {
 
 	constructor () {
 		super();

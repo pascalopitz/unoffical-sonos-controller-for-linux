@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import React from 'react';
+import { h, Component } from 'preact';
 
 import GroupManagementStore from '../stores/GroupManagementStore';
 import GroupManagementActions from '../actions/GroupManagementActions';
 
-class GroupManagement extends React.Component {
+class GroupManagement extends Component {
 
 	constructor(props) {
 		super(props);

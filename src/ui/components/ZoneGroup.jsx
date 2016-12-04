@@ -1,12 +1,12 @@
 import _ from 'lodash';
 
-import React from 'react';
+import { h, Component } from 'preact';
 
 import ZoneGroupActions from '../actions/ZoneGroupActions';
 
 import ZoneGroupMember from './ZoneGroupMember';
 
-class ZoneGroup extends React.Component {
+class ZoneGroup extends Component {
 
 	render () {
 		let items = this.props.group;

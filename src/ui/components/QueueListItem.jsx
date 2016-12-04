@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import React from 'react';
+import { h, Component } from 'preact';
 import AlbumArt from './AlbumArt';
 
 import QueueActions from '../actions/QueueActions';
 
-class QueueListItem extends React.Component {
+class QueueListItem extends Component {
 
 	constructor () {
 		super();

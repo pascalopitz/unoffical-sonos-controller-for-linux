@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import React from 'react';
+import { h, Component } from 'preact';
 
 import MusicServiceManagementStore from '../stores/MusicServiceManagementStore';
 import MusicServiceManagementActions from '../actions/MusicServiceManagementActions';
 
-class MusicServiceManagement extends React.Component {
+class MusicServiceManagement extends Component {
 
     constructor (props) {
 		super(props);

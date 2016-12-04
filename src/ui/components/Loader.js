@@ -1,7 +1,7 @@
-import React from 'react';
+import { h, Component } from 'preact';
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
-class Loader extends React.Component {
+class Loader extends Component {
 
 	constructor(props) {
 		super(props);

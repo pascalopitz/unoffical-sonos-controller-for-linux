@@ -1,4 +1,4 @@
-import React from 'react';
+import { h, Component } from 'preact';
 
 import SonosService from '../services/SonosService';
 
@@ -14,9 +14,7 @@ import MusicServiceManagement from './MusicServiceManagement';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
 
-let history = [];
-
-class Application extends React.Component {
+class Application extends Component {
 
 	componentDidMount () {
 		SonosService.mount();
