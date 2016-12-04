@@ -59,18 +59,59 @@ export default {
 			start: state.items.length
 		};
 
-		sonos.getMusicLibrary(state.id || state.searchType, params, (err, result) => {
-			if(err || !result || !result.items) {
-				return;
-			}
+		let client = state.serviceClient;
 
-			state.items = state.items.concat(result.items);
+		if(client && state.total > state.items.length) {
+			client.getMetadata(state.parent.id, state.items.length, state.items.length + 100)
+				.then((res) => {
+					let items = [];
 
-			Dispatcher.dispatch({
-				actionType: Constants.BROWSER_SCROLL_RESULT,
-				state: state,
+					if(res.mediaMetadata) {
+						if(!_.isArray(res.mediaMetadata)) {
+							res.mediaMetadata = [res.mediaMetadata];
+						}
+
+						res.mediaMetadata.forEach((i) => {
+							i.serviceClient = client;
+							items[i.$$position] =  i;
+						})
+					}
+
+					if(res.mediaCollection) {
+						if(!_.isArray(res.mediaCollection)) {
+							res.mediaCollection = [res.mediaCollection];
+						}
+
+						res.mediaCollection.forEach((i) => {
+							i.serviceClient = client;
+							items[i.$$position] =  i;
+						})
+					}
+
+					state.items = state.items.concat(items);
+					state.total = res.total || state.total;
+
+					Dispatcher.dispatch({
+						actionType: Constants.BROWSER_SCROLL_RESULT,
+						state: state,
+					});
+				})
+
+			return;
+		} else {
+			sonos.getMusicLibrary(state.id || state.searchType, params, (err, result) => {
+				if(err || !result || !result.items) {
+					return;
+				}
+
+				state.items = state.items.concat(result.items);
+
+				Dispatcher.dispatch({
+					actionType: Constants.BROWSER_SCROLL_RESULT,
+					state: state,
+				});
 			});
-		});
+		}
 	},
 
 	playNow (eventTarget) {
@@ -317,6 +358,7 @@ export default {
 						title: item.title,
 						parent: item,
 						serviceClient: client,
+						total: res.total,
 						items: _.without(items, undefined),
 					};
 

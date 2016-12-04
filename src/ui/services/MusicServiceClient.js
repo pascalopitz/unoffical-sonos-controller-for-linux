@@ -93,6 +93,10 @@ class MusicServiceClient {
 		}
 
 		if(String(serviceId) === '160') {
+			if (trackId.startsWith('playlist:')) {
+				return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+			}
+
 			if (trackId.startsWith('user-tracks:')) {
 				return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
 			}
