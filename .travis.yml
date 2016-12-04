@@ -9,9 +9,6 @@ addons:
 node_js:
 - '6'
 cache: yarn
-install:
-- npm install -g yarn
-- yarn
 script:
 - npm run fonts
 - npm run transpile
