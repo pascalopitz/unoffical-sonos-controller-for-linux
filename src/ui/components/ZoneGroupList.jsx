@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component } from 'preact'; //eslint-disable-line
 
 import ZoneGroup from './ZoneGroup';
 import ZoneGroupStore from '../stores/ZoneGroupStore';

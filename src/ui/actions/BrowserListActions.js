@@ -1,12 +1,11 @@
 import _ from 'lodash';
 
 import Dispatcher from '../dispatcher/AppDispatcher';
-import Constants  from '../constants/Constants';
+import Constants from '../constants/Constants';
 
 import SonosService from '../services/SonosService';
 import MusicServiceClient from '../services/MusicServiceClient';
 
-import QueueStore from '../stores/QueueStore';
 import BrowserListStore from '../stores/BrowserListStore';
 
 export default {
@@ -17,7 +16,7 @@ export default {
 		}
 
 		let client = item.serviceClient;
-		let serviceType = client._serviceDefinition.ServiceIDEncoded
+		let serviceType = client._serviceDefinition.ServiceIDEncoded;
 
 		let settingsMatch = _.find(SonosService._accountInfo, { Type: String(serviceType) } );
 

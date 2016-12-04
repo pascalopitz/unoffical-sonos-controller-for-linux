@@ -72,7 +72,7 @@ class MusicServiceClient {
 			suffix = '';
 
 			if (trackId.startsWith('spotify:track:')) {
-				return  escape(trackId);
+				return escape(trackId);
 			}
 
 			if (trackId.startsWith('spotify:album:')) {

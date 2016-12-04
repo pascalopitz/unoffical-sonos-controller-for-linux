@@ -2,7 +2,7 @@ import events from 'events';
 import _ from "lodash";
 
 import Dispatcher from '../dispatcher/AppDispatcher';
-import Constants  from '../constants/Constants';
+import Constants from '../constants/Constants';
 
 const CHANGE_EVENT = 'change';
 

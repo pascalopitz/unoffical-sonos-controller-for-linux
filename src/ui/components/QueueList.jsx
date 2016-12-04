@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { h, Component } from 'preact';
+import { h, Component } from 'preact'; //eslint-disable-line
 
 import QueueActions from '../actions/QueueActions';
 import QueueStore from '../stores/QueueStore';

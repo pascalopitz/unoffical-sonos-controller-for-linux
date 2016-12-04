@@ -1,5 +1,5 @@
 import Dispatcher from '../dispatcher/AppDispatcher';
-import Constants  from '../constants/Constants';
+import Constants from '../constants/Constants';
 
 import SonosService from '../services/SonosService';
 

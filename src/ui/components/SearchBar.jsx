@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { h, Component } from 'preact';
+import { h, Component } from 'preact'; //eslint-disable-line
 
 import SearchBarActions from '../actions/SearchBarActions';
 

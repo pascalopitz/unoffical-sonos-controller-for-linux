@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
 import Dispatcher from '../dispatcher/AppDispatcher';
-import Constants  from '../constants/Constants';
+import Constants from '../constants/Constants';
 
-import SonosService  from '../services/SonosService';
+import SonosService from '../services/SonosService';
 import Services from '../sonos/helpers/Services';
 
 import QueueStore from '../stores/QueueStore';

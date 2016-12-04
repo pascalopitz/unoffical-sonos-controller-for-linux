@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component } from 'preact'; //eslint-disable-line
 
 import SonosService from '../services/SonosService';
 import resourceLoader from '../helpers/resourceLoader';
@@ -52,9 +52,9 @@ class AlbumArt extends Component {
 			root: getClosest(node, this.props.parentType || 'ul'),
 			rootMargin: '0px',
 			threshold: MIN_RATIO,
-		}
+		};
 
-		let callback = ([ entry ], observer) => {
+		let callback = ([ entry ]) => {
 			this.setState({
 				visible: entry.intersectionRatio >= MIN_RATIO,
 			});
@@ -68,7 +68,7 @@ class AlbumArt extends Component {
 		if(this.state.visible && !this.state.src) {
 			// wait some time, to prevent random scrolling fast through viewport
 			// stuff to get loaded
-			this.timeout = window.setTimeout(this._loadImage.bind(this), 500)
+			this.timeout = window.setTimeout(this._loadImage.bind(this), 500);
 		}
 
 		if(!this.state.visible && this.timeout) {
@@ -102,7 +102,7 @@ class AlbumArt extends Component {
 			});
 
 			if(this.state.visible) {
-				this.timeout = window.setTimeout(this._loadImage.bind(this), 500)
+				this.timeout = window.setTimeout(this._loadImage.bind(this), 500);
 			}
 		}
 	}

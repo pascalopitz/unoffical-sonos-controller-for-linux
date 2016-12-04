@@ -13,6 +13,7 @@
     "watch": "babel -d ./app/js -s true -w ./src",
     "transpile": "babel -d ./app/js -s true ./src",
     "fonts": "mkdir -p ./app/fonts && cp ./node_modules/material-design-icons/iconfont/* ./app/fonts/",
+    "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
