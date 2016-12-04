@@ -9,12 +9,15 @@ addons:
 node_js:
 - '6'
 install:
-- npm install
+- npm install -g yarn
+- yarn
 script:
 - npm run fonts
 - npm run transpile
 - npm run dist
+- ls dist/*.deb
 - mv dist/*.deb dist/sonos-controller-unofficial-amd64.deb
+- ls dist/*.deb
 deploy:
   overwrite: true
   provider: releases
