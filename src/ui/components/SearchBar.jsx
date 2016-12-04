@@ -31,7 +31,7 @@ class SearchBar extends Component {
 
 		return (
 			<div id="search">
-				<input type="text" id="searchfield" value={this.state.term} onChange={this._onChange.bind(this)} />
+				<input type="text" id="searchfield" value={this.state.term} oninput={this._onChange.bind(this)} />
 				{cancelButton}
 			</div>
 		);

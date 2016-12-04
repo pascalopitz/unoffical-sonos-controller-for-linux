@@ -8,7 +8,6 @@ addons:
     - graphicsmagick
 node_js:
 - '6'
-cache: yarn
 script:
 - npm run fonts
 - npm run transpile
