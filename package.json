@@ -38,6 +38,7 @@
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.18.0",
+    "babel-eslint": "^7.1.1",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-async-to-module-method": "^6.16.0",
     "babel-plugin-transform-react-jsx": "^6.8.0",
@@ -47,7 +48,8 @@
     "electron": "^1.4.10",
     "electron-builder": "^8.6.0",
     "electron-prebuilt": "^1.4.10",
-    "eslint": "^3.10.2",
+    "eslint": "^3.11.1",
+    "eslint-plugin-react": "^6.7.1",
     "material-design-icons": "^2.2.3",
     "watch": "^1.0.1"
   }
