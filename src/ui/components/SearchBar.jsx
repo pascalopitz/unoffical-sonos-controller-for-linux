@@ -3,12 +3,6 @@ import { h, Component } from 'preact'; //eslint-disable-line
 
 import SearchBarActions from '../actions/SearchBarActions';
 
-let term;
-
-let func = _.debounce(() => {
-	SearchBarActions.search(term);
-}, 200);
-
 class SearchBar extends Component {
 
 	constructor() {
@@ -38,21 +32,20 @@ class SearchBar extends Component {
 	}
 
 	_onClick (e) {
-		term = null;
 		this.setState({
 			searching: false,
-			term: term || '',
+			term: '',
 		});
-		func();
+		SearchBarActions.search(null);
 	}
 
 	_onChange (e) {
-		term = e.target.value;
+		let term = e.target.value;
 		this.setState({
 			searching: term.length > 0,
 			term: term || '',
 		});
-		func();
+		SearchBarActions.search(term);
 		e.preventDefault();
 		e.stopPropagation();
 	}

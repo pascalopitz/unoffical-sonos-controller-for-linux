@@ -80,13 +80,25 @@ export default {
 		if(currentState.serviceClient) {
 
 			let client = currentState.serviceClient;
+			let serviceId = Number(client._serviceDefinition.Id);
 
-			Promise.all([
-				client.search('album', term),
-				client.search('artist', term),
-				client.search('track', term),
-			]).then((res) => {
+			let chain;
 
+			if (serviceId === 160) {
+				chain = Promise.all([
+					Promise.resolve([]),
+					client.search('search:people', term),
+					client.search('search:sounds', term),
+				]);
+			} else {
+				chain = Promise.all([
+					client.search('album', term),
+					client.search('artist', term),
+					client.search('track', term),
+				]);
+			}
+
+			chain.then((res) => {
 				if(this.term !== term) {
 					return;
 				};
@@ -103,6 +115,7 @@ export default {
 			}, () => {
 				//debugger;
 			});
+
 
 		} else {
 
