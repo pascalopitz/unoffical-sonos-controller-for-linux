@@ -232,10 +232,10 @@ export default {
 
 				data = _.reject(data, { Auth: "UserId" });
 				data = _.reject(data, (item) => {
-					return _.contains(existingIds, item.Id);
+					return _.includes(existingIds, item.Id);
 				});
 				data = _.filter(data, (item) => {
-					return _.contains(ALLOWED_SERVICES, Number(item.Id));
+					return _.includes(ALLOWED_SERVICES, Number(item.Id));
 				});
 
 				resolve(data.map((out) => {
