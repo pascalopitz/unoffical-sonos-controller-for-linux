@@ -47,13 +47,14 @@ class MusicServiceClient {
 
 				if(err || res.statusCode >= 400) {
 					let e = xml2json(stripNamespaces(body));
+					let fault = _.get(e, 'Envelope.Body.Fault.faultstring');
 
-					if(_.get(e, 'Envelope.Body.Fault.faultstring') === 'TokenRefreshRequired') {
+					if(fault === 'TokenRefreshRequired') {
 						let refreshDetails = _.get(e, 'Envelope.Body.Fault.detail.refreshAuthTokenResult');
 						this.setAuthToken(refreshDetails.authToken);
 						return reject(refreshDetails.authToken);
 					} else {
-						return reject(null);
+						return reject(new Error(fault));
 					}
 				}
 
@@ -200,13 +201,13 @@ class MusicServiceClient {
 	getDeviceLinkCode() {
 
 		let headers = ['<ns:credentials>',
-			 '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
-			 '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
-		  '</ns:credentials>'].join('');
+			'<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
+			'<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
+			'</ns:credentials>'].join('');
 
 		let body = ['<ns:getDeviceLinkCode>',
-		 '<ns:householdId>', SonosService.householdId, '</ns:householdId>',
-	  '</ns:getDeviceLinkCode>'].join('');
+			'<ns:householdId>', SonosService.householdId, '</ns:householdId>',
+			'</ns:getDeviceLinkCode>'].join('');
 
 		return this._doRequest(this._serviceDefinition.SecureUri, 'getDeviceLinkCode', body, headers)
 			.then((res) => {
@@ -219,14 +220,14 @@ class MusicServiceClient {
 	getDeviceAuthToken(linkCode) {
 
 		let headers = ['<ns:credentials>',
-			 '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
-			 '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
-		  '</ns:credentials>'].join('');
+			'<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
+			'<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
+			'</ns:credentials>'].join('');
 
 		let body = ['<ns:getDeviceAuthToken>',
-		 '<ns:householdId>', SonosService.householdId, '</ns:householdId>',
-		 '<ns:linkCode>', linkCode, '</ns:linkCode>',
-	  '</ns:getDeviceAuthToken>'].join('');
+			'<ns:householdId>', SonosService.householdId, '</ns:householdId>',
+			'<ns:linkCode>', linkCode, '</ns:linkCode>',
+			'</ns:getDeviceAuthToken>'].join('');
 
 		return this._doRequest(this._serviceDefinition.SecureUri, 'getDeviceAuthToken', body, headers)
 			.then((res) => {
@@ -239,145 +240,145 @@ class MusicServiceClient {
 	getMetadata(id, index=0, count=200) {
 
 		let headers = ['<ns:credentials>',
-			 '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
-			 '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
-			 '<ns:loginToken>',
+			'<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
+			'<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
+			'<ns:loginToken>',
 				'<ns:token>', this.authToken ,'</ns:token>',
 				'<ns:key>', this.key ,'</ns:key>',
 				'<ns:householdId>', SonosService.householdId, '</ns:householdId>',
-		 	'</ns:loginToken>',
-		  '</ns:credentials>'].join('');
+			'</ns:loginToken>',
+			'</ns:credentials>'].join('');
 
 		let body = ['<ns:getMetadata>',
-		 '<ns:id>', id, '</ns:id>',
-		 '<ns:index>', index, '</ns:index>',
-		 '<ns:count>', count, '</ns:count>',
-	  '</ns:getMetadata>'].join('');
+			'<ns:id>', id, '</ns:id>',
+			'<ns:index>', index, '</ns:index>',
+			'<ns:count>', count, '</ns:count>',
+			'</ns:getMetadata>'].join('');
 
-	  return new Promise((resolve, reject) => {
-		this._doRequest(this._serviceDefinition.SecureUri, 'getMetadata', body, headers)
-			.then((res) => {
-				let resp = xml2json(stripNamespaces(res));
-				let obj = resp['Envelope']['Body']['getMetadataResponse']['getMetadataResult'];
-				resolve(obj);
-			})
-			.catch((authToken) => {
-				if(authToken) {
-					this.getMetadata(id, index, count).then((obj) => {
-						resolve(obj);
-					});
-				} else {
-					reject();
-				}
-			});
+		return new Promise((resolve, reject) => {
+			this._doRequest(this._serviceDefinition.SecureUri, 'getMetadata', body, headers)
+				.then((res) => {
+					let resp = xml2json(stripNamespaces(res));
+					let obj = resp['Envelope']['Body']['getMetadataResponse']['getMetadataResult'];
+					resolve(obj);
+				})
+				.catch((authToken) => {
+					if(authToken) {
+						this.getMetadata(id, index, count).then((obj) => {
+							resolve(obj);
+						});
+					} else {
+						reject();
+					}
+				});
 		});
 	}
 
 	getExtendedMetadata(id) {
 
 		let headers = ['<ns:credentials>',
-			 '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
-			 '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
-			 '<ns:loginToken>',
+			'<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
+			'<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
+			'<ns:loginToken>',
 				'<ns:token>', this.authToken ,'</ns:token>',
 				'<ns:key>', this.key ,'</ns:key>',
 				'<ns:householdId>', SonosService.householdId, '</ns:householdId>',
-		 	'</ns:loginToken>',
-		  '</ns:credentials>'].join('');
+			'</ns:loginToken>',
+			'</ns:credentials>'].join('');
 
 		let body = ['<ns:getExtendedMetadata>',
-		 '<ns:id>', id, '</ns:id>',
-	  '</ns:getExtendedMetadata>'].join('');
+			'<ns:id>', id, '</ns:id>',
+			'</ns:getExtendedMetadata>'].join('');
 
-	  return new Promise((resolve, reject) => {
-		this._doRequest(this._serviceDefinition.SecureUri, 'getExtendedMetadata', body, headers)
-			.then((res) => {
-				let resp = xml2json(stripNamespaces(res));
-				let obj = resp['Envelope']['Body']['getExtendedMetadataResponse']['getExtendedMetadataResult'];
-				resolve(obj);
-			})
-			.catch((authToken) => {
-				if(authToken) {
-					this.getExtendedMetadata(id).then((obj) => {
-						resolve(obj);
-					});
-				} else {
-					reject();
-				}
-			});
+		return new Promise((resolve, reject) => {
+			this._doRequest(this._serviceDefinition.SecureUri, 'getExtendedMetadata', body, headers)
+				.then((res) => {
+					let resp = xml2json(stripNamespaces(res));
+					let obj = resp['Envelope']['Body']['getExtendedMetadataResponse']['getExtendedMetadataResult'];
+					resolve(obj);
+				})
+				.catch((authToken) => {
+					if(authToken) {
+						this.getExtendedMetadata(id).then((obj) => {
+							resolve(obj);
+						});
+					} else {
+						reject();
+					}
+				});
 		});
 	}
 
 	search(id, term, index=0, count=200) {
 
 		let headers = ['<ns:credentials>',
-			 '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
-			 '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
-			 '<ns:loginToken>',
+			'<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
+			'<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
+			'<ns:loginToken>',
 				'<ns:token>', this.authToken ,'</ns:token>',
 				'<ns:key>', this.key ,'</ns:key>',
 				'<ns:householdId>', SonosService.householdId, '</ns:householdId>',
-		 	'</ns:loginToken>',
-		  '</ns:credentials>'].join('');
+			'</ns:loginToken>',
+			'</ns:credentials>'].join('');
 
 		let body = ['<ns:search>',
-		 '<ns:id>', id, '</ns:id>',
-		 '<ns:term>', _.escape(term), '</ns:term>',
-		 '<ns:index>', index, '</ns:index>',
-		 '<ns:count>', count, '</ns:count>',
-	  '</ns:search>'].join('');
+			'<ns:id>', id, '</ns:id>',
+			'<ns:term>', _.escape(term), '</ns:term>',
+			'<ns:index>', index, '</ns:index>',
+			'<ns:count>', count, '</ns:count>',
+			'</ns:search>'].join('');
 
-	  return new Promise((resolve, reject) => {
-		return this._doRequest(this._serviceDefinition.SecureUri, 'search', body, headers)
-			.then((res) => {
-				let resp = xml2json(stripNamespaces(res));
-				let obj = resp['Envelope']['Body']['searchResponse']['searchResult'];
-				resolve(obj);
-			})
-			.catch((authToken) => {
-				if(authToken) {
-					this.search(id, term, index, count).then((obj) => {
-						resolve(obj);
-					});
-				} else {
-					reject();
-				}
-			});
+		return new Promise((resolve, reject) => {
+			return this._doRequest(this._serviceDefinition.SecureUri, 'search', body, headers)
+				.then((res) => {
+					let resp = xml2json(stripNamespaces(res));
+					let obj = resp['Envelope']['Body']['searchResponse']['searchResult'];
+					resolve(obj);
+				})
+				.catch((authToken) => {
+					if(authToken) {
+						this.search(id, term, index, count).then((obj) => {
+							resolve(obj);
+						});
+					} else {
+						reject();
+					}
+				});
 		});
 	}
 
 	getMediaURI(id) {
 
 		let headers = ['<ns:credentials>',
-			 '<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
-			 '<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
-			 '<ns:loginToken>',
+			'<ns:deviceId>', RUNTIME_ID ,'</ns:deviceId>',
+			'<ns:deviceProvider>', deviceProviderName, '</ns:deviceProvider>',
+			'<ns:loginToken>',
 				'<ns:token>', this.authToken ,'</ns:token>',
 				'<ns:key>', this.key ,'</ns:key>',
 				'<ns:householdId>', SonosService.householdId, '</ns:householdId>',
-		 	'</ns:loginToken>',
-		  '</ns:credentials>'].join('');
+			'</ns:loginToken>',
+			'</ns:credentials>'].join('');
 
 		let body = ['<ns:getMediaURI>',
-		 '<ns:id>', id, '</ns:id>',
-	  '</ns:getMediaURI>'].join('');
+			'<ns:id>', id, '</ns:id>',
+			'</ns:getMediaURI>'].join('');
 
-	  return new Promise((resolve, reject) => {
-		return this._doRequest(this._serviceDefinition.SecureUri, 'getMediaURI', body, headers)
-			.then((res) => {
-				let resp = xml2json(stripNamespaces(res));
-				let obj = resp['Envelope']['Body']['getMediaURIResponse']['getMediaURIResult'];
-				return resolve(obj);
-			})
-			.catch((authToken) => {
-				if(authToken) {
-					this.getMediaURI(id).then((obj) => {
-						resolve(obj);
-					});
-				} else {
-					reject();
-				}
-			});
+		return new Promise((resolve, reject) => {
+			return this._doRequest(this._serviceDefinition.SecureUri, 'getMediaURI', body, headers)
+				.then((res) => {
+					let resp = xml2json(stripNamespaces(res));
+					let obj = resp['Envelope']['Body']['getMediaURIResponse']['getMediaURIResult'];
+					return resolve(obj);
+				})
+				.catch((authToken) => {
+					if(authToken) {
+						this.getMediaURI(id).then((obj) => {
+							resolve(obj);
+						});
+					} else {
+						reject();
+					}
+				});
 		});
 	}
 
