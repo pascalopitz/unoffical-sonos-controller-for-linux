@@ -38,7 +38,7 @@ class MusicServiceManagement extends Component {
             MusicServiceManagementActions.addAnonymousService(this.state.client);
         }
 
-        if(!this.state.link && this.state.client.auth === 'DeviceLink') {
+        if(!this.state.link && (this.state.client.auth === 'DeviceLink' || this.state.client.auth === 'AppLink')) {
             MusicServiceManagementActions.getLink(this.state.client);
             return;
         }
@@ -85,13 +85,13 @@ class MusicServiceManagement extends Component {
             </form>);
         }
 
-        if(this.state.client.auth === 'DeviceLink' && !this.state.link) {
+        if((this.state.client.auth === 'DeviceLink' || this.state.client.auth === 'AppLink') && !this.state.link) {
             link = (
                 <p>Click next to add the Service at your own risk.</p>
             );
         }
 
-        if(this.state.client.auth === 'DeviceLink' && this.state.link) {
+        if((this.state.client.auth === 'DeviceLink' || this.state.client.auth === 'AppLink') && this.state.link) {
             link = (
                 <div>
                     <p>Click the link below to authorize this app to use the Service.</p>

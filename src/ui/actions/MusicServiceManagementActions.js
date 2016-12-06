@@ -18,7 +18,7 @@ export default {
 	},
 
 	getLink (client) {
-		if(client.auth === 'DeviceLink') {
+		if(client.auth === 'DeviceLink' || client.auth === 'AppLink') {
 			client.getDeviceLinkCode().then((link) => {
 				Dispatcher.dispatch({
 					actionType: Constants.MUSICSERVICE_ADD_LINK_RECEIVED,
