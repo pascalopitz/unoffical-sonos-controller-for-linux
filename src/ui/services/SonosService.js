@@ -3,6 +3,8 @@ import _ from 'lodash';
 import bb from 'bluebird';
 import xml2json from 'jquery-xml2json';
 
+import Services from '../sonos/helpers/Services';
+
 import Search from '../sonos/Search';
 import Listener from '../sonos/events/listener';
 

@@ -10,8 +10,6 @@ import Services from './helpers/Services';
 
 const SONOS_PLAYER_DEFAULT_PORT = 1400;
 
-window.Services = Services;
-
 /**
  * Constants
  */

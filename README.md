@@ -42,10 +42,10 @@ This might require some additional binaries, like graphicsMagick and icnsutils, 
 
 You will need to whitelist these if you run Ubuntu firewall for example:
 
-- UDP 1900
-- UDP 1901
-- TCP 3400
-- TCP 1400
+- TCP 1400 outgoing
+- TCP 3400 incoming
+- UDP 1900 outgoing
+- UDP 1905 incoming
 
 ##Thanks to other projects
 
