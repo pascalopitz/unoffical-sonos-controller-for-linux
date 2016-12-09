@@ -17,6 +17,27 @@ export default {
 		}
 	},
 
+	getSession(client, username, password) {
+		if(client.auth === 'UserId') {
+			client.getSessionId(username, password).then((sessionId) => {
+				if(!sessionId) {
+					return;
+				}
+
+				let authToken = {
+					authToken: sessionId,
+				};
+
+				SonosService.rememberMusicService(client._serviceDefinition, authToken).then(() => {
+					Dispatcher.dispatch({
+						actionType: Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED,
+						authToken,
+					});
+				});
+			});
+		}
+	},
+
 	getLink (client) {
 		if(client.auth === 'DeviceLink' || client.auth === 'AppLink') {
 			client.getDeviceLinkCode().then((link) => {
@@ -26,7 +47,7 @@ export default {
 				});
 
 				poll = window.setInterval(() => {
-					client.getDeviceAuthToken(link.linkCode).then((authToken) => {
+					client.getDeviceAuthToken(link.linkCode, link.linkDeviceId).then((authToken) => {
 
 						if(!authToken) {
 							return;

@@ -30,12 +30,13 @@ class MusicServiceManagement extends Component {
 
     _next () {
         if(!this.state.link && this.state.client.auth === 'UserId') {
-            console.log(this.state);
+            MusicServiceManagementActions.getSession(this.state.client, this.state.username, this.state.password);
             return;
         }
 
         if(!this.state.link && this.state.client.auth === 'Anonymous') {
             MusicServiceManagementActions.addAnonymousService(this.state.client);
+			return;
         }
 
         if(!this.state.link && (this.state.client.auth === 'DeviceLink' || this.state.client.auth === 'AppLink')) {

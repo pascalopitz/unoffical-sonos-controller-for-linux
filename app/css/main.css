@@ -981,6 +981,7 @@ body #queue-container li[data-is-current=true] {
 
 body #music-service-management-container {
 	width: 80vw;
+	max-width: 500px;
 }
 
 
@@ -988,6 +989,12 @@ body #music-service-management h3  {
 	font-weight: bold;
 }
 
+html body #music-service-management label {
+	width: 200px;
+	display: inline-block;
+}
+
+body #music-service-management label,
 body #music-service-management p,
 body #music-service-management a,
 body #music-service-management h3  {

@@ -61,6 +61,7 @@ let Constants = {
 	MUSICSERVICE_ADD_CANCEL: '',
 	MUSICSERVICE_ADD_LINK_RECEIVED: '',
 	MUSICSERVICE_AUTH_TOKEN_RECEIVED: '',
+	MUSICSERVICE_SESSION_ID_RECEIVED: '',
 };
 
 Object.keys(Constants).forEach((k) => {

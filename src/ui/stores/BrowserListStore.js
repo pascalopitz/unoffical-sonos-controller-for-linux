@@ -214,6 +214,15 @@ Dispatcher.register(action => {
 			BrowserListStore.emitChange();
 			break;
 
+		case Constants.MUSICSERVICE_SESSION_ID_RECEIVED:
+			BrowserListStore.setState(START_STATE);
+			BrowserListStore._history = [];
+			BrowserListStore.endSearch();
+			BrowserListStore.setSearchResults(null);
+			BrowserListStore._searchTarget = DEFAULT_SEARCH_TARGET;
+			BrowserListStore.emitChange();
+			break;
+
 		case Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED:
 			BrowserListStore.setState(START_STATE);
 			BrowserListStore._history = [];

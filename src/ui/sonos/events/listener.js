@@ -1,11 +1,10 @@
-import xml2js from '../helpers/xml2js';
-import request from '../helpers/request';
-import ip from '../helpers/ip';
-
+import ip from 'ip';
 import http from 'http';
 
 import _ from 'lodash';
 
+import xml2js from '../helpers/xml2js';
+import request from '../helpers/request';
 
 const SONOS_INCOMING_PORT = 3400;
 
