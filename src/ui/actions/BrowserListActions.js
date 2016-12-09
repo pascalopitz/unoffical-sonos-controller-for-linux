@@ -234,9 +234,9 @@ export default {
 				data = _.reject(data, (item) => {
 					return _.includes(existingIds, item.Id);
 				});
-				data = _.filter(data, (item) => {
-					return _.includes(ALLOWED_SERVICES, Number(item.Id)) || item.Auth === 'UserId';
-				});
+				// data = _.filter(data, (item) => {
+				// 	return _.includes(ALLOWED_SERVICES, Number(item.Id)) || item.Auth === 'UserId';
+				// });
 
 				data = _.orderBy(data, 'Name');
 
