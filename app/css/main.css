@@ -309,8 +309,7 @@ h4 {
 
 #status-container h4#now-playing span#track-short-info {
 	font-weight: normal;
-	left: 130px;
-	width: calc(100% - 170px);
+	width: calc(100% - 40px);
 	text-overflow: ellipsis;
 	overflow: hidden;
 }

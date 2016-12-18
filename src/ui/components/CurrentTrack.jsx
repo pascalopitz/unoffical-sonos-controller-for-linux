@@ -43,31 +43,53 @@ class CurrentTrack extends Component {
 		let nextTrackInfo;
 
 		if(!currentTrack || !currentTrack.title) {
-			return <div id="current-track-info">No Music</div>
+			let toggleNode = this.state.expanded ? <i className="material-icons">expand_less</i> : <i className="material-icons">expand_more</i>;
+			let expandClass = this.state.expanded ? 'expanded' : 'collapsed';
+			return (
+				<div className={expandClass}>
+					<h4 id="now-playing">
+						<span>No Music</span>
+
+						<a id="current-track-toggle-button" onClick={this._toggle.bind(this)}>
+							{toggleNode}
+						</a>
+					</h4>
+				</div>
+			);
 		}
 
 		if(nextTrack && nextTrack.title) {
 			nextTrackInfo = <p id="next-track">{nextTrack.title}</p>
 		}
 
-		let toggleNode  = this.state.expanded ? <i className="material-icons">expand_less</i> : <i className="material-icons">expand_more</i>;
-		let expandClass = this.state.expanded ? 'expanded' : 'collapsed';
-
-		let currentTrackShortInfo;
-
 		if(!this.state.expanded) {
-			currentTrackShortInfo = <span id="track-short-info">{currentTrack.title}</span>;
+
+			let info = currentTrack.title;
+
+			if(currentTrack.artist) {
+				info = info + ' - ' + currentTrack.artist;
+			}
+
+			return (
+				<div className="collapsed">
+					<h4 id="now-playing">
+						<span id="track-short-info">{info}</span>
+
+						<a id="current-track-toggle-button" onClick={this._toggle.bind(this)}>
+							<i className="material-icons">expand_more</i>
+						</a>
+					</h4>
+				</div>
+			);
 		}
 
 		return (
-		<div className={expandClass}>
+		<div className="expanded">
 			<h4 id="now-playing">
 				<span>NOW PLAYING</span>
 
-				{currentTrackShortInfo}
-
 				<a id="current-track-toggle-button" onClick={this._toggle.bind(this)}>
-					{toggleNode}
+					<i className="material-icons">expand_less</i>
 				</a>
 			</h4>
 
