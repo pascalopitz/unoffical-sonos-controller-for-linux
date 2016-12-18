@@ -16,12 +16,17 @@ import Loader from './Loader';
 
 class Application extends Component {
 
+	constuctor() {
+		this.state = {
+			showPlayNow: true,
+		};
+	}
+
 	componentDidMount () {
 		SonosService.mount();
 	}
 
 	render () {
-
 		return (
 			<div>
 				<div id="application">
@@ -35,14 +40,11 @@ class Application extends Component {
 						<div id="zone-container">
 							<h4>ROOMS</h4>
 							<ZoneGroupList />
-				 		</div>
+						</div>
+
 						<div id="status-container">
-
-							<h4 id="now-playing">NOW PLAYING</h4>
-							<CurrentTrack />
-
-							<h4 id="queue">QUEUE</h4>
-							<QueueList />
+							<CurrentTrack expanded={this.state.showPlayNow} />
+							<QueueList expanded={!this.state.showPlayNow} />
 						</div>
 
 						<BrowserList />

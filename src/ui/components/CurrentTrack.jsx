@@ -1,6 +1,7 @@
 import { h, Component } from 'preact'; //eslint-disable-line
 
 import CurrentTrackStore from '../stores/CurrentTrackStore';
+import CurrentTrackActions from '../actions/CurrentTrackActions';
 
 import AlbumArt from './AlbumArt';
 
@@ -11,6 +12,7 @@ class CurrentTrack extends Component {
 		this.state = {
 			currentTrack: null,
 			nextTrack: null,
+			expanded: CurrentTrackStore.getExpanded(),
 		};
 	}
 
@@ -23,13 +25,15 @@ class CurrentTrack extends Component {
 	}
 
 	_onChange() {
-		let currentTrack = CurrentTrackStore.getCurrentTrack();
-		let nextTrack = CurrentTrackStore.getNextTrack();
-
 		this.setState({
-			currentTrack: currentTrack,
-			nextTrack: nextTrack,
+			currentTrack: CurrentTrackStore.getCurrentTrack(),
+			nextTrack: CurrentTrackStore.getNextTrack(),
+			expanded: CurrentTrackStore.getExpanded(),
 		});
+	}
+
+	_toggle() {
+		CurrentTrackActions.toggleExpanded(!this.state.expanded);
 	}
 
 	render () {
@@ -46,7 +50,27 @@ class CurrentTrack extends Component {
 			nextTrackInfo = <p id="next-track">{nextTrack.title}</p>
 		}
 
+		let toggleNode  = this.state.expanded ? <i className="material-icons">expand_less</i> : <i className="material-icons">expand_more</i>;
+		let expandClass = this.state.expanded ? 'expanded' : 'collapsed';
+
+		let currentTrackShortInfo;
+
+		if(!this.state.expanded) {
+			currentTrackShortInfo = <span id="track-short-info">{currentTrack.title}</span>;
+		}
+
 		return (
+		<div className={expandClass}>
+			<h4 id="now-playing">
+				<span>NOW PLAYING</span>
+
+				{currentTrackShortInfo}
+
+				<a id="current-track-toggle-button" onClick={this._toggle.bind(this)}>
+					{toggleNode}
+				</a>
+			</h4>
+
 			<div id="current-track-info">
 				<AlbumArt id="current-track-art" src={currentTrack.albumArtURI} parentType="#current-track-info" />
 				<div>
@@ -61,6 +85,7 @@ class CurrentTrack extends Component {
 				<h5>Next</h5>
 				{nextTrackInfo}
 			</div>
+		</div>
 		);
 	}
 }

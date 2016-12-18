@@ -12,6 +12,7 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 	_tracks : [],
 	_position: null,
 	_updateID: null,
+	_expanded: false,
 
 	emitChange () {
 		this.emit(CHANGE_EVENT);
@@ -48,7 +49,7 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 			if(oldIDs[i] === newIDs[i] && oldIDs[i] && old[i].selected) {
 				t.selected = true;
 				return;
-			} 
+			}
 		});
 
 		this._tracks = tracks;
@@ -80,6 +81,14 @@ var QueueStore = _.assign({}, events.EventEmitter.prototype, {
 		this._tracks[position - 1].selected = false;
 		// let matches = _.filter(this._selected, _.matches(track));
 		// _.pull(this._selected, matches[0]);
+	},
+
+	getExpanded () {
+		return this._expanded;
+	},
+
+	setExpanded (expanded) {
+		this._expanded = expanded;
 	},
 });
 
@@ -119,6 +128,11 @@ Dispatcher.register(action => {
 
 		case Constants.QUEUE_FLUSH:
 			QueueStore.clearSelected();
+			QueueStore.emitChange();
+			break;
+
+		case Constants.CURRENT_TRACK_TOGGLE_EXPANDED:
+			QueueStore.setExpanded(!action.expanded);
 			QueueStore.emitChange();
 			break;
 	}

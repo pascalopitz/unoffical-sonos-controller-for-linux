@@ -21,9 +21,9 @@ class Loader extends Component {
 	}
 
 	render () {
-		if(this.state.current) {
+		// if(this.state.current) {
 			return null;
-		}
+		// }
 
 		let msg = "Searching for your Sonos System ...";
 

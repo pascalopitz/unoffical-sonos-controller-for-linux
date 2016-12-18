@@ -16,6 +16,7 @@ class QueueList extends Component {
 			dragging: false,
 			tracks: QueueStore.getTracks(),
 			position: QueueStore.getPosition(),
+			expanded: QueueStore.getExpanded(),
 		};
 	}
 
@@ -49,6 +50,7 @@ class QueueList extends Component {
 		this.setState({
 			tracks: QueueStore.getTracks(),
 			position: QueueStore.getPosition(),
+			expanded: QueueStore.getExpanded(),
 		});
 	}
 
@@ -112,7 +114,7 @@ class QueueList extends Component {
 
 	render () {
 		let tracks = this.state.tracks;
-		let selectionContext = _.filter(tracks, {selected: true}).length > 0;
+		let selectionContext = _.filter(tracks, { selected: true }).length > 0;
 		let queueItemNodes;
 		let clearNode;
 
@@ -130,7 +132,7 @@ class QueueList extends Component {
 				let isDragOver = position === this.state.dragOverPosition;
 
 				return (
-					<QueueListItem  key={position}
+					<QueueListItem key={position}
 									track={track}
 									position={position}
 									isCurrent={isCurrent}
@@ -142,7 +144,12 @@ class QueueList extends Component {
 			});
 		}
 
+		let expandClass = this.state.expanded ? 'expanded' : 'collapsed';
+
 		return (
+		<div className={expandClass} id="queue-list-container-wrapper">
+			<h4 id="queue">QUEUE</h4>
+
 			<div id="queue-list-container">
 				{clearNode}
 				<ul id="queue-container"
@@ -153,6 +160,7 @@ class QueueList extends Component {
 					{queueItemNodes}
 				</ul>
 			</div>
+		</div>
 		);
 	}
 }

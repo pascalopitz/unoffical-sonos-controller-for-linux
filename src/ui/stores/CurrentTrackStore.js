@@ -10,6 +10,7 @@ var CurrentTrackStore = _.assign({}, events.EventEmitter.prototype, {
 
 	_currentTrack: null,
 	_nextTrack: null,
+	_expanded: true,
 
 	emitChange () {
 		this.emit(CHANGE_EVENT);
@@ -33,6 +34,14 @@ var CurrentTrackStore = _.assign({}, events.EventEmitter.prototype, {
 
 	setNextTrack (info) {
 		this._nextTrack = info;
+	},
+
+	getExpanded () {
+		return this._expanded;
+	},
+
+	setExpanded (expanded) {
+		this._expanded = expanded;
 	},
 });
 
@@ -58,6 +67,11 @@ Dispatcher.register(action => {
 		case Constants.ZONE_GROUP_SELECT:
 			CurrentTrackStore.setCurrentTrack(null);
 			CurrentTrackStore.setNextTrack(null);
+			CurrentTrackStore.emitChange();
+			break;
+
+		case Constants.CURRENT_TRACK_TOGGLE_EXPANDED:
+			CurrentTrackStore.setExpanded(action.expanded);
 			CurrentTrackStore.emitChange();
 			break;
 	}
