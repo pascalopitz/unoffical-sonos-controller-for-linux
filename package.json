@@ -8,7 +8,7 @@
     "pack": "build --dir",
     "dist": "build",
     "build_help": "build --help",
-    "develop": "npm run fonts && npm run transpile && npm run watch & npm run start",
+    "develop": "npm run fonts && npm run transpile && npm run start & npm run watch",
     "start": "export NODE_ENV=development && electron .",
     "watch": "babel -d ./app/js -s true -w ./src",
     "transpile": "babel -d ./app/js -s true ./src",
@@ -42,6 +42,7 @@
     "babel-eslint": "^7.1.1",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-async-to-module-method": "^6.16.0",
+    "babel-plugin-transform-class-properties": "^6.19.0",
     "babel-plugin-transform-react-jsx": "^6.8.0",
     "babel-preset-node5": "^12.0.0",
     "babel-preset-react": "^6.16.0",
@@ -53,5 +54,6 @@
     "eslint-plugin-react": "^6.8.0",
     "material-design-icons": "^3.0.1",
     "watch": "^1.0.1"
-  }
+  },
+  "dependencies": {}
 }

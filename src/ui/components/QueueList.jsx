@@ -1,5 +1,7 @@
 import _ from "lodash";
+
 import { h, Component } from 'preact'; //eslint-disable-line
+import ScrollViewPort from './ScrollViewPort';
 
 import QueueActions from '../actions/QueueActions';
 import QueueStore from '../stores/QueueStore';
@@ -56,14 +58,6 @@ class QueueList extends Component {
 
 	_onClick () {
 		QueueActions.flush();
-	}
-
-	_onScroll (e) {
-		let node = e.target;
-
-		this.setState({
-
-		});
 	}
 
 	_onDragStart (e) {
@@ -155,9 +149,10 @@ class QueueList extends Component {
 				<ul id="queue-container"
 					onDragOver={this._onDragOver.bind(this)}
 					onDragStart={this._onDragStart.bind(this)}
-					onDragEnd={this._onDragEnd.bind(this)}
-					onScroll={this._onScroll.bind(this)}>
+					onDragEnd={this._onDragEnd.bind(this)}>
+					<ScrollViewPort rowHeight={50} overscan={100} class="scrollcontainer" scroll="#queue-container">
 					{queueItemNodes}
+					</ScrollViewPort>
 				</ul>
 			</div>
 		</div>

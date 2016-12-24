@@ -731,26 +731,26 @@ input[type=range]:focus {
 	font-size: 14px;
 }
 
-#browser-container,
 #queue-list-container {
-	margin: 0;
-	padding: 0;
-	cursor: pointer;
-	height: calc(100% - 40px);
 	border-top: 1px solid #292929;
+	height: calc(100% - 40px);
 	position: relative;
 }
 
+#queue-container,
 #browser-container {
-	overflow: auto;
+	cursor: pointer;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	overflow-y: auto;
+}
+
+#browser-container {
+	height: calc(100% - 40px);
 }
 
 #queue-container {
-	overflow: auto;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-
 	height: 100%;
 }
 
@@ -768,8 +768,8 @@ input[type=range]:focus {
 	font-size: 33px;
 }
 
-#browser-container > li,
-#queue-container > li {
+#browser-container li[data-position],
+#queue-container li[data-position] {
 	position: relative;
 	list-style: none;
 	margin: 0;
@@ -899,9 +899,9 @@ body #queue-container li[data-is-current=true] {
 	margin-right: 20px;
 }
 
-#browser-container :hover i.material-icons.arrow,
-#queue-container :hover i.material-icons.arrow,
-#queue-container :hover i.material-icons.checkbox {
+#browser-container li:hover i.material-icons.arrow,
+#queue-container li:hover i.material-icons.arrow,
+#queue-container li:hover i.material-icons.checkbox {
 	opacity: .8;
 }
 

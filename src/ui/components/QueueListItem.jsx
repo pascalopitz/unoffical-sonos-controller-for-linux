@@ -88,7 +88,6 @@ class QueueListItem extends Component {
 		let selectionToggle;
 		let dragOver = false;
 
-		let isCurrent = this.props.isCurrent;
 		let track = this.props.track;
 
 		let selectionContext = this.props.selectionContext;

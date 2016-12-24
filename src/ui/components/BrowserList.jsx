@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import { h, Component } from 'preact'; //eslint-disable-line
+import ScrollViewPort from './ScrollViewPort';
 
 import BrowserListItem from './BrowserListItem';
 
@@ -22,6 +23,10 @@ class BrowserList extends Component {
 			searchMode: null,
 			boundingRect: {},
 		};
+
+		this.moreHandler = _.throttle(() => {
+			BrowserListActions.more(this.state.currentState);
+		}, 1000);
 	}
 
 	componentDidMount() {
@@ -58,20 +63,13 @@ class BrowserList extends Component {
 		let node = e.target;
 		let height = node.scrollHeight - node.offsetHeight;
 
-		this.setState({
-
-		});
-
 		// HACK: this happens when we press the back button for some reason
 		if(height === -1) {
 			return;
 		}
 
 		if(node.scrollTop + 50 > height) {
-			let more = _.throttle(() => {
-				BrowserListActions.more(this.state.currentState);
-			}, 1000);
-			more();
+			this.moreHandler();
 		}
 	}
 
@@ -132,7 +130,7 @@ class BrowserList extends Component {
 					<span>{title}</span>
 				</h4>
 			);
-		}  else {
+		} else {
 			headlineNodes = <h4>{title}</h4>;
 		}
 
@@ -159,8 +157,10 @@ class BrowserList extends Component {
 			<div id="music-sources-container" onScroll={this._onScroll.bind(this)}>
 				{headlineNodes}
 				<ul id="browser-container">
+					<ScrollViewPort rowHeight={50} sync={true} class="scrollcontainer" scroll="#browser-container">
 					{actionNodes}
 					{listItemNodes}
+					</ScrollViewPort>
 				</ul>
 			</div>
 		);
