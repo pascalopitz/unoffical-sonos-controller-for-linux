@@ -7,8 +7,8 @@ class GroupManagement extends Service {
 			name : 'GroupManagement',
 			host : host,
 			port : port || 1400,
-			controlURL : '/MediaRenderer/GroupManagement/Control',
-			eventSubURL : '/MediaRenderer/GroupManagement/Event',
+			controlURL : '/GroupManagement/Control',
+			eventSubURL : '/GroupManagement/Event',
 			SCPDURL : '/xml/GroupManagement1.xml',
 		});
 	}

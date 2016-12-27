@@ -7,8 +7,8 @@ class ZoneGroupTopology extends Service {
 			name : 'ZoneGroupTopology',
 			host : host,
 			port : port || 1400,
-			controlURL : '/MediaRenderer/ZoneGroupTopology/Control',
-			eventSubURL : '/MediaRenderer/ZoneGroupTopology/Event',
+			controlURL : '/ZoneGroupTopology/Control',
+			eventSubURL : '/ZoneGroupTopology/Event',
 			SCPDURL : '/xml/ZoneGroupTopology1.xml',
 		});
 	}

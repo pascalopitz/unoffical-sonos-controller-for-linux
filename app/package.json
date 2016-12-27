@@ -15,7 +15,7 @@
     "moment": "^2.17.1",
     "omit-keys": "^0.1.0",
     "preact": "^7.1.0",
-    "preact-scroll-viewport": "^0.1.0",
+    "preact-virtual-list": "^0.3.1",
     "request": "^2.79.0",
     "uuid": "^3.0.0",
     "wake-event": "^0.0.1"

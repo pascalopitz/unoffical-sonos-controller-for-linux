@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { h, Component } from 'preact'; //eslint-disable-line
-import ScrollViewPort from './ScrollViewPort';
+import VirtualList from 'preact-virtual-list';
 
 import BrowserListItem from './BrowserListItem';
 
@@ -82,6 +82,10 @@ class BrowserList extends Component {
 		BrowserListActions.changeSearchMode(mode);
 	}
 
+	_renderRow(row) {
+		return row;
+	}
+
 	render () {
 
 		let searching = this.state.searching;
@@ -157,10 +161,12 @@ class BrowserList extends Component {
 			<div id="music-sources-container" onScroll={this._onScroll.bind(this)}>
 				{headlineNodes}
 				<ul id="browser-container">
-					<ScrollViewPort rowHeight={50} sync={true} class="scrollcontainer" scroll="#browser-container">
-					{actionNodes}
-					{listItemNodes}
-					</ScrollViewPort>
+					<VirtualList
+						rowHeight={50} sync={true} class="scrollcontainer"
+						data={[actionNodes].concat(listItemNodes)}
+						renderRow={this._renderRow.bind(this)}
+						>
+					</VirtualList>
 				</ul>
 			</div>
 		);

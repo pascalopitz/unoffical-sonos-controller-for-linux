@@ -7,8 +7,8 @@ class AudioIn extends Service {
 			name : 'AudioIn',
 			host : host,
 			port : port || 1400,
-			controlURL : '/MediaRenderer/AudioIn/Control',
-			eventSubURL : '/MediaRenderer/AudioIn/Event',
+			controlURL : '/AudioIn/Control',
+			eventSubURL : '/AudioIn/Event',
 			SCPDURL : '/xml/AudioIn1.xml',
 		});
 	}

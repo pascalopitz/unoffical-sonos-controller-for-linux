@@ -743,15 +743,25 @@ input[type=range]:focus {
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	overflow-y: auto;
 }
 
 #browser-container {
 	height: calc(100% - 40px);
+	position: relative;
 }
 
 #queue-container {
 	height: 100%;
+	position: relative;
+}
+
+.scrollcontainer {
+	position:  absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	overflow-y: auto;
 }
 
 #queue-clear-button {

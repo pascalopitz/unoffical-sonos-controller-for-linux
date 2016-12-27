@@ -7,8 +7,8 @@ class AlarmClock extends Service {
 			name : 'AlarmClock',
 			host : host,
 			port : port || 1400,
-			controlURL : '/MediaRenderer/AlarmClock/Control',
-			eventSubURL : '/MediaRenderer/AlarmClock/Event',
+			controlURL : '/AlarmClock/Control',
+			eventSubURL : '/AlarmClock/Event',
 			SCPDURL : '/xml/AlarmClock1.xml',
 		});
 	}

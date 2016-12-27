@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 import { h, Component } from 'preact'; //eslint-disable-line
-import ScrollViewPort from './ScrollViewPort';
+import VirtualList from 'preact-virtual-list';
 
 import QueueActions from '../actions/QueueActions';
 import QueueStore from '../stores/QueueStore';
@@ -106,6 +106,10 @@ class QueueList extends Component {
 		}
 	}
 
+	_renderRow(row) {
+		return row;
+	}
+
 	render () {
 		let tracks = this.state.tracks;
 		let selectionContext = _.filter(tracks, { selected: true }).length > 0;
@@ -150,9 +154,12 @@ class QueueList extends Component {
 					onDragOver={this._onDragOver.bind(this)}
 					onDragStart={this._onDragStart.bind(this)}
 					onDragEnd={this._onDragEnd.bind(this)}>
-					<ScrollViewPort rowHeight={50} overscan={100} class="scrollcontainer" scroll="#queue-container">
-					{queueItemNodes}
-					</ScrollViewPort>
+					<VirtualList
+						rowHeight={50} sync={true} class="scrollcontainer"
+						data={queueItemNodes || []}
+						renderRow={this._renderRow.bind(this)}
+						>
+					</VirtualList>
 				</ul>
 			</div>
 		</div>

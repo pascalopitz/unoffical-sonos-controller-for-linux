@@ -7,9 +7,9 @@ class DeviceProperties extends Service {
 			name : 'DeviceProperties',
 			host : host,
 			port : port || 1400,
-			controlURL : '/MediaRenderer/DeviceProperties/Control',
-			eventSubURL : '/MediaRenderer/DeviceProperties/Event',
-			SCPDURL : '/xml/DeviceProperties1.xml',		
+			controlURL : '/DeviceProperties/Control',
+			eventSubURL : '/DeviceProperties/Event',
+			SCPDURL : '/xml/DeviceProperties1.xml',
 		});
 	}
 
