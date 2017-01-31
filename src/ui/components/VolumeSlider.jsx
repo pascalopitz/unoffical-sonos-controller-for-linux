@@ -39,18 +39,31 @@ class VolumeSlider extends Component {
 			volume: Number(e.target.value),
 		});
 
-		this.props.dragHandler(volume);
+		this._setVolume(volume)
 	}
 
+    _setVolume(volume) {
+        this.props.dragHandler(volume);
+    }
+
+	_onWheel(e) {
+        this._setVolume(this._getVolume() + (e.deltaY > 0 ? -1 : 1));
+	}
+
+    _getVolume() {
+        return (this.state.dragging) ? this.state.volume : Number(this.props.volume);
+    }
+
 	render () {
-		let volume = (this.state.dragging) ? this.state.volume : Number(this.props.volume);
+		let volume = this._getVolume();
 
 		return (
 			<div className="volume-bar">
 				<input type="range" min="0" max="100" value={Number(volume)}
-					onmousedown={this._onStart.bind(this)}
-					onmouseup={this._onStop.bind(this)}
-					oninput={_.throttle(this._onChange.bind(this), 100)}
+					onMouseDown={this._onStart.bind(this)}
+					onMouseUp={this._onStop.bind(this)}
+					onInput={_.throttle(this._onChange.bind(this), 100)}
+					onWheel={_.throttle(this._onWheel.bind(this), 100)}
 				 />
 			</div>
 		);
