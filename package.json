@@ -25,6 +25,10 @@
     {
       "name": "leanto",
       "url": "https://github.com/leanto"
+    },
+    {
+      "name": "Basster",
+      "url": "https://github.com/Basster"
     }
   ],
   "build": {
