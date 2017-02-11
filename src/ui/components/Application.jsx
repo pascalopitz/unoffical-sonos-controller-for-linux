@@ -39,7 +39,13 @@ class Application extends Component {
 					<div id="column-container">
 						<div id="zone-container">
 							<h4>ROOMS</h4>
-							<ZoneGroupList />
+
+							<div id="zone-container" style="width:100%;display: flex; flex-direction: column;">
+								<div style="overflow-y: auto;">
+									<ZoneGroupList />
+								</div>
+							</div>
+
 						</div>
 
 						<div id="status-container">
