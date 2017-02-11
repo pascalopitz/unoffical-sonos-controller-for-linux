@@ -96,7 +96,6 @@ let SonosService = {
 		let currentGroupMatch;
 
 		sonos.getTopology((err, info) => {
-
 			if(err) {
 				return;
 			}
@@ -109,13 +108,14 @@ let SonosService = {
 			}
 
 			if(!currentGroupMatch || !currentZone) {
-
-				let zone = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).find({
+				let zone = _(info.zones).reject(function(z) { return(z.name.toLocaleLowerCase().match("bridge")) })
+					.reject(function(z) { return(z.name.toLocaleLowerCase().match("boost")) }).find({
 					coordinator: "true"
 				});
 
 				if(window.localStorage.zone) {
-					let match = _(info.zones).reject({ name: "BRIDGE" }).reject({ name: "BOOST" }).find({
+					let match = _(info.zones).reject(function(z) { return(z.name.toLocaleLowerCase().match("bridge")) })
+						.reject(function(z) { return(z.name.toLocaleLowerCase().match("boost")) }).find({
 						uuid: window.localStorage.zone,
 						coordinator: "true"
 					});

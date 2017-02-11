@@ -21,8 +21,8 @@ var ZoneGroupStore = _.assign({}, events.EventEmitter.prototype, {
 	},
 
 	setAll (groups) {
-		this._groups = _(groups).reject({ name: "BRIDGE" })
-								.reject({ name: "BOOST" })
+		this._groups = _(groups).reject(function(z) { return(z.name.toLocaleLowerCase().match("bridge")) })
+								.reject(function(z) { return(z.name.toLocaleLowerCase().match("boost")) })
 								.sortBy('name')
 								.groupBy('group')
 								.value();
