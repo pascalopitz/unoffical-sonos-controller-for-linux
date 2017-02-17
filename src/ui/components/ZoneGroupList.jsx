@@ -47,8 +47,12 @@ class ZoneGroupList extends Component {
 		});
 
 		return (
-			<div id="zone-wrapper">
-				{zoneGroupNodes}
+			<div id="zone-container-inner" style="width:100%;display: flex; flex-direction: column;">
+				<div style="overflow-y: auto;">
+					<div id="zone-wrapper">
+						{zoneGroupNodes}
+					</div>
+				</div>
 			</div>
 		);
 	}
