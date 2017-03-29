@@ -6,17 +6,17 @@
   "main": "main.js",
   "dependencies": {
     "array-union": "^1.0.1",
-    "bluebird": "^3.4.6",
+    "bluebird": "^3.5.0",
     "deep-equal": "^1.0.1",
     "flux": "^3.1.2",
-    "ip": "^1.1.4",
+    "ip": "^1.1.5",
     "jquery-xml2json": "git+https://github.com/pascalopitz/jQuery-xml2json.git",
-    "lodash": "^4.17.2",
-    "moment": "^2.17.1",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
     "omit-keys": "^0.1.0",
-    "preact": "^7.1.0",
+    "preact": "^7.2.1",
     "preact-virtual-list": "^0.3.1",
-    "request": "^2.79.0",
+    "request": "^2.81.0",
     "uuid": "^3.0.0",
     "wake-event": "^0.0.1"
   }
