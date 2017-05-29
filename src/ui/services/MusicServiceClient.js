@@ -40,7 +40,8 @@ class MusicServiceClient {
 				method: 'POST',
 				headers: {
 					'SOAPAction': '"' + NS + '#' + action + '"',
-					'Content-type': 'text/xml; charset=utf8'
+					'Content-type': 'text/xml; charset=utf8',
+					'User-Agent': 'SMAPI-Client',
 				},
 				body: withinEnvelope(body, headers)
 			}, (err, res, body) => {
@@ -215,6 +216,25 @@ class MusicServiceClient {
 				let resp = xml2json(stripNamespaces(res));
 				let obj = resp['Envelope']['Body']['getDeviceLinkCodeResponse']['getDeviceLinkCodeResult'];
 				return obj;
+			});
+	}
+
+	getAppLink() {
+
+		let headers = [
+				'<ns:credentials>',
+				'</ns:credentials>'
+			].join('');
+
+		let body = ['<ns:getAppLink>',
+			'<ns:householdId>', SonosService.householdId, '</ns:householdId>',
+			'</ns:getAppLink>'].join('');
+
+		return this._doRequest(this._serviceDefinition.SecureUri, 'getAppLink', body, headers)
+			.then((res) => {
+				let resp = xml2json(stripNamespaces(res));
+				let obj = resp['Envelope']['Body']['getAppLinkResponse']['getAppLinkResult'];
+				return obj.authorizeAccount.deviceLink;
 			});
 	}
 

@@ -39,8 +39,18 @@ export default {
 	},
 
 	getLink (client) {
-		if(client.auth === 'DeviceLink' || client.auth === 'AppLink') {
-			client.getDeviceLinkCode().then((link) => {
+
+		let promise;
+
+		if(client.auth === 'DeviceLink') {
+			promise = client.getDeviceLinkCode();
+		}
+
+		if(client.auth === 'AppLink') {
+			promise = client.getAppLink();
+		}
+
+		promise.then((link) => {
 				Dispatcher.dispatch({
 					actionType: Constants.MUSICSERVICE_ADD_LINK_RECEIVED,
 					link: link
@@ -60,10 +70,9 @@ export default {
 							});
 							window.clearInterval(poll);
 						});
-					})
+					});
 				}, 5000);
 			});
-		}
 	},
 
 	addAnonymousService (client) {

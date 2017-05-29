@@ -158,7 +158,7 @@ class BrowserList extends Component {
 		}
 
 		return (
-			<div id="music-sources-container" onScroll={this._onScroll.bind(this)}>
+			<div id="music-sources-container" onScrollCapture={this._onScroll.bind(this)}>
 				{headlineNodes}
 				<ul id="browser-container">
 					<VirtualList
