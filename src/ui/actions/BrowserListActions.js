@@ -95,8 +95,6 @@ export default {
                         state: state,
                     });
                 });
-
-            return;
         } else {
             sonos.getMusicLibrary(state.id || state.searchType, params, (err, result) => {
                 if(err || !result || !result.items) {
@@ -196,7 +194,7 @@ export default {
         const promises = [];
 
         Object.keys(SonosService._deviceSearches).forEach((host) => {
-            promises.push(new Promise((resolve, reject) => {
+            promises.push(new Promise((resolve) => {
                 const sonos = SonosService._deviceSearches[host];
 
                 sonos.getMusicLibrary('AI:', {}, (err, result) => {
@@ -223,20 +221,16 @@ export default {
     },
 
     _fetchMusicServices () {
-        const ALLOWED_SERVICES = [12, 160, 201, 17]; // 12 is spotify, 160 soundcloud, 201 Amazon Music
+
         const sonos = SonosService._currentDevice;
         const existingIds = SonosService._musicServices.map(s => s.service.Id);
 
-        const promise= new Promise((resolve, reject) => {
+        const promise= new Promise((resolve) => {
             sonos.getAvailableServices((err, data) => {
 
-                //data = _.reject(data, { Auth: "UserId" });
                 data = _.reject(data, (item) => {
                     return _.includes(existingIds, item.Id);
                 });
-                // data = _.filter(data, (item) => {
-                //     return _.includes(ALLOWED_SERVICES, Number(item.Id)) || item.Auth === 'UserId';
-                // });
 
                 data = _.orderBy(data, 'Name');
 

@@ -204,6 +204,9 @@ Dispatcher.register(action => {
             BrowserListStore.addToHistory(BrowserListStore.getState());
             BrowserListStore.setState(action.state);
             BrowserListStore.emitChange();
+
+            // HACK: super dirty
+            document.querySelector('#browser-container > .scrollcontainer').scrollTop = 0;
             break;
 
         case Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE:

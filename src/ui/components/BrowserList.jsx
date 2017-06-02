@@ -49,9 +49,6 @@ class BrowserList extends Component {
             searching: searching,
             searchMode: searchMode,
         });
-
-        // SUPER DIRTY HACK
-        document.querySelector('#browser-container > .scollcontainer').scrollTop = 0;
     }
 
     _back() {
