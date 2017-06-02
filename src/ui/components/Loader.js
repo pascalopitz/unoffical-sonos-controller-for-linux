@@ -3,36 +3,36 @@ import ZoneGroupStore from '../stores/ZoneGroupStore';
 
 class Loader extends Component {
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			current: ZoneGroupStore.getCurrent(),
-		};
-	}
+    constructor(props) {
+        super(props);
+        this.state = {
+            current: ZoneGroupStore.getCurrent(),
+        };
+    }
 
-	componentDidMount() {
-		ZoneGroupStore.addChangeListener(this._onChange.bind(this));
-	}
+    componentDidMount() {
+        ZoneGroupStore.addChangeListener(this._onChange.bind(this));
+    }
 
-	_onChange() {
-		this.setState({
-			current: ZoneGroupStore.getCurrent(),
-		});
-	}
+    _onChange() {
+        this.setState({
+            current: ZoneGroupStore.getCurrent(),
+        });
+    }
 
-	render () {
-		// if(this.state.current) {
-			return null;
-		// }
+    render () {
+        // if(this.state.current) {
+            return null;
+        // }
 
-		let msg = "Searching for your Sonos System ...";
+        const msg = "Searching for your Sonos System ...";
 
-		return (
-			<div id="loader">
-				<p>{msg}</p>
-			</div>
-		);
-	}
+        return (
+            <div id="loader">
+                <p>{msg}</p>
+            </div>
+        );
+    }
 }
 
 export default Loader;

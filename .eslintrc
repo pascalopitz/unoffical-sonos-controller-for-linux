@@ -1,12 +1,15 @@
 {
-	"parser": "babel-eslint",
+    "parser": "babel-eslint",
     "ecmaFeatures": {
         "blockBindings": true,
         "forOf": true,
         "jsx": true
     },
+    "plugins": [
+        "react"
+    ],
     "rules": {
-    	"strict": 0,
+        "strict": 0,
         "comma-dangle": 0,
         "comma-spacing": 1,
         "curly": 1,
@@ -19,21 +22,23 @@
         "no-mixed-spaces-and-tabs": 1,
         "no-shadow": 0,
         "no-multi-spaces": 1,
-        "no-trailing-spaces": 0,
+        "no-trailing-spaces": 1,
         "no-underscore-dangle": 0,
         "no-unused-vars": 1,
-		"no-use-before-define": [2, "nofunc"],
+        "no-use-before-define": [2, "nofunc"],
         "quotes": 0,
         "semi": 1,
         "semi-spacing": 1,
-		"space-before-blocks": 1,
-		"object-curly-spacing": [1, "always"],
-		"no-process-exit": 0
+        "space-before-blocks": 1,
+        "object-curly-spacing": [1, "always"],
+        "no-process-exit": 0,
+        "prefer-const": 1,
+        "no-var": 1
     },
     "env": {
-    	"node": true,
-    	"es6": true,
-    	"browser": true,
-    	"mocha": true,
+        "node": true,
+        "es6": true,
+        "browser": true,
+        "mocha": true,
     }
 }

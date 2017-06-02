@@ -12,120 +12,116 @@ const REG = /^http:\/\/([\d\.]+)/;
 
 export default {
 
-	showManagement (group) {
-		Dispatcher.dispatch({
-			actionType: Constants.GROUP_MANAGEMENT_SHOW,
-			group: group,
-		});
-	},
+    showManagement (group) {
+        Dispatcher.dispatch({
+            actionType: Constants.GROUP_MANAGEMENT_SHOW,
+            group: group,
+        });
+    },
 
-	hideManagement () {
-		Dispatcher.dispatch({
-			actionType: Constants.GROUP_MANAGEMENT_HIDE,
-		});
-	},
+    hideManagement () {
+        Dispatcher.dispatch({
+            actionType: Constants.GROUP_MANAGEMENT_HIDE,
+        });
+    },
 
-	select (player) {
-		Dispatcher.dispatch({
-			actionType: Constants.GROUP_MANAGEMENT_SELECT,
-			player: player,
-		});
-	},
+    select (player) {
+        Dispatcher.dispatch({
+            actionType: Constants.GROUP_MANAGEMENT_SELECT,
+            player: player,
+        });
+    },
 
-	deselect (player) {
-		Dispatcher.dispatch({
-			actionType: Constants.GROUP_MANAGEMENT_DESELECT,
-			player: player,
-		});
-	},
+    deselect (player) {
+        Dispatcher.dispatch({
+            actionType: Constants.GROUP_MANAGEMENT_DESELECT,
+            player: player,
+        });
+    },
 
-	save () {
-		let current = GroupManagementStore.getCurrent();
-		let coordinator = _.find(current, { coordinator: "true" });
+    save () {
+        const current = GroupManagementStore.getCurrent();
+        const coordinator = _.find(current, { coordinator: "true" });
 
-		let players = GroupManagementStore.getPlayers();
+        const players = GroupManagementStore.getPlayers();
 
-		let removed = [];
-		let added = [];
+        const removed = [];
+        const added = [];
 
-		players.forEach((p) => {
-			let wasPresent = !!_.find(current, { uuid: p.uuid });
+        players.forEach((p) => {
+            const wasPresent = !!_.find(current, { uuid: p.uuid });
 
-			if(p.selected && !wasPresent) {
-				added.push(p);
-			}
+            if(p.selected && !wasPresent) {
+                added.push(p);
+            }
 
-			if(!p.selected && wasPresent) {
-				removed.push(p);
-			}
-		});
+            if(!p.selected && wasPresent) {
+                removed.push(p);
+            }
+        });
 
-		let coordinatorRemoved = !!_.find(removed, { uuid: coordinator.uuid });
-		let lastModified;
+        let lastModified;
 
-		let promise = Promise.resolve();
+        const promise = Promise.resolve();
 
-		added.forEach((p) => {
-			let matches = REG.exec(p.location);
-			let host = matches[1];
+        added.forEach((p) => {
+            const matches = REG.exec(p.location);
+            const host = matches[1];
 
-			let sonos = SonosService._deviceSearches[host];
-			let avTransport = new Services.AVTransport(sonos.host, sonos.port);
+            const sonos = SonosService._deviceSearches[host];
+            const avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
-			promise.then(() => {
-				return new Promise((resolve, reject) => {
-					avTransport.SetAVTransportURI({
-						InstanceID: 0,
-						CurrentURI: 'x-rincon:' + coordinator.uuid,
-						CurrentURIMetaData: '',
-					}, (err) => {
-						if(err) {
-							reject(err);
-						} else {
-							lastModified = sonos;
-							resolve();
-						}
-					});
-				});
-			});
-		});
+            promise.then(() => {
+                return new Promise((resolve, reject) => {
+                    avTransport.SetAVTransportURI({
+                        InstanceID: 0,
+                        CurrentURI: 'x-rincon:' + coordinator.uuid,
+                        CurrentURIMetaData: '',
+                    }, (err) => {
+                        if(err) {
+                            reject(err);
+                        } else {
+                            lastModified = sonos;
+                            resolve();
+                        }
+                    });
+                });
+            });
+        });
 
-		removed.forEach((p) => {
-			let matches = REG.exec(p.location);
-			let host = matches[1];
+        removed.forEach((p) => {
+            const matches = REG.exec(p.location);
+            const host = matches[1];
 
-			let sonos = SonosService._deviceSearches[host];
-			let avTransport = new Services.AVTransport(sonos.host, sonos.port);
+            const sonos = SonosService._deviceSearches[host];
+            const avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
-			promise.then(() => {
-				return new Promise((resolve, reject) => {
-					avTransport.BecomeCoordinatorOfStandaloneGroup({
-						InstanceID: 0,
-					}, (err) => {
-						if(err) {
-							reject(err);
-						} else {
-							lastModified = sonos;
-							resolve();
-						}
-					});
-				});
-			});
-		});
+            promise.then(() => {
+                return new Promise((resolve, reject) => {
+                    avTransport.BecomeCoordinatorOfStandaloneGroup({
+                        InstanceID: 0,
+                    }, (err) => {
+                        if(err) {
+                            reject(err);
+                        } else {
+                            lastModified = sonos;
+                            resolve();
+                        }
+                    });
+                });
+            });
+        });
 
-		promise.then(() => {
-			Dispatcher.dispatch({
-				actionType: Constants.GROUP_MANAGEMENT_CHANGED,
-			});
+        promise.then(() => {
+            Dispatcher.dispatch({
+                actionType: Constants.GROUP_MANAGEMENT_CHANGED,
+            });
 
-			[1,500,1000,1500,2000].forEach((num) => {
-				window.setTimeout(() => {
-					SonosService.queryTopology(lastModified);
-				}, num);
-			});
-		}, (err) => {
-			debugger;
-		});
-	}
-
+            [1, 500, 1000, 1500, 2000].forEach((num) => {
+                window.setTimeout(() => {
+                    SonosService.queryTopology(lastModified);
+                }, num);
+            });
+        });
+    }
 };

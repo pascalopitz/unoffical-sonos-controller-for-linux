@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { h, Component } from 'preact'; //eslint-disable-line
 
 import GroupManagementStore from '../stores/GroupManagementStore';
@@ -7,76 +5,76 @@ import GroupManagementActions from '../actions/GroupManagementActions';
 
 class GroupManagement extends Component {
 
-	constructor(props) {
-		super(props);
-		this.state = this._getUpdatedState();
-	}
+    constructor(props) {
+        super(props);
+        this.state = this._getUpdatedState();
+    }
 
-	componentDidMount() {
-		GroupManagementStore.addChangeListener(this._onChange.bind(this));
-	}
+    componentDidMount() {
+        GroupManagementStore.addChangeListener(this._onChange.bind(this));
+    }
 
-	_onChange() {
-		this.setState(this._getUpdatedState());
-	}
+    _onChange() {
+        this.setState(this._getUpdatedState());
+    }
 
-	_getUpdatedState() {
-		let players = GroupManagementStore.getPlayers();
-		let current = GroupManagementStore.getCurrent();
+    _getUpdatedState() {
+        const players = GroupManagementStore.getPlayers();
+        const current = GroupManagementStore.getCurrent();
 
-		return {
-			players: players,
-			current: current,
-		};
-	}
+        return {
+            players: players,
+            current: current,
+        };
+    }
 
-	_cancel () {
-		GroupManagementActions.hideManagement();
-	}
+    _cancel () {
+        GroupManagementActions.hideManagement();
+    }
 
-	_save () {
-		GroupManagementActions.save();
-	}
+    _save () {
+        GroupManagementActions.save();
+    }
 
-	render () {
-		if(!this.state.current) {
-			return null;
-		}
+    render () {
+        if(!this.state.current) {
+            return null;
+        }
 
-		let zoneGroupNodes = this.state.players.map((item, idx) => {
+        const zoneGroupNodes = this.state.players.map((item, idx) => {
 
-			let checkboxSymbol = item.selected ? 'check_box' : 'check_box_outline_blank';
+            const checkboxSymbol = item.selected ? 'check_box' : 'check_box_outline_blank';
 
-			let _toggleSelection = () => {
-				if(!item.selected) {
-					GroupManagementActions.select(item);
-				} else {
-					GroupManagementActions.deselect(item);
-				}
-			};
+            const _toggleSelection = () => {
+                if(!item.selected) {
+                    GroupManagementActions.select(item);
+                } else {
+                    GroupManagementActions.deselect(item);
+                }
+            };
 
-			return (
-				<li key={idx}>
-					<span>{item.name}</span>
-					<i className="material-icons checkbox"
-						onClick={_toggleSelection.bind(this)}>{checkboxSymbol}</i>
-				</li>
-			);
-		});
+            return (
+                <li key={idx}>
+                    <span>{item.name}</span>
+                    <i className="material-icons checkbox"
+                        onClick={_toggleSelection.bind(this)}>{checkboxSymbol}</i>
+                </li>
+            );
+        });
 
-		return (
-			<div id="zone-group-management">
-				<div id="zone-group-management-container">
-					<ul>
-						{zoneGroupNodes}
-					</ul>
+        return (
+            <div id="zone-group-management">
+                <div id="zone-group-management-container">
+                    <ul>
+                        {zoneGroupNodes}
+                    </ul>
 
-					<button onClick={this._cancel.bind(this)} className="cancel-button">Cancel</button>
-					<button onClick={this._save.bind(this)} className="save-button">Save</button>
-				</div>
-			</div>
-		);
-	}
+                    <button onClick={this._cancel.bind(this)} className="cancel-button">Cancel</button>
+                    <button onClick={this._save.bind(this)} className="save-button">Save</button>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default GroupManagement;

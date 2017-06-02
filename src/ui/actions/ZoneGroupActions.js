@@ -7,27 +7,27 @@ import SonosService from '../services/SonosService';
 
 export default {
 
-	selectGroup(group) {
+    selectGroup(group) {
 
-		let zone = _(group).find({
-			coordinator: 'true'
-		});
+        const zone = _(group).find({
+            coordinator: 'true'
+        });
 
-		SonosService.selectCurrentZone(zone);
+        SonosService.selectCurrentZone(zone);
 
-		Dispatcher.dispatch({
-			actionType: Constants.ZONE_GROUP_SELECT,
-			zone: zone
-		});
+        Dispatcher.dispatch({
+            actionType: Constants.ZONE_GROUP_SELECT,
+            zone: zone
+        });
 
-		SonosService.queryState();
-	},
+        SonosService.queryState();
+    },
 
-	showManagement (group) {
-		Dispatcher.dispatch({
-			actionType: Constants.ZONE_GROUP_MANAGEMENT_SHOW,
-			group: group,
-		});
-	},
+    showManagement (group) {
+        Dispatcher.dispatch({
+            actionType: Constants.ZONE_GROUP_MANAGEMENT_SHOW,
+            group: group,
+        });
+    },
 
 };

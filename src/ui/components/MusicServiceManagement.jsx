@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { h, Component } from 'preact'; //eslint-disable-line
 
 import MusicServiceManagementStore from '../stores/MusicServiceManagementStore';
@@ -8,25 +6,25 @@ import MusicServiceManagementActions from '../actions/MusicServiceManagementActi
 class MusicServiceManagement extends Component {
 
     constructor (props) {
-		super(props);
+        super(props);
         this.state = {};
     }
 
-	componentDidMount() {
-		MusicServiceManagementStore.addChangeListener(this._onChange.bind(this));
-	}
+    componentDidMount() {
+        MusicServiceManagementStore.addChangeListener(this._onChange.bind(this));
+    }
 
-	_onChange() {
-		this.setState({
+    _onChange() {
+        this.setState({
             client: MusicServiceManagementStore.getClient(),
             link: MusicServiceManagementStore.getLink(),
         });
-	}
+    }
 
-	_cancel () {
+    _cancel () {
         this.state = {};
-		MusicServiceManagementActions.hideManagement();
-	}
+        MusicServiceManagementActions.hideManagement();
+    }
 
     _next () {
         if(!this.state.link && this.state.client.auth === 'UserId') {
@@ -36,14 +34,14 @@ class MusicServiceManagement extends Component {
 
         if(!this.state.link && this.state.client.auth === 'Anonymous') {
             MusicServiceManagementActions.addAnonymousService(this.state.client);
-			return;
+            return;
         }
 
         if(!this.state.link && (this.state.client.auth === 'DeviceLink' || this.state.client.auth === 'AppLink')) {
             MusicServiceManagementActions.getLink(this.state.client);
             return;
         }
-	}
+    }
 
     _changeUserName (e) {
         this.setState({
@@ -57,13 +55,13 @@ class MusicServiceManagement extends Component {
         });
     }
 
-	render () {
+    render () {
 
         let link;
 
-		if(!this.state.client) {
-			return null;
-		}
+        if(!this.state.client) {
+            return null;
+        }
 
         if(this.state.client.auth === 'Anonymous') {
             link = (
@@ -101,12 +99,12 @@ class MusicServiceManagement extends Component {
             );
         }
 
-		return (
-			<div id="music-service-management">
-				<div id="music-service-management-container">
-					<h3>
-						{this.state.client.name}
-					</h3>
+        return (
+            <div id="music-service-management">
+                <div id="music-service-management-container">
+                    <h3>
+                        {this.state.client.name}
+                    </h3>
 
                     <div>
                         <p>This feature is super experimental and untested mostly. It might not work at all or lead to unexpected behaviour.</p>
@@ -115,12 +113,12 @@ class MusicServiceManagement extends Component {
 
                     {link}
 
-					<button onClick={this._cancel.bind(this)} className="cancel-button">Cancel</button>
+                    <button onClick={this._cancel.bind(this)} className="cancel-button">Cancel</button>
                     <button onClick={this._next.bind(this)} className="next-button">Next</button>
-				</div>
-			</div>
-		);
-	}
+                </div>
+            </div>
+        );
+    }
 }
 
 export default MusicServiceManagement;

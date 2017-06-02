@@ -16,46 +16,46 @@ import Loader from './Loader';
 
 class Application extends Component {
 
-	constuctor() {
-		this.state = {
-			showPlayNow: true,
-		};
-	}
+    constuctor() {
+        this.state = {
+            showPlayNow: true,
+        };
+    }
 
-	componentDidMount () {
-		SonosService.mount();
-	}
+    componentDidMount () {
+        SonosService.mount();
+    }
 
-	render () {
-		return (
-			<div>
-				<div id="application">
-					<header id="top-control">
-						<VolumeControls />
-						<PlayControls />
-						<PositionInfo />
-						<SearchBar />
-					</header>
-					<div id="column-container">
-						<div id="zone-container">
-							<h4>ROOMS</h4>
-							<ZoneGroupList />
-						</div>
+    render () {
+        return (
+            <div>
+                <div id="application">
+                    <header id="top-control">
+                        <VolumeControls />
+                        <PlayControls />
+                        <PositionInfo />
+                        <SearchBar />
+                    </header>
+                    <div id="column-container">
+                        <div id="zone-container">
+                            <h4>ROOMS</h4>
+                            <ZoneGroupList />
+                        </div>
 
-						<div id="status-container">
-							<CurrentTrack expanded={this.state.showPlayNow} />
-							<QueueList expanded={!this.state.showPlayNow} />
-						</div>
+                        <div id="status-container">
+                            <CurrentTrack expanded={this.state.showPlayNow} />
+                            <QueueList expanded={!this.state.showPlayNow} />
+                        </div>
 
-						<BrowserList />
-					</div>
-				</div>
-				<GroupManagement />
-				<MusicServiceManagement />
-				<Loader />
-			</div>
-		);
-	}
+                        <BrowserList />
+                    </div>
+                </div>
+                <GroupManagement />
+                <MusicServiceManagement />
+                <Loader />
+            </div>
+        );
+    }
 }
 
 export default Application;

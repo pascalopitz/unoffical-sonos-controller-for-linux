@@ -5,96 +5,96 @@ import SonosService from '../services/SonosService';
 
 export default {
 
-	pause () {
-		let sonos = SonosService._currentDevice;
-		sonos.pause(() => {
-			Dispatcher.dispatch({
-				actionType: Constants.PLAYER_PAUSE,
-			});
-			SonosService.queryState();
-		});
-	},
+    pause () {
+        const sonos = SonosService._currentDevice;
+        sonos.pause(() => {
+            Dispatcher.dispatch({
+                actionType: Constants.PLAYER_PAUSE,
+            });
+            SonosService.queryState();
+        });
+    },
 
-	play () {
-		let sonos = SonosService._currentDevice;
-		sonos.play(() => {
-			Dispatcher.dispatch({
-				actionType: Constants.PLAYER_PLAY,
-			});
-			SonosService.queryState();
-		});
-	},
+    play () {
+        const sonos = SonosService._currentDevice;
+        sonos.play(() => {
+            Dispatcher.dispatch({
+                actionType: Constants.PLAYER_PLAY,
+            });
+            SonosService.queryState();
+        });
+    },
 
-	playPrev () {
-		let sonos = SonosService._currentDevice;
-		sonos.previous(() => {
-			Dispatcher.dispatch({
-				actionType: Constants.PLAYER_PREV,
-			});
-			SonosService.queryState();
-		});
-	},
+    playPrev () {
+        const sonos = SonosService._currentDevice;
+        sonos.previous(() => {
+            Dispatcher.dispatch({
+                actionType: Constants.PLAYER_PREV,
+            });
+            SonosService.queryState();
+        });
+    },
 
-	playNext () {
-		let sonos = SonosService._currentDevice;
+    playNext () {
+        const sonos = SonosService._currentDevice;
 
-		sonos.next(() => {
-			Dispatcher.dispatch({
-				actionType: Constants.PLAYER_NEXT,
-			});
-			SonosService.queryState();
-		});
-	},
+        sonos.next(() => {
+            Dispatcher.dispatch({
+                actionType: Constants.PLAYER_NEXT,
+            });
+            SonosService.queryState();
+        });
+    },
 
-	seek (time) {
-		let sonos = SonosService._currentDevice;
+    seek (time) {
+        const sonos = SonosService._currentDevice;
 
-		sonos.seek(time, () => {
-			Dispatcher.dispatch({
-				actionType: Constants.PLAYER_SEEK,
-				time: time,
-			});
-			SonosService.queryState();
-		});
-	},
+        sonos.seek(time, () => {
+            Dispatcher.dispatch({
+                actionType: Constants.PLAYER_SEEK,
+                time: time,
+            });
+            SonosService.queryState();
+        });
+    },
 
-	setPlayMode (mode) {
-		let sonos = SonosService._currentDevice;
-		let avTransport = new Services.AVTransport(sonos.host, sonos.port);
+    setPlayMode (mode) {
+        const sonos = SonosService._currentDevice;
+        const avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
-		avTransport.SetPlayMode({
-			InstanceID: 0,
-			NewPlayMode: mode,
-		}, (err) => {
-			Dispatcher.dispatch({
-				actionType: Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE,
-				mode: mode,
-			});
-		});
-	},
+        avTransport.SetPlayMode({
+            InstanceID: 0,
+            NewPlayMode: mode,
+        }, (err) => {
+            Dispatcher.dispatch({
+                actionType: Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE,
+                mode: mode,
+            });
+        });
+    },
 
-	setCrossfade (state) {
-		let sonos = SonosService._currentDevice;
-		let avTransport = new Services.AVTransport(sonos.host, sonos.port);
+    setCrossfade (state) {
+        const sonos = SonosService._currentDevice;
+        const avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
-		avTransport.SetCrossfadeMode({
-			InstanceID: 0,
-			CrossfadeMode: Number(state),
-		}, (err, info) => {
-			let mode = state;
+        avTransport.SetCrossfadeMode({
+            InstanceID: 0,
+            CrossfadeMode: Number(state),
+        }, (err, info) => {
+            const mode = state;
 
-			Dispatcher.dispatch({
-				actionType: Constants.OPTIMISTIC_CURRENT_CROSSFADE_MODE_UPDATE,
-				mode: mode,
-			});
-		});
-	},
+            Dispatcher.dispatch({
+                actionType: Constants.OPTIMISTIC_CURRENT_CROSSFADE_MODE_UPDATE,
+                mode: mode,
+            });
+        });
+    },
 
-	refreshPosition () {
-		let sonos = SonosService._currentDevice;
+    refreshPosition () {
+        const sonos = SonosService._currentDevice;
 
-		window.setTimeout(() => {
-			SonosService.queryState();
-		}, 100)
-	},
+        window.setTimeout(() => {
+            SonosService.queryState();
+        }, 100);
+    },
 };

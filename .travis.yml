@@ -9,6 +9,7 @@ addons:
 node_js:
 - '6'
 script:
+- npm run lint
 - npm run fonts
 - npm run transpile
 - npm run dist

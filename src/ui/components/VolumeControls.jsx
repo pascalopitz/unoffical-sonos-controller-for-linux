@@ -10,216 +10,216 @@ import VolumeControlStore from '../stores/VolumeControlStore';
 
 class VolumeControls extends Component {
 
-	constructor (props) {
-		super(props);
-		this.state = {
-			players: VolumeControlStore.getPlayers(),
-		};
-	}
+    constructor (props) {
+        super(props);
+        this.state = {
+            players: VolumeControlStore.getPlayers(),
+        };
+    }
 
-	componentDidMount () {
-		VolumeControlStore.addChangeListener(this._onChange.bind(this));
-	}
+    componentDidMount () {
+        VolumeControlStore.addChangeListener(this._onChange.bind(this));
+    }
 
-	_onChange () {
-		if(!this.state.dragging) {
-			this.setState({
-				players: VolumeControlStore.getPlayers(),
-			});
-		}
-	}
+    _onChange () {
+        if(!this.state.dragging) {
+            this.setState({
+                players: VolumeControlStore.getPlayers(),
+            });
+        }
+    }
 
-	_toggleGoupMute (e) {
-		let muted = this._calculateGroupMuted();
+    _toggleGoupMute (e) {
+        const muted = this._calculateGroupMuted();
 
-		Object.keys(this.state.players).forEach((host) => {
-			VolumeControlActions.setPlayerMuted(host, !muted);
-		});
-	}
+        Object.keys(this.state.players).forEach((host) => {
+            VolumeControlActions.setPlayerMuted(host, !muted);
+        });
+    }
 
-	_changeGroupVolume (volume) {
-		let keys = Object.keys(this.state.players);
-		let state = _.cloneDeep(this.state);
+    _changeGroupVolume (volume) {
+        const keys = Object.keys(this.state.players);
+        const state = _.cloneDeep(this.state);
 
-		state.isExpanded = true;
+        state.isExpanded = true;
 
-		// adjust all players in group
-		let volumeLevel = volume;
-		let groupVolume = this._calculateGroupVolume();
-		let deltaVolume = volumeLevel - groupVolume;
-		let newVolume;
+        // adjust all players in group
+        const volumeLevel = volume;
+        const groupVolume = this._calculateGroupVolume();
+        const deltaVolume = volumeLevel - groupVolume;
+        let newVolume;
 
-		keys.forEach((key) => {
-			if (volumeLevel < 1) {
-				newVolume = 0;
-			} else if (deltaVolume > 0) {
-				newVolume = this.state.players[key].volume + deltaVolume;
-			} else {
-				let factor = this.state.players[key].volume / groupVolume;
-				newVolume = Math.ceil(factor * volumeLevel);
-			}
+        keys.forEach((key) => {
+            if (volumeLevel < 1) {
+                newVolume = 0;
+            } else if (deltaVolume > 0) {
+                newVolume = this.state.players[key].volume + deltaVolume;
+            } else {
+                const factor = this.state.players[key].volume / groupVolume;
+                newVolume = Math.ceil(factor * volumeLevel);
+            }
 
-			if(newVolume > 99) {
-				newVolume = 99;
-			}
+            if(newVolume > 99) {
+                newVolume = 99;
+            }
 
-			if(newVolume <= 0) {
-				newVolume = 0;
-			}
+            if(newVolume <= 0) {
+                newVolume = 0;
+            }
 
-			state.players[key].volume = newVolume;
-			VolumeControlActions.setPlayerVolume(key, newVolume);
-		});
+            state.players[key].volume = newVolume;
+            VolumeControlActions.setPlayerVolume(key, newVolume);
+        });
 
-		this.setState(state);
-	}
+        this.setState(state);
+    }
 
-	_startGroupVolume () {
-		let keys = Object.keys(this.state.players);
+    _startGroupVolume () {
+        const keys = Object.keys(this.state.players);
 
-		this._dragStart();
-		this.setState({
-			isExpanded: keys.length > 1
-		});
-	}
+        this._dragStart();
+        this.setState({
+            isExpanded: keys.length > 1
+        });
+    }
 
-	_endGroupVolume () {
-		this._dragEnd();
-		this._hideTimeStart();
-	}
+    _endGroupVolume () {
+        this._dragEnd();
+        this._hideTimeStart();
+    }
 
-	_dragStart () {
-		if(this._dragEndTimer) {
-			window.clearTimeout(this._dragEndTimer);
-		}
+    _dragStart () {
+        if(this._dragEndTimer) {
+            window.clearTimeout(this._dragEndTimer);
+        }
 
-		this.setState({
-			dragging: true
-		});
-	}
+        this.setState({
+            dragging: true
+        });
+    }
 
-	_dragEnd () {
-		this._dragEndTimer = window.setTimeout(() => {
-			this.setState({
-				dragging: false
-			});
-			VolumeControlActions.queryVolumes();
-		}, 500);
-	}
+    _dragEnd () {
+        this._dragEndTimer = window.setTimeout(() => {
+            this.setState({
+                dragging: false
+            });
+            VolumeControlActions.queryVolumes();
+        }, 500);
+    }
 
-	_hideTimeStart () {
-		this._hideTimer = window.setTimeout(() => {
-			this.setState({
-				isExpanded: false
-			});
-		}, 1000);
-	}
+    _hideTimeStart () {
+        this._hideTimer = window.setTimeout(() => {
+            this.setState({
+                isExpanded: false
+            });
+        }, 1000);
+    }
 
-	_hideTimeStop () {
-		window.clearTimeout(this._hideTimer);
-	}
+    _hideTimeStop () {
+        window.clearTimeout(this._hideTimer);
+    }
 
-	_calculateGroupMuted () {
-		return _.filter(this.state.players, { muted: false }).length === 0;
-	}
+    _calculateGroupMuted () {
+        return _.filter(this.state.players, { muted: false }).length === 0;
+    }
 
-	_calculateGroupVolume () {
-		let keys = Object.keys(this.state.players);
+    _calculateGroupVolume () {
+        const keys = Object.keys(this.state.players);
 
-		if(!keys.length) {
-			return 0;
-		}
+        if(!keys.length) {
+            return 0;
+        }
 
-		let volume = Math.floor(_.sum(_.map(this.state.players, (p) => Number(p.volume))) / keys.length);
-		return volume;
-	}
+        const volume = Math.floor(_.sum(_.map(this.state.players, (p) => Number(p.volume))) / keys.length);
+        return volume;
+    }
 
-	render () {
+    render () {
 
-		let groupMuted = false;
-		let groupVolume = 0;
-		let playerPopover;
+        let groupMuted = false;
+        let groupVolume = 0;
+        let playerPopover;
 
-		let keys = Object.keys(this.state.players);
+        const keys = Object.keys(this.state.players);
 
-		if(keys.length === 1) {
-			groupMuted = this.state.players[keys[0]].muted;
-			groupVolume = this.state.players[keys[0]].volume;
-		} else {
-			groupMuted = this._calculateGroupMuted();
-			groupVolume = this._calculateGroupVolume();
-		}
+        if(keys.length === 1) {
+            groupMuted = this.state.players[keys[0]].muted;
+            groupVolume = this.state.players[keys[0]].volume;
+        } else {
+            groupMuted = this._calculateGroupMuted();
+            groupVolume = this._calculateGroupVolume();
+        }
 
-		if(this.state.isExpanded && keys.length > 1) {
+        if(this.state.isExpanded && keys.length > 1) {
 
-			let playerRows = Object.keys(this.state.players).map((key) => {
+            const playerRows = Object.keys(this.state.players).map((key) => {
 
-				let muted = this.state.players[key].muted;
-				let volume = this.state.players[key].volume;
-				let name = this.state.players[key].name;
+                const muted = this.state.players[key].muted;
+                const volume = this.state.players[key].volume;
+                const name = this.state.players[key].name;
 
-				let startVolume = () => {
-					this._dragStart();
-					this.setState({
-						dragging: true
-					});
-				};
+                const startVolume = () => {
+                    this._dragStart();
+                    this.setState({
+                        dragging: true
+                    });
+                };
 
-				let endVolume = () => {
-					this._dragEnd();
-				};
+                const endVolume = () => {
+                    this._dragEnd();
+                };
 
-				let changeVolume = (volume) => {
-					let state = _.cloneDeep(this.state);
-					state.isExpanded = true;
-					state.players[key].volume = volume;
+                const changeVolume = (volume) => {
+                    const state = _.cloneDeep(this.state);
+                    state.isExpanded = true;
+                    state.players[key].volume = volume;
 
-					this.setState(state);
-					VolumeControlActions.setPlayerVolume(key, volume);
-				};
+                    this.setState(state);
+                    VolumeControlActions.setPlayerVolume(key, volume);
+                };
 
-				let toggleMute = () => {
-					VolumeControlActions.setPlayerMuted(key, !muted);
-				};
+                const toggleMute = () => {
+                    VolumeControlActions.setPlayerMuted(key, !muted);
+                };
 
-				return (
-					<div key={key}>
-						<h6>{name}</h6>
+                return (
+                    <div key={key}>
+                        <h6>{name}</h6>
 
-						<MuteButton muted={muted}
-							clickHandler={toggleMute} />
+                        <MuteButton muted={muted}
+                            clickHandler={toggleMute} />
 
-						<VolumeSlider volume={volume}
-								stopHandler={endVolume}
-								startHandler={startVolume}
-								dragHandler={changeVolume} />
-					</div>
-				);
-			});
+                        <VolumeSlider volume={volume}
+                                stopHandler={endVolume}
+                                startHandler={startVolume}
+                                dragHandler={changeVolume} />
+                    </div>
+                );
+            });
 
-			playerPopover = (
-				<div id="player-volumes-container"
-						onMouseOut={this._hideTimeStart.bind(this)}
-						onMouseOver={this._hideTimeStop.bind(this)}>
-					<div id="player-volumes">{playerRows}</div>
-				</div>
-			);
-		}
+            playerPopover = (
+                <div id="player-volumes-container"
+                        onMouseOut={this._hideTimeStart.bind(this)}
+                        onMouseOver={this._hideTimeStop.bind(this)}>
+                    <div id="player-volumes">{playerRows}</div>
+                </div>
+            );
+        }
 
-		return (
-			<div id="master-volume">
-				<MuteButton muted={groupMuted}
-							clickHandler={this._toggleGoupMute.bind(this)} />
+        return (
+            <div id="master-volume">
+                <MuteButton muted={groupMuted}
+                            clickHandler={this._toggleGoupMute.bind(this)} />
 
-				<VolumeSlider volume={groupVolume}
-								stopHandler={this._endGroupVolume.bind(this)}
-								startHandler={this._startGroupVolume.bind(this)}
-								dragHandler={this._changeGroupVolume.bind(this)} />
+                <VolumeSlider volume={groupVolume}
+                                stopHandler={this._endGroupVolume.bind(this)}
+                                startHandler={this._startGroupVolume.bind(this)}
+                                dragHandler={this._changeGroupVolume.bind(this)} />
 
-				{playerPopover}
-			</div>
-		);
-	}
+                {playerPopover}
+            </div>
+        );
+    }
 }
 
 export default VolumeControls;
