@@ -38,6 +38,10 @@ const SonosService = {
 
         new Search((sonos) => {
 
+            if (sonos.model.match(/^BR/)) {
+                return;
+            }
+
             bb.promisifyAll(sonos);
 
             if(this._searchInterval) {
@@ -71,9 +75,10 @@ const SonosService = {
                 listener.addService('/SystemProperties/Event', persistSubscription);
 
                 this.queryCurrentTrackAndPlaystate(sonos);
+                this.queryTopology(sonos);
 
                 if(!firstResultProcessed) {
-                    this.queryTopology(sonos);
+
                     this.queryAccounts(sonos);
 
                     sonos.getHouseholdId((err, hhid) => {
@@ -86,6 +91,7 @@ const SonosService = {
                     });
 
                     listener.addService('/ZoneGroupTopology/Event', persistSubscription);
+
                     firstResultProcessed = true;
                 }
             });
@@ -138,12 +144,11 @@ const SonosService = {
                         zone: zone,
                     });
                 }, 500);
-
             }
 
             Dispatcher.dispatch({
                 actionType: Constants.SONOS_SERVICE_TOPOLOGY_UPDATE,
-                groups: this.excludeStereoPairs(info.zones),
+                groups: this.excludeStereoPairsAndBridges(info.zones),
             });
         });
     },
@@ -403,7 +408,7 @@ const SonosService = {
 
                     Dispatcher.dispatch({
                         actionType: Constants.SONOS_SERVICE_TOPOLOGY_EVENT,
-                        groups: this.excludeStereoPairs(zones),
+                        groups: this.excludeStereoPairsAndBridges(zones),
                     });
                 }
                 break;
@@ -550,7 +555,7 @@ const SonosService = {
         }
     },
 
-    excludeStereoPairs (zones) {
+    excludeStereoPairsAndBridges (zones) {
 
         // TODO: find a better place for this
         zones.forEach((z) => {
@@ -564,6 +569,8 @@ const SonosService = {
                 g[0].name = g[0].name + ' (L + R)';
             }
             return _.find(g, { 'coordinator': 'true' }) || g[0];
+        }).filter((z) => {
+            return _.includes(_.keys(this._deviceSearches), z.host);
         }).value();
     },
 

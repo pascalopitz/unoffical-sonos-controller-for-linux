@@ -58,6 +58,10 @@ export default {
             start: state.items.length
         };
 
+        if (state.items.length >= state.total) {
+            return;
+        }
+
         const client = state.serviceClient;
 
         if(client && state.total > state.items.length) {
@@ -95,6 +99,19 @@ export default {
                         state: state,
                     });
                 });
+        } else if(state.search) {
+            sonos.searchMusicLibrary(state.type, state.term, params, (err, result) => {
+                if(err || !result || !result.items) {
+                    return;
+                }
+
+                state.items = state.items.concat(result.items);
+
+                Dispatcher.dispatch({
+                    actionType: Constants.BROWSER_SEARCH_SCROLL_RESULT,
+                    state: state,
+                });
+            });
         } else {
             sonos.getMusicLibrary(state.id || state.searchType, params, (err, result) => {
                 if(err || !result || !result.items) {

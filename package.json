@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "scripts": {

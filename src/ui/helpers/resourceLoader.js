@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const MAX_CONNECTIONS = 5;
+const MAX_CONNECTIONS = 35;
 
 const heap = [];
 const pending = {};

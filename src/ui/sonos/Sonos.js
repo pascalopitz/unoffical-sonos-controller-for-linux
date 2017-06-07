@@ -178,10 +178,15 @@ class Sonos {
             RequestedCount: '100',
             SortCriteria: ''
         };
+
         const searches = searchTypes[searchType] + ':' + searchTerm;
+
         let opts = {
             ObjectID: searches
         };
+
+        if(options.start !== undefined) {opts.StartingIndex = options.start;}
+        if(options.total !== undefined) {opts.RequestedCount = options.total;}
 
         opts = _.extend(defaultOptions, opts);
         const contentDirectory = new Services.ContentDirectory(this.host, this.port);

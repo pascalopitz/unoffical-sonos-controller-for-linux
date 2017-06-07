@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants from '../constants/Constants';
 
@@ -21,7 +22,9 @@ function createSearchPromise(type, term, options) {
                 return;
             }
 
-            resolve(result);
+            resolve(_.assign(result, {
+                type, term, search: true,
+            }));
         });
     });
 }

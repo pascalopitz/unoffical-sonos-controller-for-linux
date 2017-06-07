@@ -101,6 +101,7 @@ const BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
 
     endSearch () {
         this._search = false;
+        this._history = _.without(this._history, 'search');
     },
 
     getSearchMode () {
@@ -169,6 +170,10 @@ Dispatcher.register(action => {
                 BrowserListStore.setSearchResults(action.results);
             }
 
+            BrowserListStore.emitChange();
+            break;
+
+        case Constants.BROWSER_SEARCH_SCROLL_RESULT:
             BrowserListStore.emitChange();
             break;
 

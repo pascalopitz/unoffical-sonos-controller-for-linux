@@ -73,7 +73,7 @@ class BrowserList extends Component {
         }
     }
 
-    _playAlbum (e) {
+    _playAlbum () {
         BrowserListActions.play(this.state.currentState);
     }
 
