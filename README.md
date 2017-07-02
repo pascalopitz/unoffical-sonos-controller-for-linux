@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/pascalopitz/unoffical-sonos-controller-for-linux.svg?branch=master)](https://travis-ci.org/pascalopitz/unoffical-sonos-controller-for-linux)
+[![devDependencies Status](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux/dev-status.svg)](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux?type=dev)
 
 #Unofficial Sonos Controller for Linux
 
