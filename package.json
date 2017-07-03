@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "scripts": {
@@ -55,9 +55,9 @@
     "babel-preset-node5": "^12.0.1",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.24.1",
-    "electron": "^1.7.2",
-    "electron-builder": "^18.3.5",
-    "eslint": "^3.19.0",
+    "electron": "^1.6.11",
+    "electron-builder": "^19.11.1",
+    "eslint": "^4.1.1",
     "eslint-plugin-react": "^7.0.1",
     "material-design-icons": "^3.0.1",
     "watch": "^1.0.2"
