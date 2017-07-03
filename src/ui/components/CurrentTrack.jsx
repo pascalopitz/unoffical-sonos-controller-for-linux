@@ -50,7 +50,7 @@ class CurrentTrack extends Component {
                     <h4 id="now-playing">
                         <span>No Music</span>
 
-                        <a id="current-track-toggle-button" onClick={this._toggle.bind(this)}>
+                        <a id="current-track-toggle-button" class="current-track-toggle-button" onClick={this._toggle.bind(this)}>
                             {toggleNode}
                         </a>
                     </h4>
@@ -75,7 +75,7 @@ class CurrentTrack extends Component {
                     <h4 id="now-playing">
                         <span id="track-short-info">{info}</span>
 
-                        <a id="current-track-toggle-button" onClick={this._toggle.bind(this)}>
+                        <a id="current-track-toggle-button" class="current-track-toggle-button" onClick={this._toggle.bind(this)}>
                             <i className="material-icons">expand_more</i>
                         </a>
                     </h4>
@@ -88,7 +88,7 @@ class CurrentTrack extends Component {
             <h4 id="now-playing">
                 <span>NOW PLAYING</span>
 
-                <a id="current-track-toggle-button" onClick={this._toggle.bind(this)}>
+                <a id="current-track-toggle-button" class="current-track-toggle-button" onClick={this._toggle.bind(this)}>
                     <i className="material-icons">expand_less</i>
                 </a>
             </h4>

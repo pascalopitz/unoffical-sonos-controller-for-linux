@@ -142,6 +142,7 @@ h4 {
 	background: linear-gradient(to bottom, rgb(130,130,130), rgb(90,90,90));
 	border-top: 2px solid rgb(150,150,150);
 	border-bottom: 2px solid rgb(64,64,64);
+	cursor: pointer;
 
 }
 
@@ -320,6 +321,10 @@ h4 {
 
 #status-container h4#queue {
 	border-radius: 0;
+}
+
+.current-track-toggle-button {
+    cursor: pointer;
 }
 
 #status-container #current-track-info {
@@ -599,6 +604,10 @@ input[type=range]:focus {
 	font-size: 18px;
 }
 
+#position-info .content i:hover {
+    cursor: pointer;
+}
+
 #position-info .content i.active {
 	color: gold;
 }
@@ -630,6 +639,7 @@ input[type=range]:focus {
 #position-bar-scrubber:hover {
 	background: linear-gradient(to bottom, #999999, #6E6E6E);
 	box-shadow: 0px 0px 1px 1px #999999;
+    cursor: pointer;
 }
 
 #position-bar-scrubber.sliding {
@@ -707,6 +717,7 @@ input[type=range]:focus {
 	top: 10px;
 	padding: 10px 10px 10px 10px;
 	border-radius: 5px;
+    cursor: pointer;
 }
 
 #zone-wrapper .zone-group ul {
@@ -1005,6 +1016,10 @@ body #queue-container li[data-is-current=true] {
 	margin-right: 20px;
 }
 
+#zone-group-management-container li i.material-icons.checkbox:hover {
+    cursor: pointer;
+}
+
 #music-service-management-container button,
 #zone-group-management-container button {
 	background-image: -webkit-linear-gradient(top, #404040 0px, #303030 24px);
@@ -1022,9 +1037,19 @@ body #queue-container li[data-is-current=true] {
 	left: 10px;
 }
 
+#music-service-management-container button.cancel-button:hover,
+#zone-group-management-container button.cancel-button:hover {
+    cursor: pointer;
+}
+
 #music-service-management-container button.next-button,
 #zone-group-management-container button.save-button {
 	right: 10px;
+}
+
+#music-service-management-container button.next-button:hover,
+#zone-group-management-container button.save-button:hover {
+    cursor: pointer;
 }
 
 
