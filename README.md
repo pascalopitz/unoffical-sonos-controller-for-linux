@@ -49,7 +49,11 @@ You will need to whitelist these if you run Ubuntu firewall for example:
 
 ##Thanks to other projects
 
-- I ported nearly all of https://github.com/bencevans/node-sonos/ so that it works in chrome.
+- I ported nearly all of https://github.com/bencevans/node-sonos/ so that it worked in chrome, and made minor modifications.
   Also made it into an ES6 code base where it was easy to do.
 
 - The web interface markup and css is poached from https://github.com/jishi/node-sonos-web-controller/
+
+Please refer to the above projects' licenses (MIT), where they apply.
+
+
