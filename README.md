@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/pascalopitz/unoffical-sonos-controller-for-linux.svg?branch=master)](https://travis-ci.org/pascalopitz/unoffical-sonos-controller-for-linux)
 
-#Unofficial Sonos Controller for Linux
+# Unofficial Sonos Controller for Linux
 
 First I was tinkering with chrome apps and sonos, but chrome apps are
 a dying platform, so I've moved over to Electron. The project is written
