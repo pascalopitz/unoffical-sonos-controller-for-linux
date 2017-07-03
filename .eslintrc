@@ -1,10 +1,5 @@
 {
     "parser": "babel-eslint",
-    "ecmaFeatures": {
-        "blockBindings": true,
-        "forOf": true,
-        "jsx": true
-    },
     "plugins": [
         "react"
     ],
