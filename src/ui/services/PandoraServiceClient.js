@@ -21,7 +21,7 @@ const ENCRYPTION_PASSWORD = '721^26xE22776';
 const DECRYPTION_PASSWORD = '20zE1E47BE57$51';
 
 function pandoraEncode(str) {
-    const buf = Buffer.from(ENCRYPTION_PASSWORD, "base64");
+    const buf = Buffer.from(ENCRYPTION_PASSWORD, 'base64');
     const cipher = crypto.createCipheriv('bf-ecb', buf, Buffer.alloc(0));
 
     let encrypted = cipher.update(str, 'utf8', 'hex');
@@ -32,7 +32,7 @@ function pandoraEncode(str) {
 }
 
 function pandoraDecode(str) {
-    const buf = Buffer.from(DECRYPTION_PASSWORD, "base64");
+    const buf = Buffer.from(DECRYPTION_PASSWORD, 'base64');
     const decipher = crypto.createDecipheriv('bf-ecb', buf, Buffer.alloc(0));
 
     let decrypted = decipher.update(str, 'hex', 'utf8');
@@ -43,7 +43,6 @@ function pandoraDecode(str) {
 }
 
 class PandoraServiceClient {
-
     constructor(serviceDefinition) {
         this._serviceDefinition = serviceDefinition;
 
@@ -53,54 +52,66 @@ class PandoraServiceClient {
 
     _getPartnerCode() {
         return new Promise((resolve, reject) => {
-            requestHelper({
-                method: 'POST',
-                uri: this._serviceDefinition.SecureUri + '?method=auth.partnerLogin',
-                json: {
-                    username: PARTNER_USERNAME,
-                    password: PARTNER_PASSWORD,
-                    deviceModel: PARTNER_DEVICEID,
-                    version: API_VERSION,
+            requestHelper(
+                {
+                    method: 'POST',
+                    uri:
+                        this._serviceDefinition.SecureUri +
+                        '?method=auth.partnerLogin',
+                    json: {
+                        username: PARTNER_USERNAME,
+                        password: PARTNER_PASSWORD,
+                        deviceModel: PARTNER_DEVICEID,
+                        version: API_VERSION
+                    }
+                },
+                (err, res, body) => {
+                    if (err) {
+                        reject(err);
+                    } else if (res.statusCode != 200) {
+                        reject(body);
+                    } else {
+                        this.partnerAuthToken = body.result.partnerAuthToken;
+                        this.partnerId = body.result.partnerId;
+                        resolve(body);
+                    }
                 }
-            }, (err, res, body) => {
-                if(err) {
-                    reject(err);
-                } else if (res.statusCode != 200) {
-                    reject(body);
-                } else {
-                    this.partnerAuthToken = body.result.partnerAuthToken;
-                    this.partnerId = body.result.partnerId;
-                    resolve(body);
-                }
-            });
+            );
         });
     }
 
     _userLogin(username, password) {
-
         const params = {
             username,
             password,
             partnerAuthToken: this.partnerAuthToken,
             loginType: 'user',
-            returnStationList: true,
+            returnStationList: true
         };
         const body = pandoraEncode(JSON.stringify(params));
 
         return new Promise((resolve, reject) => {
-            requestHelper({
-                method: 'POST',
-                uri: this._serviceDefinition.SecureUri + '?method=auth.userLogin&partner_id=' + this.partnerId + '&partner_auth_token=' + escape(this.partnerAuthToken),
-                body,
-            }, (err, res, body) => {
-                if(err) {
-                    reject(err);
-                } else if (res.statusCode != 200) {
-                    reject(body);
-                } else {
-                    resolve(body);
+            requestHelper(
+                {
+                    method: 'POST',
+                    uri:
+                        this._serviceDefinition.SecureUri +
+                        '?method=auth.userLogin&partner_id=' +
+                        this.partnerId +
+                        '&partner_auth_token=' +
+                        escape(this.partnerAuthToken),
+                    body
+                },
+                (err, res, body) => {
+                    if (err) {
+                        reject(err);
+                    } else if (res.statusCode != 200) {
+                        reject(body);
+                    } else {
+                        resolve(body);
+                    }
                 }
-            });
+            );
         });
     }
 
@@ -113,8 +124,6 @@ class PandoraServiceClient {
                 return this._userLogin(username, password);
             });
     }
-
-
 }
 
 export default PandoraServiceClient;

@@ -1,10 +1,12 @@
 import { h, Component } from 'preact'; //eslint-disable-line
 
 class ZoneGroupMember extends Component {
-    render () {
+    render() {
         return (
             <li>
-                <span>{this.props.member.name}</span>
+                <span>
+                    {this.props.member.name}
+                </span>
             </li>
         );
     }

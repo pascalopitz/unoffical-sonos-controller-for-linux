@@ -6,9 +6,7 @@ import Constants from '../constants/Constants';
 import SonosService from '../services/SonosService';
 
 export default {
-
     selectGroup(group) {
-
         const zone = _(group).find({
             coordinator: 'true'
         });
@@ -23,11 +21,10 @@ export default {
         SonosService.queryState();
     },
 
-    showManagement (group) {
+    showManagement(group) {
         Dispatcher.dispatch({
             actionType: Constants.ZONE_GROUP_MANAGEMENT_SHOW,
-            group: group,
+            group: group
         });
-    },
-
+    }
 };

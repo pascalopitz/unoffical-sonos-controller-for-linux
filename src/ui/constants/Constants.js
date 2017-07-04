@@ -63,10 +63,10 @@ const Constants = {
     MUSICSERVICE_AUTH_TOKEN_RECEIVED: '',
     MUSICSERVICE_SESSION_ID_RECEIVED: '',
 
-    CURRENT_TRACK_TOGGLE_EXPANDED: '',
+    CURRENT_TRACK_TOGGLE_EXPANDED: ''
 };
 
-Object.keys(Constants).forEach((k) => {
+Object.keys(Constants).forEach(k => {
     Constants[k] = Symbol(k);
 });
 

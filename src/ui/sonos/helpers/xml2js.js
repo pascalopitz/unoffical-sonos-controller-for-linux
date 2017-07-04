@@ -1,9 +1,9 @@
 import xml2json from 'jquery-xml2json';
 
 const xml2js = {
-    Parser: function () {
+    Parser: function() {
         return {
-            parseString: function (str, callback) {
+            parseString: function(str, callback) {
                 const json = xml2json(str, {
                     explicitArray: true
                 });

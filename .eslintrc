@@ -1,9 +1,14 @@
 {
     "parser": "babel-eslint",
     "plugins": [
-        "react"
+        "react",
+        "prettier"
     ],
     "rules": {
+        "prettier/prettier": [ "error", {
+            "singleQuote": true,
+            "tabWidth": 4
+        }],
         "strict": 0,
         "comma-dangle": 0,
         "comma-spacing": 1,

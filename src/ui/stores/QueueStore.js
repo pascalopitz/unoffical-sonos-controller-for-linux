@@ -1,5 +1,5 @@
 import events from 'events';
-import _ from "lodash";
+import _ from 'lodash';
 
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants from '../constants/Constants';
@@ -7,45 +7,48 @@ import Constants from '../constants/Constants';
 const CHANGE_EVENT = 'change';
 
 const QueueStore = _.assign({}, events.EventEmitter.prototype, {
-
-    _tracks : [],
+    _tracks: [],
     _position: null,
     _updateID: null,
     _expanded: false,
 
-    emitChange () {
+    emitChange() {
         this.emit(CHANGE_EVENT);
     },
 
-    addChangeListener (listener) {
+    addChangeListener(listener) {
         this.on(CHANGE_EVENT, listener);
     },
 
-    setPosition (pos) {
+    setPosition(pos) {
         this._position = Number(pos);
     },
 
-    getPosition () {
+    getPosition() {
         return this._position;
     },
 
-    setUpdateID (id) {
+    setUpdateID(id) {
         this._updateID = id;
     },
 
-    getUpdateID () {
+    getUpdateID() {
         return this._updateID;
     },
 
-    setTracks (tracks) {
+    setTracks(tracks) {
         tracks = tracks || [];
         // preserve selection if direct match
         const old = this._tracks;
-        const oldIDs = old.map((t) => { return t.uri; });
-        const newIDs = tracks.map((t) => { return t.uri; });
+        const oldIDs = old.map(t => {
+            return t.uri;
+        });
+        const newIDs = tracks.map(t => {
+            return t.uri;
+        });
 
         tracks.forEach((t, i) => {
-            if(oldIDs[i] === newIDs[i] && oldIDs[i] && old[i].selected) {
+            if (oldIDs[i] === newIDs[i] && oldIDs[i] && old[i].selected) {
                 t.selected = true;
                 return;
             }
@@ -54,38 +57,38 @@ const QueueStore = _.assign({}, events.EventEmitter.prototype, {
         this._tracks = tracks;
     },
 
-    moveTrack (position, newPosition) {
+    moveTrack(position, newPosition) {
         const slice = this._tracks.splice(position - 1, 1);
         this._tracks.splice(newPosition - 1, 0, slice[0]);
     },
 
-    getTracks () {
+    getTracks() {
         return this._tracks;
     },
 
-    getSelected () {
+    getSelected() {
         return this._selected;
     },
 
-    clearSelected () {
+    clearSelected() {
         this._selected = [];
     },
 
-    addToSelection (track, position) {
+    addToSelection(track, position) {
         this._tracks[position - 1].selected = true;
     },
 
-    removeFromSelection (track, position) {
+    removeFromSelection(track, position) {
         this._tracks[position - 1].selected = false;
     },
 
-    getExpanded () {
+    getExpanded() {
         return this._expanded;
     },
 
-    setExpanded (expanded) {
+    setExpanded(expanded) {
         this._expanded = expanded;
-    },
+    }
 });
 
 Dispatcher.register(action => {
@@ -135,4 +138,3 @@ Dispatcher.register(action => {
 });
 
 export default QueueStore;
-

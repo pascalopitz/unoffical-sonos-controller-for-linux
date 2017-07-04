@@ -8,39 +8,34 @@ import id3 from 'music-tag';
 const PORT = 13453;
 
 class LocalMusicFileServer {
-
     constructor() {
         this.server = http.createServer((req, res) => {
-        //     let body = [];
-
-        //     req.on('data', (chunk) => {
-        //         body.push(chunk);
-        //     }).on('end', () => {
-        //         body = Buffer.concat(body).toString();
-
-        //         let match = _.find(this.tracks, { path: req.url });
-
-        //         if(match) {
-        //             let p = unescape(match.path);
-        //             fs.stat(p, (err, stats) => {
-        //                 res.writeHead(200, {
-        //                     'Content-Type': mime.lookup(p),
-        //                     'Content-Length': stats.size
-        //                 });
-        //                 fs.createReadStream(p).pipe(res);
-        //             });
-        //         } else {
-        //             res.writeHead(404, {'Content-Type': 'text/plain' });
-        //             res.end('not found');
-        //         }
-        //     });
+            //     let body = [];
+            //     req.on('data', (chunk) => {
+            //         body.push(chunk);
+            //     }).on('end', () => {
+            //         body = Buffer.concat(body).toString();
+            //         let match = _.find(this.tracks, { path: req.url });
+            //         if(match) {
+            //             let p = unescape(match.path);
+            //             fs.stat(p, (err, stats) => {
+            //                 res.writeHead(200, {
+            //                     'Content-Type': mime.lookup(p),
+            //                     'Content-Length': stats.size
+            //                 });
+            //                 fs.createReadStream(p).pipe(res);
+            //             });
+            //         } else {
+            //             res.writeHead(404, {'Content-Type': 'text/plain' });
+            //             res.end('not found');
+            //         }
+            //     });
         });
 
         this.server.listen(PORT);
     }
 
     mount() {
-
         return Promise.resolve({});
 
         // let ipAddress = ip.address()
@@ -49,7 +44,6 @@ class LocalMusicFileServer {
         //     recursive: true
         // })
         // .then((infos) => {
-
 
         //     this.tracks = [];
         //     this.albums = [];
@@ -111,18 +105,17 @@ class LocalMusicFileServer {
 }
 
 const server = new LocalMusicFileServer();
-server.mount().then((results) => {
+server.mount().then(results => {
     process.send({
-        workerEvent: 'taskResponse',
+        workerEvent: 'taskResponse'
         // response: results //server.getData(),
     });
 });
 
-process.on('message', (data) => {
+process.on('message', data => {
     console.log(data);
 });
 
 // process.send({
 //     alive: 1
 // });
-

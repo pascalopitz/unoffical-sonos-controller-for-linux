@@ -1,5 +1,5 @@
 import events from 'events';
-import _ from "lodash";
+import _ from 'lodash';
 
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants from '../constants/Constants';
@@ -10,20 +10,19 @@ const REG = /^http:\/\/([\d\.]+)/;
 const CHANGE_EVENT = 'change';
 
 const VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
-
     _all: {},
     _players: {},
 
-    emitChange () {
+    emitChange() {
         this.emit(CHANGE_EVENT);
     },
 
-    addChangeListener (listener) {
+    addChangeListener(listener) {
         this.on(CHANGE_EVENT, listener);
     },
 
-    initializeGroup (group) {
-        if(!group) {
+    initializeGroup(group) {
+        if (!group) {
             return;
         }
 
@@ -32,18 +31,18 @@ const VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
 
         const members = topology[group.group] || [];
 
-        members.forEach((m) => {
+        members.forEach(m => {
             const matches = REG.exec(m.location);
 
-            if(matches) {
+            if (matches) {
                 const host = matches[1];
 
                 let defaults = {
                     volume: 0,
-                    muted: false,
+                    muted: false
                 };
 
-                if(this._all[host]) {
+                if (this._all[host]) {
                     defaults = this._all[host];
                 }
 
@@ -54,29 +53,29 @@ const VolumeControlStore = _.assign({}, events.EventEmitter.prototype, {
         });
     },
 
-    getPlayers () {
+    getPlayers() {
         return this._players;
     },
 
-    setPlayer (host, obj) {
+    setPlayer(host, obj) {
         this._all[host] = {};
         _.assign(this._all[host], obj);
         _.assign(this._players[host], obj);
-    },
+    }
 });
 
 Dispatcher.register(action => {
     switch (action.actionType) {
         case Constants.VOLUME_CONTROLS_VOLUME_SET:
             VolumeControlStore.setPlayer(action.host, {
-                volume: action.volume,
+                volume: action.volume
             });
             VolumeControlStore.emitChange();
             break;
 
         case Constants.VOLUME_CONTROLS_MUTE_SET:
             VolumeControlStore.setPlayer(action.host, {
-                muted: action.muted,
+                muted: action.muted
             });
             VolumeControlStore.emitChange();
             break;

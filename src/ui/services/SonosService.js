@@ -17,7 +17,6 @@ const REG = /^http:\/\/([\d\.]+)/;
 const SECOND_QUERY_TIMEOUT = 2000;
 
 const SonosService = {
-
     _currentDevice: null,
     _queryTimeout: null,
     _deviceSearches: {},
@@ -27,24 +26,26 @@ const SonosService = {
     _searchInterval: null,
     _musicServices: [],
 
-    mount () {
-        this._searchInterval = window.setInterval(this.searchForDevices.bind(this), 1000);
+    mount() {
+        this._searchInterval = window.setInterval(
+            this.searchForDevices.bind(this),
+            1000
+        );
         this.searchForDevices();
         this.restoreMusicServices();
     },
 
-    searchForDevices () {
+    searchForDevices() {
         let firstResultProcessed = false;
 
-        new Search((sonos) => {
-
+        new Search(sonos => {
             if (sonos.model.match(/^BR/)) {
                 return;
             }
 
             bb.promisifyAll(sonos);
 
-            if(this._searchInterval) {
+            if (this._searchInterval) {
                 window.clearInterval(this._searchInterval);
             }
 
@@ -53,84 +54,108 @@ const SonosService = {
             this._deviceSearches[sonos.host] = sonos;
             this._listeners[sonos.host] = listener;
 
-            listener.listen(async (err) => {
-                if (err) {throw err;}
+            listener.listen(async err => {
+                if (err) {
+                    throw err;
+                }
 
                 listener.onServiceEvent(this.onServiceEvent.bind(this));
 
                 const persistSubscription = (err, sid) => {
-                    if(!err) {
+                    if (!err) {
                         this._persistentSubscriptions.push({
                             sid: sid,
                             host: sonos.host,
-                            sonos: sonos,
+                            sonos: sonos
                         });
                     }
                 };
 
                 // these events happen for all players
-                listener.addService('/MediaRenderer/RenderingControl/Event', persistSubscription);
-                listener.addService('/MusicServices/Event', persistSubscription);
-                listener.addService('/MediaRenderer/AVTransport/Event', persistSubscription);
-                listener.addService('/SystemProperties/Event', persistSubscription);
+                listener.addService(
+                    '/MediaRenderer/RenderingControl/Event',
+                    persistSubscription
+                );
+                listener.addService(
+                    '/MusicServices/Event',
+                    persistSubscription
+                );
+                listener.addService(
+                    '/MediaRenderer/AVTransport/Event',
+                    persistSubscription
+                );
+                listener.addService(
+                    '/SystemProperties/Event',
+                    persistSubscription
+                );
 
                 this.queryCurrentTrackAndPlaystate(sonos);
                 this.queryTopology(sonos);
 
-                if(!firstResultProcessed) {
-
+                if (!firstResultProcessed) {
                     this.queryAccounts(sonos);
 
                     sonos.getHouseholdId((err, hhid) => {
-
-                        if(err) {
+                        if (err) {
                             // noop
                         }
 
                         this.householdId = hhid;
                     });
 
-                    listener.addService('/ZoneGroupTopology/Event', persistSubscription);
+                    listener.addService(
+                        '/ZoneGroupTopology/Event',
+                        persistSubscription
+                    );
 
                     firstResultProcessed = true;
                 }
             });
-
         });
     },
 
-
-    queryTopology (sonos) {
-
+    queryTopology(sonos) {
         sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
         const currentZone = ZoneGroupStore.getCurrent();
         let currentGroupMatch;
 
         sonos.getTopology((err, info) => {
-            if(err) {
+            if (err) {
                 return;
             }
 
             // find out whether current group still exists
-            if(currentZone) {
+            if (currentZone) {
                 currentGroupMatch = _(info.zones).find({
                     group: currentZone.group
                 });
             }
 
-            if(!currentGroupMatch || !currentZone) {
-                let zone = _(info.zones).reject(function(z) { return(z.name.toLocaleLowerCase().match("bridge")); })
-                    .reject(function(z) { return(z.name.toLocaleLowerCase().match("boost")); }).find({
-                    coordinator: "true"
-                });
-
-                if(window.localStorage.zone) {
-                    const match = _(info.zones).reject(function(z) { return(z.name.toLocaleLowerCase().match("bridge")); })
-                        .reject(function(z) { return(z.name.toLocaleLowerCase().match("boost")); }).find({
-                        uuid: window.localStorage.zone,
-                        coordinator: "true"
+            if (!currentGroupMatch || !currentZone) {
+                let zone = _(info.zones)
+                    .reject(function(z) {
+                        return z.name.toLocaleLowerCase().match('bridge');
+                    })
+                    .reject(function(z) {
+                        return z.name.toLocaleLowerCase().match('boost');
+                    })
+                    .find({
+                        coordinator: 'true'
                     });
+
+                if (window.localStorage.zone) {
+                    const match = _(info.zones)
+                        .reject(function(z) {
+                            return z.name.toLocaleLowerCase().match('bridge');
+                        })
+                        .reject(function(z) {
+                            return z.name.toLocaleLowerCase().match('boost');
+                        })
+                        .find({
+                            uuid: window.localStorage.zone,
+                            coordinator: 'true'
+                        });
 
                     zone = match || zone;
                 }
@@ -141,32 +166,31 @@ const SonosService = {
 
                     Dispatcher.dispatch({
                         actionType: Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
-                        zone: zone,
+                        zone: zone
                     });
                 }, 500);
             }
 
             Dispatcher.dispatch({
                 actionType: Constants.SONOS_SERVICE_TOPOLOGY_UPDATE,
-                groups: this.excludeStereoPairsAndBridges(info.zones),
+                groups: this.excludeStereoPairsAndBridges(info.zones)
             });
         });
     },
 
-    queryVolumeInfo () {
+    queryVolumeInfo() {
         const zone = ZoneGroupStore.getCurrent();
         const topology = ZoneGroupStore.getAll();
 
-        if(!zone) {
+        if (!zone) {
             return;
         }
 
-        Object.keys(topology).forEach((key) => {
+        Object.keys(topology).forEach(key => {
             const players = topology[key];
 
-            players.forEach((m) => {
-
-                if(m.group !== zone.group) {
+            players.forEach(m => {
+                if (m.group !== zone.group) {
                     return;
                 }
 
@@ -174,18 +198,18 @@ const SonosService = {
                 const sonos = this._deviceSearches[matches[1]];
 
                 sonos.getMuted((err, muted) => {
-                    if(err) {
+                    if (err) {
                         return;
                     }
                     sonos.getVolume((err, volume) => {
-                        if(err) {
+                        if (err) {
                             return;
                         }
                         Dispatcher.dispatch({
                             actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
                             volume: volume,
                             muted: muted,
-                            sonos: sonos,
+                            sonos: sonos
                         });
                     });
                 });
@@ -193,26 +217,25 @@ const SonosService = {
         });
     },
 
-    queryMusicLibrary (sonos) {
+    queryMusicLibrary(sonos) {
         sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
         sonos.getMusicLibrary('queue', {}, (err, result) => {
-            if(err) {
+            if (err) {
                 return;
             }
             Dispatcher.dispatch({
                 actionType: Constants.SONOS_SERVICE_QUEUE_UPDATE,
-                result: result,
+                result: result
             });
         });
     },
 
-    async queryCurrentTrackAndPlaystate (sonos) {
-
+    async queryCurrentTrackAndPlaystate(sonos) {
         try {
             const state = await sonos.getCurrentStateAsync();
 
-            if(state === 'transitioning') {
+            if (state === 'transitioning') {
                 window.setTimeout(() => {
                     this.queryCurrentTrackAndPlaystate(sonos);
                 }, 1000);
@@ -221,12 +244,14 @@ const SonosService = {
 
             let track = await sonos.currentTrackAsync();
 
-            if(track.class === 'object.item') {
+            if (track.class === 'object.item') {
                 const mediaInfo = await sonos.getMediaInfoAsync();
 
-                const trackMeta = sonos.parseDIDL(xml2json(mediaInfo.CurrentURIMetaData, {
-                    explicitArray: true
-                }));
+                const trackMeta = sonos.parseDIDL(
+                    xml2json(mediaInfo.CurrentURIMetaData, {
+                        explicitArray: true
+                    })
+                );
 
                 track = Object.assign(track, trackMeta);
             }
@@ -235,36 +260,39 @@ const SonosService = {
                 actionType: Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE,
                 track: track,
                 host: sonos.host,
-                state: state,
+                state: state
             });
-
-        } catch(e) {
+        } catch (e) {
             console.error(e);
         }
-
     },
 
-    async queryCurrentTrack (sonos) {
+    async queryCurrentTrack(sonos) {
         sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
         try {
             let track = await sonos.currentTrackAsync();
 
-            if(track.class === 'object.item') {
+            if (track.class === 'object.item') {
                 const mediaInfo = await sonos.getMediaInfoAsync();
 
-                const trackMeta = sonos.parseDIDL(xml2json(mediaInfo.CurrentURIMetaData, {
-                    explicitArray: true
-                }));
+                const trackMeta = sonos.parseDIDL(
+                    xml2json(mediaInfo.CurrentURIMetaData, {
+                        explicitArray: true
+                    })
+                );
 
                 track = Object.assign(track, trackMeta);
             }
 
-            if(this._currentDevice && sonos.host === this._currentDevice.host) {
+            if (
+                this._currentDevice &&
+                sonos.host === this._currentDevice.host
+            ) {
                 Dispatcher.dispatch({
                     actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
                     track: track,
-                    host: sonos.host,
+                    host: sonos.host
                 });
             }
         } catch (e) {
@@ -272,58 +300,68 @@ const SonosService = {
         }
     },
 
-    queryPlayState (sonos) {
+    queryPlayState(sonos) {
         sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
         sonos.getCurrentState((err, state) => {
-            if(err) {
+            if (err) {
                 return;
             }
             this.processPlaystateUpdate(sonos, state);
         });
     },
 
-    queryPositionInfo (sonos) {
+    queryPositionInfo(sonos) {
         sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
         // TODO: I should be able to do all of these in a promise based op
         // i.e. seek->getPosition
         sonos.getPositionInfo((err, info) => {
-            if(err) {
+            if (err) {
                 return;
             }
 
-            if(this._currentDevice && sonos.host === this._currentDevice.host) {
+            if (
+                this._currentDevice &&
+                sonos.host === this._currentDevice.host
+            ) {
                 Dispatcher.dispatch({
                     actionType: Constants.SONOS_SERVICE_POSITION_INFO_UPDATE,
-                    info: info,
+                    info: info
                 });
             }
         });
     },
 
-    queryCrossfadeMode (sonos) {
+    queryCrossfadeMode(sonos) {
         sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
         const avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
-        avTransport.GetCrossfadeMode({
-            InstanceID: 0,
-        }, (err, info) => {
-            if(err) {
-                return;
-            }
+        avTransport.GetCrossfadeMode(
+            {
+                InstanceID: 0
+            },
+            (err, info) => {
+                if (err) {
+                    return;
+                }
 
-            if(this._currentDevice && sonos.host === this._currentDevice.host) {
-                Dispatcher.dispatch({
-                    actionType: Constants.SONOS_SERVICE_CURRENT_CROSSFADE_MODE_UPDATE,
-                    info: Boolean(Number(info.CrossfadeMode)),
-                });
+                if (
+                    this._currentDevice &&
+                    sonos.host === this._currentDevice.host
+                ) {
+                    Dispatcher.dispatch({
+                        actionType:
+                            Constants.SONOS_SERVICE_CURRENT_CROSSFADE_MODE_UPDATE,
+                        info: Boolean(Number(info.CrossfadeMode))
+                    });
+                }
             }
-        });
+        );
     },
 
-    async queryState (sonos) {
+    async queryState(sonos) {
         sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
         this.queryVolumeInfo();
@@ -336,11 +374,11 @@ const SonosService = {
         this.queryCrossfadeMode(sonos);
     },
 
-    queryAccounts (sonos) {
+    queryAccounts(sonos) {
         sonos = sonos || this._currentDevice || _.first(this._deviceSearches);
 
         sonos.getAccountStatus((err, info) => {
-            if(err) {
+            if (err) {
                 return;
             }
 
@@ -348,32 +386,29 @@ const SonosService = {
         });
     },
 
-    processPlaystateUpdate (sonos, state) {
-        const publishState = (state) => {
+    processPlaystateUpdate(sonos, state) {
+        const publishState = state => {
             Dispatcher.dispatch({
                 actionType: Constants.SONOS_SERVICE_PLAYSTATE_UPDATE,
                 state: state,
-                host: sonos.host,
+                host: sonos.host
             });
         };
 
-        if(state === 'transitioning') {
+        if (state === 'transitioning') {
             window.setTimeout(() => this.queryPlayState(sonos), 100);
         }
 
         publishState(state);
     },
 
-    onServiceEvent (endpoint, sid, data) {
-
+    onServiceEvent(endpoint, sid, data) {
         switch (endpoint) {
-
             case '/SystemProperties/Event':
             case '/MusicServices/Event':
             case '/MediaRenderer/DeviceProperties/Event':
                 console.log(endpoint, data);
                 break;
-
 
             case '/ZoneGroupTopology/Event':
                 {
@@ -384,22 +419,21 @@ const SonosService = {
 
                     const zones = [];
 
-                    _.forEach(topology.ZoneGroups.ZoneGroup, (zg) => {
+                    _.forEach(topology.ZoneGroups.ZoneGroup, zg => {
                         const cId = zg.$.Coordinator;
                         const gId = zg.$.ID;
 
-                        _.forEach(zg.ZoneGroupMember, (z) => {
+                        _.forEach(zg.ZoneGroupMember, z => {
                             const zone = {};
                             zone.group = gId;
-                            Object.keys(z.$).forEach((k) => {
+                            Object.keys(z.$).forEach(k => {
                                 zone[String(k).toLowerCase()] = String(z.$[k]);
                             });
                             zone.name = zone.zonename;
                             delete zone.zonename;
 
-
-                            if(cId === zone.uuid) {
-                                zone.coordinator = "true";
+                            if (cId === zone.uuid) {
+                                zone.coordinator = 'true';
                             }
 
                             zones.push(zone);
@@ -408,7 +442,7 @@ const SonosService = {
 
                     Dispatcher.dispatch({
                         actionType: Constants.SONOS_SERVICE_TOPOLOGY_EVENT,
-                        groups: this.excludeStereoPairsAndBridges(zones),
+                        groups: this.excludeStereoPairsAndBridges(zones)
                     });
                 }
                 break;
@@ -419,75 +453,126 @@ const SonosService = {
                         explicitArray: false
                     });
 
-                    const subscription = _(this._persistentSubscriptions).find({ sid: sid });
+                    const subscription = _(this._persistentSubscriptions).find({
+                        sid: sid
+                    });
 
-                    if(subscription) {
+                    if (subscription) {
                         Dispatcher.dispatch({
                             actionType: Constants.SONOS_SERVICE_VOLUME_UPDATE,
-                            volume: Number(lastChange.Event.InstanceID.Volume[0].$.val),
-                            muted: Boolean(Number(lastChange.Event.InstanceID.Mute[0].$.val)),
-                            sonos: subscription.sonos,
+                            volume: Number(
+                                lastChange.Event.InstanceID.Volume[0].$.val
+                            ),
+                            muted: Boolean(
+                                Number(
+                                    lastChange.Event.InstanceID.Mute[0].$.val
+                                )
+                            ),
+                            sonos: subscription.sonos
                         });
                     }
                 }
                 break;
 
-            case'/MediaRenderer/AVTransport/Event':
+            case '/MediaRenderer/AVTransport/Event':
                 {
                     const lastChange = xml2json(data.LastChange);
-                    const subscription = _(this._persistentSubscriptions).find({ sid: sid });
+                    const subscription = _(this._persistentSubscriptions).find({
+                        sid: sid
+                    });
 
-                    if(subscription) {
-                        const transportState = subscription.sonos.translateState(lastChange.Event.InstanceID.TransportState.$.val);
+                    if (subscription) {
+                        const transportState = subscription.sonos.translateState(
+                            lastChange.Event.InstanceID.TransportState.$.val
+                        );
 
-                        const avTransportMetaDIDL = xml2json(lastChange.Event.InstanceID.AVTransportURIMetaData.$.val, {
-                            explicitArray: true
-                        });
+                        const avTransportMetaDIDL = xml2json(
+                            lastChange.Event.InstanceID.AVTransportURIMetaData.$
+                                .val,
+                            {
+                                explicitArray: true
+                            }
+                        );
 
-                        const currentTrackDIDL = xml2json(lastChange.Event.InstanceID.CurrentTrackMetaData.$.val, {
-                            explicitArray: true
-                        });
+                        const currentTrackDIDL = xml2json(
+                            lastChange.Event.InstanceID.CurrentTrackMetaData.$
+                                .val,
+                            {
+                                explicitArray: true
+                            }
+                        );
 
                         Dispatcher.dispatch({
-                            actionType: Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE,
-                            track: subscription.sonos.parseDIDL(currentTrackDIDL),
-                            avTransportMeta: this._currentDevice.parseDIDL(avTransportMetaDIDL),
+                            actionType:
+                                Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE,
+                            track: subscription.sonos.parseDIDL(
+                                currentTrackDIDL
+                            ),
+                            avTransportMeta: this._currentDevice.parseDIDL(
+                                avTransportMetaDIDL
+                            ),
                             host: subscription.host,
-                            state: transportState,
+                            state: transportState
                         });
 
-                        if(this._currentDevice && subscription.host === this._currentDevice.host) {
+                        if (
+                            this._currentDevice &&
+                            subscription.host === this._currentDevice.host
+                        ) {
+                            const currentPlayMode =
+                                lastChange.Event.InstanceID.CurrentPlayMode.$
+                                    .val;
+                            const currentCrossfadeMode = Boolean(
+                                Number(
+                                    lastChange.Event.InstanceID
+                                        .CurrentCrossfadeMode.$.val
+                                )
+                            );
 
+                            const nextTrackDIDL = xml2json(
+                                lastChange.Event.InstanceID[
+                                    'r:NextTrackMetaData'
+                                ].$.val,
+                                {
+                                    explicitArray: true
+                                }
+                            );
 
-                            const currentPlayMode = lastChange.Event.InstanceID.CurrentPlayMode.$.val;
-                            const currentCrossfadeMode = Boolean(Number(lastChange.Event.InstanceID.CurrentCrossfadeMode.$.val));
-
-                            const nextTrackDIDL = xml2json(lastChange.Event.InstanceID['r:NextTrackMetaData'].$.val, {
-                                explicitArray: true
+                            Dispatcher.dispatch({
+                                actionType:
+                                    Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
+                                track: this._currentDevice.parseDIDL(
+                                    currentTrackDIDL
+                                ),
+                                avTransportMeta: this._currentDevice.parseDIDL(
+                                    avTransportMetaDIDL
+                                )
                             });
 
                             Dispatcher.dispatch({
-                                actionType: Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE,
-                                track: this._currentDevice.parseDIDL(currentTrackDIDL),
-                                avTransportMeta: this._currentDevice.parseDIDL(avTransportMetaDIDL),
+                                actionType:
+                                    Constants.SONOS_SERVICE_CURRENT_PLAY_MODE_UPDATE,
+                                mode: currentPlayMode
                             });
 
                             Dispatcher.dispatch({
-                                actionType: Constants.SONOS_SERVICE_CURRENT_PLAY_MODE_UPDATE,
-                                mode: currentPlayMode,
+                                actionType:
+                                    Constants.SONOS_SERVICE_CURRENT_CROSSFADE_MODE_UPDATE,
+                                mode: currentCrossfadeMode
                             });
 
                             Dispatcher.dispatch({
-                                actionType: Constants.SONOS_SERVICE_CURRENT_CROSSFADE_MODE_UPDATE,
-                                mode: currentCrossfadeMode,
+                                actionType:
+                                    Constants.SONOS_SERVICE_NEXT_TRACK_UPDATE,
+                                track: this._currentDevice.parseDIDL(
+                                    nextTrackDIDL
+                                )
                             });
 
-                            Dispatcher.dispatch({
-                                actionType: Constants.SONOS_SERVICE_NEXT_TRACK_UPDATE,
-                                track: this._currentDevice.parseDIDL(nextTrackDIDL),
-                            });
-
-                            this.processPlaystateUpdate(subscription.sonos, transportState);
+                            this.processPlaystateUpdate(
+                                subscription.sonos,
+                                transportState
+                            );
                         }
                     }
                 }
@@ -501,11 +586,13 @@ const SonosService = {
         }
     },
 
-    subscribeServiceEvents (sonos) {
+    subscribeServiceEvents(sonos) {
         const x = this._listeners[sonos.host];
 
         const cb = (error, sid) => {
-            if (error) {throw error;}
+            if (error) {
+                throw error;
+            }
             this._currentSubscriptions.push(sid);
         };
 
@@ -513,13 +600,14 @@ const SonosService = {
         x.addService('/MediaServer/ContentDirectory/Event', cb);
     },
 
-
-    unsubscribeServiceEvents (sonos) {
+    unsubscribeServiceEvents(sonos) {
         const x = this._listeners[sonos.host];
 
-        this._currentSubscriptions.forEach((sid) => {
-            x.removeService(sid, (error) => {
-                if (error) {throw error;}
+        this._currentSubscriptions.forEach(sid => {
+            x.removeService(sid, error => {
+                if (error) {
+                    throw error;
+                }
                 console.log('Successfully unsubscribed');
             });
         });
@@ -527,23 +615,23 @@ const SonosService = {
         this._currentSubscriptions = [];
     },
 
-    selectCurrentZone (value) {
+    selectCurrentZone(value) {
         const matches = REG.exec(value.location);
         const sonos = this._deviceSearches[matches[1]];
 
-        if(sonos === this._currentDevice) {
+        if (sonos === this._currentDevice) {
             this.queryState(sonos);
             return;
         }
 
         window.localStorage.zone = value.uuid;
 
-        if(sonos) {
-            if(this._currentDevice) {
+        if (sonos) {
+            if (this._currentDevice) {
                 this.unsubscribeServiceEvents(this._currentDevice);
             }
 
-            if(this._queryTimeout) {
+            if (this._queryTimeout) {
                 window.clearTimeout(this._queryTimeout);
             }
 
@@ -551,52 +639,59 @@ const SonosService = {
 
             this.subscribeServiceEvents(sonos);
             this.queryState(sonos);
-            this._queryTimeout = window.setTimeout(() => this.queryState(), SECOND_QUERY_TIMEOUT);
+            this._queryTimeout = window.setTimeout(
+                () => this.queryState(),
+                SECOND_QUERY_TIMEOUT
+            );
         }
     },
 
-    excludeStereoPairsAndBridges (zones) {
-
+    excludeStereoPairsAndBridges(zones) {
         // TODO: find a better place for this
-        zones.forEach((z) => {
+        zones.forEach(z => {
             const matches = REG.exec(z.location);
             z.host = matches[1];
         });
 
-        return _(zones).groupBy('name').map((g) => {
-            // TODO: what happens when a sub is added?
-            if(g.length === 2) {
-                g[0].name = g[0].name + ' (L + R)';
-            }
-            return _.find(g, { 'coordinator': 'true' }) || g[0];
-        }).filter((z) => {
-            return _.includes(_.keys(this._deviceSearches), z.host);
-        }).value();
+        return _(zones)
+            .groupBy('name')
+            .map(g => {
+                // TODO: what happens when a sub is added?
+                if (g.length === 2) {
+                    g[0].name = g[0].name + ' (L + R)';
+                }
+                return _.find(g, { coordinator: 'true' }) || g[0];
+            })
+            .filter(z => {
+                return _.includes(_.keys(this._deviceSearches), z.host);
+            })
+            .value();
     },
 
-    rememberMusicService (service, authToken) {
+    rememberMusicService(service, authToken) {
         this._musicServices.push({
             service: service,
-            authToken: authToken,
+            authToken: authToken
         });
 
-        return new Promise((resolve) => {
-
-            window.localStorage.musicServices = JSON.stringify(this._musicServices);
+        return new Promise(resolve => {
+            window.localStorage.musicServices = JSON.stringify(
+                this._musicServices
+            );
 
             Dispatcher.dispatch({
                 actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
-                musicServices: this._musicServices,
+                musicServices: this._musicServices
             });
 
             resolve();
         });
     },
 
-    removeMusicService (service) {
+    removeMusicService(service) {
         let currentServices = JSON.parse(window.localStorage.musicServices);
 
-        currentServices = _.reject(currentServices, (s) => {
+        currentServices = _.reject(currentServices, s => {
             return s.service.Id == service.Id;
         });
 
@@ -605,16 +700,18 @@ const SonosService = {
 
         Dispatcher.dispatch({
             actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
-            musicServices: this._musicServices,
+            musicServices: this._musicServices
         });
     },
 
-    restoreMusicServices () {
-        this._musicServices = window.localStorage.musicServices ? JSON.parse(window.localStorage.musicServices) : [];
+    restoreMusicServices() {
+        this._musicServices = window.localStorage.musicServices
+            ? JSON.parse(window.localStorage.musicServices)
+            : [];
 
         Dispatcher.dispatch({
             actionType: Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE,
-            musicServices: this._musicServices,
+            musicServices: this._musicServices
         });
     }
 };

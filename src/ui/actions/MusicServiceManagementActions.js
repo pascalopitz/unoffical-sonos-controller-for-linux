@@ -6,77 +6,87 @@ import SonosService from '../services/SonosService';
 let poll;
 
 export default {
-    hideManagement () {
+    hideManagement() {
         Dispatcher.dispatch({
-            actionType: Constants.MUSICSERVICE_ADD_CANCEL,
+            actionType: Constants.MUSICSERVICE_ADD_CANCEL
         });
 
-        if(poll) {
+        if (poll) {
             window.clearInterval(poll);
             poll = null;
         }
     },
 
     getSession(client, username, password) {
-        if(client.auth === 'UserId') {
-            client.getSessionId(username, password).then((sessionId) => {
-                if(!sessionId) {
+        if (client.auth === 'UserId') {
+            client.getSessionId(username, password).then(sessionId => {
+                if (!sessionId) {
                     return;
                 }
 
                 const authToken = {
-                    authToken: sessionId,
+                    authToken: sessionId
                 };
 
-                SonosService.rememberMusicService(client._serviceDefinition, authToken).then(() => {
+                SonosService.rememberMusicService(
+                    client._serviceDefinition,
+                    authToken
+                ).then(() => {
                     Dispatcher.dispatch({
                         actionType: Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED,
-                        authToken,
+                        authToken
                     });
                 });
             });
         }
     },
 
-    getLink (client) {
-
+    getLink(client) {
         let promise;
 
-        if(client.auth === 'DeviceLink') {
+        if (client.auth === 'DeviceLink') {
             promise = client.getDeviceLinkCode();
         }
 
-        if(client.auth === 'AppLink') {
+        if (client.auth === 'AppLink') {
             promise = client.getAppLink();
         }
 
-        promise.then((link) => {
-                Dispatcher.dispatch({
-                    actionType: Constants.MUSICSERVICE_ADD_LINK_RECEIVED,
-                    link: link
-                });
+        promise.then(link => {
+            Dispatcher.dispatch({
+                actionType: Constants.MUSICSERVICE_ADD_LINK_RECEIVED,
+                link: link
+            });
 
-                poll = window.setInterval(() => {
-                    client.getDeviceAuthToken(link.linkCode, link.linkDeviceId).then((authToken) => {
-
-                        if(!authToken) {
+            poll = window.setInterval(() => {
+                client
+                    .getDeviceAuthToken(link.linkCode, link.linkDeviceId)
+                    .then(authToken => {
+                        if (!authToken) {
                             return;
                         }
 
-                        SonosService.rememberMusicService(client._serviceDefinition, authToken).then(() => {
+                        SonosService.rememberMusicService(
+                            client._serviceDefinition,
+                            authToken
+                        ).then(() => {
                             Dispatcher.dispatch({
-                                actionType: Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED,
+                                actionType:
+                                    Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED,
                                 authToken: authToken
                             });
                             window.clearInterval(poll);
                         });
                     });
-                }, 5000);
-            });
+            }, 5000);
+        });
     },
 
-    addAnonymousService (client) {
-        SonosService.rememberMusicService(client._serviceDefinition, {}).then(() => {
+    addAnonymousService(client) {
+        SonosService.rememberMusicService(
+            client._serviceDefinition,
+            {}
+        ).then(() => {
             Dispatcher.dispatch({
                 actionType: Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED,
                 authToken: {}

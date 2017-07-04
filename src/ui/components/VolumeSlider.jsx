@@ -3,26 +3,24 @@ import _ from 'lodash';
 import { h, Component } from 'preact'; //eslint-disable-line
 
 class VolumeSlider extends Component {
-
-    constructor () {
+    constructor() {
         super();
         this.state = { dragging: false };
     }
 
-
-    _onStart (e) {
+    _onStart(e) {
         this.setState({
             dragging: true,
-            volume: Number(e.target.value),
+            volume: Number(e.target.value)
         });
 
         this.props.startHandler();
     }
 
-    _onStop () {
+    _onStop() {
         this.setState({
             dragging: false,
-            volume: null,
+            volume: null
         });
 
         this.props.stopHandler();
@@ -33,7 +31,7 @@ class VolumeSlider extends Component {
 
         this.setState({
             dragging: true,
-            volume: Number(e.target.value),
+            volume: Number(e.target.value)
         });
 
         this._setVolume(volume);
@@ -48,25 +46,29 @@ class VolumeSlider extends Component {
     }
 
     _getVolume() {
-        return (this.state.dragging) ? this.state.volume : Number(this.props.volume);
+        return this.state.dragging
+            ? this.state.volume
+            : Number(this.props.volume);
     }
 
-    render () {
+    render() {
         const volume = this._getVolume();
 
         return (
             <div className="volume-bar">
-                <input type="range" min="0" max="100" value={Number(volume)}
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={Number(volume)}
                     onMouseDown={this._onStart.bind(this)}
                     onMouseUp={this._onStop.bind(this)}
                     onInput={_.throttle(this._onChange.bind(this), 100)}
                     onWheel={_.throttle(this._onWheel.bind(this), 100)}
-                 />
+                />
             </div>
         );
     }
-
-
 }
 
 export default VolumeSlider;

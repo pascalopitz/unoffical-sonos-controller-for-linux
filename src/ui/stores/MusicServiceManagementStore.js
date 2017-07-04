@@ -1,39 +1,42 @@
 import events from 'events';
-import _ from "lodash";
+import _ from 'lodash';
 
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants from '../constants/Constants';
 
 const CHANGE_EVENT = 'change';
 
-const MusicServiceManagementStore = _.assign({}, events.EventEmitter.prototype, {
+const MusicServiceManagementStore = _.assign(
+    {},
+    events.EventEmitter.prototype,
+    {
+        _client: null,
 
-    _client: null,
+        emitChange() {
+            this.emit(CHANGE_EVENT);
+        },
 
-    emitChange () {
-        this.emit(CHANGE_EVENT);
-    },
+        addChangeListener(listener) {
+            this.on(CHANGE_EVENT, listener);
+        },
 
-    addChangeListener (listener) {
-        this.on(CHANGE_EVENT, listener);
-    },
+        setClient(client) {
+            this._client = client;
+        },
 
-    setClient (client) {
-        this._client = client;
-    },
+        getClient() {
+            return this._client;
+        },
 
-    getClient () {
-        return this._client;
-    },
+        setLink(link) {
+            this._link = link;
+        },
 
-    setLink (link) {
-        this._link = link;
-    },
-
-    getLink () {
-        return this._link;
-    },
-});
+        getLink() {
+            return this._link;
+        }
+    }
+);
 
 Dispatcher.register(action => {
     switch (action.actionType) {
@@ -59,7 +62,6 @@ Dispatcher.register(action => {
             MusicServiceManagementStore.setLink(null);
             MusicServiceManagementStore.emitChange();
             break;
-
     }
 });
 

@@ -3,7 +3,7 @@ export function getClosest(elem, selector) {
 
     for (let n = elem; n; n = n.parentNode) {
         el = n;
-        if ( n && n.webkitMatchesSelector && n.webkitMatchesSelector(selector)) {
+        if (n && n.webkitMatchesSelector && n.webkitMatchesSelector(selector)) {
             return el;
         }
     }

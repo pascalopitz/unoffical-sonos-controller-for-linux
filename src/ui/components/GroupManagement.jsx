@@ -4,7 +4,6 @@ import GroupManagementStore from '../stores/GroupManagementStore';
 import GroupManagementActions from '../actions/GroupManagementActions';
 
 class GroupManagement extends Component {
-
     constructor(props) {
         super(props);
         this.state = this._getUpdatedState();
@@ -24,29 +23,30 @@ class GroupManagement extends Component {
 
         return {
             players: players,
-            current: current,
+            current: current
         };
     }
 
-    _cancel () {
+    _cancel() {
         GroupManagementActions.hideManagement();
     }
 
-    _save () {
+    _save() {
         GroupManagementActions.save();
     }
 
-    render () {
-        if(!this.state.current) {
+    render() {
+        if (!this.state.current) {
             return null;
         }
 
         const zoneGroupNodes = this.state.players.map((item, idx) => {
-
-            const checkboxSymbol = item.selected ? 'check_box' : 'check_box_outline_blank';
+            const checkboxSymbol = item.selected
+                ? 'check_box'
+                : 'check_box_outline_blank';
 
             const _toggleSelection = () => {
-                if(!item.selected) {
+                if (!item.selected) {
                     GroupManagementActions.select(item);
                 } else {
                     GroupManagementActions.deselect(item);
@@ -55,9 +55,15 @@ class GroupManagement extends Component {
 
             return (
                 <li key={idx}>
-                    <span>{item.name}</span>
-                    <i className="material-icons checkbox"
-                        onClick={_toggleSelection.bind(this)}>{checkboxSymbol}</i>
+                    <span>
+                        {item.name}
+                    </span>
+                    <i
+                        className="material-icons checkbox"
+                        onClick={_toggleSelection.bind(this)}
+                    >
+                        {checkboxSymbol}
+                    </i>
                 </li>
             );
         });
@@ -69,8 +75,18 @@ class GroupManagement extends Component {
                         {zoneGroupNodes}
                     </ul>
 
-                    <button onClick={this._cancel.bind(this)} className="cancel-button">Cancel</button>
-                    <button onClick={this._save.bind(this)} className="save-button">Save</button>
+                    <button
+                        onClick={this._cancel.bind(this)}
+                        className="cancel-button"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={this._save.bind(this)}
+                        className="save-button"
+                    >
+                        Save
+                    </button>
                 </div>
             </div>
         );

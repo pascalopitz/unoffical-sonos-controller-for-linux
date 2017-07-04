@@ -9,7 +9,7 @@ const cache = {};
 
 export default {
     start() {
-        if(!heap.length || connections >= MAX_CONNECTIONS) {
+        if (!heap.length || connections >= MAX_CONNECTIONS) {
             return;
         }
 
@@ -21,13 +21,13 @@ export default {
         const tryNext = () => {
             connections--;
             delete pending[url];
-            if(heap.length) {
+            if (heap.length) {
                 this.start();
             }
         };
 
         img.addEventListener('load', () => {
-            pending[url].forEach((p) => {
+            pending[url].forEach(p => {
                 cache[url] = true;
                 p.resolve(url);
             });
@@ -35,27 +35,26 @@ export default {
         });
 
         img.addEventListener('error', () => {
-            pending[url].forEach((p) => {
+            pending[url].forEach(p => {
                 cache[url] = false;
                 p.reject(url);
             });
             tryNext();
         });
-
     },
 
     add(url) {
-        if(!url) {
+        if (!url) {
             return Promise.reject(false);
         }
 
-        if(cache[url]) {
+        if (cache[url]) {
             return Promise.resolve(url);
-        } else if(cache[url] === false) {
+        } else if (cache[url] === false) {
             return Promise.reject(false);
         }
 
-        if(!pending[url]) {
+        if (!pending[url]) {
             pending[url] = [];
             heap.push(url);
         }
@@ -63,7 +62,7 @@ export default {
         const p = new Promise((resolve, reject) => {
             pending[url].push({
                 resolve,
-                reject,
+                reject
             });
         });
 

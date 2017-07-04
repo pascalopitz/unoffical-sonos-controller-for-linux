@@ -7,19 +7,18 @@ import Services from '../sonos/helpers/Services';
 import QueueStore from '../stores/QueueStore';
 
 export default {
-
-    flush () {
+    flush() {
         const sonos = SonosService._currentDevice;
 
         sonos.flush(() => {
             Dispatcher.dispatch({
-                actionType: Constants.QUEUE_FLUSH,
+                actionType: Constants.QUEUE_FLUSH
             });
             SonosService.queryState();
         });
     },
 
-    gotoPosition (position) {
+    gotoPosition(position) {
         const sonos = SonosService._currentDevice;
 
         sonos.selectQueue(() => {
@@ -27,7 +26,7 @@ export default {
                 sonos.play(() => {
                     Dispatcher.dispatch({
                         actionType: Constants.QUEUE_GOTO,
-                        position: position,
+                        position: position
                     });
                     SonosService.queryState();
                 });
@@ -35,17 +34,17 @@ export default {
         });
     },
 
-    select (position) {
+    select(position) {
         Dispatcher.dispatch({
             actionType: Constants.QUEUE_SELECT,
-            position: position,
+            position: position
         });
     },
 
-    deselect (position) {
+    deselect(position) {
         Dispatcher.dispatch({
             actionType: Constants.QUEUE_DESELECT,
-            position: position,
+            position: position
         });
     },
 
@@ -58,11 +57,10 @@ export default {
         let newRequired = true;
 
         tracks.forEach((track, i) => {
-            const isSelected =track.selected;
+            const isSelected = track.selected;
 
-            if(isSelected) {
-
-                if(newRequired) {
+            if (isSelected) {
+                if (newRequired) {
                     series.push([]);
                     newRequired = false;
                 }
@@ -70,7 +68,7 @@ export default {
                 series[series.length - 1].push(i + 1);
             }
 
-            if(!isSelected && prevSelected) {
+            if (!isSelected && prevSelected) {
                 newRequired = true;
             }
 
@@ -80,60 +78,61 @@ export default {
         return series;
     },
 
-    removeSelected () {
+    removeSelected() {
         const sonos = SonosService._currentDevice;
         const avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
         const promises = [];
         let removed = 0;
 
-        this._getSeries().forEach((arr) => {
-
+        this._getSeries().forEach(arr => {
             const StartingIndex = arr[0] - removed;
             const NumberOfTracks = arr.length;
             removed = removed + NumberOfTracks;
 
-            promises.push(new Promise((resolve, reject) => {
-                const params = {
-                    InstanceID: 0,
-                    UpdateID: 0,
-                    StartingIndex: StartingIndex,
-                    NumberOfTracks: NumberOfTracks,
-                };
-                avTransport.RemoveTrackRangeFromQueue(params, (err) => {
-                    if(err) {
-                        reject();
-                    } else {
-                        resolve();
-                    }
-                });
-            }));
+            promises.push(
+                new Promise((resolve, reject) => {
+                    const params = {
+                        InstanceID: 0,
+                        UpdateID: 0,
+                        StartingIndex: StartingIndex,
+                        NumberOfTracks: NumberOfTracks
+                    };
+                    avTransport.RemoveTrackRangeFromQueue(params, err => {
+                        if (err) {
+                            reject();
+                        } else {
+                            resolve();
+                        }
+                    });
+                })
+            );
         });
 
         Promise.all(promises).then(() => {
             Dispatcher.dispatch({
-                actionType: Constants.QUEUE_REMOVE,
+                actionType: Constants.QUEUE_REMOVE
             });
             QueueStore.clearSelected();
             SonosService.queryState();
         });
     },
 
-    removeTrack (position) {
+    removeTrack(position) {
         const sonos = SonosService._currentDevice;
 
         const params = {
             InstanceID: 0,
             UpdateID: 0,
             StartingIndex: position,
-            NumberOfTracks: 1,
+            NumberOfTracks: 1
         };
 
         const avTransport = new Services.AVTransport(sonos.host, sonos.port);
 
         avTransport.RemoveTrackRangeFromQueue(params, () => {
             Dispatcher.dispatch({
-                actionType: Constants.QUEUE_REMOVE,
+                actionType: Constants.QUEUE_REMOVE
             });
             SonosService.queryState();
         });
@@ -147,7 +146,7 @@ export default {
             StartingIndex: position,
             InsertBefore: newPosition,
             NumberOfTracks: 1,
-            UpdateID: QueueStore.getUpdateID(),
+            UpdateID: QueueStore.getUpdateID()
         };
 
         const avTransport = new Services.AVTransport(sonos.host, sonos.port);
@@ -156,7 +155,7 @@ export default {
             Dispatcher.dispatch({
                 actionType: Constants.QUEUE_REORDER,
                 position: position,
-                newPosition: newPosition,
+                newPosition: newPosition
             });
             SonosService.queryState();
         });

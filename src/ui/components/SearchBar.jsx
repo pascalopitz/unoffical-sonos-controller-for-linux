@@ -4,46 +4,54 @@ import { h, Component } from 'preact'; //eslint-disable-line
 import SearchBarActions from '../actions/SearchBarActions';
 
 class SearchBar extends Component {
-
     constructor() {
         super();
         this.state = {
             searching: false,
-            term: '',
+            term: ''
         };
     }
 
-    render () {
+    render() {
         let cancelButton;
 
-        if(this.state.searching) {
+        if (this.state.searching) {
             cancelButton = (
-                <i className="material-icons"
-                    onClick={this._onClick.bind(this)}>cancel</i>
+                <i
+                    className="material-icons"
+                    onClick={this._onClick.bind(this)}
+                >
+                    cancel
+                </i>
             );
         }
 
         return (
             <div id="search">
-                <input type="text" id="searchfield" value={this.state.term} oninput={_.debounce(this._onChange.bind(this), 200)} />
+                <input
+                    type="text"
+                    id="searchfield"
+                    value={this.state.term}
+                    oninput={_.debounce(this._onChange.bind(this), 200)}
+                />
                 {cancelButton}
             </div>
         );
     }
 
-    _onClick (e) {
+    _onClick(e) {
         this.setState({
             searching: false,
-            term: '',
+            term: ''
         });
         SearchBarActions.search(null);
     }
 
-    _onChange (e) {
+    _onChange(e) {
         const term = e.target.value;
         this.setState({
             searching: term.length > 0,
-            term: term || '',
+            term: term || ''
         });
         SearchBarActions.search(term);
         e.preventDefault();

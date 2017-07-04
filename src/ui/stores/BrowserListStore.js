@@ -1,5 +1,5 @@
 import events from 'events';
-import _ from "lodash";
+import _ from 'lodash';
 
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants from '../constants/Constants';
@@ -33,7 +33,7 @@ const START_STATE = {
     source: null,
     searchType: null,
     title: 'Select a Music Source',
-    items: _.clone(START_STATE_ITEMS),
+    items: _.clone(START_STATE_ITEMS)
 };
 
 const LIBRARY_STATE = {
@@ -74,94 +74,89 @@ const LIBRARY_STATE = {
 const DEFAULT_SEARCH_TARGET = 'artists';
 
 const BrowserListStore = _.assign({}, events.EventEmitter.prototype, {
-
     LIBRARY_STATE: LIBRARY_STATE,
-    _state : START_STATE,
-    _search :  false,
-    _searchResults :  null,
-    _searchTarget :  DEFAULT_SEARCH_TARGET,
+    _state: START_STATE,
+    _search: false,
+    _searchResults: null,
+    _searchTarget: DEFAULT_SEARCH_TARGET,
     _knownServices: null,
     _history: [],
 
-    emitChange () {
+    emitChange() {
         this.emit(CHANGE_EVENT);
     },
 
-    addChangeListener (listener) {
+    addChangeListener(listener) {
         this.on(CHANGE_EVENT, listener);
     },
 
-    isSearching () {
+    isSearching() {
         return this._search;
     },
 
-    startSearch () {
+    startSearch() {
         this._search = true;
     },
 
-    endSearch () {
+    endSearch() {
         this._search = false;
         this._history = _.without(this._history, 'search');
     },
 
-    getSearchMode () {
+    getSearchMode() {
         return this._searchTarget;
     },
 
-    setSearchResults (results) {
+    setSearchResults(results) {
         this._searchResults = results;
     },
 
-    setMusicServices (services) {
+    setMusicServices(services) {
         this._musicServices = services;
 
         START_STATE.items = _.clone(START_STATE_ITEMS);
 
-        this._musicServices.forEach((ser) => {
+        this._musicServices.forEach(ser => {
             START_STATE.items.push({
                 title: ser.service.Name,
                 action: 'service',
-                service: ser,
+                service: ser
             });
         });
-
     },
 
-    getState () {
-        if(this._search) {
+    getState() {
+        if (this._search) {
             return this._searchResults[this._searchTarget];
         }
         return this._state;
     },
 
-    setState (state) {
+    setState(state) {
         this._state = state;
     },
 
-    addToHistory (state) {
+    addToHistory(state) {
         this._history.push(state);
     },
 
-    getHistory () {
+    getHistory() {
         return this._history;
-    },
-
+    }
 });
-
 
 Dispatcher.register(action => {
     switch (action.actionType) {
-
         case Constants.SEARCH:
             const currentState = BrowserListStore._state;
             BrowserListStore.addToHistory('search');
 
-            if(!action.term && !currentState.serviceClient) {
+            if (!action.term && !currentState.serviceClient) {
                 BrowserListStore.endSearch();
                 BrowserListStore.setSearchResults(null);
                 BrowserListStore._searchTarget = DEFAULT_SEARCH_TARGET;
                 BrowserListStore.setState(currentState);
-            } else if(!action.term && currentState.serviceClient) {
+            } else if (!action.term && currentState.serviceClient) {
                 BrowserListStore.endSearch();
                 BrowserListStore.setSearchResults(null);
                 BrowserListStore.setState(currentState);
@@ -192,7 +187,7 @@ Dispatcher.register(action => {
             break;
 
         case Constants.BROWSER_BACK:
-            if(BrowserListStore._history.length) {
+            if (BrowserListStore._history.length) {
                 const state = BrowserListStore._history.pop();
                 BrowserListStore.setState(state);
                 BrowserListStore.emitChange();
@@ -211,7 +206,9 @@ Dispatcher.register(action => {
             BrowserListStore.emitChange();
 
             // HACK: super dirty
-            document.querySelector('#browser-container > .scrollcontainer').scrollTop = 0;
+            document.querySelector(
+                '#browser-container > .scrollcontainer'
+            ).scrollTop = 0;
             break;
 
         case Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE:

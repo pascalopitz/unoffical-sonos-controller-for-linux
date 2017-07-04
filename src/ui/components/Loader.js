@@ -2,11 +2,10 @@ import { h, Component } from 'preact'; //eslint-disable-line
 import ZoneGroupStore from '../stores/ZoneGroupStore';
 
 class Loader extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
-            current: ZoneGroupStore.getCurrent(),
+            current: ZoneGroupStore.getCurrent()
         };
     }
 
@@ -16,20 +15,22 @@ class Loader extends Component {
 
     _onChange() {
         this.setState({
-            current: ZoneGroupStore.getCurrent(),
+            current: ZoneGroupStore.getCurrent()
         });
     }
 
-    render () {
+    render() {
         // if(this.state.current) {
-            return null;
+        return null;
         // }
 
-        const msg = "Searching for your Sonos System ...";
+        const msg = 'Searching for your Sonos System ...';
 
         return (
             <div id="loader">
-                <p>{msg}</p>
+                <p>
+                    {msg}
+                </p>
             </div>
         );
     }

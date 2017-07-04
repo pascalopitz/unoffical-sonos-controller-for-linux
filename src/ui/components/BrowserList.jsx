@@ -9,8 +9,7 @@ import BrowserListActions from '../actions/BrowserListActions';
 import BrowserListStore from '../stores/BrowserListStore';
 
 class BrowserList extends Component {
-
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         const state = BrowserListStore.getState();
@@ -21,7 +20,7 @@ class BrowserList extends Component {
             history: history,
             searching: false,
             searchMode: null,
-            boundingRect: {},
+            boundingRect: {}
         };
 
         this.moreHandler = _.throttle(() => {
@@ -32,9 +31,7 @@ class BrowserList extends Component {
     componentDidMount() {
         BrowserListStore.addChangeListener(this._onChange.bind(this));
 
-        this.setState({
-
-        });
+        this.setState({});
     }
 
     _onChange() {
@@ -47,7 +44,7 @@ class BrowserList extends Component {
             currentState: state,
             history: history,
             searching: searching,
-            searchMode: searchMode,
+            searchMode: searchMode
         });
     }
 
@@ -64,20 +61,20 @@ class BrowserList extends Component {
         const height = node.scrollHeight - node.offsetHeight;
 
         // HACK: this happens when we press the back button for some reason
-        if(height === -1) {
+        if (height === -1) {
             return;
         }
 
-        if(node.scrollTop + 50 > height) {
+        if (node.scrollTop + 50 > height) {
             this.moreHandler();
         }
     }
 
-    _playAlbum () {
+    _playAlbum() {
         BrowserListActions.play(this.state.currentState);
     }
 
-    _searchModeChange (e) {
+    _searchModeChange(e) {
         const mode = e.target.getAttribute('data-mode');
         BrowserListActions.changeSearchMode(mode);
     }
@@ -86,8 +83,7 @@ class BrowserList extends Component {
         return row;
     }
 
-    render () {
-
+    render() {
         const searching = this.state.searching;
         const searchMode = this.state.searchMode;
         const history = this.state.history;
@@ -100,20 +96,27 @@ class BrowserList extends Component {
         const listItemNodes = items.map((item, p) => {
             const position = p + 1;
             return (
-                <BrowserListItem key={position} model={item} position={position} />
+                <BrowserListItem
+                    key={position}
+                    model={item}
+                    position={position}
+                />
             );
         });
 
-        if(searching) {
-            const links = ["artists", "albums", "tracks"].map((mode) => {
-
-                const className = (mode === searchMode) ? 'active' : 'not-active';
+        if (searching) {
+            const links = ['artists', 'albums', 'tracks'].map(mode => {
+                const className = mode === searchMode ? 'active' : 'not-active';
 
                 return (
-                    <li key={mode}
+                    <li
+                        key={mode}
                         className={className}
                         onClick={this._searchModeChange.bind(this)}
-                        data-mode={mode}>{mode}</li>
+                        data-mode={mode}
+                    >
+                        {mode}
+                    </li>
                 );
             });
 
@@ -122,51 +125,73 @@ class BrowserList extends Component {
                     {links}
                 </ul>
             );
-        } else if(history.length) {
+        } else if (history.length) {
             headlineNodes = (
                 <h4 className="with-history">
-                    <a onClick={this._back.bind(this)} className="back-arrow" title="back">
+                    <a
+                        onClick={this._back.bind(this)}
+                        className="back-arrow"
+                        title="back"
+                    >
                         <i className="material-icons">keyboard_arrow_left</i>
                     </a>
-                    <a onClick={this._home.bind(this)} className="home-button" title="home">
+                    <a
+                        onClick={this._home.bind(this)}
+                        className="home-button"
+                        title="home"
+                    >
                         <i className="material-icons">library_music</i>
                     </a>
-                    <span>{title}</span>
+                    <span>
+                        {title}
+                    </span>
                 </h4>
             );
         } else {
-            headlineNodes = <h4>{title}</h4>;
+            headlineNodes = (
+                <h4>
+                    {title}
+                </h4>
+            );
         }
 
-        if(
-            this.state.currentState.class === 'object.container.album.musicAlbum'
-            || this.state.currentState.class === 'object.container.playlistContainer'
-            || JSON.parse(String(_.get(this, 'state.currentState.parent.canPlay') || 'false'))
+        if (
+            this.state.currentState.class ===
+                'object.container.album.musicAlbum' ||
+            this.state.currentState.class ===
+                'object.container.playlistContainer' ||
+            JSON.parse(
+                String(
+                    _.get(this, 'state.currentState.parent.canPlay') || 'false'
+                )
+            )
         ) {
             const albumState = _.cloneDeep(this.state.currentState);
             albumState.creator = null;
             albumState.title = `${items.length} Tracks`;
 
-            if(_.get(albumState, 'parent.serviceClient')) {
+            if (_.get(albumState, 'parent.serviceClient')) {
                 albumState.serviceClient = this.state.currentState.serviceClient;
                 albumState.parent.serviceClient = this.state.currentState.parent.serviceClient;
             }
 
-            actionNodes = (
-                <BrowserListItem model={albumState} />
-            );
+            actionNodes = <BrowserListItem model={albumState} />;
         }
 
         return (
-            <div id="music-sources-container" onScrollCapture={this._onScroll.bind(this)}>
+            <div
+                id="music-sources-container"
+                onScrollCapture={this._onScroll.bind(this)}
+            >
                 {headlineNodes}
                 <ul id="browser-container">
                     <VirtualList
-                        rowHeight={50} sync={true} class="scrollcontainer"
+                        rowHeight={50}
+                        sync={true}
+                        class="scrollcontainer"
                         data={[actionNodes].concat(listItemNodes)}
                         renderRow={this._renderRow.bind(this)}
-                        >
-                    </VirtualList>
+                    />
                 </ul>
             </div>
         );

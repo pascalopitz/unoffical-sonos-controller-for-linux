@@ -4,8 +4,7 @@ import Constants from '../constants/Constants';
 import SonosService from '../services/SonosService';
 
 export default {
-
-    queryVolumes () {
+    queryVolumes() {
         SonosService.queryVolumeInfo();
     },
 
@@ -16,7 +15,7 @@ export default {
             Dispatcher.dispatch({
                 actionType: Constants.VOLUME_CONTROLS_VOLUME_SET,
                 host: host,
-                volume: volume,
+                volume: volume
             });
 
             SonosService.queryVolumeInfo();
@@ -30,11 +29,10 @@ export default {
             Dispatcher.dispatch({
                 actionType: Constants.VOLUME_CONTROLS_MUTE_SET,
                 host: host,
-                muted: muted,
+                muted: muted
             });
 
             SonosService.queryVolumeInfo();
         });
-    },
-
+    }
 };

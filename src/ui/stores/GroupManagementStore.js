@@ -1,5 +1,5 @@
 import events from 'events';
-import _ from "lodash";
+import _ from 'lodash';
 
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants from '../constants/Constants';
@@ -9,33 +9,32 @@ import ZoneGroupStore from '../stores/ZoneGroupStore';
 const CHANGE_EVENT = 'change';
 
 const GroupManagementStore = _.assign({}, events.EventEmitter.prototype, {
-
-    _current : null,
+    _current: null,
     _players: null,
 
-    emitChange () {
+    emitChange() {
         this.emit(CHANGE_EVENT);
     },
 
-    addChangeListener (listener) {
+    addChangeListener(listener) {
         this.on(CHANGE_EVENT, listener);
     },
 
-    setCurrent (group) {
+    setCurrent(group) {
         this._current = group;
     },
 
-    getCurrent () {
+    getCurrent() {
         return this._current;
     },
 
-    setPlayers (players) {
+    setPlayers(players) {
         this._players = players;
     },
 
-    getPlayers () {
+    getPlayers() {
         return this._players;
-    },
+    }
 });
 
 Dispatcher.register(action => {
@@ -45,12 +44,16 @@ Dispatcher.register(action => {
             {
                 const groupID = action.group[0].group;
                 const zones = _.cloneDeep(ZoneGroupStore.getAll());
-                const players = _.reduce(zones, (res, item) => {
-                    return res.concat(item);
-                }, []);
+                const players = _.reduce(
+                    zones,
+                    (res, item) => {
+                        return res.concat(item);
+                    },
+                    []
+                );
 
-                players.forEach((p) => {
-                    if(p.group === groupID) {
+                players.forEach(p => {
+                    if (p.group === groupID) {
                         p.selected = true;
                     }
                 });
@@ -72,8 +75,8 @@ Dispatcher.register(action => {
             {
                 const players = GroupManagementStore.getPlayers();
 
-                players.forEach((p) => {
-                    if(p.uuid === action.player.uuid) {
+                players.forEach(p => {
+                    if (p.uuid === action.player.uuid) {
                         p.selected = true;
                     }
                 });
@@ -86,14 +89,15 @@ Dispatcher.register(action => {
         case Constants.GROUP_MANAGEMENT_DESELECT:
             {
                 const players = GroupManagementStore.getPlayers();
-                const selectCount = _.filter(players, { selected: true }).length;
+                const selectCount = _.filter(players, { selected: true })
+                    .length;
 
-                if(selectCount === 1) {
+                if (selectCount === 1) {
                     return;
                 }
 
-                players.forEach((p) => {
-                    if(p.uuid === action.player.uuid) {
+                players.forEach(p => {
+                    if (p.uuid === action.player.uuid) {
                         p.selected = false;
                     }
                 });
@@ -106,4 +110,3 @@ Dispatcher.register(action => {
 });
 
 export default GroupManagementStore;
-

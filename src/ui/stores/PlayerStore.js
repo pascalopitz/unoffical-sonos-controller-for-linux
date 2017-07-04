@@ -1,5 +1,5 @@
 import events from 'events';
-import _ from "lodash";
+import _ from 'lodash';
 
 import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants from '../constants/Constants';
@@ -7,43 +7,42 @@ import Constants from '../constants/Constants';
 const CHANGE_EVENT = 'change';
 
 const PlayerStore = _.assign({}, events.EventEmitter.prototype, {
-
-    _playing : false,
-    _crossfade : false,
-    _playMode : 'NORMAL',
+    _playing: false,
+    _crossfade: false,
+    _playMode: 'NORMAL',
     _positionInfo: null,
 
-    emitChange () {
+    emitChange() {
         this.emit(CHANGE_EVENT);
     },
 
-    addChangeListener (listener) {
+    addChangeListener(listener) {
         this.on(CHANGE_EVENT, listener);
     },
 
-    isPlaying () {
+    isPlaying() {
         return this._playing;
     },
 
-    isCrossfade () {
+    isCrossfade() {
         return this._crossfade;
     },
 
-    getPlayMode () {
+    getPlayMode() {
         return this._playMode;
     },
 
-    setPlaying (playing) {
+    setPlaying(playing) {
         this._playing = playing;
     },
 
-    getPositionInfo () {
+    getPositionInfo() {
         return this._positionInfo;
     },
 
-    setPositionInfo (info) {
+    setPositionInfo(info) {
         this._positionInfo = info;
-    },
+    }
 });
 
 Dispatcher.register(action => {
@@ -82,11 +81,11 @@ Dispatcher.register(action => {
             const state = action.state;
             let playing = false;
 
-            if(state === 'transitioning') {
+            if (state === 'transitioning') {
                 return;
             }
 
-            if(state === 'playing') {
+            if (state === 'playing') {
                 playing = true;
             }
 

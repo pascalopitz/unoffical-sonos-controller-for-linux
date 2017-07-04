@@ -15,18 +15,17 @@ import SearchBar from './SearchBar';
 import Loader from './Loader';
 
 class Application extends Component {
-
     constuctor() {
         this.state = {
-            showPlayNow: true,
+            showPlayNow: true
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         SonosService.mount();
     }
 
-    render () {
+    render() {
         return (
             <div>
                 <div id="application">

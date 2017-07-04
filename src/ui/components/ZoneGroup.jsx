@@ -7,37 +7,36 @@ import ZoneGroupActions from '../actions/ZoneGroupActions';
 import ZoneGroupMember from './ZoneGroupMember';
 
 class ZoneGroup extends Component {
-
-    render () {
+    render() {
         const items = this.props.group;
         const playStates = this.props.playStates;
         let playState;
 
-        if(!items) {
+        if (!items) {
             return null;
         }
 
         const coordinator = _(items).find({
-            coordinator: "true"
+            coordinator: 'true'
         });
 
-        if(coordinator) {
+        if (coordinator) {
             playState = playStates[coordinator.host] || {};
         }
 
-        const zoneNodes = items.map(function (item, index) {
-            return (
-                <ZoneGroupMember member={item} key={index} />
-            );
+        const zoneNodes = items.map(function(item, index) {
+            return <ZoneGroupMember member={item} key={index} />;
         });
 
-        let currentPlayStateNode = <div className="play-state"></div>;
+        let currentPlayStateNode = <div className="play-state" />;
 
-        if(playState && playState.track && playState.track.title) {
-            const icon = (playState.isPlaying) ? (<i className="material-icons">play_arrow</i>) : (<i className="material-icons">pause</i>);
+        if (playState && playState.track && playState.track.title) {
+            const icon = playState.isPlaying
+                ? <i className="material-icons">play_arrow</i>
+                : <i className="material-icons">pause</i>;
             let info = playState.track.title;
 
-            if(playState.track.artist) {
+            if (playState.track.artist) {
                 info = info + ' - ' + playState.track.artist;
             }
 
@@ -50,7 +49,11 @@ class ZoneGroup extends Component {
 
         let classString = 'not-selected';
 
-        if(this.props.currentZone && coordinator && coordinator.uuid === this.props.currentZone.uuid) {
+        if (
+            this.props.currentZone &&
+            coordinator &&
+            coordinator.uuid === this.props.currentZone.uuid
+        ) {
             classString = 'selected';
         }
 
@@ -62,18 +65,23 @@ class ZoneGroup extends Component {
                     {zoneNodes}
                 </ul>
 
-                <div className="group-button" onClick={this._showGroupManagement.bind(this)}>Group</div>
+                <div
+                    className="group-button"
+                    onClick={this._showGroupManagement.bind(this)}
+                >
+                    Group
+                </div>
 
                 {currentPlayStateNode}
             </div>
         );
     }
 
-    _onClick () {
+    _onClick() {
         ZoneGroupActions.selectGroup(this.props.group);
     }
 
-    _showGroupManagement (e) {
+    _showGroupManagement(e) {
         ZoneGroupActions.showManagement(this.props.group);
         e.preventDefault();
         e.stopPropagation();
