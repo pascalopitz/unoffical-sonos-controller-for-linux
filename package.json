@@ -15,6 +15,7 @@
     "fonts": "mkdir -p ./app/fonts && cp ./node_modules/material-design-icons/iconfont/* ./app/fonts/",
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-and-fix": "eslint --fix --ext .jsx --ext .js src",
+    "prettier-css": "prettier --tab-width 4 --write app/css/*.css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
