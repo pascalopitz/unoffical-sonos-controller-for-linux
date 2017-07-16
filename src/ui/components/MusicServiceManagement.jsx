@@ -1,3 +1,4 @@
+import { shell } from 'electron';
 import { h, Component } from 'preact'; //eslint-disable-line
 
 import MusicServiceManagementStore from '../stores/MusicServiceManagementStore';
@@ -13,6 +14,10 @@ class MusicServiceManagement extends Component {
         MusicServiceManagementStore.addChangeListener(
             this._onChange.bind(this)
         );
+    }
+
+    _openLink() {
+        shell.openExternal(this.state.link.regUrl);
     }
 
     _onChange() {
@@ -113,15 +118,28 @@ class MusicServiceManagement extends Component {
                 this.state.client.auth === 'AppLink') &&
             this.state.link
         ) {
+            const code =
+                this.state.link.showLinkCode !== 'true'
+                    ? null
+                    : <p>
+                          Your device link code:{' '}
+                          <strong>{this.state.link.linkCode}</strong>
+                      </p>;
+
             link = (
                 <div>
                     <p>
                         Click the link below to authorize this app to use the
                         Service.
                     </p>
-                    <a href={this.state.link.regUrl} target="_blank">
+                    <a
+                        onClick={this._openLink.bind(this)}
+                        target="_blank"
+                        style="cursor: pointer;"
+                    >
                         {this.state.link.regUrl}
                     </a>
+                    {code}
                 </div>
             );
         }
