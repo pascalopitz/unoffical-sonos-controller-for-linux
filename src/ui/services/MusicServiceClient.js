@@ -44,7 +44,8 @@ class MusicServiceClient {
                     headers: {
                         SOAPAction: '"' + NS + '#' + action + '"',
                         'Content-type': 'text/xml; charset=utf8',
-                        'User-Agent': 'SMAPI-Client'
+                        // Thanks SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
+                        'User-Agent': 'Linux UPnP/1.0 Sonos/26.99-12345'
                     },
                     body: withinEnvelope(body, headers)
                 },

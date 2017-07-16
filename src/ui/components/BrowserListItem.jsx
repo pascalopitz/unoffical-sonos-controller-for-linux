@@ -174,8 +174,13 @@ class BrowserListItem extends Component {
 
         const creator =
             item.creator || item.artist || _.get(item, 'trackMetadata.artist');
+
         const albumArtURI =
             item.albumArtURI || _.get(item, 'trackMetadata.albumArtURI');
+
+        const serviceId =
+            _.get(this, 'props.model.service.service.Id') ||
+            _.get(this, 'props.model.data.Id');
 
         if (creator) {
             className += ' with-creator';
@@ -194,7 +199,7 @@ class BrowserListItem extends Component {
                 onMouseOver={this._onMouseOver.bind(this)}
                 data-position={this.props.position}
             >
-                <AlbumArt src={albumArtURI} />
+                <AlbumArt src={albumArtURI} serviceId={serviceId} />
                 <div className={className}>
                     <p className="title" title={item.title}>
                         {item.title}

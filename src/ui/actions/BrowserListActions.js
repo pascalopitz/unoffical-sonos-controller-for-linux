@@ -351,7 +351,7 @@ export default {
                 const state = {
                     title: client.name,
                     serviceClient: client,
-                    items: res.mediaCollection.map(i => {
+                    items: _.map(res.mediaCollection, i => {
                         i.serviceClient = client;
                         return i;
                     })
