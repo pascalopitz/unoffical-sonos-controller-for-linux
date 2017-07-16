@@ -14,10 +14,10 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "omit-keys": "^0.1.0",
-    "preact": "^8.1.0",
+    "preact": "^8.2.1",
     "preact-virtual-list": "^0.3.1",
     "request": "^2.81.0",
-    "uuid": "^3.0.0",
+    "uuid": "^3.1.0",
     "wake-event": "^0.0.1"
   }
 }

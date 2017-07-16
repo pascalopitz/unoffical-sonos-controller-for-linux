@@ -56,13 +56,13 @@
     "babel-preset-node5": "^12.0.1",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.24.1",
-    "electron": "^1.6.11",
+    "electron": "^1.7.4",
     "electron-builder": "^19.11.1",
     "eslint": "^4.1.1",
     "eslint-plugin-prettier": "^2.1.2",
-    "eslint-plugin-react": "^7.0.1",
+    "eslint-plugin-react": "^7.1.0",
     "material-design-icons": "^3.0.1",
-    "prettier": "^1.5.2",
+    "prettier": "^1.5.3",
     "watch": "^1.0.2"
   },
   "dependencies": {}
