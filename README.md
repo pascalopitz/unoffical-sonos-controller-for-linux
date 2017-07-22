@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pascalopitz/unoffical-sonos-controller-for-linux.svg?branch=master)](https://travis-ci.org/pascalopitz/unoffical-sonos-controller-for-linux)
+[![Build Status](https://travis-ci.org/pascalopitz/unoffical-sonos-controller-for-linux.svg?branch=master)](https://travis-ci.org/pascalopitz/unoffical-sonos-controller-for-linux) [![dependencies Status](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux/status.svg?path=app)](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux?path=app) [![devDependencies Status](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux/dev-status.svg)](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux?type=dev)
 
 # Unofficial Sonos Controller for Linux
 
@@ -62,7 +62,7 @@ You will need to whitelist these if you run Ubuntu firewall for example:
 
 ## Thanks to other projects
 
-- I ported nearly all of https://github.com/bencevans/node-sonos/ 
+- I ported nearly all of https://github.com/bencevans/node-sonos/
   so that it worked in chrome, and made minor modifications.
   Also made it into an ES6 code base where it was easy to do.
 
