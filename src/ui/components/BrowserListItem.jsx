@@ -186,7 +186,7 @@ class BrowserListItem extends Component {
             className += ' with-creator';
 
             artistInfo = (
-                <p className="creator" title={creator}>
+                <p className="creator">
                     {creator}
                 </p>
             );
@@ -200,8 +200,9 @@ class BrowserListItem extends Component {
                 data-position={this.props.position}
             >
                 <AlbumArt src={albumArtURI} serviceId={serviceId} />
+
                 <div className={className}>
-                    <p className="title" title={item.title}>
+                    <p className="title">
                         {item.title}
                     </p>
                     {artistInfo}
