@@ -35,6 +35,10 @@
     {
       "name": "economysizegeek",
       "url": "https://github.com/economysizegeek"
+    },
+    {
+      "name": "derTobsch",
+      "url": "https://github.com/derTobsch"
     }
   ],
   "build": {
