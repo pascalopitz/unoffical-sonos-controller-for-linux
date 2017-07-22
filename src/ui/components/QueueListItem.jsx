@@ -45,7 +45,7 @@ class QueueListItem extends Component {
         e.stopPropagation();
     }
 
-    _onDoubleClick(e) {
+    _onClick(e) {
         QueueActions.gotoPosition(this.props.position);
         e.preventDefault();
         e.stopPropagation();
@@ -96,6 +96,7 @@ class QueueListItem extends Component {
             <i
                 className="material-icons arrow"
                 onClick={this._toggle.bind(this)}
+                title="Open menu"
             >
                 arrow_drop_down_circle
             </i>
@@ -105,6 +106,7 @@ class QueueListItem extends Component {
             <i
                 className="material-icons checkbox"
                 onClick={this._toggleSelection.bind(this)}
+                title="Check this track"
             >
                 {checkboxSymbol}
             </i>
@@ -144,9 +146,11 @@ class QueueListItem extends Component {
             dragOver = this.props.dragOverMode;
         }
 
+        const htmlTitle = 'Play "' + track.creator + ' - ' + track.title + '"';
+
         return (
             <li
-                ondblclick={this._onDoubleClick.bind(this)}
+                onClick={this._onClick.bind(this)}
                 onMouseOut={this._onMouseOut.bind(this)}
                 onMouseOver={this._onMouseOver.bind(this)}
                 data-position={this.props.position}
@@ -155,6 +159,7 @@ class QueueListItem extends Component {
                 data-is-selected={isSelected}
                 data-is-current={this.props.isCurrent}
                 draggable="true"
+                title={htmlTitle}
             >
                 <AlbumArt src={track.albumArtURI} />
                 <div className="trackinfo">
