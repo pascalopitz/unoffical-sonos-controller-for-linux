@@ -45,7 +45,7 @@ class QueueListItem extends Component {
         e.stopPropagation();
     }
 
-    _onDoubleClick(e) {
+    _onClick(e) {
         QueueActions.gotoPosition(this.props.position);
         e.preventDefault();
         e.stopPropagation();
@@ -146,7 +146,7 @@ class QueueListItem extends Component {
 
         return (
             <li
-                ondblclick={this._onDoubleClick.bind(this)}
+                onClick={this._onClick.bind(this)}
                 onMouseOut={this._onMouseOut.bind(this)}
                 onMouseOver={this._onMouseOver.bind(this)}
                 data-position={this.props.position}
