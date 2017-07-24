@@ -2,6 +2,7 @@ import Dispatcher from '../dispatcher/AppDispatcher';
 import Constants from '../constants/Constants';
 
 import SonosService from '../services/SonosService';
+import Services from '../sonos/helpers/Services';
 
 export default {
     pause() {
