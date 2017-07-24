@@ -145,8 +145,11 @@ class MusicServiceManagement extends Component {
         }
 
         return (
-            <div id="music-service-management">
-                <div id="music-service-management-container">
+            <div id="music-service-management" className="modal">
+                <div
+                    id="music-service-management-container"
+                    className="modal-container"
+                >
                     <h3>
                         {this.state.client.name}
                     </h3>
@@ -175,7 +178,7 @@ class MusicServiceManagement extends Component {
                     </button>
                     <button
                         onClick={this._next.bind(this)}
-                        className="next-button"
+                        className="save-button"
                     >
                         Next
                     </button>

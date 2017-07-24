@@ -10,6 +10,7 @@
     }]
   ],
   "plugins": [
+    "transform-object-rest-spread",
     "syntax-jsx",
     ["transform-react-jsx", { "pragma":"h" }]
   ],

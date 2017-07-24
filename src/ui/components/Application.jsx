@@ -13,6 +13,8 @@ import GroupManagement from './GroupManagement';
 import MusicServiceManagement from './MusicServiceManagement';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
+import AlarmSettings from './AlarmSettings';
+import AlarmManagement from './AlarmManagement';
 
 class Application extends Component {
     constuctor() {
@@ -34,6 +36,7 @@ class Application extends Component {
                         <PlayControls />
                         <PositionInfo />
                         <SearchBar />
+                        <AlarmSettings />
                     </header>
                     <div id="column-container">
                         <div id="zone-container">
@@ -51,6 +54,7 @@ class Application extends Component {
                 </div>
                 <GroupManagement />
                 <MusicServiceManagement />
+                <AlarmManagement />
                 <Loader />
             </div>
         );

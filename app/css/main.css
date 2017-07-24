@@ -1006,8 +1006,7 @@ body #queue-container li[data-is-current=true] {
     min-height: 53px;
 }
 
-#music-service-management,
-#zone-group-management {
+.modal {
     position: absolute;
     top: 5px;
     bottom: 0;
@@ -1024,8 +1023,7 @@ body #queue-container li[data-is-current=true] {
     font-size: 20px;
 }
 
-#music-service-management-container,
-#zone-group-management-container {
+.modal-container {
     min-width: 200px;
     min-height: 300px;
     background: #ddd;
@@ -1036,40 +1034,7 @@ body #queue-container li[data-is-current=true] {
     position: relative;
 }
 
-#zone-group-management-container ul {
-    margin: 0;
-    padding: 0;
-}
-
-#zone-group-management-container li {
-    list-style: none;
-    color: #222;
-    text-shadow: none;
-    margin: 0;
-}
-
-#zone-group-management-container li span {
-    width: calc(100% - 40px);
-    display: inline-block;
-    padding-top: 10px;
-}
-
-#zone-group-management-container li i.material-icons.checkbox {
-    height: 20px;
-    width: 20px;
-    vertical-align: top;
-    margin-top: 10px;
-    opacity: .3;
-    transition: all .3s;
-    margin-right: 20px;
-}
-
-#zone-group-management-container li i.material-icons.checkbox:hover {
-    cursor: pointer;
-}
-
-#music-service-management-container button,
-#zone-group-management-container button {
+.modal-container button {
     background-image: -webkit-linear-gradient(top, #404040 0px, #303030 24px);
     border: 1px solid black;
     padding: 10px 10px 10px 10px;
@@ -1080,46 +1045,92 @@ body #queue-container li[data-is-current=true] {
     font-size: 15px;
 }
 
-#music-service-management-container button.cancel-button,
-#zone-group-management-container button.cancel-button {
+.modal-container button.cancel-button {
     left: 10px;
 }
 
-#music-service-management-container button.cancel-button:hover,
-#zone-group-management-container button.cancel-button:hover {
+.modal-container  button.cancel-button:hover {
     cursor: pointer;
 }
 
-#music-service-management-container button.next-button,
-#zone-group-management-container button.save-button {
+.modal-container  button.save-button {
     right: 10px;
 }
 
-#music-service-management-container button.next-button:hover,
-#zone-group-management-container button.save-button:hover {
+.modal-container  button.save-button:hover {
     cursor: pointer;
 }
 
-body #music-service-management-container {
+.modal-container {
     width: 80vw;
     max-width: 500px;
 }
 
-body #music-service-management h3 {
+.modal-container h3 {
     font-weight: bold;
 }
 
-html body #music-service-management label {
+html .modal-container label {
     width: 200px;
     display: inline-block;
 }
 
-body #music-service-management label,
-body #music-service-management p,
-body #music-service-management a,
-body #music-service-management h3 {
+.modal-container label,
+.modal-container p,
+.modal-container a,
+.modal-container h3 {
     width: 100%;
     text-shadow: none !important;
     color: #111111 !important;
     font-size: 16px;
+}
+
+
+.modal-container ul {
+    margin: 0;
+    padding: 0;
+}
+
+.modal-container li {
+    list-style: none;
+    color: #222;
+    text-shadow: none;
+    margin: 0;
+}
+
+.modal-container li span {
+    width: calc(100% - 40px);
+    display: inline-block;
+    padding-top: 10px;
+}
+
+
+.modal-container li span.label {
+    width: 50%;
+}
+
+
+.modal-container li i.material-icons {
+    height: 20px;
+    width: 20px;
+    vertical-align: top;
+    margin-top: 10px;
+    opacity: .3;
+    transition: all .3s;
+    margin-right: 20px;
+}
+
+.modal-container li i.material-icons:hover {
+    cursor: pointer;
+}
+
+.alarm-settings {
+    position: absolute;
+    left: calc(50% + 216px);
+    top: 56px;
+    cursor: pointer;
+}
+
+.alarm-settings i {
+    font-size: 18px;
 }
