@@ -30,7 +30,7 @@ function getServiceLogoUrl(id) {
         ServiceImageMap['acr-hdpi'].service,
         i => _.get(i, '$.id') === encodedId
     );
-    console.log(id, match, _.get(match, 'image._'));
+
     return _.get(match, 'image._');
 }
 
