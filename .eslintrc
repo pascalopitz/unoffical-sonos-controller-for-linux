@@ -4,6 +4,9 @@
         "react",
         "prettier"
     ],
+    "extends": [
+        "plugin:react/recommended"
+    ],
     "rules": {
         "prettier/prettier": [ "error", {
             "singleQuote": true,
@@ -33,7 +36,9 @@
         "object-curly-spacing": [1, "always"],
         "no-process-exit": 0,
         "prefer-const": 1,
-        "no-var": 1
+        "no-var": 1,
+        "react/react-in-jsx-scope": 0,
+        "react/prop-types": 0
     },
     "env": {
         "node": true,

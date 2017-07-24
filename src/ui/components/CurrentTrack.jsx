@@ -51,7 +51,7 @@ class CurrentTrack extends Component {
 
                         <a
                             id="current-track-toggle-button"
-                            class="current-track-toggle-button"
+                            className="current-track-toggle-button"
                             onClick={this._toggle.bind(this)}
                         >
                             {toggleNode}
@@ -85,7 +85,7 @@ class CurrentTrack extends Component {
 
                         <a
                             id="current-track-toggle-button"
-                            class="current-track-toggle-button"
+                            className="current-track-toggle-button"
                             onClick={this._toggle.bind(this)}
                         >
                             <i className="material-icons">expand_more</i>
@@ -102,7 +102,7 @@ class CurrentTrack extends Component {
 
                     <a
                         id="current-track-toggle-button"
-                        class="current-track-toggle-button"
+                        className="current-track-toggle-button"
                         onClick={this._toggle.bind(this)}
                     >
                         <i className="material-icons">expand_less</i>

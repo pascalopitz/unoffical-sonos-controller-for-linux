@@ -32,14 +32,14 @@ class SearchBar extends Component {
                     type="text"
                     id="searchfield"
                     value={this.state.term}
-                    oninput={_.debounce(this._onChange.bind(this), 200)}
+                    onInput={_.debounce(this._onChange.bind(this), 200)}
                 />
                 {cancelButton}
             </div>
         );
     }
 
-    _onClick(e) {
+    _onClick() {
         this.setState({
             searching: false,
             term: ''
