@@ -20,17 +20,13 @@ class Loader extends Component {
     }
 
     render() {
-        // if(this.state.current) {
-        return null;
-        // }
-
-        const msg = 'Searching for your Sonos System ...';
+        if (this.state.current) {
+            return null;
+        }
 
         return (
             <div id="loader">
-                <p>
-                    {msg}
-                </p>
+                <p>Searching for your Sonos System ...</p>
             </div>
         );
     }
