@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import xml2json from 'jquery-xml2json';
 
-import { h, Component } from 'preact'; //eslint-disable-line
+import { h, Component } from 'preact';
 
 import SonosService from '../services/SonosService';
 import resourceLoader from '../helpers/resourceLoader';

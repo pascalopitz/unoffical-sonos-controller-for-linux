@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import moment from 'moment';
-import { h, Component } from 'preact'; //eslint-disable-line
+import { h, Component } from 'preact';
 
 import PlayerActions from '../actions/PlayerActions';
 import PlayerStore from '../stores/PlayerStore';

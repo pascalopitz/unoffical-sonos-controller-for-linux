@@ -1,4 +1,4 @@
-import { h, Component } from 'preact'; //eslint-disable-line
+import { h, Component } from 'preact';
 
 import CurrentTrackStore from '../stores/CurrentTrackStore';
 import CurrentTrackActions from '../actions/CurrentTrackActions';

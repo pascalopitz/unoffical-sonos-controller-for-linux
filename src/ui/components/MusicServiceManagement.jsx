@@ -1,5 +1,5 @@
 import { shell } from 'electron';
-import { h, Component } from 'preact'; //eslint-disable-line
+import { h, Component } from 'preact';
 
 import MusicServiceManagementStore from '../stores/MusicServiceManagementStore';
 import MusicServiceManagementActions from '../actions/MusicServiceManagementActions';

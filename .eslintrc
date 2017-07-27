@@ -7,6 +7,11 @@
     "extends": [
         "plugin:react/recommended"
     ],
+    "settings": {
+        "react": {
+            "pragma": "h"
+        }
+    },
     "rules": {
         "prettier/prettier": [ "error", {
             "singleQuote": true,

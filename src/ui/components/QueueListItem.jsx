@@ -1,4 +1,4 @@
-import { h, Component } from 'preact'; //eslint-disable-line
+import { h, Component } from 'preact';
 import AlbumArt from './AlbumArt';
 
 import QueueActions from '../actions/QueueActions';
