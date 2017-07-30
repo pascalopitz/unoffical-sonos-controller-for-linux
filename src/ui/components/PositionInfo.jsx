@@ -2,9 +2,39 @@ import _ from 'lodash';
 
 import moment from 'moment';
 import { h, Component } from 'preact';
+import { connect } from 'preact-redux';
 
-import PlayerActions from '../actions/PlayerActions';
-import PlayerStore from '../stores/PlayerStore';
+import {
+    setPlayMode,
+    setCrossfade,
+    seek,
+    refreshPosition
+} from '../reduxActions/PlayerActions';
+
+import {
+    getPlaying,
+    getCrossfadeMode,
+    getPlayMode,
+    getPositionInfo
+} from '../selectors/PlayerSelectors';
+
+const mapStateToProps = state => {
+    return {
+        isPlaying: getPlaying(state),
+        info: getPositionInfo(state),
+        playMode: getPlayMode(state),
+        isCrossfade: getCrossfadeMode(state)
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setPlayMode: mode => dispatch(setPlayMode(mode)),
+        setCrossfade: mode => dispatch(setCrossfade(mode)),
+        seek: position => dispatch(seek(position)),
+        refreshPosition: () => dispatch(refreshPosition())
+    };
+};
 
 function formatTime(d) {
     return `${_.padStart(d.hours() * 60 + d.minutes(), 2, '0')}:${_.padStart(
@@ -14,22 +44,27 @@ function formatTime(d) {
     )}`;
 }
 
-class PositionInfo extends Component {
+export class PositionInfo extends Component {
     constructor() {
         super();
+
         this.state = {
-            isPlaying: false,
-            playMode: 'NORMAL',
-            isCrossfade: false,
-            info: null,
             offset: 0
         };
 
         this._interval = null;
     }
 
+    componentWillReceiveProps(props) {
+        if (!_.isMatch(props.info, this.props.info)) {
+            this.setState({
+                offset: 0
+            });
+        }
+    }
+
     componentDidMount() {
-        PlayerStore.addChangeListener(this._onChange.bind(this));
+        this.startInterval();
     }
 
     componentWillUnmount() {
@@ -37,6 +72,7 @@ class PositionInfo extends Component {
     }
 
     startInterval() {
+        this.cleanInterval();
         this._interval = window.setInterval(this._onInterval.bind(this), 1000);
     }
 
@@ -48,90 +84,63 @@ class PositionInfo extends Component {
     }
 
     _toggleRepeat() {
-        let newMode;
-
-        if (this.state.playMode === 'NORMAL') {
-            PlayerActions.setPlayMode('REPEAT_ALL');
+        if (this.props.playMode === 'NORMAL') {
+            this.props.setPlayMode('REPEAT_ALL');
         }
 
-        if (this.state.playMode === 'REPEAT_ALL') {
-            PlayerActions.setPlayMode('REPEAT_ONE');
+        if (this.props.playMode === 'REPEAT_ALL') {
+            this.props.setPlayMode('REPEAT_ONE');
         }
 
-        if (this.state.playMode === 'REPEAT_ONE') {
-            PlayerActions.setPlayMode('NORMAL');
+        if (this.props.playMode === 'REPEAT_ONE') {
+            this.props.setPlayMode('NORMAL');
         }
 
-        if (this.state.playMode === 'SHUFFLE') {
-            PlayerActions.setPlayMode('SHUFFLE_REPEAT_ONE');
+        if (this.props.playMode === 'SHUFFLE') {
+            this.props.setPlayMode('SHUFFLE_REPEAT_ONE');
         }
 
-        if (this.state.playMode === 'SHUFFLE_REPEAT_ONE') {
-            PlayerActions.setPlayMode('SHUFFLE_NOREPEAT');
+        if (this.props.playMode === 'SHUFFLE_REPEAT_ONE') {
+            this.props.setPlayMode('SHUFFLE_NOREPEAT');
         }
 
-        if (this.state.playMode === 'SHUFFLE_NOREPEAT') {
-            PlayerActions.setPlayMode('SHUFFLE');
+        if (this.props.playMode === 'SHUFFLE_NOREPEAT') {
+            this.props.setPlayMode('SHUFFLE');
         }
     }
 
     _toggleShuffle() {
-        if (this.state.playMode === 'NORMAL') {
-            PlayerActions.setPlayMode('SHUFFLE_NOREPEAT');
+        if (this.props.playMode === 'NORMAL') {
+            this.props.setPlayMode('SHUFFLE_NOREPEAT');
         }
 
-        if (this.state.playMode === 'REPEAT_ALL') {
-            PlayerActions.setPlayMode('SHUFFLE');
+        if (this.props.playMode === 'REPEAT_ALL') {
+            this.props.setPlayMode('SHUFFLE');
         }
 
-        if (this.state.playMode === 'REPEAT_ONE') {
-            PlayerActions.setPlayMode('SHUFFLE_REPEAT_ONE');
+        if (this.props.playMode === 'REPEAT_ONE') {
+            this.props.setPlayMode('SHUFFLE_REPEAT_ONE');
         }
 
-        if (this.state.playMode === 'SHUFFLE') {
-            PlayerActions.setPlayMode('REPEAT_ALL');
+        if (this.props.playMode === 'SHUFFLE') {
+            this.props.setPlayMode('REPEAT_ALL');
         }
 
-        if (this.state.playMode === 'SHUFFLE_REPEAT_ONE') {
-            PlayerActions.setPlayMode('REPEAT_ONE');
+        if (this.props.playMode === 'SHUFFLE_REPEAT_ONE') {
+            this.props.setPlayMode('REPEAT_ONE');
         }
 
-        if (this.state.playMode === 'SHUFFLE_NOREPEAT') {
-            PlayerActions.setPlayMode('NORMAL');
+        if (this.props.playMode === 'SHUFFLE_NOREPEAT') {
+            this.props.setPlayMode('NORMAL');
         }
     }
 
     _toggleCrossfade() {
-        PlayerActions.setCrossfade(!this.state.isCrossfade);
-    }
-
-    _onChange() {
-        const info = PlayerStore.getPositionInfo();
-        const isPlaying = PlayerStore.isPlaying();
-        const playMode = PlayerStore.getPlayMode();
-        const isCrossfade = PlayerStore.isCrossfade();
-        const offset = this.state.offset;
-
-        this.setState({
-            isPlaying,
-            playMode,
-            isCrossfade
-        });
-
-        if (info !== this.state.info) {
-            this.cleanInterval();
-
-            this.setState({
-                info: info,
-                offset: 0
-            });
-
-            this.startInterval();
-        }
+        this.props.setCrossfade(!this.props.isCrossfade);
     }
 
     _onInterval() {
-        if (this.state.isPlaying) {
+        if (this.props.isPlaying) {
             this.setState({
                 offset: this.state.offset + 1
             });
@@ -139,7 +148,7 @@ class PositionInfo extends Component {
     }
 
     _onClick(e) {
-        const info = this.state.info;
+        const { info } = this.props;
 
         if (!info || !info.TrackDuration) {
             return;
@@ -153,28 +162,28 @@ class PositionInfo extends Component {
         const totalSeconds =
             Number(d[0]) * 60 * 60 + Number(d[1]) * 60 + Number(d[2]);
 
-        const percent = 100 / rect.width * left;
+        // const percent = 100 / rect.width * left;
         const time = Math.floor(totalSeconds / rect.width * left);
 
-        PlayerActions.seek(time);
+        this.props.seek(time);
     }
 
     render() {
-        const info = this.state.info;
-        const offset = this.state.offset || 0;
+        const { info } = this.props;
+        const { offset } = this.state;
+
         let percent = 0;
         let fromStr = '00:00';
         let toStr = '-00:00';
 
         if (info) {
-            const start = moment.duration();
             let now = moment.duration(info.RelTime).add(offset, 's');
             const end = moment.duration(info.TrackDuration);
 
             if (end.asSeconds() > 0) {
                 if (now > end) {
                     now = moment.duration(info.TrackDuration);
-                    PlayerActions.refreshPosition();
+                    this.props.refreshPosition();
                 }
 
                 const to = moment
@@ -195,7 +204,7 @@ class PositionInfo extends Component {
         let repeat = <i className="material-icons repeat">repeat</i>;
         let shuffle = <i className="material-icons shuffle">shuffle</i>;
 
-        switch (this.state.playMode) {
+        switch (this.props.playMode) {
             case 'NORMAL':
                 break;
 
@@ -212,7 +221,7 @@ class PositionInfo extends Component {
                 break;
         }
 
-        switch (this.state.playMode) {
+        switch (this.props.playMode) {
             case 'SHUFFLE':
             case 'SHUFFLE_NOREPEAT':
             case 'SHUFFLE_REPEAT_ONE':
@@ -226,7 +235,7 @@ class PositionInfo extends Component {
             <i className="material-icons crossfade">import_export</i>
         );
 
-        if (this.state.isCrossfade) {
+        if (this.props.isCrossfade) {
             crossfade = (
                 <i className="material-icons crossfade active">import_export</i>
             );
@@ -273,4 +282,4 @@ class PositionInfo extends Component {
     }
 }
 
-export default PositionInfo;
+export default connect(mapStateToProps, mapDispatchToProps)(PositionInfo);

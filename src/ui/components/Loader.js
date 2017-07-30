@@ -1,26 +1,21 @@
 import { h, Component } from 'preact';
-import ZoneGroupStore from '../stores/ZoneGroupStore';
+import { connect } from 'preact-redux';
+
+import { getHasCurrent } from '../selectors/LoaderSelectors';
+
+const mapStateToProps = state => {
+    return {
+        hasCurrent: getHasCurrent(state)
+    };
+};
+
+const mapDispatchToProps = () => {
+    return {};
+};
 
 class Loader extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            current: ZoneGroupStore.getCurrent()
-        };
-    }
-
-    componentDidMount() {
-        ZoneGroupStore.addChangeListener(this._onChange.bind(this));
-    }
-
-    _onChange() {
-        this.setState({
-            current: ZoneGroupStore.getCurrent()
-        });
-    }
-
     render() {
-        if (this.state.current) {
+        if (this.props.hasCurrent) {
             return null;
         }
 
@@ -32,4 +27,4 @@ class Loader extends Component {
     }
 }
 
-export default Loader;
+export default connect(mapStateToProps, mapDispatchToProps)(Loader);

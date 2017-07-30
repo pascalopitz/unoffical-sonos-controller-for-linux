@@ -1,70 +1,49 @@
 import { h, Component } from 'preact';
+import { connect } from 'preact-redux';
 
-import GroupManagementStore from '../stores/GroupManagementStore';
-import GroupManagementActions from '../actions/GroupManagementActions';
+import GroupManagementNode from './GroupManagementNode';
 
-class GroupManagement extends Component {
-    constructor(props) {
-        super(props);
-        this.state = this._getUpdatedState();
-    }
+import {
+    hideGroupManagement,
+    toggleGroupChecked,
+    saveGroups
+} from '../reduxActions/GroupManagementActions';
 
-    componentDidMount() {
-        GroupManagementStore.addChangeListener(this._onChange.bind(this));
-    }
+import { getPlayers } from '../selectors/GroupManagementSelectors';
 
-    _onChange() {
-        this.setState(this._getUpdatedState());
-    }
+const mapStateToProps = state => {
+    return {
+        players: getPlayers(state),
+        visible: state.groupManagement.visible,
+        selected: state.groupManagement.selected
+    };
+};
 
-    _getUpdatedState() {
-        const players = GroupManagementStore.getPlayers();
-        const current = GroupManagementStore.getCurrent();
+const mapDispatchToProps = dispatch => {
+    return {
+        hideGroupManagement: () => dispatch(hideGroupManagement()),
+        toggleGroup: group => dispatch(toggleGroupChecked(group)),
+        saveGroups: selected => dispatch(saveGroups(selected))
+    };
+};
 
-        return {
-            players: players,
-            current: current
-        };
-    }
-
+export class GroupManagement extends Component {
     _cancel() {
-        GroupManagementActions.hideManagement();
+        this.props.hideGroupManagement();
     }
 
     _save() {
-        GroupManagementActions.save();
+        this.props.saveGroups(this.props.selected);
     }
 
     render() {
-        if (!this.state.current) {
+        if (!this.props.visible) {
             return null;
         }
 
-        const zoneGroupNodes = this.state.players.map((item, idx) => {
-            const checkboxSymbol = item.selected
-                ? 'check_box'
-                : 'check_box_outline_blank';
-
-            const _toggleSelection = () => {
-                if (!item.selected) {
-                    GroupManagementActions.select(item);
-                } else {
-                    GroupManagementActions.deselect(item);
-                }
-            };
-
+        const zoneGroupNodes = this.props.players.map((item, idx) => {
             return (
-                <li key={idx}>
-                    <span>
-                        {item.name}
-                    </span>
-                    <i
-                        className="material-icons checkbox"
-                        onClick={_toggleSelection.bind(this)}
-                    >
-                        {checkboxSymbol}
-                    </i>
-                </li>
+                <GroupManagementNode key={idx} item={item} {...this.props} />
             );
         });
 
@@ -93,4 +72,4 @@ class GroupManagement extends Component {
     }
 }
 
-export default GroupManagement;
+export default connect(mapStateToProps, mapDispatchToProps)(GroupManagement);

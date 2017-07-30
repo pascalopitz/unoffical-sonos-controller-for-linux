@@ -1,60 +1,77 @@
 import _ from 'lodash';
 
 import { h, Component } from 'preact';
+import { connect } from 'preact-redux';
 
 import MuteButton from './MuteButton';
 import VolumeSlider from './VolumeSlider';
 
-import VolumeControlActions from '../actions/VolumeControlActions';
-import VolumeControlStore from '../stores/VolumeControlStore';
+import {
+    setDragging,
+    setExpanded,
+    setPlayerMuted,
+    setPlayerVolume
+} from '../reduxActions/VolumeControlActions';
+
+import {
+    getPlayers,
+    getCurrentGroupKeys,
+    getGroupVolume,
+    getGroupMuted
+} from '../selectors/VolumeControlSelectors';
+
+const mapStateToProps = state => {
+    return {
+        players: getPlayers(state),
+        currentGroupKeys: getCurrentGroupKeys(state),
+        groupVolume: getGroupVolume(state),
+        groupMuted: getGroupMuted(state),
+        dragging: state.volume.dragging,
+        expanded: state.volume.expanded
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setPlayerVolume: (host, volume) =>
+            dispatch(setPlayerVolume(host, volume)),
+        setPlayerMuted: (host, muted) => dispatch(setPlayerMuted(host, muted)),
+        setDragging: value => dispatch(setDragging(value)),
+        setExpanded: value => dispatch(setExpanded(value))
+    };
+};
 
 class VolumeControls extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            players: VolumeControlStore.getPlayers()
-        };
-    }
-
-    componentDidMount() {
-        VolumeControlStore.addChangeListener(this._onChange.bind(this));
-    }
-
-    _onChange() {
-        if (!this.state.dragging) {
-            this.setState({
-                players: VolumeControlStore.getPlayers()
-            });
-        }
+        this.state = {};
     }
 
     _toggleGoupMute(e) {
-        const muted = this._calculateGroupMuted();
+        const muted = this.props.groupMuted;
 
-        Object.keys(this.state.players).forEach(host => {
-            VolumeControlActions.setPlayerMuted(host, !muted);
+        this.props.currentGroupKeys.forEach(host => {
+            this.props.setPlayerMuted(host, !muted);
         });
     }
 
     _changeGroupVolume(volume) {
-        const keys = Object.keys(this.state.players);
-        const state = _.cloneDeep(this.state);
-
-        state.isExpanded = true;
+        this.props.setExpanded(true);
 
         // adjust all players in group
         const volumeLevel = volume;
-        const groupVolume = this._calculateGroupVolume();
+        const groupVolume = this.props.groupVolume;
         const deltaVolume = volumeLevel - groupVolume;
-        let newVolume;
 
-        keys.forEach(key => {
+        for (const key of this.props.currentGroupKeys) {
+            let newVolume;
+
             if (volumeLevel < 1) {
                 newVolume = 0;
             } else if (deltaVolume > 0) {
-                newVolume = this.state.players[key].volume + deltaVolume;
+                newVolume = this.props.players[key].volume + deltaVolume;
             } else {
-                const factor = this.state.players[key].volume / groupVolume;
+                const factor = this.props.players[key].volume / groupVolume;
                 newVolume = Math.ceil(factor * volumeLevel);
             }
 
@@ -66,20 +83,14 @@ class VolumeControls extends Component {
                 newVolume = 0;
             }
 
-            state.players[key].volume = newVolume;
-            VolumeControlActions.setPlayerVolume(key, newVolume);
-        });
-
-        this.setState(state);
+            this.props.setPlayerVolume(key, newVolume);
+        }
     }
 
     _startGroupVolume() {
-        const keys = Object.keys(this.state.players);
-
+        const keys = this.props.currentGroupKeys;
         this._dragStart();
-        this.setState({
-            isExpanded: keys.length > 1
-        });
+        this.props.setExpanded(keys.length > 1);
     }
 
     _endGroupVolume() {
@@ -92,25 +103,18 @@ class VolumeControls extends Component {
             window.clearTimeout(this._dragEndTimer);
         }
 
-        this.setState({
-            dragging: true
-        });
+        this.props.setDragging(true);
     }
 
     _dragEnd() {
         this._dragEndTimer = window.setTimeout(() => {
-            this.setState({
-                dragging: false
-            });
-            VolumeControlActions.queryVolumes();
+            this.props.setDragging(false);
         }, 500);
     }
 
     _hideTimeStart() {
         this._hideTimer = window.setTimeout(() => {
-            this.setState({
-                isExpanded: false
-            });
+            this.props.setExpanded(false);
         }, 1000);
     }
 
@@ -118,50 +122,28 @@ class VolumeControls extends Component {
         window.clearTimeout(this._hideTimer);
     }
 
-    _calculateGroupMuted() {
-        return _.filter(this.state.players, { muted: false }).length === 0;
-    }
-
-    _calculateGroupVolume() {
-        const keys = Object.keys(this.state.players);
-
-        if (!keys.length) {
-            return 0;
-        }
-
-        const volume = Math.floor(
-            _.sum(_.map(this.state.players, p => Number(p.volume))) /
-                keys.length
-        );
-        return volume;
-    }
-
     render() {
         let groupMuted = false;
         let groupVolume = 0;
         let playerPopover;
 
-        const keys = Object.keys(this.state.players);
+        const keys = this.props.currentGroupKeys;
 
         if (keys.length === 1) {
-            groupMuted = this.state.players[keys[0]].muted;
-            groupVolume = this.state.players[keys[0]].volume;
+            groupMuted = this.props.players[keys[0]].muted;
+            groupVolume = this.props.players[keys[0]].volume;
         } else {
-            groupMuted = this._calculateGroupMuted();
-            groupVolume = this._calculateGroupVolume();
+            groupMuted = this.props.groupMuted;
+            groupVolume = this.props.groupVolume;
         }
 
-        if (this.state.isExpanded && keys.length > 1) {
-            const playerRows = Object.keys(this.state.players).map(key => {
-                const muted = this.state.players[key].muted;
-                const volume = this.state.players[key].volume;
-                const name = this.state.players[key].name;
+        if (this.props.expanded && keys.length > 1) {
+            const playerRows = Object.keys(this.props.players).map(key => {
+                const { volume, muted, name } = this.props.players[key];
 
                 const startVolume = () => {
                     this._dragStart();
-                    this.setState({
-                        dragging: true
-                    });
+                    this.props.setDragging(true);
                 };
 
                 const endVolume = () => {
@@ -169,16 +151,15 @@ class VolumeControls extends Component {
                 };
 
                 const changeVolume = volume => {
-                    const state = _.cloneDeep(this.state);
-                    state.isExpanded = true;
-                    state.players[key].volume = volume;
-
-                    this.setState(state);
-                    VolumeControlActions.setPlayerVolume(key, volume);
+                    console.log(volume);
+                    if (!this.propsexpanded) {
+                        this.props.setExpanded(true);
+                    }
+                    this.props.setPlayerVolume(key, volume);
                 };
 
                 const toggleMute = () => {
-                    VolumeControlActions.setPlayerMuted(key, !muted);
+                    this.props.setPlayerMuted(key, !muted);
                 };
 
                 return (
@@ -232,4 +213,4 @@ class VolumeControls extends Component {
     }
 }
 
-export default VolumeControls;
+export default connect(mapStateToProps, mapDispatchToProps)(VolumeControls);

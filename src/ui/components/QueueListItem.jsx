@@ -1,9 +1,20 @@
 import { h, Component } from 'preact';
+import { connect } from 'preact-redux';
 import AlbumArt from './AlbumArt';
 
-import QueueActions from '../actions/QueueActions';
+import { gotoPosition, removeTrack } from '../reduxActions/QueueActions';
 
-class QueueListItem extends Component {
+const mapDispatchToProps = dispatch => {
+    return {
+        select: pos => dispatch(select(pos)),
+        deselect: pos => dispatch(deselect(pos)),
+        gotoPosition: pos => dispatch(gotoPosition(pos)),
+        removeTrack: pos => dispatch(removeTrack(pos)),
+        removeSelected: () => dispatch(removeSelected())
+    };
+};
+
+export class QueueListItem extends Component {
     constructor() {
         super();
         this.state = {
@@ -46,23 +57,23 @@ class QueueListItem extends Component {
     }
 
     _onClick(e) {
-        QueueActions.gotoPosition(this.props.position);
+        this.props.gotoPosition(this.props.position);
         e.preventDefault();
         e.stopPropagation();
     }
 
     _playNow(e) {
-        QueueActions.gotoPosition(this.props.position);
+        this.props.gotoPosition(this.props.position);
         this._toggle(e);
     }
 
     _removeTrack(e) {
-        QueueActions.removeTrack(this.props.position);
+        this.props.removeTrack(this.props.position);
         this._toggle(e);
     }
 
     _removeSelected(e) {
-        QueueActions.removeSelected();
+        this.props.removeSelected();
         this._toggle(e);
     }
 
@@ -70,9 +81,9 @@ class QueueListItem extends Component {
         const isSelected = this._isSelected();
 
         if (!isSelected) {
-            QueueActions.select(this.props.position);
+            this.props.select(this.props.position);
         } else {
-            QueueActions.deselect(this.props.position);
+            this.props.deselect(this.props.position);
         }
 
         e.preventDefault();
@@ -178,4 +189,4 @@ class QueueListItem extends Component {
     }
 }
 
-export default QueueListItem;
+export default connect(null, mapDispatchToProps)(QueueListItem);

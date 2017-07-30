@@ -1,34 +1,47 @@
 import _ from 'lodash';
 
 import { h, Component } from 'preact';
-import VirtualList from 'preact-virtual-list';
+import { connect } from 'preact-redux';
 
-import QueueActions from '../actions/QueueActions';
-import QueueStore from '../stores/QueueStore';
+import VirtualList from 'preact-virtual-list';
+import { getClosest } from '../helpers/dom-utility';
 
 import QueueListItem from './QueueListItem';
 
-import { getClosest } from '../helpers/dom-utility';
+import {
+    getExpanded,
+    getTracks,
+    getPositionInfo
+} from '../selectors/QueueSelectors';
 
-class QueueList extends Component {
+import { changePosition, flush } from '../reduxActions/QueueActions';
+
+const mapStateToProps = state => {
+    return {
+        tracks: getTracks(state),
+        position: getPositionInfo(state),
+        expanded: getExpanded(state)
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        flush: () => dispatch(flush()),
+        changePosition: (oldPos, newPos) =>
+            dispatch(changePosition(oldPos, newPos))
+    };
+};
+
+export class QueueList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dragging: false,
-            tracks: QueueStore.getTracks(),
-            position: QueueStore.getPosition(),
-            expanded: QueueStore.getExpanded()
+            dragging: false
         };
     }
 
-    componentDidMount() {
-        QueueStore.addChangeListener(this._onChange.bind(this));
-
-        this.setState({});
-    }
-
     componentWillUpdate(nextProps, nextState) {
-        if (nextState.position && nextState.position !== this.state.position) {
+        if (nextState.position && nextState.position !== this.props.position) {
             // HACK, can this be done cleanly?
             window.setTimeout(() => {
                 const current = document.querySelector(
@@ -42,20 +55,8 @@ class QueueList extends Component {
         }
     }
 
-    _onChange() {
-        if (this.state.dragging) {
-            return;
-        }
-
-        this.setState({
-            tracks: QueueStore.getTracks(),
-            position: QueueStore.getPosition(),
-            expanded: QueueStore.getExpanded()
-        });
-    }
-
     _onClick() {
-        QueueActions.flush();
+        this.props.flush();
     }
 
     _onDragStart(e) {
@@ -71,7 +72,7 @@ class QueueList extends Component {
                 ? this.state.dragOverPosition + 1
                 : this.state.dragOverPosition;
 
-        QueueActions.changePosition(this.state.dragPosition, newPos);
+        this.props.changePosition(this.state.dragPosition, newPos);
 
         this.setState({
             dragPosition: false,
@@ -115,7 +116,7 @@ class QueueList extends Component {
     }
 
     render() {
-        const tracks = this.state.tracks;
+        const tracks = this.props.tracks;
         const selectionContext =
             _.filter(tracks, { selected: true }).length > 0;
         let queueItemNodes;
@@ -134,7 +135,7 @@ class QueueList extends Component {
 
             queueItemNodes = tracks.map((track, p) => {
                 const position = p + 1;
-                const isCurrent = position === this.state.position;
+                const isCurrent = position === this.props.position;
                 const isDragging = position === this.state.dragPosition;
                 const isDragOver = position === this.state.dragOverPosition;
 
@@ -153,7 +154,7 @@ class QueueList extends Component {
             });
         }
 
-        const expandClass = this.state.expanded ? 'expanded' : 'collapsed';
+        const expandClass = this.props.expanded ? 'expanded' : 'collapsed';
 
         return (
             <div className={expandClass} id="queue-list-container-wrapper">
@@ -181,4 +182,4 @@ class QueueList extends Component {
     }
 }
 
-export default QueueList;
+export default connect(mapStateToProps, mapDispatchToProps)(QueueList);

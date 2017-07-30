@@ -1,15 +1,13 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
 
-class ZoneGroupMember extends Component {
-    render() {
-        return (
-            <li>
-                <span>
-                    {this.props.member.name}
-                </span>
-            </li>
-        );
-    }
+export function ZoneGroupMember(props) {
+    return (
+        <li>
+            <span>
+                {props.member.name}
+            </span>
+        </li>
+    );
 }
 
 export default ZoneGroupMember;
