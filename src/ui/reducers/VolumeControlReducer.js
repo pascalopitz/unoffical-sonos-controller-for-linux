@@ -13,15 +13,6 @@ export default handleActions(
         [Constants.VOLUME_CONTROLS_VOLUME_SET]: (state, action) => {
             const { host, volume } = action.payload;
 
-            if (!host) {
-                try {
-                    throw new Error(action);
-                } catch (err) {
-                    console.error(err);
-                }
-                return state;
-            }
-
             return {
                 ...state,
                 volume: {
@@ -33,10 +24,6 @@ export default handleActions(
 
         [Constants.VOLUME_CONTROLS_MUTE_SET]: (state, action) => {
             const { host, muted } = action.payload;
-
-            if (!host) {
-                return state;
-            }
 
             return {
                 ...state,

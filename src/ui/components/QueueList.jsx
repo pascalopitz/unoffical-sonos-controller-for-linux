@@ -11,7 +11,8 @@ import QueueListItem from './QueueListItem';
 import {
     getExpanded,
     getTracks,
-    getPositionInfo
+    getPositionInfo,
+    getUpdateId
 } from '../selectors/QueueSelectors';
 
 import { changePosition, flush } from '../reduxActions/QueueActions';
@@ -20,15 +21,16 @@ const mapStateToProps = state => {
     return {
         tracks: getTracks(state),
         position: getPositionInfo(state),
-        expanded: getExpanded(state)
+        expanded: getExpanded(state),
+        updateId: getUpdateId(state)
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         flush: () => dispatch(flush()),
-        changePosition: (oldPos, newPos) =>
-            dispatch(changePosition(oldPos, newPos))
+        changePosition: (oldPos, newPos, updateId) =>
+            dispatch(changePosition(oldPos, newPos, updateId))
     };
 };
 
@@ -72,7 +74,11 @@ export class QueueList extends Component {
                 ? this.state.dragOverPosition + 1
                 : this.state.dragOverPosition;
 
-        this.props.changePosition(this.state.dragPosition, newPos);
+        this.props.changePosition(
+            this.state.dragPosition,
+            newPos,
+            this.props.updateId
+        );
 
         this.setState({
             dragPosition: false,
@@ -117,8 +123,6 @@ export class QueueList extends Component {
 
     render() {
         const tracks = this.props.tracks;
-        const selectionContext =
-            _.filter(tracks, { selected: true }).length > 0;
         let queueItemNodes;
         let clearNode;
 
@@ -148,7 +152,6 @@ export class QueueList extends Component {
                         isDragging={isDragging}
                         isDragOver={isDragOver}
                         dragOverMode={this.state.dragOverMode}
-                        selectionContext={selectionContext}
                     />
                 );
             });

@@ -1,8 +1,21 @@
+import _ from 'lodash';
 import { h, Component } from 'preact';
 import { connect } from 'preact-redux';
 import AlbumArt from './AlbumArt';
 
-import { gotoPosition, removeTrack } from '../reduxActions/QueueActions';
+import {
+    gotoPosition,
+    removeTrack,
+    removeSelectedTracks,
+    select,
+    deselect
+} from '../reduxActions/QueueActions';
+
+const mapStateToProps = state => {
+    return {
+        selected: state.queue.selected
+    };
+};
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -10,7 +23,7 @@ const mapDispatchToProps = dispatch => {
         deselect: pos => dispatch(deselect(pos)),
         gotoPosition: pos => dispatch(gotoPosition(pos)),
         removeTrack: pos => dispatch(removeTrack(pos)),
-        removeSelected: () => dispatch(removeSelected())
+        removeSelectedTracks: () => dispatch(removeSelectedTracks())
     };
 };
 
@@ -23,7 +36,11 @@ export class QueueListItem extends Component {
     }
 
     _isSelected() {
-        return this.props.track.selected;
+        return _.includes(this.props.selected, this.props.track.id);
+    }
+
+    _isInSelectionContext() {
+        return this.props.selected.length > 0;
     }
 
     _hideMenu() {
@@ -73,7 +90,7 @@ export class QueueListItem extends Component {
     }
 
     _removeSelected(e) {
-        this.props.removeSelected();
+        this.props.removeSelectedTracks();
         this._toggle(e);
     }
 
@@ -96,7 +113,7 @@ export class QueueListItem extends Component {
 
         const track = this.props.track;
 
-        const selectionContext = this.props.selectionContext;
+        const selectionContext = this._isInSelectionContext();
         const isSelected = this._isSelected();
 
         const checkboxSymbol = isSelected
@@ -189,4 +206,4 @@ export class QueueListItem extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(QueueListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(QueueListItem);

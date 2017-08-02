@@ -39,7 +39,6 @@ function topologyReducer(state, action) {
         .reject(z => z.name.toLocaleLowerCase().match('boost'))
         .value();
 
-    console.log('topologyReducer', zones);
     return {
         ...state,
         zones
@@ -68,6 +67,22 @@ export default handleActions(
                 deviceSearches: {
                     ...state.deviceSearches,
                     [action.payload.host]: action.payload
+                }
+            };
+        },
+
+        [Constants.QUEUE_FLUSH]: (state, action) => {
+            const host = state.currentHost;
+
+            return {
+                ...state,
+                currentTracks: {
+                    ...state.currentTracks,
+                    [host]: null
+                },
+                nextTracks: {
+                    ...state.nextTracks,
+                    [host]: null
                 }
             };
         },
@@ -186,7 +201,6 @@ export default handleActions(
         },
 
         [Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE]: (state, action) => {
-            console.log(action.payload);
             return state;
         }
     },

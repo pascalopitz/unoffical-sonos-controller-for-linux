@@ -15,7 +15,7 @@ import store from '../reducers';
 import { getZoneGroups } from '../selectors/ZoneGroupSelectors';
 
 const REG = /^http:\/\/([\d\.]+)/;
-const SECOND_QUERY_TIMEOUT = 2000;
+const SECOND_QUERY_INTERVAL = 60;
 
 function getCurrentZone() {
     const { currentHost, deviceSearches } = store.getState().sonosService;
@@ -322,7 +322,7 @@ const SonosService = {
     async queryAccounts(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
         const info = await sonos.getAccountStatusAsync();
-        console.log(info);
+        console.info(info);
     },
 
     processPlaystateUpdate(sonos, state) {
@@ -343,6 +343,13 @@ const SonosService = {
     },
 
     onServiceEvent(endpoint, sid, data) {
+        const subscription =
+            _(this._persistentSubscriptions).find({
+                sid: sid
+            }) || {};
+
+        console.info(endpoint, sid, subscription.host, data);
+
         switch (endpoint) {
             case '/SystemProperties/Event':
             case '/MusicServices/Event':
@@ -557,16 +564,16 @@ const SonosService = {
             }
 
             if (this._queryTimeout) {
-                window.clearTimeout(this._queryTimeout);
+                window.clearInterval(this._queryTimeout);
             }
 
             this._currentDevice = sonos;
 
             this.subscribeServiceEvents(sonos);
             this.queryState(sonos);
-            this._queryTimeout = window.setTimeout(
+            this._queryTimeout = window.setInterval(
                 () => this.queryState(),
-                SECOND_QUERY_TIMEOUT
+                SECOND_QUERY_INTERVAL * 1000
             );
         }
     },

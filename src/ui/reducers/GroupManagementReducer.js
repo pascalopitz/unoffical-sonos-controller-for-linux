@@ -47,7 +47,6 @@ export default handleActions(
         },
 
         [Constants.GROUP_MANAGEMENT_SAVE]: (state, action) => {
-            console.log(action);
             return state;
         }
     },

@@ -12,3 +12,9 @@ export function getPositionInfo(state) {
         state.sonosService.positionInfos[state.sonosService.currentHost];
     return entry ? Number(entry.Track) : null;
 }
+
+export function getUpdateId(state) {
+    const entry =
+        state.sonosService.positionInfos[state.sonosService.currentHost];
+    return entry ? entry.updateId : '0';
+}
