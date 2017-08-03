@@ -8,32 +8,23 @@ const initialState = {
     current: null
 };
 
+function resetReducer() {
+    return initialState;
+}
+
 export default handleActions(
     {
         [Constants.GROUP_MANAGEMENT_SHOW]: (state, action) => {
             return {
                 ...state,
                 selected: _.map(action.payload, g => g.uuid),
-                current: action.payload.uuid,
+                currentGroup: action.payload[0].group,
                 visible: true
-            };
-        },
-
-        [Constants.GROUP_MANAGEMENT_HIDE]: state => {
-            return {
-                ...state,
-                visible: false,
-                current: null,
-                selected: []
             };
         },
 
         [Constants.GROUP_MANAGEMENT_TOGGLE]: (state, action) => {
             const uuid = action.payload.uuid;
-
-            if (uuid === state.current) {
-                return state;
-            }
 
             const selected =
                 state.selected.indexOf(uuid) > -1
@@ -46,9 +37,8 @@ export default handleActions(
             };
         },
 
-        [Constants.GROUP_MANAGEMENT_SAVE]: (state, action) => {
-            return state;
-        }
+        [Constants.GROUP_MANAGEMENT_HIDE]: resetReducer,
+        [Constants.GROUP_MANAGEMENT_SAVE]: resetReducer
     },
     initialState
 );

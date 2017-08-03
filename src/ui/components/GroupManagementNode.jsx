@@ -7,7 +7,7 @@ export function GroupManagementNode(props) {
             : 'check_box_outline_blank';
 
     const _toggleSelection = () => {
-        props.toggleGroup(props.item);
+        props.toggleZone(props.item);
     };
 
     return (

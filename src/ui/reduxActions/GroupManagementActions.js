@@ -1,113 +1,84 @@
+import _ from 'lodash';
 import { createAction } from 'redux-actions';
 import Contants from '../constants';
 
-// import store from '../reducers/GroupManagementreducer';
+import store from '../reducers';
+
+import SonosService from '../services/SonosService';
+import serviceFactory from '../sonos/helpers/ServiceFactory';
 
 export const hideGroupManagement = createAction(Contants.GROUP_MANAGEMENT_HIDE);
-export const toggleGroupChecked = createAction(
-    Contants.GROUP_MANAGEMENT_TOGGLE
-);
+
+export const toggleZoneChecked = createAction(Contants.GROUP_MANAGEMENT_TOGGLE);
 
 export const saveGroups = createAction(
     Contants.GROUP_MANAGEMENT_SAVE,
-    async selected => {
-        // const current = store.current;
-        // const coordinator = _.find(current, { coordinator: 'true' });
+    async () => {
+        const state = store.getState();
+        const { zones } = state.sonosService;
+        const { selected, currentGroup } = state.groupManagement;
 
-        // const players = store.players;
+        const currentGroupMembers = zones.filter(z => z.group === currentGroup);
 
-        // const removed = [];
-        // const added = [];
-
-        return await new Promise(resolve =>
-            setTimeout(() => resolve(selected), 5000)
+        const targetGroupMembers = zones.filter(z =>
+            _.includes(selected, z.uuid)
         );
 
-        // players.forEach(p => {
-        //     const wasPresent = !!_.find(current, { uuid: p.uuid });
+        const removingGroupMembers = _.difference(
+            currentGroupMembers,
+            targetGroupMembers
+        );
 
-        //     if (p.selected && !wasPresent) {
-        //         added.push(p);
-        //     }
+        const coordinator =
+            _.find(targetGroupMembers, {
+                coordinator: 'true',
+                group: currentGroup
+            }) ||
+            _.find(targetGroupMembers, {
+                coordinator: 'true'
+            }) ||
+            _.head(targetGroupMembers);
 
-        //     if (!p.selected && wasPresent) {
-        //         removed.push(p);
-        //     }
-        // });
+        const addingGroupMembers = targetGroupMembers.filter(
+            z => z !== coordinator
+        );
 
-        // const promise = Promise.resolve();
+        try {
+            for (const z of addingGroupMembers) {
+                const sonos = SonosService.getDeviceByHost(z.host);
+                const avTransport = serviceFactory('AVTransport', sonos);
+                await avTransport.SetAVTransportURIAsync({
+                    InstanceID: 0,
+                    CurrentURI: 'x-rincon:' + coordinator.uuid,
+                    CurrentURIMetaData: ''
+                });
+            }
 
-        // added.forEach(p => {
-        //     const matches = REG.exec(p.location);
-        //     const host = matches[1];
+            for (const z of removingGroupMembers) {
+                const sonos = SonosService.getDeviceByHost(z.host);
+                const avTransport = serviceFactory('AVTransport', sonos);
+                await avTransport.BecomeCoordinatorOfStandaloneGroupAsync({
+                    InstanceID: 0
+                });
+            }
 
-        //     const sonos = store.deviceSearches[host];
-        //     const avTransport = new Services.AVTransport(
-        //         sonos.host,
-        //         sonos.port
-        //     );
-
-        //     promise.then(() => {
-        //         return new Promise((resolve, reject) => {
-        //             avTransport.SetAVTransportURI(
-        //                 {
-        //                     InstanceID: 0,
-        //                     CurrentURI: 'x-rincon:' + coordinator.uuid,
-        //                     CurrentURIMetaData: ''
-        //                 },
-        //                 err => {
-        //                     if (err) {
-        //                         reject(err);
-        //                     } else {
-        //                         resolve();
-        //                     }
-        //                 }
-        //             );
-        //         });
-        //     });
-        // });
-
-        // removed.forEach(p => {
-        //     const matches = REG.exec(p.location);
-        //     const host = matches[1];
-
-        //     const sonos = store.deviceSearches[host];
-        //     const avTransport = new Services.AVTransport(
-        //         sonos.host,
-        //         sonos.port
-        //     );
-
-        //     promise.then(() => {
-        //         return new Promise((resolve, reject) => {
-        //             avTransport.BecomeCoordinatorOfStandaloneGroup(
-        //                 {
-        //                     InstanceID: 0
-        //                 },
-        //                 err => {
-        //                     if (err) {
-        //                         reject(err);
-        //                     } else {
-        //                         resolve();
-        //                     }
-        //                 }
-        //             );
-        //         });
-        //     });
-        // });
-
-        // const val = await promise;
-        // return val;
-
-        // promise.then(() => {
-        //     Dispatcher.dispatch({
-        //         actionType: Constants.GROUP_MANAGEMENT_CHANGED
-        //     });
-
-        //     [1, 500, 1000, 1500, 2000].forEach(num => {
-        //         window.setTimeout(() => {
-        //             SonosService.queryTopology(lastModified);
-        //         }, num);
-        //     });
-        // });
+            [
+                1000,
+                1500,
+                2000,
+                5000,
+                10000,
+                15000,
+                20000,
+                30000
+            ].forEach(num => {
+                window.setTimeout(() => {
+                    SonosService.queryTopology();
+                }, num);
+            });
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
     }
 );
