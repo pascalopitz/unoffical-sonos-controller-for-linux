@@ -53,6 +53,30 @@ function zoneGroupSelectReducer(state, action) {
     };
 }
 
+function playModeReducer(state, action) {
+    const { host, mode } = action.payload;
+
+    return {
+        ...state,
+        playModes: {
+            ...state.playModes,
+            [host]: mode
+        }
+    };
+}
+
+function crossFadeModeReducer(state, action) {
+    const { host, mode } = action.payload;
+
+    return {
+        ...state,
+        crossFadeModes: {
+            ...state.crossFadeModes,
+            [host]: mode
+        }
+    };
+}
+
 export default handleActions(
     {
         [Constants.SONOS_SERVICE_TOPOLOGY_EVENT]: topologyReducer,
@@ -71,7 +95,7 @@ export default handleActions(
             };
         },
 
-        [Constants.QUEUE_FLUSH]: (state, action) => {
+        [Constants.QUEUE_FLUSH]: state => {
             const host = state.currentHost;
 
             return {
@@ -173,34 +197,14 @@ export default handleActions(
             };
         },
 
-        [Constants.SONOS_SERVICE_CURRENT_CROSSFADE_MODE_UPDATE]: (
-            state,
-            action
-        ) => {
-            const { host, mode } = action.payload;
+        [Constants.SONOS_SERVICE_CURRENT_CROSSFADE_MODE_UPDATE]: crossFadeModeReducer,
+        [Constants.OPTIMISTIC_CURRENT_CROSSFADE_MODE_UPDATE]: crossFadeModeReducer,
 
-            return {
-                ...state,
-                crossFadeModes: {
-                    ...state.crossFadeModes,
-                    [host]: mode
-                }
-            };
-        },
-
-        [Constants.SONOS_SERVICE_CURRENT_PLAY_MODE_UPDATE]: (state, action) => {
-            const { host, mode } = action.payload;
-
-            return {
-                ...state,
-                playModes: {
-                    ...state.playModes,
-                    [host]: mode
-                }
-            };
-        },
+        [Constants.SONOS_SERVICE_CURRENT_PLAY_MODE_UPDATE]: playModeReducer,
+        [Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE]: playModeReducer,
 
         [Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE]: (state, action) => {
+            console.log(action);
             return state;
         }
     },

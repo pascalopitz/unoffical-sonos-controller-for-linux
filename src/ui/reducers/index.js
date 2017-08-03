@@ -4,7 +4,6 @@ import promiseMiddleware from 'redux-promise';
 import SonosServiceReducer from './SonosServiceReducer';
 import GroupManagementReducer from './GroupManagementReducer';
 import CurrentTrackReducer from './CurrentTrackReducer';
-import PlayerReducer from './PlayerReducer';
 import VolumeControlReducer from './VolumeControlReducer';
 import QueueReducer from './QueueReducer';
 
@@ -12,7 +11,6 @@ const appReducer = combineReducers({
     sonosService: SonosServiceReducer,
     groupManagement: GroupManagementReducer,
     currentTrack: CurrentTrackReducer,
-    player: PlayerReducer,
     volume: VolumeControlReducer,
     queue: QueueReducer
 });
@@ -21,7 +19,22 @@ const getStateMiddleware = store => next => action => {
     next({ ...action, getState: store.getState });
 };
 
+const catcherMiddleware = () => next => action => {
+    const payload =
+        action.payload instanceof Promise
+            ? action.payload.catch(err => {
+                  console.error(err);
+                  throw err;
+              })
+            : action.payload;
+
+    next({
+        ...action,
+        payload
+    });
+};
+
 export default createStore(
     appReducer,
-    applyMiddleware(promiseMiddleware, getStateMiddleware)
+    applyMiddleware(catcherMiddleware, promiseMiddleware, getStateMiddleware)
 );

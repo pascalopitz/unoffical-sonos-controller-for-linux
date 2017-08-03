@@ -70,7 +70,7 @@ class BrowserListItem extends Component {
         e.stopPropagation();
     }
 
-    _hideMenu(e) {
+    _hideMenu() {
         if (this.state.isExpanded) {
             this.setState({
                 isExpanded: false

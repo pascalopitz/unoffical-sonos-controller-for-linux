@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { h, Component } from 'preact';
 import { connect } from 'preact-redux';
 
@@ -47,7 +45,7 @@ class VolumeControls extends Component {
         this.state = {};
     }
 
-    _toggleGoupMute(e) {
+    _toggleGoupMute() {
         const muted = this.props.groupMuted;
 
         this.props.currentGroupKeys.forEach(host => {

@@ -307,14 +307,34 @@ const SonosService = {
         );
     },
 
+    async queryTransportSettings(sonos) {
+        sonos = getSonosDeviceOrCurrentOrFirst(sonos);
+
+        const avTransport = serviceFactory('AVTransport', sonos);
+        const result = await avTransport.GetTransportSettingsAsync({
+            InstanceID: 0
+        });
+
+        const currentPlayMode = result.PlayMode;
+
+        store.dispatch(
+            serviceActions.currentPlayModeUpdate({
+                host: sonos.host,
+                mode: currentPlayMode
+            })
+        );
+    },
+
     async queryState(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
 
         this.queryVolumeInfo();
 
+        this.queryTopology(sonos);
         this.queryPositionInfo(sonos);
         this.queryMusicLibrary(sonos);
         this.queryPlayState(sonos);
+        this.queryTransportSettings(sonos);
         this.queryCurrentTrackAndPlaystate(sonos);
         this.queryCrossfadeMode(sonos);
     },
@@ -348,13 +368,10 @@ const SonosService = {
                 sid: sid
             }) || {};
 
-        console.info(endpoint, sid, subscription.host, data);
-
         switch (endpoint) {
             case '/SystemProperties/Event':
             case '/MusicServices/Event':
             case '/MediaRenderer/DeviceProperties/Event':
-                // console.log(endpoint, data);
                 break;
 
             case '/ZoneGroupTopology/Event':
@@ -395,10 +412,6 @@ const SonosService = {
                 {
                     const lastChange = xml2json(data.LastChange, {
                         explicitArray: false
-                    });
-
-                    const subscription = _(this._persistentSubscriptions).find({
-                        sid: sid
                     });
 
                     if (subscription) {

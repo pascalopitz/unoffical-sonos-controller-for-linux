@@ -45,7 +45,10 @@ export const setPlayMode = createAction(
             NewPlayMode: mode
         });
 
-        return mode;
+        return {
+            mode,
+            host: sonos.host
+        };
     }
 );
 
@@ -60,7 +63,10 @@ export const setCrossfade = createAction(
             CrossfadeMode: Number(mode)
         });
 
-        return mode;
+        return {
+            mode,
+            host: sonos.host
+        };
     }
 );
 

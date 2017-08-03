@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { h, Component } from 'preact';
 import { connect } from 'preact-redux';
 
@@ -68,7 +66,7 @@ export class QueueList extends Component {
         });
     }
 
-    _onDragEnd(e) {
+    _onDragEnd() {
         const newPos =
             this.state.dragOverMode === 'after'
                 ? this.state.dragOverPosition + 1
