@@ -3,13 +3,12 @@ import { h } from 'preact';
 import { connect } from 'preact-redux';
 
 import ZoneGroupPlayState from './ZoneGroupPlayState';
+import ZoneGroupMember from './ZoneGroupMember';
 
 import {
     showGroupManagement,
     selectGroup
 } from '../reduxActions/ZoneGroupActions';
-
-import ZoneGroupMember from './ZoneGroupMember';
 
 const mapDispatchToProps = dispatch => {
     return {

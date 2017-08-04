@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MuteButton renders off 1`] = `
+<img
+  class="mute-button"
+  src="svg/mute_on.svg"
+ />
+</img>
+`;
+
+exports[`MuteButton renders on 1`] = `
+<img
+  class="mute-button"
+  src="svg/mute_off.svg"
+ />
+</img>
+`;

@@ -10,13 +10,13 @@
     "build_help": "build --help",
     "develop": "npm run fonts && npm run transpile && npm run start & npm run watch",
     "start": "export NODE_ENV=development && electron .",
-    "watch": "babel -d ./app/js -s true -w ./src",
-    "transpile": "babel -d ./app/js -s true ./src",
+    "watch": "babel --ignore '__tests__/*' -d ./app/js -s true -w ./src",
+    "transpile": "babel --ignore '__tests__/*' -d ./app/js -s true ./src",
     "fonts": "mkdir -p ./app/fonts && cp ./node_modules/material-design-icons/iconfont/* ./app/fonts/",
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-and-fix": "eslint --fix --ext .jsx --ext .js src",
     "prettier-css": "prettier --tab-width 4 --write app/css/*.css",
-    "test": "jest"
+    "test": "jest src"
   },
   "author": {
     "name": "Pascal Opitz",

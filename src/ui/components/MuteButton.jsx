@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 
-class MuteButton extends Component {
+export class MuteButton extends Component {
     render() {
         const src = this.props.muted ? 'svg/mute_on.svg' : 'svg/mute_off.svg';
 

@@ -58,10 +58,9 @@ export const playCurrentAlbum = createAction(Constants.BROWSER_PLAY);
 export const select = createAction(
     Constants.BROWSER_SELECT_ITEM,
     async item => {
-
         const sonos = SonosService._currentDevice;
         let prendinBrowserUpdate;
-        let objectId = item.searchType;
+        const objectId = item.searchType;
 
         if (item.action && item.action === 'library') {
             return library;
@@ -191,7 +190,6 @@ export const select = createAction(
         //         state: state
         //     });
         // });
-
     }
 );
 

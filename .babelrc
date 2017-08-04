@@ -1,6 +1,6 @@
 {
   "retainLines": true,
-  "compact": false,
+  "compact": "auto",
   "comments": false,
   "presets": [
     ["env", {

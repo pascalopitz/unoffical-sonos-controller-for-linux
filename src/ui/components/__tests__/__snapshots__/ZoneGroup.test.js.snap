@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ZoneGroup matches snapshot 1`] = `
+<div
+  class="not-selected zone-group"
+  onClick={[Function _onClick]}
+>
+  <ul>
+    <p class="member"></p>
+  </ul>
+  <div
+    class="group-button"
+    onClick={[Function _showGroupManagement]}
+  >
+    Group
+  </div>
+  <p class="play-state"></p>
+</div>
+`;
+
+exports[`ZoneGroup matches snapshot when selected 1`] = `
+<div
+  class="selected zone-group"
+  onClick={[Function _onClick]}
+>
+  <ul>
+    <p class="member"></p>
+  </ul>
+  <div
+    class="group-button"
+    onClick={[Function _showGroupManagement]}
+  >
+    Group
+  </div>
+  <p class="play-state"></p>
+</div>
+`;
