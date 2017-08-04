@@ -9,7 +9,7 @@ import {
 
 import ZoneGroup from './ZoneGroup';
 
-const mapStateToProps = state => {
+export const mapStateToProps = state => {
     return {
         groups: getZoneGroups(state),
         playStates: getPlayStates(state),

@@ -13,3 +13,4 @@ app/package-lock.json
 js/*
 .idea
 yarn.lock
+coverage

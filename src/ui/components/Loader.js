@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
 import { connect } from 'preact-redux';
 
 import { getHasCurrent } from '../selectors/LoaderSelectors';
@@ -13,18 +13,16 @@ const mapDispatchToProps = () => {
     return {};
 };
 
-class Loader extends Component {
-    render() {
-        if (this.props.hasCurrent) {
-            return null;
-        }
-
-        return (
-            <div id="loader">
-                <p>Searching for your Sonos System ...</p>
-            </div>
-        );
+export function Loader(props) {
+    if (props.hasCurrent) {
+        return null;
     }
+
+    return (
+        <div id="loader">
+            <p>Searching for your Sonos System ...</p>
+        </div>
+    );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Loader);

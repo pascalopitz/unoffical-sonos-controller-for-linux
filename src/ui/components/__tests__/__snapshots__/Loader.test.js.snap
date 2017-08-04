@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loader renders nothing is true 1`] = `null`;
+
+exports[`Loader renders when props.hasCurrent is false 1`] = `
+<div id="loader">
+  <p>Searching for your Sonos System ...</p>
+</div>
+`;

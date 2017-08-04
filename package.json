@@ -16,7 +16,7 @@
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-and-fix": "eslint --fix --ext .jsx --ext .js src",
     "prettier-css": "prettier --tab-width 4 --write app/css/*.css",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": {
     "name": "Pascal Opitz",
@@ -49,6 +49,27 @@
       "executableName": "sonos-controller-unofficial.deb"
     }
   },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "moduleDirectories": [
+      "app/node_modules",
+      "node_modules"
+    ],
+    "snapshotSerializers": [
+      "preact-render-spy/snapshot"
+    ],
+    "moduleNameMapper": {
+      "^react$": "preact-compat",
+      "^react-dom$": "preact-compat"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ]
+  },
+
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -63,7 +84,9 @@
     "eslint": "^4.1.1",
     "eslint-plugin-prettier": "^2.1.2",
     "eslint-plugin-react": "^7.1.0",
+    "jest": "^20.0.4",
     "material-design-icons": "^3.0.1",
+    "preact-render-spy": "^1.0.0-rc.8",
     "prettier": "^1.5.3",
     "watch": "^1.0.2"
   },

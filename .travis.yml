@@ -7,9 +7,10 @@ addons:
     - icnsutils
     - graphicsmagick
 node_js:
-- '6'
+- '7'
 script:
 - npm run lint
+- npm run test
 - npm run fonts
 - npm run transpile
 - npm run dist
