@@ -7,7 +7,7 @@ import SonosService from '../services/SonosService';
 
 import CurrentTrack from './CurrentTrack';
 import QueueList from './QueueList';
-// import BrowserList from './BrowserList';
+import BrowserList from './BrowserList';
 import PlayControls from './PlayControls';
 import PositionInfo from './PositionInfo';
 import VolumeControls from './VolumeControls';
@@ -19,7 +19,6 @@ import Loader from './Loader';
 
 window.store = store;
 
-class BrowserList extends Component {}
 class MusicServiceManagement extends Component {}
 class SearchBar extends Component {}
 

@@ -342,7 +342,7 @@ const SonosService = {
     async queryAccounts(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
         const info = await sonos.getAccountStatusAsync();
-        console.info(info);
+        this._accountInfo = info;
     },
 
     processPlaystateUpdate(sonos, state) {

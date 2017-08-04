@@ -1,11 +1,30 @@
 import _ from 'lodash';
 
 import { h, Component } from 'preact';
+import { connect } from 'preact-redux';
 
 import AlbumArt from './AlbumArt';
-import BrowserListActions from '../actions/BrowserListActions';
 
-class BrowserListItem extends Component {
+import {
+    select,
+    playNow,
+    playNext,
+    addQueue,
+    replaceQueue,
+    removeService
+} from '../reduxActions/BrowserListActions';
+
+const mapDispatchToProps = dispatch => {
+    return {
+        select: item => dispatch(select(item)),
+        playNow: item => dispatch(playNow(item)),
+        playNext: item => dispatch(playNext(item)),
+        addQueue: item => dispatch(addQueue(item)),
+        replaceQueue: item => dispatch(replaceQueue(item)),
+        removeService: item => dispatch(removeService(item))
+    };
+};
+export class BrowserListItem extends Component {
     constructor() {
         super();
         this.state = {
@@ -24,9 +43,9 @@ class BrowserListItem extends Component {
             item.class === 'object.item.audioItem' ||
             item.trackMetadata
         ) {
-            BrowserListActions.playNow(item);
+            this.props.playNow(item);
         } else {
-            BrowserListActions.select(item);
+            this.props.select(item);
         }
 
         return false;
@@ -34,31 +53,31 @@ class BrowserListItem extends Component {
 
     _playNow(e) {
         const item = _.get(this, 'props.model.parent') || this.props.model;
-        BrowserListActions.playNow(item);
+        this.props.playNow(item);
         this._toggle(e);
     }
 
     _playNext(e) {
         const item = _.get(this, 'props.model.parent') || this.props.model;
-        BrowserListActions.playNext(item);
+        this.props.playNext(item);
         this._toggle(e);
     }
 
     _addQueue(e) {
         const item = _.get(this, 'props.model.parent') || this.props.model;
-        BrowserListActions.addQueue(item);
+        this.props.addQueue(item);
         this._toggle(e);
     }
 
     _replaceQueue(e) {
         const item = _.get(this, 'props.model.parent') || this.props.model;
-        BrowserListActions.replaceQueue(item);
+        this.props.replaceQueue(item);
         this._toggle(e);
     }
 
     _removeService(e) {
         const item = this.props.model;
-        BrowserListActions.removeService(item.service);
+        this.props.removeService(item.service);
         this._toggle(e);
     }
 
@@ -214,4 +233,4 @@ class BrowserListItem extends Component {
     }
 }
 
-export default BrowserListItem;
+export default connect(null, mapDispatchToProps)(BrowserListItem);

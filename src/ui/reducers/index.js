@@ -6,13 +6,15 @@ import GroupManagementReducer from './GroupManagementReducer';
 import CurrentTrackReducer from './CurrentTrackReducer';
 import VolumeControlReducer from './VolumeControlReducer';
 import QueueReducer from './QueueReducer';
+import BrowserListReducer from './BrowserListReducer';
 
 const appReducer = combineReducers({
     sonosService: SonosServiceReducer,
     groupManagement: GroupManagementReducer,
     currentTrack: CurrentTrackReducer,
     volume: VolumeControlReducer,
-    queue: QueueReducer
+    queue: QueueReducer,
+    browserList: BrowserListReducer
 });
 
 const getStateMiddleware = store => next => action => {

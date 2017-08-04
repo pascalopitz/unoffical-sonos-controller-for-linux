@@ -1,59 +1,60 @@
 import _ from 'lodash';
 
 import { h, Component } from 'preact';
+import { connect } from 'preact-redux';
 import VirtualList from 'preact-virtual-list';
 
 import BrowserListItem from './BrowserListItem';
 
-import BrowserListActions from '../actions/BrowserListActions';
-import BrowserListStore from '../stores/BrowserListStore';
+import {
+    getCurrentState,
+    getSearching,
+    getHistory,
+    getSearchMode
+} from '../selectors/BrowserListSelectors';
 
-class BrowserList extends Component {
+import {
+    home,
+    back,
+    more,
+    changeSearchMode,
+    playCurrentAlbum
+} from '../reduxActions/BrowserListActions';
+
+const mapStateToProps = state => {
+    return {
+        currentState: getCurrentState(state),
+        searching: getSearching(state),
+        history: getHistory(state),
+        searchMode: getSearchMode(state)
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        home: () => dispatch(home()),
+        back: () => dispatch(back()),
+        more: () => dispatch(more()),
+        changeSearchMode: mode => dispatch(changeSearchMode(mode)),
+        playCurrentAlbum: () => dispatch(playCurrentAlbum())
+    };
+};
+
+export class BrowserList extends Component {
     constructor(props) {
         super(props);
 
-        const state = BrowserListStore.getState();
-        const history = BrowserListStore.getHistory();
-
-        this.state = {
-            currentState: state,
-            history: history,
-            searching: false,
-            searchMode: null,
-            boundingRect: {}
-        };
-
         this.moreHandler = _.throttle(() => {
-            BrowserListActions.more(this.state.currentState);
+            this.props.more();
         }, 1000);
     }
 
-    componentDidMount() {
-        BrowserListStore.addChangeListener(this._onChange.bind(this));
-
-        this.setState({});
-    }
-
-    _onChange() {
-        const state = BrowserListStore.getState();
-        const history = BrowserListStore.getHistory();
-        const searching = BrowserListStore.isSearching();
-        const searchMode = BrowserListStore.getSearchMode();
-
-        this.setState({
-            currentState: state,
-            history: history,
-            searching: searching,
-            searchMode: searchMode
-        });
-    }
-
     _back() {
-        BrowserListActions.back();
+        this.props.back();
     }
 
     _home() {
-        BrowserListActions.home();
+        this.props.home();
     }
 
     _onScroll(e) {
@@ -71,12 +72,12 @@ class BrowserList extends Component {
     }
 
     _playAlbum() {
-        BrowserListActions.play(this.state.currentState);
+        this.playCurrentAlbum();
     }
 
     _searchModeChange(e) {
         const mode = e.target.getAttribute('data-mode');
-        BrowserListActions.changeSearchMode(mode);
+        this.changeSearchMode(mode);
     }
 
     _renderRow(row) {
@@ -84,11 +85,11 @@ class BrowserList extends Component {
     }
 
     render() {
-        const searching = this.state.searching;
-        const searchMode = this.state.searchMode;
-        const history = this.state.history;
-        const items = this.state.currentState.items || [];
-        const title = this.state.currentState.title;
+        const searching = this.props.searching;
+        const searchMode = this.props.searchMode;
+        const history = this.props.history;
+        const items = this.props.currentState.items;
+        const title = this.props.currentState.title;
 
         let headlineNodes;
         let actionNodes;
@@ -156,9 +157,9 @@ class BrowserList extends Component {
         }
 
         if (
-            this.state.currentState.class ===
+            this.props.currentState.class ===
                 'object.container.album.musicAlbum' ||
-            this.state.currentState.class ===
+            this.props.currentState.class ===
                 'object.container.playlistContainer' ||
             JSON.parse(
                 String(
@@ -166,13 +167,13 @@ class BrowserList extends Component {
                 )
             )
         ) {
-            const albumState = _.cloneDeep(this.state.currentState);
+            const albumState = _.cloneDeep(this.props.currentState);
             albumState.creator = null;
             albumState.title = `${items.length} Tracks`;
 
             if (_.get(albumState, 'parent.serviceClient')) {
-                albumState.serviceClient = this.state.currentState.serviceClient;
-                albumState.parent.serviceClient = this.state.currentState.parent.serviceClient;
+                albumState.serviceClient = this.props.currentState.serviceClient;
+                albumState.parent.serviceClient = this.props.currentState.parent.serviceClient;
             }
 
             actionNodes = <BrowserListItem model={albumState} />;
@@ -198,4 +199,4 @@ class BrowserList extends Component {
     }
 }
 
-export default BrowserList;
+export default connect(mapStateToProps, mapDispatchToProps)(BrowserList);
