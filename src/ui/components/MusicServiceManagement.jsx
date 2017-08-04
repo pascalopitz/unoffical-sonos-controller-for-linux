@@ -1,61 +1,67 @@
 import { shell } from 'electron';
 import { h, Component } from 'preact';
+import { connect } from 'preact-redux';
 
-import MusicServiceManagementStore from '../stores/MusicServiceManagementStore';
-import MusicServiceManagementActions from '../actions/MusicServiceManagementActions';
+import {
+    hideManagement,
+    getSession,
+    getLink,
+    addAnonymousService
+} from '../reduxActions/MusicServicesActions';
 
-class MusicServiceManagement extends Component {
+const mapStateToProps = state => {
+    return {
+        client: state.musicServices.current,
+        link: state.musicServices.link,
+        visible: state.musicServices.visible
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        hideManagement: () => dispatch(hideManagement()),
+        getSession: (service, username, client) =>
+            dispatch(getSession(service, username, client)),
+        getLink: service => dispatch(getLink(service)),
+        addAnonymousService: service => dispatch(addAnonymousService(service))
+    };
+};
+
+export class MusicServiceManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
 
-    componentDidMount() {
-        MusicServiceManagementStore.addChangeListener(
-            this._onChange.bind(this)
-        );
-    }
-
     _openLink() {
-        shell.openExternal(this.state.link.regUrl);
-    }
-
-    _onChange() {
-        this.setState({
-            client: MusicServiceManagementStore.getClient(),
-            link: MusicServiceManagementStore.getLink()
-        });
+        shell.openExternal(this.props.link.regUrl);
     }
 
     _cancel() {
-        this.state = {};
-        MusicServiceManagementActions.hideManagement();
+        this.setState(null);
+        this.props.hideManagement();
     }
 
     _next() {
-        if (!this.state.link && this.state.client.auth === 'UserId') {
-            MusicServiceManagementActions.getSession(
-                this.state.client,
-                this.state.username,
-                this.state.password
-            );
-            return;
+        const {
+            link,
+            client,
+            addAnonymousService,
+            getLink,
+            getSession
+        } = this.props;
+        const { auth } = client;
+
+        if (!link && auth === 'UserId') {
+            return getSession(client, this.state.username, this.state.password);
         }
 
-        if (!this.state.link && this.state.client.auth === 'Anonymous') {
-            MusicServiceManagementActions.addAnonymousService(
-                this.state.client
-            );
-            return;
+        if (!link && auth === 'Anonymous') {
+            return addAnonymousService(client);
         }
 
-        if (
-            !this.state.link &&
-            (this.state.client.auth === 'DeviceLink' ||
-                this.state.client.auth === 'AppLink')
-        ) {
-            MusicServiceManagementActions.getLink(this.state.client);
-            return;
+        if (!link && (auth === 'DeviceLink' || auth === 'AppLink')) {
+            return getLink(client);
         }
     }
 
@@ -72,18 +78,20 @@ class MusicServiceManagement extends Component {
     }
 
     render() {
-        let link;
+        const { link, client, visible } = this.props;
 
-        if (!this.state.client) {
+        if (!visible || !client) {
             return null;
         }
 
-        if (this.state.client.auth === 'Anonymous') {
-            link = <p>Click next to add the Service at your own risk.</p>;
+        let linkNode;
+
+        if (client.auth === 'Anonymous') {
+            linkNode = <p>Click next to add the Service at your own risk.</p>;
         }
 
-        if (this.state.client.auth === 'UserId') {
-            link = (
+        if (client.auth === 'UserId') {
+            linkNode = (
                 <form>
                     <p>Click next to add the Service at your own risk.</p>
                     <div>
@@ -106,27 +114,25 @@ class MusicServiceManagement extends Component {
         }
 
         if (
-            (this.state.client.auth === 'DeviceLink' ||
-                this.state.client.auth === 'AppLink') &&
-            !this.state.link
+            (client.auth === 'DeviceLink' || client.auth === 'AppLink') &&
+            !link
         ) {
-            link = <p>Click next to add the Service at your own risk.</p>;
+            linkNode = <p>Click next to add the Service at your own risk.</p>;
         }
 
         if (
-            (this.state.client.auth === 'DeviceLink' ||
-                this.state.client.auth === 'AppLink') &&
-            this.state.link
+            (client.auth === 'DeviceLink' || client.auth === 'AppLink') &&
+            link
         ) {
             const code =
-                this.state.link.showLinkCode !== 'true'
+                link.showLinkCode !== 'true'
                     ? null
                     : <p>
                           Your device link code:{' '}
-                          <strong>{this.state.link.linkCode}</strong>
+                          <strong>{link.linkCode}</strong>
                       </p>;
 
-            link = (
+            linkNode = (
                 <div>
                     <p>
                         Click the link below to authorize this app to use the
@@ -137,7 +143,7 @@ class MusicServiceManagement extends Component {
                         target="_blank"
                         style="cursor: pointer;"
                     >
-                        {this.state.link.regUrl}
+                        {link.regUrl}
                     </a>
                     {code}
                 </div>
@@ -148,7 +154,7 @@ class MusicServiceManagement extends Component {
             <div id="music-service-management">
                 <div id="music-service-management-container">
                     <h3>
-                        {this.state.client.name}
+                        {client.name}
                     </h3>
 
                     <div>
@@ -165,7 +171,7 @@ class MusicServiceManagement extends Component {
                         </p>
                     </div>
 
-                    {link}
+                    {linkNode}
 
                     <button
                         onClick={this._cancel.bind(this)}
@@ -185,4 +191,6 @@ class MusicServiceManagement extends Component {
     }
 }
 
-export default MusicServiceManagement;
+export default connect(mapStateToProps, mapDispatchToProps)(
+    MusicServiceManagement
+);

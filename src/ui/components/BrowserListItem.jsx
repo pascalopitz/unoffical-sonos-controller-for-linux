@@ -11,7 +11,8 @@ import {
     playNext,
     addQueue,
     replaceQueue,
-    removeService
+    removeService,
+    addService
 } from '../reduxActions/BrowserListActions';
 
 const mapDispatchToProps = dispatch => {
@@ -21,7 +22,8 @@ const mapDispatchToProps = dispatch => {
         playNext: item => dispatch(playNext(item)),
         addQueue: item => dispatch(addQueue(item)),
         replaceQueue: item => dispatch(replaceQueue(item)),
-        removeService: item => dispatch(removeService(item))
+        removeService: item => dispatch(removeService(item)),
+        addService: item => dispatch(addService(item))
     };
 };
 export class BrowserListItem extends Component {
@@ -44,6 +46,8 @@ export class BrowserListItem extends Component {
             item.trackMetadata
         ) {
             this.props.playNow(item);
+        } else if (item.action === 'addService') {
+            this.props.addService(item);
         } else {
             this.props.select(item);
         }

@@ -13,13 +13,12 @@ import PositionInfo from './PositionInfo';
 import VolumeControls from './VolumeControls';
 import ZoneGroupList from './ZoneGroupList';
 import GroupManagement from './GroupManagement';
-// import MusicServiceManagement from './MusicServiceManagement';
+import MusicServiceManagement from './MusicServiceManagement';
 // import SearchBar from './SearchBar';
 import Loader from './Loader';
 
-window.store = store;
+window.store = store; // TODO: remove this
 
-class MusicServiceManagement extends Component {}
 class SearchBar extends Component {}
 
 class Application extends Component {

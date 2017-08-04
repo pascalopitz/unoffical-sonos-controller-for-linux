@@ -34,7 +34,7 @@ const mapDispatchToProps = dispatch => {
     return {
         home: () => dispatch(home()),
         back: () => dispatch(back()),
-        more: () => dispatch(more()),
+        more: currentState => dispatch(more(currentState)),
         changeSearchMode: mode => dispatch(changeSearchMode(mode)),
         playCurrentAlbum: () => dispatch(playCurrentAlbum())
     };
@@ -45,7 +45,7 @@ export class BrowserList extends Component {
         super(props);
 
         this.moreHandler = _.throttle(() => {
-            this.props.more();
+            this.props.more(this.props.currentState);
         }, 1000);
     }
 
@@ -94,7 +94,7 @@ export class BrowserList extends Component {
         let headlineNodes;
         let actionNodes;
 
-        const listItemNodes = items.map((item, p) => {
+        const listItemNodes = _.map(items, (item, p) => {
             const position = p + 1;
             return (
                 <BrowserListItem

@@ -12,7 +12,8 @@ const initialState = {
     positionInfos: {},
     playStates: {},
     playModes: {},
-    crossFadeModes: {}
+    crossFadeModes: {},
+    musicServices: []
 };
 
 export const REG = /^http:\/\/([\d\.]+)/;
@@ -204,7 +205,7 @@ export default handleActions(
         [Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE]: playModeReducer,
 
         [Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE]: (state, action) => {
-            console.log(action);
+            console.log(action.payload);
             return state;
         }
     },

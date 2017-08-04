@@ -1,7 +1,22 @@
 import _ from 'lodash';
 
 export function getCurrentState(state) {
-    return _.last(state.browserList.history);
+    const lastState = _.last(state.browserList.history);
+
+    if (state.browserList.history.length > 1) {
+        return lastState;
+    }
+
+    const serviceItems = state.musicServices.active.map(ser => ({
+        title: ser.service.Name,
+        action: 'service',
+        service: ser
+    }));
+
+    return {
+        ...lastState,
+        items: lastState.items.concat(serviceItems)
+    };
 }
 
 export function getSearching(state) {

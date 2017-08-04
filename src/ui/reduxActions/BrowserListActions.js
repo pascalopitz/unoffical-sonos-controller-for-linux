@@ -3,7 +3,62 @@ import { createAction } from 'redux-actions';
 import Constants from '../constants';
 
 import SonosService from '../services/SonosService';
-import serviceFactory from '../sonos/helpers/ServiceFactory';
+import MusicServiceClient from '../services/MusicServiceClient';
+
+import store from '../reducers';
+
+import { LIBRARY_STATE } from '../constants/BrowserListConstants';
+
+async function _fetchLineIns() {
+    const { deviceSearches } = store.getState().sonosService;
+
+    const promises = _.map(deviceSearches, async sonos => {
+        try {
+            const result = await sonos.getMusicLibraryAsync('AI:', {});
+            const items = result && result.items ? result.items : [];
+
+            if (items.length === 0) {
+                return [];
+            }
+
+            const data = await sonos.getZoneAttrsAsync();
+
+            items.forEach(i => {
+                i.title = i.title + ': ' + data.CurrentZoneName;
+            });
+
+            return items;
+        } catch (e) {
+            console.error(e);
+            return [];
+        }
+    });
+
+    const arr = await Promise.all(promises);
+    return _.flatten(arr);
+}
+
+async function _fetchMusicServices() {
+    const sonos = SonosService._currentDevice; // TODO: fix this
+    const existingIds = SonosService._musicServices.map(s => s.service.Id); // TODO: fix this
+
+    const services = await sonos.getAvailableServicesAsync();
+
+    let data = _.reject(services, item => {
+        return _.includes(existingIds, item.Id);
+    });
+
+    data = _.orderBy(data, 'Name');
+
+    return data.map(out => {
+        return {
+            action: 'addService',
+            title: out.Name,
+            id: Number(out.Id),
+            data: out
+        };
+    });
+}
 
 async function _getItem(item) {
     if (!item.serviceClient) {
@@ -35,19 +90,108 @@ async function _getItem(item) {
         };
     }
 
-    return client.getMediaURI(item.id).then(uri => {
-        return {
-            uri: _.escape(uri),
-            metadata: client.encodeItemMetadata(uri, item)
-        };
-    });
+    const uri = await client.getMediaURI(item.id);
+
+    return {
+        uri: _.escape(uri),
+        metadata: client.encodeItemMetadata(uri, item)
+    };
 }
+
+// Actions below
 
 export const home = createAction(Constants.BROWSER_HOME);
 
 export const back = createAction(Constants.BROWSER_BACK);
 
-export const more = createAction(Constants.BROWSER_SCROLL_RESULT);
+export const more = createAction(
+    Constants.BROWSER_SCROLL_RESULT,
+    async prevState => {
+        try {
+            const state = {
+                ...prevState
+            };
+
+            const sonos = SonosService._currentDevice; // TODO: fix this
+            const params = {
+                start: state.items.length
+            };
+
+            if (state.items.length >= state.total) {
+                return;
+            }
+
+            const client = state.serviceClient;
+
+            if (client && state.total > state.items.length) {
+                const res = await client.getMetadata(
+                    state.parent.id,
+                    state.items.length,
+                    state.items.length + 100
+                );
+
+                const items = [];
+
+                if (res.mediaMetadata) {
+                    if (!_.isArray(res.mediaMetadata)) {
+                        res.mediaMetadata = [res.mediaMetadata];
+                    }
+
+                    res.mediaMetadata.forEach(i => {
+                        i.serviceClient = client;
+                        items[i.$$position] = i;
+                    });
+                }
+
+                if (res.mediaCollection) {
+                    if (!_.isArray(res.mediaCollection)) {
+                        res.mediaCollection = [res.mediaCollection];
+                    }
+
+                    res.mediaCollection.forEach(i => {
+                        i.serviceClient = client;
+                        items[i.$$position] = i;
+                    });
+                }
+
+                state.items = _.uniq(state.items.concat(items));
+                state.total = res.total || state.total;
+
+                return state;
+            }
+
+            if (state.search) {
+                const result = await sonos.searchMusicLibraryAsync(
+                    state.type,
+                    state.term,
+                    params
+                );
+
+                if (!result || !result.items) {
+                    return;
+                }
+
+                state.items = _.uniq(state.items.concat(result.items));
+                return state;
+            }
+
+            const result = await sonos.getMusicLibraryAsync(
+                state.id || state.searchType,
+                params
+            );
+
+            if (!result || !result.items) {
+                return;
+            }
+
+            state.items = _.uniq(state.items.concat(result.items));
+            return state;
+        } catch (err) {
+            console.error(err);
+            return prevState;
+        }
+    }
+);
 
 export const changeSearchMode = createAction(
     Constants.BROWSER_CHANGE_SEARCH_MODE
@@ -63,34 +207,24 @@ export const select = createAction(
         const objectId = item.searchType;
 
         if (item.action && item.action === 'library') {
-            return library;
+            return {
+                ...LIBRARY_STATE
+            };
         }
 
-        // if (item.action && item.action === 'linein') {
-        //     this._fetchLineIns().then(results => {
-        //         const state = _.cloneDeep(item);
-        //         state.items = results || [];
+        if (item.action && item.action === 'linein') {
+            const results = await _fetchLineIns();
+            const state = _.cloneDeep(item);
+            state.items = results || [];
+            return state;
+        }
 
-        //         Dispatcher.dispatch({
-        //             actionType: Constants.BROWSER_SELECT_ITEM,
-        //             state: state
-        //         });
-        //     });
-        //     return;
-        // }
-
-        // if (item.action && item.action === 'browseServices') {
-        //     this._fetchMusicServices().then(results => {
-        //         const state = _.cloneDeep(item);
-        //         state.items = results || [];
-
-        //         Dispatcher.dispatch({
-        //             actionType: Constants.BROWSER_SELECT_ITEM,
-        //             state: state
-        //         });
-        //     });
-        //     return;
-        // }
+        if (item.action && item.action === 'browseServices') {
+            const results = await _fetchMusicServices();
+            const state = _.cloneDeep(item);
+            state.items = results || [];
+            return state;
+        }
 
         // if (item.action && item.action === 'addService') {
         //     Dispatcher.dispatch({
@@ -100,96 +234,83 @@ export const select = createAction(
         //     return;
         // }
 
-        // if (item.action && item.action === 'service') {
-        //     const client = new MusicServiceClient(item.service.service);
-        //     client.setAuthToken(item.service.authToken.authToken);
-        //     client.setKey(item.service.authToken.privateKey);
+        if (item.action && item.action === 'service') {
+            const client = new MusicServiceClient(item.service.service);
+            client.setAuthToken(item.service.authToken.authToken);
+            client.setKey(item.service.authToken.privateKey);
 
-        //     client.getMetadata('root', 0, 100).then(res => {
-        //         const state = {
-        //             title: client.name,
-        //             serviceClient: client,
-        //             items: _.map(res.mediaCollection, i => {
-        //                 i.serviceClient = client;
-        //                 return i;
-        //             })
-        //         };
+            const res = await client.getMetadata('root', 0, 100);
+            const state = {
+                title: client.name,
+                serviceClient: client,
+                items: _.map(res.mediaCollection, i => {
+                    i.serviceClient = client;
+                    return i;
+                })
+            };
 
-        //         Dispatcher.dispatch({
-        //             actionType: Constants.BROWSER_SELECT_ITEM,
-        //             state: state
-        //         });
-        //     });
-        //     return;
-        // }
+            return state;
+        }
 
-        // if (item.serviceClient && item.itemType !== 'track') {
-        //     const client = item.serviceClient;
+        if (item.serviceClient && item.itemType !== 'track') {
+            const client = item.serviceClient;
 
-        //     client.getMetadata(item.id, 0, 100).then(res => {
-        //         const items = [];
+            const res = await client.getMetadata(item.id, 0, 100);
+            const items = [];
 
-        //         if (res.mediaMetadata) {
-        //             if (!_.isArray(res.mediaMetadata)) {
-        //                 res.mediaMetadata = [res.mediaMetadata];
-        //             }
+            if (res.mediaMetadata) {
+                if (!_.isArray(res.mediaMetadata)) {
+                    res.mediaMetadata = [res.mediaMetadata];
+                }
 
-        //             res.mediaMetadata.forEach(i => {
-        //                 i.serviceClient = client;
-        //                 items[i.$$position] = i;
-        //             });
-        //         }
+                res.mediaMetadata.forEach(i => {
+                    i.serviceClient = client;
+                    items[i.$$position] = i;
+                });
+            }
 
-        //         if (res.mediaCollection) {
-        //             if (!_.isArray(res.mediaCollection)) {
-        //                 res.mediaCollection = [res.mediaCollection];
-        //             }
+            if (res.mediaCollection) {
+                if (!_.isArray(res.mediaCollection)) {
+                    res.mediaCollection = [res.mediaCollection];
+                }
 
-        //             res.mediaCollection.forEach(i => {
-        //                 i.serviceClient = client;
-        //                 items[i.$$position] = i;
-        //             });
-        //         }
+                res.mediaCollection.forEach(i => {
+                    i.serviceClient = client;
+                    items[i.$$position] = i;
+                });
+            }
 
-        //         const state = {
-        //             title: item.title,
-        //             parent: item,
-        //             serviceClient: client,
-        //             total: res.total,
-        //             items: _.without(items, undefined)
-        //         };
+            return {
+                title: item.title,
+                parent: item,
+                serviceClient: client,
+                total: res.total,
+                items: _.without(items, undefined)
+            };
+        }
 
-        //         Dispatcher.dispatch({
-        //             actionType: Constants.BROWSER_SELECT_ITEM,
-        //             state: state
-        //         });
-        //     });
+        if (item.searchType) {
+            prendinBrowserUpdate = {
+                title: item.title,
+                searchType: item.searchType
+            };
+        } else {
+            prendinBrowserUpdate = item;
+        }
 
-        //     return;
-        // }
+        if (item.class) {
+            objectId = item.id ? item.id : item.uri.split('#')[1];
+        }
 
-        // if (item.searchType) {
-        //     prendinBrowserUpdate = {
-        //         title: item.title,
-        //         searchType: item.searchType
-        //     };
-        // } else {
-        //     prendinBrowserUpdate = item;
-        // }
+        try {
+            const result = await sonos.getMusicLibraryAsync(objectId, {});
+            const state = prendinBrowserUpdate;
+            state.items = result.items;
 
-        // if (item.class) {
-        //     objectId = item.id ? item.id : item.uri.split('#')[1];
-        // }
-
-        // sonos.getMusicLibrary(objectId, {}, (err, result) => {
-        //     const state = prendinBrowserUpdate;
-        //     state.items = result.items;
-
-        //     Dispatcher.dispatch({
-        //         actionType: Constants.BROWSER_SELECT_ITEM,
-        //         state: state
-        //     });
-        // });
+            return state;
+        } catch (e) {
+            console.error(e);
+        }
     }
 );
 
@@ -212,7 +333,7 @@ export const playNow = createAction(
         } else if (item.class && item.class === 'object.item.audioItem') {
             await sonos.playAsync(item.uri);
         } else {
-            const res = sonos
+            const res = await sonos
                 .getMusicLibraryAsync('queue', { total: 0 })
                 .catch(() => null);
 
@@ -273,3 +394,5 @@ export const replaceQueue = createAction(
 export const removeService = createAction(
     Constants.BROWSER_REMOVE_MUSICSERVICE
 );
+
+export const addService = createAction(Constants.BROWSER_ADD_MUSICSERVICE);

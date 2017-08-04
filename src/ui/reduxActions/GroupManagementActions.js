@@ -61,6 +61,12 @@ export const saveGroups = createAction(
                     InstanceID: 0
                 });
             }
+
+            [1, 500, 1000, 1500, 2000, 3000, 5000, 10000].forEach(num => {
+                window.setTimeout(() => {
+                    SonosService.queryTopology();
+                }, num);
+            });
         } catch (e) {
             console.error(e);
             throw e;

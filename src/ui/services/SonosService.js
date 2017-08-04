@@ -43,13 +43,13 @@ function getDeviceByHost(host) {
 }
 
 const SonosService = {
-    _currentDevice: null,
+    _currentDevice: null, // TODO: get rid of this
     _queryTimeout: null,
     _listeners: {},
     _persistentSubscriptions: [],
     _currentSubscriptions: [],
     _searchInterval: null,
-    _musicServices: [],
+    _musicServices: [], // TODO: get rid of this
 
     getDeviceByHost,
 
@@ -184,7 +184,7 @@ const SonosService = {
                 zone = match || zone;
             }
 
-            //HACK: trying to prevent listener not having server throw, race condition?
+            // HACK: trying to prevent listener not having server throw, race condition?
             window.setTimeout(() => {
                 this.selectCurrentZone(zone);
                 store.dispatch(serviceActions.selectCurrentZone(zone));
@@ -330,7 +330,7 @@ const SonosService = {
 
         this.queryVolumeInfo();
 
-        this.queryTopology(sonos);
+        // this.queryTopology(sonos);
         this.queryPositionInfo(sonos);
         this.queryMusicLibrary(sonos);
         this.queryPlayState(sonos);
@@ -346,20 +346,16 @@ const SonosService = {
     },
 
     processPlaystateUpdate(sonos, state) {
-        const publishState = state => {
-            store.dispatch(
-                serviceActions.playStateUpdate({
-                    playState: state,
-                    host: sonos.host
-                })
-            );
-        };
-
         if (state === 'transitioning') {
             window.setTimeout(() => this.queryPlayState(sonos), 100);
         }
 
-        publishState(state);
+        store.dispatch(
+            serviceActions.playStateUpdate({
+                playState: state,
+                host: sonos.host
+            })
+        );
     },
 
     onServiceEvent(endpoint, sid, data) {
@@ -600,8 +596,6 @@ const SonosService = {
         window.localStorage.musicServices = JSON.stringify(this._musicServices);
 
         store.dispatch(serviceActions.updateMusicServices(this._musicServices));
-
-        resolve();
     },
 
     removeMusicService(service) {
