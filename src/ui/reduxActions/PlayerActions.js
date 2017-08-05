@@ -70,6 +70,9 @@ export const setCrossfade = createAction(
     }
 );
 
-export const refreshPosition = createAction(Constants.NOOP, async () => {
-    SonosService.queryState();
-});
+export const refreshPosition = createAction(
+    Constants.SONOS_SERVICE_REFRESHPOSITION,
+    async () => {
+        SonosService.queryState();
+    }
+);

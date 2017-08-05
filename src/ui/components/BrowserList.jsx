@@ -85,11 +85,8 @@ export class BrowserList extends Component {
     }
 
     render() {
-        const searching = this.props.searching;
-        const searchMode = this.props.searchMode;
-        const history = this.props.history;
-        const items = this.props.currentState.items;
-        const title = this.props.currentState.title;
+        const { searching, searchMode, currentState, history } = this.props;
+        const { items, title, source } = currentState;
 
         let headlineNodes;
         let actionNodes;
@@ -126,7 +123,7 @@ export class BrowserList extends Component {
                     {links}
                 </ul>
             );
-        } else if (history.length) {
+        } else if (history.length && source !== 'start') {
             headlineNodes = (
                 <h4 className="with-history">
                     <a

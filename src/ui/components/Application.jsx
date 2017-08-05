@@ -14,14 +14,12 @@ import VolumeControls from './VolumeControls';
 import ZoneGroupList from './ZoneGroupList';
 import GroupManagement from './GroupManagement';
 import MusicServiceManagement from './MusicServiceManagement';
-// import SearchBar from './SearchBar';
+import SearchBar from './SearchBar';
 import Loader from './Loader';
 
 window.store = store; // TODO: remove this
 
-class SearchBar extends Component {}
-
-class Application extends Component {
+export class Application extends Component {
     constuctor() {
         this.state = {
             showPlayNow: true

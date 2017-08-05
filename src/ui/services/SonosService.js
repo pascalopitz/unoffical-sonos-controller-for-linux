@@ -302,7 +302,7 @@ const SonosService = {
         store.dispatch(
             serviceActions.crossfadeModeUpdate({
                 host: sonos.host,
-                mode
+                mode: !!Number(mode.CrossfadeMode)
             })
         );
     },

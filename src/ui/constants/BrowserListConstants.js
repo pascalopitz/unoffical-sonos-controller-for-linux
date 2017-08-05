@@ -22,7 +22,7 @@ export const START_STATE_ITEMS = [
 ];
 
 export const START_STATE = {
-    source: null,
+    source: 'start',
     searchType: null,
     title: 'Select a Music Source',
     items: [...START_STATE_ITEMS]

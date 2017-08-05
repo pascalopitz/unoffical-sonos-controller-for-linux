@@ -30,3 +30,7 @@ export function getSearchMode(state) {
 export function getHistory(state) {
     return state.browserList.history;
 }
+
+export function getSearchSources(state) {
+    return [];
+}

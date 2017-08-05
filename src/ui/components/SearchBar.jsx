@@ -1,21 +1,37 @@
 import _ from 'lodash';
 import { h, Component } from 'preact';
+import { connect } from 'preact-redux';
 
-import SearchBarActions from '../actions/SearchBarActions';
+import { search } from '../reduxActions/BrowserListActions';
 
-class SearchBar extends Component {
-    constructor() {
-        super();
-        this.state = {
-            searching: false,
-            term: ''
-        };
-    }
+import {
+    getCurrentState,
+    getSearching,
+    getSearchMode,
+    getSearchSources
+} from '../selectors/BrowserListSelectors';
 
+function mapStateToProps(state) {
+    return {
+        term: state.browserList.searchTerm,
+        currentState: getCurrentState(state),
+        searching: getSearching(state),
+        searchMode: getSearchMode(state),
+        sources: getSearchSources(state)
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        search: term => dispatch(search(term))
+    };
+}
+
+export class SearchBar extends Component {
     render() {
         let cancelButton;
 
-        if (this.state.searching) {
+        if (this.props.searching) {
             cancelButton = (
                 <i
                     className="material-icons"
@@ -31,7 +47,7 @@ class SearchBar extends Component {
                 <input
                     type="text"
                     id="searchfield"
-                    value={this.state.term}
+                    value={this.props.term}
                     onInput={_.debounce(this._onChange.bind(this), 200)}
                 />
                 {cancelButton}
@@ -40,23 +56,15 @@ class SearchBar extends Component {
     }
 
     _onClick() {
-        this.setState({
-            searching: false,
-            term: ''
-        });
-        SearchBarActions.search(null);
+        this.props.search(null);
     }
 
     _onChange(e) {
         const term = e.target.value;
-        this.setState({
-            searching: term.length > 0,
-            term: term || ''
-        });
-        SearchBarActions.search(term);
+        this.props.search(term);
         e.preventDefault();
         e.stopPropagation();
     }
 }
 
-export default SearchBar;
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

@@ -14,7 +14,7 @@ export function getPlaying(state) {
 
 export function getCrossfadeMode(state) {
     const { currentHost, crossFadeModes } = state.sonosService;
-    return _.get(crossFadeModes[currentHost], 'CrossfadeMode') === '1';
+    return !!crossFadeModes[currentHost];
 }
 
 export function getPlayMode(state) {

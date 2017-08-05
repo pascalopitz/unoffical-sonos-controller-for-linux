@@ -20,6 +20,40 @@ const initialState = {
 
 export default handleActions(
     {
+        [Constants.BROWSER_SEARCH]: (state, action) => {
+            let { history } = state;
+            const { term, source } = action.payload;
+
+            if (!term) {
+                return {
+                    ...state,
+                    source,
+                    searchTerm: null,
+                    searchMode: DEFAULT_SEARCH_MODE
+                };
+            }
+
+            history = history.concat(action.payload);
+
+            return {
+                ...state,
+                source,
+                searchTerm: term,
+                history
+            };
+        },
+
+        [Constants.BROWSER_CHANGE_SEARCH_MODE]: (state, action) => {
+            return {
+                ...state,
+                searchMode: action.payload
+            };
+        },
+
+        [Constants.BROWSER_SEARCH_SCROLL_RESULT]: (state, action) => {
+            console.log(state, action);
+        },
+
         [Constants.BROWSER_SELECT_ITEM]: (state, action) => {
             let { history } = state;
             history = history.concat(action.payload);

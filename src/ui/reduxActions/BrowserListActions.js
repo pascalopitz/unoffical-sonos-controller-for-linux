@@ -98,6 +98,62 @@ async function _getItem(item) {
     };
 }
 
+async function _createSearchPromise(type, term, options) {
+    term = escape(term);
+
+    const sonos = SonosService._currentDevice;
+
+    try {
+        const result = await sonos.searchMusicLibraryAsync(
+            type,
+            term,
+            options || {}
+        );
+        return _.assign(result, {
+            type,
+            term,
+            search: true
+        });
+    } catch (err) {
+        return {
+            returned: 0,
+            total: 0,
+            items: []
+        };
+    }
+}
+
+function _transformSMAPI(res, client) {
+    const items = [];
+
+    if (res.mediaMetadata) {
+        if (!Array.isArray(res.mediaMetadata)) {
+            res.mediaMetadata = [res.mediaMetadata];
+        }
+
+        res.mediaMetadata.forEach(i => {
+            i.serviceClient = client;
+            items[i.$$position] = i;
+        });
+    }
+
+    if (res.mediaCollection) {
+        if (!Array.isArray(res.mediaCollection)) {
+            res.mediaCollection = [res.mediaCollection];
+        }
+
+        res.mediaCollection.forEach(i => {
+            i.serviceClient = client;
+            items[i.$$position] = i;
+        });
+    }
+
+    return {
+        returned: res.count,
+        total: res.total,
+        items: items
+    };
+}
 // Actions below
 
 export const home = createAction(Constants.BROWSER_HOME);
@@ -118,7 +174,7 @@ export const more = createAction(
             };
 
             if (state.items.length >= state.total) {
-                return;
+                return prevState;
             }
 
             const client = state.serviceClient;
@@ -181,7 +237,7 @@ export const more = createAction(
             );
 
             if (!result || !result.items) {
-                return;
+                return prevState;
             }
 
             state.items = _.uniq(state.items.concat(result.items));
@@ -197,6 +253,67 @@ export const changeSearchMode = createAction(
     Constants.BROWSER_CHANGE_SEARCH_MODE
 );
 
+export const search = createAction(Constants.BROWSER_SEARCH, async term => {
+    if (!term || !term.length) {
+        return;
+    }
+
+    try {
+        const currentState = _.last(store.getState().browserList.history);
+        let albums, artists, tracks, source;
+
+        let results = {
+            albums,
+            artists,
+            tracks
+        };
+
+        if (currentState.serviceClient) {
+            const client = currentState.serviceClient;
+            const serviceId = Number(client._serviceDefinition.Id);
+
+            source = client;
+
+            if (serviceId === 160) {
+                [albums, artists, tracks] = await Promise.all([
+                    Promise.resolve([]),
+                    client.search('search:people', term).catch(() => []),
+                    client.search('search:sounds', term).catch(() => [])
+                ]);
+            } else {
+                [albums, artists, tracks] = await Promise.all([
+                    client.search('album', term).catch(() => []),
+                    client.search('artist', term).catch(() => []),
+                    client.search('track', term).catch(() => [])
+                ]);
+            }
+
+            results = {
+                albums: _transformSMAPI(albums, client),
+                artists: _transformSMAPI(artists, client),
+                tracks: _transformSMAPI(tracks, client)
+            };
+        } else {
+            [albums, artists, tracks] = await Promise.all([
+                _createSearchPromise('albums', term).catch(() => []),
+                _createSearchPromise('albumArtists', term).catch(() => []),
+                _createSearchPromise('tracks', term).catch(() => [])
+            ]);
+
+            results = {
+                albums,
+                artists,
+                tracks
+            };
+        }
+
+        return { results, term, source };
+    } catch (err) {
+        console.error(err);
+        return { results, term, source };
+    }
+});
+
 export const playCurrentAlbum = createAction(Constants.BROWSER_PLAY);
 
 export const select = createAction(
@@ -204,7 +321,7 @@ export const select = createAction(
     async item => {
         const sonos = SonosService._currentDevice;
         let prendinBrowserUpdate;
-        const objectId = item.searchType;
+        let objectId = item.searchType;
 
         if (item.action && item.action === 'library') {
             return {
@@ -225,14 +342,6 @@ export const select = createAction(
             state.items = results || [];
             return state;
         }
-
-        // if (item.action && item.action === 'addService') {
-        //     Dispatcher.dispatch({
-        //         actionType: Constants.BROWSER_ADD_MUSICSERVICE,
-        //         service: new MusicServiceClient(item.data)
-        //     });
-        //     return;
-        // }
 
         if (item.action && item.action === 'service') {
             const client = new MusicServiceClient(item.service.service);
