@@ -8,6 +8,7 @@ const Constants = {
     BROWSER_SELECT_ITEM: '',
     BROWSER_SCROLL_RESULT: '',
     BROWSER_SEARCH: '',
+    BROWSER_SEARCH_EXIT: '',
     BROWSER_SEARCH_SCROLL_RESULT: '',
     BROWSER_BACK: '',
     BROWSER_HOME: '',

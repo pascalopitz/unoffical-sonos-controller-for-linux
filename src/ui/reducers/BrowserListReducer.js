@@ -43,6 +43,14 @@ export default handleActions(
             };
         },
 
+        [Constants.BROWSER_SEARCH_EXIT]: (state, action) => {
+            return {
+                ...state,
+                searchTerm: null,
+                searchMode: DEFAULT_SEARCH_MODE
+            };
+        },
+
         [Constants.BROWSER_CHANGE_SEARCH_MODE]: (state, action) => {
             return {
                 ...state,

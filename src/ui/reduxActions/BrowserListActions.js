@@ -253,11 +253,9 @@ export const changeSearchMode = createAction(
     Constants.BROWSER_CHANGE_SEARCH_MODE
 );
 
-export const search = createAction(Constants.BROWSER_SEARCH, async term => {
-    if (!term || !term.length) {
-        return;
-    }
+export const exitSearch = createAction(Constants.BROWSER_SEARCH_EXIT);
 
+export const search = createAction(Constants.BROWSER_SEARCH, async term => {
     try {
         const currentState = _.last(store.getState().browserList.history);
         let albums, artists, tracks, source;
@@ -267,6 +265,10 @@ export const search = createAction(Constants.BROWSER_SEARCH, async term => {
             artists,
             tracks
         };
+
+        if (!term || !term.length) {
+            return { results, term, source };
+        }
 
         if (currentState.serviceClient) {
             const client = currentState.serviceClient;

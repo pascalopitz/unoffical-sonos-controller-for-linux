@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import { h, Component } from 'preact';
 import { connect } from 'preact-redux';
-
 import { search } from '../reduxActions/BrowserListActions';
 
 import {
     getCurrentState,
     getSearching,
     getSearchMode,
-    getSearchSources
+    getSearchSources,
+    getSearchModes
 } from '../selectors/BrowserListSelectors';
 
 function mapStateToProps(state) {
@@ -17,7 +17,8 @@ function mapStateToProps(state) {
         currentState: getCurrentState(state),
         searching: getSearching(state),
         searchMode: getSearchMode(state),
-        sources: getSearchSources(state)
+        sources: getSearchSources(state),
+        modes: getSearchModes(state)
     };
 }
 
@@ -44,6 +45,7 @@ export class SearchBar extends Component {
 
         return (
             <div id="search">
+                <select></select>
                 <input
                     type="text"
                     id="searchfield"

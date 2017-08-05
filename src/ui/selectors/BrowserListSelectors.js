@@ -32,5 +32,22 @@ export function getHistory(state) {
 }
 
 export function getSearchSources(state) {
-    return [];
+    return state.musicServices.active;
+}
+
+export function getSearchModes() {
+    return [
+        {
+            label: 'Artists',
+            value: 'artists'
+        },
+        {
+            label: 'Albums',
+            value: 'albums'
+        },
+        {
+            label: 'Tracks',
+            value: 'tracks'
+        }
+    ];
 }

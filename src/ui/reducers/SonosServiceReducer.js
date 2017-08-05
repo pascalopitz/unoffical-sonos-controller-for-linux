@@ -12,8 +12,7 @@ const initialState = {
     positionInfos: {},
     playStates: {},
     playModes: {},
-    crossFadeModes: {},
-    musicServices: []
+    crossFadeModes: {}
 };
 
 export const REG = /^http:\/\/([\d\.]+)/;

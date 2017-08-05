@@ -115,6 +115,10 @@ const SonosService = {
                     '/SystemProperties/Event',
                     persistSubscription
                 );
+                listener.addService(
+                    '/ZoneGroupTopology/Event',
+                    persistSubscription
+                );
 
                 this.queryCurrentTrackAndPlaystate(sonos);
                 this.queryTopology(sonos);
@@ -122,18 +126,9 @@ const SonosService = {
                 if (!firstResultProcessed) {
                     this.queryAccounts(sonos);
 
-                    sonos.getHouseholdId((err, hhid) => {
-                        if (err) {
-                            // noop
-                        }
-
-                        this.householdId = hhid;
-                    });
-
-                    listener.addService(
-                        '/ZoneGroupTopology/Event',
-                        persistSubscription
-                    );
+                    this.householdId = await sonos
+                        .getHouseholdIdAsync()
+                        .catch(() => null);
 
                     firstResultProcessed = true;
                 }
