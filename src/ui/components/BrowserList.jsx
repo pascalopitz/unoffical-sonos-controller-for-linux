@@ -10,7 +10,8 @@ import {
     getCurrentState,
     getSearching,
     getHistory,
-    getSearchMode
+    getSearchMode,
+    getServiceItems
 } from '../selectors/BrowserListSelectors';
 
 import {
@@ -24,6 +25,7 @@ import {
 const mapStateToProps = state => {
     return {
         currentState: getCurrentState(state),
+        serviceItems: getServiceItems(state),
         searching: getSearching(state),
         history: getHistory(state),
         searchMode: getSearchMode(state)
@@ -77,7 +79,7 @@ export class BrowserList extends Component {
 
     _searchModeChange(e) {
         const mode = e.target.getAttribute('data-mode');
-        this.changeSearchMode(mode);
+        this.props.changeSearchMode(mode);
     }
 
     _renderRow(row) {
@@ -85,22 +87,34 @@ export class BrowserList extends Component {
     }
 
     render() {
-        const { searching, searchMode, currentState, history } = this.props;
+        const {
+            searching,
+            searchMode,
+            currentState,
+            history,
+            serviceItems
+        } = this.props;
         const { items, title, source } = currentState;
 
         let headlineNodes;
         let actionNodes;
 
-        const listItemNodes = _.map(items, (item, p) => {
-            const position = p + 1;
-            return (
-                <BrowserListItem
-                    key={position}
-                    model={item}
-                    position={position}
-                />
-            );
-        });
+        const displayItems =
+            source === 'start' ? items.concat(serviceItems) : items;
+
+        const listItemNodes = _.map(
+            _.reject(displayItems, i => !i),
+            (item, p) => {
+                const position = p + 1;
+                return (
+                    <BrowserListItem
+                        key={item.id}
+                        model={item}
+                        position={position}
+                    />
+                );
+            }
+        );
 
         if (searching) {
             const links = ['artists', 'albums', 'tracks'].map(mode => {

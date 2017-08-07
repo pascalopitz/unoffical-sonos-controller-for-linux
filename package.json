@@ -69,7 +69,6 @@
       "src/**/*.{js,jsx}"
     ]
   },
-
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.24.1",

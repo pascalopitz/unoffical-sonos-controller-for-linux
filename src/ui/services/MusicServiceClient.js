@@ -61,6 +61,10 @@ class MusicServiceClient {
                             );
                             this.setAuthToken(refreshDetails.authToken);
                             return reject(refreshDetails);
+                        } else if (
+                            fault.indexOf('Update your Sonos system') > -1
+                        ) {
+                            return this._doRequest(uri, action, body, headers);
                         } else {
                             return reject(new Error(fault));
                         }

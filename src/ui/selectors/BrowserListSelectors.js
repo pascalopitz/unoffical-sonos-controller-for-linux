@@ -1,22 +1,16 @@
 import _ from 'lodash';
+import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
 
 export function getCurrentState(state) {
-    const lastState = _.last(state.browserList.history);
+    return _.last(state.browserList.history);
+}
 
-    if (state.browserList.history.length > 1) {
-        return lastState;
-    }
-
-    const serviceItems = state.musicServices.active.map(ser => ({
+export function getServiceItems(state) {
+    return state.musicServices.active.map(ser => ({
         title: ser.service.Name,
         action: 'service',
         service: ser
     }));
-
-    return {
-        ...lastState,
-        items: lastState.items.concat(serviceItems)
-    };
 }
 
 export function getSearching(state) {
@@ -24,7 +18,7 @@ export function getSearching(state) {
 }
 
 export function getSearchMode(state) {
-    return !!state.browserList.searchMode;
+    return state.browserList.searchMode;
 }
 
 export function getHistory(state) {
@@ -32,7 +26,23 @@ export function getHistory(state) {
 }
 
 export function getSearchSources(state) {
-    return state.musicServices.active;
+    return _.uniq(
+        [
+            {
+                label: 'Music Library',
+                client: null,
+                logo: './svg/ic_audiotrack_48px.svg'
+            }
+        ].concat(
+            _.map(state.musicServices.active, s => {
+                return {
+                    logo: getServiceLogoUrl(s.service.Id),
+                    label: s.service.Name,
+                    client: s
+                };
+            })
+        )
+    );
 }
 
 export function getSearchModes() {

@@ -1,7 +1,10 @@
 import _ from 'lodash';
 import { h, Component } from 'preact';
 import { connect } from 'preact-redux';
-import { search } from '../reduxActions/BrowserListActions';
+
+import SearchBarSources from './SearchBarSources';
+
+import { search, exitSearch } from '../reduxActions/BrowserListActions';
 
 import {
     getCurrentState,
@@ -24,7 +27,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        search: term => dispatch(search(term))
+        search: (term, mode) => dispatch(search(term, mode)),
+        exitSearch: () => dispatch(exitSearch())
     };
 }
 
@@ -45,7 +49,7 @@ export class SearchBar extends Component {
 
         return (
             <div id="search">
-                <select></select>
+                <SearchBarSources {...this.props} />
                 <input
                     type="text"
                     id="searchfield"
@@ -58,12 +62,12 @@ export class SearchBar extends Component {
     }
 
     _onClick() {
-        this.props.search(null);
+        this.props.exitSearch();
     }
 
     _onChange(e) {
         const term = e.target.value;
-        this.props.search(term);
+        this.props.search(term, this.props.searchMode);
         e.preventDefault();
         e.stopPropagation();
     }

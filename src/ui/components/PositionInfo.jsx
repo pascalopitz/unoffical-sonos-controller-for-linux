@@ -37,11 +37,11 @@ const mapDispatchToProps = dispatch => {
 };
 
 function formatTime(d) {
-    return `${_.padStart(d.hours() * 60 + d.minutes(), 2, '0')}:${_.padStart(
-        d.seconds(),
-        2,
-        '0'
-    )}`;
+    const hrs = _.padStart(d.hours(), 2, '0');
+    const mins = _.padStart(d.minutes(), 2, '0');
+    const secs = _.padStart(d.seconds(), 2, '0');
+
+    return `${hrs}:${mins}:${secs}`;
 }
 
 export class PositionInfo extends Component {

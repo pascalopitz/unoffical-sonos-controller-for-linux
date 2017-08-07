@@ -44,8 +44,13 @@ export default handleActions(
         },
 
         [Constants.BROWSER_SEARCH_EXIT]: (state, action) => {
+            let { history } = state;
+
+            history = history.filter(h => !h.term);
+
             return {
                 ...state,
+                history,
                 searchTerm: null,
                 searchMode: DEFAULT_SEARCH_MODE
             };
@@ -65,6 +70,10 @@ export default handleActions(
         [Constants.BROWSER_SELECT_ITEM]: (state, action) => {
             let { history } = state;
             history = history.concat(action.payload);
+
+            if (action.payload.source === 'start') {
+                return state;
+            }
 
             return {
                 ...state,

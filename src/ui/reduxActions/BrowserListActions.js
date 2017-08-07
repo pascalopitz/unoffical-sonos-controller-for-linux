@@ -9,6 +9,24 @@ import store from '../reducers';
 
 import { LIBRARY_STATE } from '../constants/BrowserListConstants';
 
+const SEARCH_SOURCES_LIBRARY = {
+    albums: 'albums',
+    artists: 'albumArtists',
+    tracks: 'tracks'
+};
+
+const SEARCH_SOURCES_SERVICES = {
+    albums: 'album',
+    artists: 'artist',
+    tracks: 'track'
+};
+
+const SEARCH_SOURCES_SERVICE_160 = {
+    albums: 'search:playlists',
+    artists: 'search:people',
+    tracks: 'search:sounds'
+};
+
 async function _fetchLineIns() {
     const { deviceSearches } = store.getState().sonosService;
 
@@ -98,17 +116,13 @@ async function _getItem(item) {
     };
 }
 
-async function _createSearchPromise(type, term, options) {
+async function _createLibrarySearchPromise(type, term, options = {}) {
     term = escape(term);
 
     const sonos = SonosService._currentDevice;
 
     try {
-        const result = await sonos.searchMusicLibraryAsync(
-            type,
-            term,
-            options || {}
-        );
+        const result = await sonos.searchMusicLibraryAsync(type, term, options);
         return _.assign(result, {
             type,
             term,
@@ -121,6 +135,21 @@ async function _createSearchPromise(type, term, options) {
             items: []
         };
     }
+}
+
+function _getServiceSearchPromise(client) {
+    return async function(type, term, options = {}) {
+        try {
+            const result = await client.search(type, term);
+            return _transformSMAPI(result, client);
+        } catch (err) {
+            return {
+                returned: 0,
+                total: 0,
+                items: []
+            };
+        }
+    };
 }
 
 function _transformSMAPI(res, client) {
@@ -164,9 +193,15 @@ export const more = createAction(
     Constants.BROWSER_SCROLL_RESULT,
     async prevState => {
         try {
-            const state = {
-                ...prevState
-            };
+            if (
+                prevState.action === 'linein' ||
+                prevState.action === 'browseServices' ||
+                prevState.source === 'start'
+            ) {
+                return prevState;
+            }
+
+            const state = _.cloneDeep(prevState);
 
             const sonos = SonosService._currentDevice; // TODO: fix this
             const params = {
@@ -186,31 +221,7 @@ export const more = createAction(
                     state.items.length + 100
                 );
 
-                const items = [];
-
-                if (res.mediaMetadata) {
-                    if (!_.isArray(res.mediaMetadata)) {
-                        res.mediaMetadata = [res.mediaMetadata];
-                    }
-
-                    res.mediaMetadata.forEach(i => {
-                        i.serviceClient = client;
-                        items[i.$$position] = i;
-                    });
-                }
-
-                if (res.mediaCollection) {
-                    if (!_.isArray(res.mediaCollection)) {
-                        res.mediaCollection = [res.mediaCollection];
-                    }
-
-                    res.mediaCollection.forEach(i => {
-                        i.serviceClient = client;
-                        items[i.$$position] = i;
-                    });
-                }
-
-                state.items = _.uniq(state.items.concat(items));
+                state.items = _transformSMAPI(res, client);
                 state.total = res.total || state.total;
 
                 return state;
@@ -244,7 +255,7 @@ export const more = createAction(
             return state;
         } catch (err) {
             console.error(err);
-            return prevState;
+            return {};
         }
     }
 );
@@ -255,66 +266,53 @@ export const changeSearchMode = createAction(
 
 export const exitSearch = createAction(Constants.BROWSER_SEARCH_EXIT);
 
-export const search = createAction(Constants.BROWSER_SEARCH, async term => {
-    try {
+export const search = createAction(
+    Constants.BROWSER_SEARCH,
+    async (term, mode) => {
         const currentState = _.last(store.getState().browserList.history);
-        let albums, artists, tracks, source;
+        const { serviceClient } = currentState;
+        let source;
+        let items = [];
+        let total = 0;
+        let title = 'Search';
 
-        let results = {
-            albums,
-            artists,
-            tracks
-        };
-
-        if (!term || !term.length) {
-            return { results, term, source };
-        }
-
-        if (currentState.serviceClient) {
-            const client = currentState.serviceClient;
-            const serviceId = Number(client._serviceDefinition.Id);
-
-            source = client;
-
-            if (serviceId === 160) {
-                [albums, artists, tracks] = await Promise.all([
-                    Promise.resolve([]),
-                    client.search('search:people', term).catch(() => []),
-                    client.search('search:sounds', term).catch(() => [])
-                ]);
-            } else {
-                [albums, artists, tracks] = await Promise.all([
-                    client.search('album', term).catch(() => []),
-                    client.search('artist', term).catch(() => []),
-                    client.search('track', term).catch(() => [])
-                ]);
+        try {
+            if (!term || !term.length) {
+                return { items, total, title, term, source, serviceClient };
             }
 
-            results = {
-                albums: _transformSMAPI(albums, client),
-                artists: _transformSMAPI(artists, client),
-                tracks: _transformSMAPI(tracks, client)
-            };
-        } else {
-            [albums, artists, tracks] = await Promise.all([
-                _createSearchPromise('albums', term).catch(() => []),
-                _createSearchPromise('albumArtists', term).catch(() => []),
-                _createSearchPromise('tracks', term).catch(() => [])
-            ]);
+            title = `Search ${term}`;
 
-            results = {
-                albums,
-                artists,
-                tracks
-            };
+            let resolver;
+            let searchTermMap;
+
+            if (currentState.serviceClient) {
+                const client = currentState.serviceClient;
+                const serviceId = Number(client._serviceDefinition.Id);
+                resolver = _getServiceSearchPromise(client);
+
+                if (serviceId === 160) {
+                    searchTermMap = SEARCH_SOURCES_SERVICE_160;
+                } else {
+                    searchTermMap = SEARCH_SOURCES_SERVICES;
+                }
+            } else {
+                resolver = _createLibrarySearchPromise;
+                searchTermMap = SEARCH_SOURCES_LIBRARY;
+            }
+
+            const mappedMode = searchTermMap[mode];
+            const result = await resolver(mappedMode, term);
+
+            items = [...result.items];
+            total = result.total;
+            return { items, title, term, source, serviceClient };
+        } catch (err) {
+            console.error(err);
+            return { items, title, term, source, serviceClient };
         }
-
-        return { results, term, source };
-    } catch (err) {
-        console.error(err);
-        return { results, term, source };
     }
-});
+);
 
 export const playCurrentAlbum = createAction(Constants.BROWSER_PLAY);
 

@@ -1,23 +1,28 @@
 export const START_STATE_ITEMS = [
     {
         title: 'Sonos Favourites',
-        searchType: 'FV:2'
+        searchType: 'FV:2',
+        albumArtURI: './svg/ic_favorite_48px.svg'
     },
     {
         title: 'Music Library',
-        action: 'library'
+        action: 'library',
+        albumArtURI: './svg/ic_audiotrack_48px.svg'
     },
     {
         title: 'Sonos Playlists',
-        searchType: 'SQ:'
+        searchType: 'SQ:',
+        albumArtURI: './svg/ic_featured_play_list_48px.svg'
     },
     {
         title: 'Line-in',
-        action: 'linein'
+        action: 'linein',
+        albumArtURI: './svg/ic_input_48px.svg'
     },
     {
         title: 'Add New Music Services',
-        action: 'browseServices'
+        action: 'browseServices',
+        albumArtURI: './svg/ic_add_48px.svg'
     }
 ];
 
@@ -63,4 +68,4 @@ export const LIBRARY_STATE = {
     ]
 };
 
-const DEFAULT_SEARCH_MODE = 'artists';
+export const DEFAULT_SEARCH_MODE = 'artists';

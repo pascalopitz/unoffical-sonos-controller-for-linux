@@ -4,6 +4,7 @@ import bb from 'bluebird';
 import xml2json from 'jquery-xml2json';
 
 import serviceFactory from '../sonos/helpers/ServiceFactory';
+import { initialise as intialiseServiceLogos } from '../helpers/getServiceLogoUrl';
 
 import Search from '../sonos/Search';
 import Listener from '../sonos/events/listener';
@@ -53,16 +54,17 @@ const SonosService = {
 
     getDeviceByHost,
 
-    mount() {
+    async mount() {
         this._searchInterval = window.setInterval(
             this.searchForDevices.bind(this),
             1000
         );
+        await intialiseServiceLogos();
         this.searchForDevices();
         this.restoreMusicServices();
     },
 
-    searchForDevices() {
+    async searchForDevices() {
         let firstResultProcessed = false;
 
         new Search(sonos => {
