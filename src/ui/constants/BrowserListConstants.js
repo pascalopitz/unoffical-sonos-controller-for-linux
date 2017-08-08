@@ -69,3 +69,4 @@ export const LIBRARY_STATE = {
 };
 
 export const DEFAULT_SEARCH_MODE = 'artists';
+export const SEARCH_MODES = ['artists', 'albums', 'tracks'];

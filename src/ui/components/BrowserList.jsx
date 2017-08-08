@@ -4,6 +4,8 @@ import { h, Component } from 'preact';
 import { connect } from 'preact-redux';
 import VirtualList from 'preact-virtual-list';
 
+import { SEARCH_MODES } from '../constants/BrowserListConstants';
+
 import BrowserListItem from './BrowserListItem';
 
 import {
@@ -18,12 +20,13 @@ import {
     home,
     back,
     more,
-    changeSearchMode,
+    search,
     playCurrentAlbum
 } from '../reduxActions/BrowserListActions';
 
 const mapStateToProps = state => {
     return {
+        term: state.browserList.searchTerm,
         currentState: getCurrentState(state),
         serviceItems: getServiceItems(state),
         searching: getSearching(state),
@@ -37,7 +40,7 @@ const mapDispatchToProps = dispatch => {
         home: () => dispatch(home()),
         back: () => dispatch(back()),
         more: currentState => dispatch(more(currentState)),
-        changeSearchMode: mode => dispatch(changeSearchMode(mode)),
+        search: (term, mode) => dispatch(search(term, mode)),
         playCurrentAlbum: () => dispatch(playCurrentAlbum())
     };
 };
@@ -59,12 +62,19 @@ export class BrowserList extends Component {
         this.props.home();
     }
 
+    componentWillReceiveProps(props) {
+        const elem = document.querySelector('#browser-container>div');
+        if (props.history.length !== this.props.history.length) {
+            elem.scrollTop = 0;
+        }
+    }
+
     _onScroll(e) {
         const node = e.target;
         const height = node.scrollHeight - node.offsetHeight;
 
         // HACK: this happens when we press the back button for some reason
-        if (height === -1) {
+        if (height === -1 || node.scrollTop === 0) {
             return;
         }
 
@@ -79,7 +89,7 @@ export class BrowserList extends Component {
 
     _searchModeChange(e) {
         const mode = e.target.getAttribute('data-mode');
-        this.props.changeSearchMode(mode);
+        this.props.search(this.props.term, mode);
     }
 
     _renderRow(row) {
@@ -117,7 +127,7 @@ export class BrowserList extends Component {
         );
 
         if (searching) {
-            const links = ['artists', 'albums', 'tracks'].map(mode => {
+            const links = SEARCH_MODES.map(mode => {
                 const className = mode === searchMode ? 'active' : 'not-active';
 
                 return (

@@ -138,9 +138,9 @@ async function _createLibrarySearchPromise(type, term, options = {}) {
 }
 
 function _getServiceSearchPromise(client) {
-    return async function(type, term, options = {}) {
+    return async function(type, term, index, count) {
         try {
-            const result = await client.search(type, term);
+            const result = await client.search(type, term, index, count);
             return _transformSMAPI(result, client);
         } catch (err) {
             return {
@@ -214,22 +214,42 @@ export const more = createAction(
 
             const client = state.serviceClient;
 
-            if (client && state.total > state.items.length) {
-                const res = await client.getMetadata(
-                    state.parent.id,
-                    state.items.length,
-                    state.items.length + 100
-                );
+            if (client) {
+                let res;
+                let searchTermMap;
 
-                state.items = _transformSMAPI(res, client);
-                state.total = res.total || state.total;
+                if (state.term) {
+                    const serviceId = Number(client._serviceDefinition.Id);
 
+                    if (serviceId === 160) {
+                        searchTermMap = SEARCH_SOURCES_SERVICE_160;
+                    } else {
+                        searchTermMap = SEARCH_SOURCES_SERVICES;
+                    }
+
+                    res = await _getServiceSearchPromise(client)(
+                        searchTermMap[state.mode],
+                        state.term,
+                        state.items.length,
+                        state.items.length + 100
+                    );
+                } else {
+                    res = await client.getMetadata(
+                        state.parent.id,
+                        state.items.length,
+                        state.items.length + 100
+                    );
+
+                    res = _transformSMAPI(res, client);
+                }
+
+                state.items = _.uniq(state.items.concat(res.items));
                 return state;
             }
 
-            if (state.search) {
+            if (state.term) {
                 const result = await sonos.searchMusicLibraryAsync(
-                    state.type,
+                    state.mode,
                     state.term,
                     params
                 );
@@ -258,10 +278,6 @@ export const more = createAction(
             return {};
         }
     }
-);
-
-export const changeSearchMode = createAction(
-    Constants.BROWSER_CHANGE_SEARCH_MODE
 );
 
 export const exitSearch = createAction(Constants.BROWSER_SEARCH_EXIT);
@@ -306,10 +322,10 @@ export const search = createAction(
 
             items = [...result.items];
             total = result.total;
-            return { items, title, term, source, serviceClient };
+            return { items, title, term, source, serviceClient, mode };
         } catch (err) {
             console.error(err);
-            return { items, title, term, source, serviceClient };
+            return { items, title, term, source, serviceClient, mode };
         }
     }
 );

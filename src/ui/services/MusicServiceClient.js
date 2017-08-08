@@ -8,8 +8,8 @@ import xml2json from 'jquery-xml2json';
 import SonosService from '../services/SonosService';
 
 const NS = 'http://www.sonos.com/Services/1.1';
-const deviceProviderName = 'SonosControllerForChrome';
-const RUNTIME_ID = 'pascal-sonos-app';
+const deviceProviderName = 'unofficial-sonos-controller-for-linux';
+const RUNTIME_ID = 'unofficial-sonos-controller-for-linux';
 
 function withinEnvelope(body, headers = '') {
     return [
@@ -53,21 +53,33 @@ class MusicServiceClient {
                     const e = xml2json(stripNamespaces(body));
                     const fault = _.get(e, 'Envelope.Body.Fault.faultstring');
 
-                    if (err || res.statusCode >= 400 || fault) {
-                        if (fault.indexOf('TokenRefreshRequired') > -1) {
+                    if (!err && (res.statusCode >= 400 || fault)) {
+                        if (
+                            fault &&
+                            fault.indexOf('TokenRefreshRequired') > -1
+                        ) {
                             const refreshDetails = _.get(
                                 e,
                                 'Envelope.Body.Fault.detail.refreshAuthTokenResult'
                             );
                             this.setAuthToken(refreshDetails.authToken);
                             return reject(refreshDetails);
-                        } else if (
+                        }
+
+                        if (
+                            fault &&
                             fault.indexOf('Update your Sonos system') > -1
                         ) {
                             return this._doRequest(uri, action, body, headers);
-                        } else {
-                            return reject(new Error(fault));
                         }
+
+                        console.error(body);
+                        return reject(new Error(fault));
+                    }
+
+                    if (err) {
+                        console.error(err);
+                        return reject(err);
                     }
 
                     resolve(body);

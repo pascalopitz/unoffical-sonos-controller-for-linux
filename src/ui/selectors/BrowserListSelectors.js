@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
 
+import { DEFAULT_SEARCH_MODE } from '../constants/BrowserListConstants';
+
 export function getCurrentState(state) {
     return _.last(state.browserList.history);
 }
@@ -18,7 +20,7 @@ export function getSearching(state) {
 }
 
 export function getSearchMode(state) {
-    return state.browserList.searchMode;
+    return getCurrentState(state).mode || DEFAULT_SEARCH_MODE;
 }
 
 export function getHistory(state) {

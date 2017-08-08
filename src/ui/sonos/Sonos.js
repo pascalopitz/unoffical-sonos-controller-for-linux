@@ -163,13 +163,6 @@ class Sonos {
                     callback(new Error('Cannot parse DIDL result'), data);
                 }
 
-                if (
-                    !Array.isArray(didl['DIDL-Lite'].container) &&
-                    !Array.isArray(didl['DIDL-Lite'].item)
-                ) {
-                    console.error('NO DIDL result', data);
-                }
-
                 _.each(
                     didl['DIDL-Lite'].container || didl['DIDL-Lite'].item,
                     function(item) {
@@ -284,13 +277,6 @@ class Sonos {
                 const items = [];
                 if (!didl || !didl['DIDL-Lite']) {
                     callback(new Error('Cannot parse DIDL result'), data);
-                }
-
-                if (
-                    !Array.isArray(didl['DIDL-Lite'].container) &&
-                    !Array.isArray(didl['DIDL-Lite'].item)
-                ) {
-                    console.error('NO DIDL result', data);
                 }
 
                 _.each(
