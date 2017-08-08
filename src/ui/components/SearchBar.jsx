@@ -33,6 +33,14 @@ function mapDispatchToProps(dispatch) {
 }
 
 export class SearchBar extends Component {
+    constructor() {
+        super();
+        this.inputHandler = _.debounce(this._onChange.bind(this), 800, {
+            trailing: true,
+            leading: false
+        });
+    }
+
     render() {
         let cancelButton;
 
@@ -54,7 +62,7 @@ export class SearchBar extends Component {
                     type="text"
                     id="searchfield"
                     value={this.props.term}
-                    onInput={_.debounce(this._onChange.bind(this), 200)}
+                    onInput={this.inputHandler}
                 />
                 {cancelButton}
             </div>
