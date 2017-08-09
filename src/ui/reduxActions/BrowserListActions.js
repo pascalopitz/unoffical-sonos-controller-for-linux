@@ -517,7 +517,11 @@ export const replaceQueue = createAction(
 );
 
 export const removeService = createAction(
-    Constants.BROWSER_REMOVE_MUSICSERVICE
+    Constants.BROWSER_REMOVE_MUSICSERVICE,
+    async client => {
+        await SonosService.removeMusicService(client.service);
+        return client;
+    }
 );
 
 export const addService = createAction(Constants.BROWSER_ADD_MUSICSERVICE);

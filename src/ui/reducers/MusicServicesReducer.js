@@ -52,6 +52,15 @@ export default handleActions(
                 ...state,
                 link: action.payload
             };
+        },
+
+        [Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED]: state => {
+            return {
+                ...state,
+                visible: false,
+                current: null,
+                link: null
+            };
         }
     },
     initialState

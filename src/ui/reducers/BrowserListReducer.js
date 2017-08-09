@@ -88,6 +88,12 @@ export default handleActions(
             };
         },
 
+        [Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED]: () => {
+            return {
+                ...initialState
+            };
+        },
+
         [Constants.BROWSER_BACK]: (state, action) => {
             const { history } = state;
 

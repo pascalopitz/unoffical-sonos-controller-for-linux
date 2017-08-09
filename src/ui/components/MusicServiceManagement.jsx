@@ -85,6 +85,11 @@ export class MusicServiceManagement extends Component {
         }
 
         let linkNode;
+        let nextButton = (
+            <button onClick={this._next.bind(this)} className="next-button">
+                Next
+            </button>
+        );
 
         if (client.auth === 'Anonymous') {
             linkNode = <p>Click next to add the Service at your own risk.</p>;
@@ -124,6 +129,8 @@ export class MusicServiceManagement extends Component {
             (client.auth === 'DeviceLink' || client.auth === 'AppLink') &&
             link
         ) {
+            nextButton = null;
+
             const code =
                 link.showLinkCode !== 'true'
                     ? null
@@ -179,12 +186,7 @@ export class MusicServiceManagement extends Component {
                     >
                         Cancel
                     </button>
-                    <button
-                        onClick={this._next.bind(this)}
-                        className="next-button"
-                    >
-                        Next
-                    </button>
+                    {nextButton}
                 </div>
             </div>
         );

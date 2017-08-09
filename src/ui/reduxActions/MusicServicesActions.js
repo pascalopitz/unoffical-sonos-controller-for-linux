@@ -1,10 +1,15 @@
 import { createAction } from 'redux-actions';
 import Constants from '../constants';
 
+import store from '../reducers';
+
 let poll;
 
 const authTokenReceived = createAction(
-    Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED
+    Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED,
+    () => {
+        console.log(arguments);
+    }
 );
 
 export const hideManagement = createAction(
@@ -70,7 +75,7 @@ export const getLink = createAction(
                 authToken
             );
 
-            authTokenReceived(authToken);
+            store.dispatch(authTokenReceived(authToken));
             window.clearInterval(poll);
         }, 5000);
 
