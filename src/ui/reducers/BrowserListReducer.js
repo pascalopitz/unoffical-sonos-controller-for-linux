@@ -43,7 +43,7 @@ export default handleActions(
             };
         },
 
-        [Constants.BROWSER_SEARCH_EXIT]: (state, action) => {
+        [Constants.BROWSER_SEARCH_EXIT]: state => {
             let { history } = state;
 
             history = history.filter(h => !h.term);
@@ -94,7 +94,7 @@ export default handleActions(
             };
         },
 
-        [Constants.BROWSER_BACK]: (state, action) => {
+        [Constants.BROWSER_BACK]: state => {
             const { history } = state;
 
             if (history.length === 1) {

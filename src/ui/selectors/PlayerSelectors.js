@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export function getPositionInfo(state) {
     const { currentHost, positionInfos } = state.sonosService;
     return positionInfos[currentHost] || {};

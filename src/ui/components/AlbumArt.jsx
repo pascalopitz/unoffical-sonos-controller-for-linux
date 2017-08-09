@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 
 import SonosService from '../services/SonosService';
-import resourceLoader from '../helpers/resourceLoader';
 
 import { getClosest } from '../helpers/dom-utility';
 import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
@@ -49,16 +48,19 @@ class AlbumArt extends Component {
                   sonos.port +
                   decodeURIComponent(url);
 
-        this.srcUrl = srcUrl;
-        this.promise = resourceLoader
-            .add(srcUrl)
-            .then(data => {
+        new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = srcUrl;
+            img.onload = resolve;
+            img.onerror = reject;
+        })
+            .then(() => {
                 if (
                     this.props.src === url ||
                     this.props.serviceId === serviceId
                 ) {
                     this.setState({
-                        src: data,
+                        src: srcUrl,
                         loading: false
                     });
                 } else {
@@ -82,8 +84,6 @@ class AlbumArt extends Component {
                     });
                 }
             });
-
-        resourceLoader.start();
     }
 
     componentDidMount() {
@@ -118,12 +118,6 @@ class AlbumArt extends Component {
     }
 
     componentWillUnmount() {
-        if (this.promise) {
-            resourceLoader.remove(this.promise, this.srcUrl);
-            this.promise = null;
-            this.srcUrl = null;
-        }
-
         if (this.observer) {
             this.observer.disconnect();
             this.observer = null;
@@ -146,6 +140,9 @@ class AlbumArt extends Component {
             });
 
             if (this.state.visible) {
+                if (this.timeout) {
+                    window.clearTimeout(this.timeout);
+                }
                 this.timeout = window.setTimeout(
                     this._loadImage.bind(this),
                     500
@@ -158,7 +155,7 @@ class AlbumArt extends Component {
         const src = this.state.src || 'images/browse_missing_album_art.png';
 
         const css = {
-            backgroundImage: `url(${src})`,
+            backgroundImage: `url("${src}")`,
             backgroundSize: 'contain'
         };
 

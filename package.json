@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.1.0-alpha1",
+  "version": "0.1.0-alpha2",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "scripts": {
@@ -10,8 +10,8 @@
     "build_help": "build --help",
     "develop": "npm run fonts && npm run transpile && npm run start & npm run watch",
     "start": "export NODE_ENV=development && electron .",
-    "watch": "babel --ignore '__tests__/*' -d ./app/js -s true -w ./src",
-    "transpile": "babel --ignore '__tests__/*' -d ./app/js -s true ./src",
+    "watch": "babel --ignore '__tests__/*' -d ./app -s true -w ./src",
+    "transpile": "babel --ignore '__tests__/*' -d ./app -s true ./src",
     "fonts": "mkdir -p ./app/fonts && cp ./node_modules/material-design-icons/iconfont/* ./app/fonts/",
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-and-fix": "eslint --fix --ext .jsx --ext .js src",

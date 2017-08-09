@@ -22,6 +22,9 @@ export const gotoPosition = createAction(
         await sonos.selectQueueAsync();
         await sonos.gotoAsync(position);
         await sonos.playAsync(position);
+
+        SonosService.queryState(sonos);
+
         return position;
     }
 );
@@ -41,6 +44,8 @@ export const changePosition = createAction(
         };
 
         await avTransport.ReorderTracksInQueueAsync(params);
+
+        SonosService.queryState(sonos);
 
         return {
             position,
@@ -68,6 +73,9 @@ export const removeTrack = createAction(
         };
 
         await avTransport.RemoveTrackRangeFromQueueAsync(params);
+
+        SonosService.queryState(sonos);
+
         return [track.id];
     }
 );
@@ -99,6 +107,8 @@ export const removeSelectedTracks = createAction(
 
             await avTransport.RemoveTrackRangeFromQueueAsync(params);
         });
+
+        SonosService.queryState(sonos);
 
         return selected;
     }
