@@ -378,11 +378,11 @@ export const select = createAction(
             return state;
         }
 
-        if (item.serviceClient && item.itemType !== 'track') {
-            const { searchTermMap, term } = _.last(
-                store.getState().browserList.history
-            );
+        const { searchTermMap, term } = _.last(
+            store.getState().browserList.history
+        );
 
+        if (item.serviceClient && item.itemType !== 'track') {
             const client = item.serviceClient;
 
             const res = await client.getMetadata(item.id, 0, 100);
@@ -421,9 +421,11 @@ export const select = createAction(
             };
         }
 
-        if (item.searchType) {
+        if (item.searchType || term) {
             prendinBrowserUpdate = {
                 title: item.title,
+                term: term,
+                searchTermMap: searchTermMap,
                 searchType: item.searchType
             };
         } else {
