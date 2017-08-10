@@ -14,16 +14,23 @@ script:
 - npm run fonts
 - npm run transpile
 - npm run dist
-- ls dist/*.deb
+- ls dist/*.deb dist/*.AppImage
 - mv dist/*.deb dist/sonos-controller-unofficial-amd64.deb
-- ls dist/*.deb
+- mv dist/*.AppImage dist/sonos-controller-unofficial-amd64.AppImage
+- ls dist/*.deb dist/*.AppImage
 deploy:
   skip_cleanup: true
   overwrite: true
   provider: releases
   api_key:
     secure: Pr4/K3blDB1eS21B9tp9XIYXvhlHaDP5Z6PkK8qwSmPFzBZ+swiMuTqLZDjCF5aBDL5SS7Jh7xK4iNuuPH0BOvRy4m0IxR7l9TRA2XN2Fw5PgEUBg5SqnCqivECCd4MHdL9ZLBtE4Khcf9uD5BEEZbPDp0bwas2sZsWl0wmACsk=
-  file: dist/sonos-controller-unofficial-amd64.deb
+  file:
+    - dist/sonos-controller-unofficial-amd64.deb
+    - dist/sonos-controller-unofficial-amd64.AppImage
   on:
     tags: true
     repo: pascalopitz/unoffical-sonos-controller-for-linux
+cache:
+  directories:
+  - $HOME/.cache/electron-builder
+  - $HOME/.cache/electron

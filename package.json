@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.1.0-alpha3",
+  "version": "0.1.0-alpha4",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "scripts": {
@@ -45,8 +45,7 @@
     "appId": "com.electron.unoffcial.sonos.controller",
     "linux": {
       "category": "Audio",
-      "target": "deb",
-      "executableName": "sonos-controller-unofficial.deb"
+      "target": [ "deb", "appImage" ]
     }
   },
   "jest": {
