@@ -32,7 +32,7 @@ self.addEventListener('fetch', function fetcher(event) {
     const { request } = event;
     const { url } = request;
 
-    if (url.indexOf('x-file-cifs://') > -1 || url.match(REG)) {
+    if (url.indexOf('/getaa?') > -1 || url.match(REG)) {
         event.respondWith(handleRequest(request));
     }
 });

@@ -620,8 +620,20 @@ const SonosService = {
 window.SonosService = SonosService;
 
 window.onbeforeunload = e => {
-    SonosService.search.destroy();
-    e.preventDefault();
+    try {
+        SonosService.search.destroy();
+    } catch (e) {
+        console.error(e);
+    }
+
+    try {
+        for (const l of SonosService._listeners) {
+            l.destroy();
+        }
+    } catch (e) {
+        console.error(e);
+    }
+    // e.preventDefault();
 };
 
 export default SonosService;

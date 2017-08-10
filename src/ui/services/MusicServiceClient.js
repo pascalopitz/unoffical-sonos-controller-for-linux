@@ -609,10 +609,15 @@ class MusicServiceClient {
                 m => !!_.get(m, 'Match.SearchCategories')
             );
 
-            this.searchTermMap = _.get(
-                map,
-                'Match.SearchCategories.Category'
-            ).map(c => c.$);
+            let searchCategories = _.get(map, 'Match.SearchCategories');
+
+            if (_.isArray(searchCategories)) {
+                searchCategories = searchCategories[0];
+            }
+
+            this.searchTermMap = _.get(searchCategories, 'Category').map(
+                c => c.$
+            );
         }
 
         return this.searchTermMap || [];

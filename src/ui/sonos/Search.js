@@ -80,7 +80,7 @@ class Search {
     }
 
     destroy() {
-        this.server.close();
+        this.socket.close();
     }
 }
 

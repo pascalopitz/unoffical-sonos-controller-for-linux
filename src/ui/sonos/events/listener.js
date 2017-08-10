@@ -251,6 +251,13 @@ class Listener {
             });
         }
     }
+
+    destroy() {
+        if (server) {
+            server.close();
+            server = null;
+        }
+    }
 }
 
 export default Listener;
