@@ -20,12 +20,6 @@ import Loader from './Loader';
 window.store = store; // TODO: remove this
 
 export class Application extends Component {
-    constuctor() {
-        this.state = {
-            showPlayNow: true
-        };
-    }
-
     componentDidMount() {
         SonosService.mount();
     }

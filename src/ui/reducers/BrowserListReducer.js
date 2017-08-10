@@ -58,6 +58,7 @@ export default handleActions(
 
         [Constants.BROWSER_SELECT_ITEM]: (state, action) => {
             let { history } = state;
+            const { term } = action.payload;
             history = history.concat(action.payload);
 
             if (action.payload.source === 'start') {
@@ -66,6 +67,7 @@ export default handleActions(
 
             return {
                 ...state,
+                searchTerm: term,
                 history
             };
         },

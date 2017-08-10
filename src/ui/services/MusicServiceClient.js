@@ -594,6 +594,29 @@ class MusicServiceClient {
             '</ns:credentials>'
         ].join('');
     }
+
+    async getSearchTermMap() {
+        if (!this.searchTermMap) {
+            const res = await fetch(
+                this._serviceDefinition.presentation.mapUri
+            );
+
+            const body = await res.text();
+            const e = xml2json(stripNamespaces(body));
+
+            const map = _.find(
+                e.Presentation.PresentationMap,
+                m => !!_.get(m, 'Match.SearchCategories')
+            );
+
+            this.searchTermMap = _.get(
+                map,
+                'Match.SearchCategories.Category'
+            ).map(c => c.$);
+        }
+
+        return this.searchTermMap || [];
+    }
 }
 
 export default MusicServiceClient;

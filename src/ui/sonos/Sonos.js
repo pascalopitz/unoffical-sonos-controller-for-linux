@@ -245,7 +245,8 @@ class Sonos {
             SortCriteria: ''
         };
 
-        const searches = searchTypes[searchType] + ':' + searchTerm;
+        const searches =
+            (searchTypes[searchType] || searchType) + ':' + searchTerm;
 
         let opts = {
             ObjectID: searches
@@ -1506,7 +1507,7 @@ class Sonos {
     getAvailableServices(callback) {
         new Services.MusicServices(
             this.host
-        ).ListAvailableServices({}, (err, data) => {
+        ).ListAvailableServices({}, async (err, data) => {
             if (err) {
                 callback(err);
                 return;
@@ -1517,12 +1518,23 @@ class Sonos {
             });
 
             const serviceDescriptors = servicesObj.Services.Service.map(obj => {
-                return _.assign({}, obj.$, obj.Policy[0].$);
+                const stringsUri = _.get(obj, 'Presentation.0.Strings.0.$.Uri');
+                const mapUri = _.get(
+                    obj,
+                    'Presentation.0.PresentationMap.0.$.Uri'
+                );
+
+                return _.assign({}, obj.$, obj.Policy[0].$, {
+                    presentation: {
+                        stringsUri,
+                        mapUri
+                    }
+                });
             });
 
             const services = [];
 
-            data.AvailableServiceTypeList.split(',').forEach(t => {
+            data.AvailableServiceTypeList.split(',').forEach(async t => {
                 const serviceId =
                     Math.floor(Math.abs((t - 7) / 256)) || Number(t);
                 const match = _.find(serviceDescriptors, {
@@ -1535,6 +1547,7 @@ class Sonos {
                 }
             });
 
+            console.log('Available services', services);
             callback(null, services);
         });
     }

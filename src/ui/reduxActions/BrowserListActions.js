@@ -7,25 +7,10 @@ import MusicServiceClient from '../services/MusicServiceClient';
 
 import store from '../reducers';
 
-import { LIBRARY_STATE } from '../constants/BrowserListConstants';
-
-const SEARCH_SOURCES_LIBRARY = {
-    albums: 'albums',
-    artists: 'albumArtists',
-    tracks: 'tracks'
-};
-
-const SEARCH_SOURCES_SERVICES = {
-    albums: 'album',
-    artists: 'artist',
-    tracks: 'track'
-};
-
-const SEARCH_SOURCES_SERVICE_160 = {
-    albums: 'search:playlists',
-    artists: 'search:people',
-    tracks: 'search:sounds'
-};
+import {
+    LIBRARY_STATE,
+    LIBRARY_SEARCH_MODES
+} from '../constants/BrowserListConstants';
 
 async function _fetchLineIns() {
     const { deviceSearches } = store.getState().sonosService;
@@ -216,19 +201,15 @@ export const more = createAction(
 
             if (client) {
                 let res;
-                let searchTermMap;
 
                 if (state.term) {
-                    const serviceId = Number(client._serviceDefinition.Id);
-
-                    if (serviceId === 160) {
-                        searchTermMap = SEARCH_SOURCES_SERVICE_160;
-                    } else {
-                        searchTermMap = SEARCH_SOURCES_SERVICES;
-                    }
+                    const searchTermMap = await client.getSearchTermMap();
+                    const { mappedId } = _.find(searchTermMap, {
+                        id: state.mode
+                    });
 
                     res = await _getServiceSearchPromise(client)(
-                        searchTermMap[state.mode],
+                        mappedId,
                         state.term,
                         state.items.length,
                         state.items.length + 100
@@ -248,8 +229,12 @@ export const more = createAction(
             }
 
             if (state.term) {
+                const { mappedId } = _.find(LIBRARY_SEARCH_MODES, {
+                    id: state.mode
+                });
+
                 const result = await sonos.searchMusicLibraryAsync(
-                    state.mode,
+                    mappedId,
                     state.term,
                     params
                 );
@@ -286,46 +271,59 @@ export const search = createAction(
     Constants.BROWSER_SEARCH,
     async (term, mode) => {
         const currentState = _.last(store.getState().browserList.history);
-        const { serviceClient } = currentState;
-        let source;
+        const { serviceClient, searchTermMap } = currentState;
         let items = [];
         let total = 0;
         let title = 'Search';
 
         try {
             if (!term || !term.length) {
-                return { items, total, title, term, source, serviceClient };
+                return {
+                    items,
+                    total,
+                    title,
+                    term,
+                    searchTermMap,
+                    serviceClient
+                };
             }
 
-            title = `Search ${term}`;
-
             let resolver;
-            let searchTermMap;
+            title = `Search ${term}`;
 
             if (currentState.serviceClient) {
                 const client = currentState.serviceClient;
-                const serviceId = Number(client._serviceDefinition.Id);
                 resolver = _getServiceSearchPromise(client);
-
-                if (serviceId === 160) {
-                    searchTermMap = SEARCH_SOURCES_SERVICE_160;
-                } else {
-                    searchTermMap = SEARCH_SOURCES_SERVICES;
-                }
             } else {
                 resolver = _createLibrarySearchPromise;
-                searchTermMap = SEARCH_SOURCES_LIBRARY;
             }
 
-            const mappedMode = searchTermMap[mode];
-            const result = await resolver(mappedMode, term);
+            const { mappedId } = _.find(searchTermMap || LIBRARY_SEARCH_MODES, {
+                id: mode
+            });
+
+            const result = await resolver(mappedId, term);
 
             items = [...result.items];
             total = result.total;
-            return { items, title, term, source, serviceClient, mode };
+            return {
+                items,
+                title,
+                term,
+                searchTermMap,
+                serviceClient,
+                mode
+            };
         } catch (err) {
             console.error(err);
-            return { items, title, term, source, serviceClient, mode };
+            return {
+                items,
+                title,
+                term,
+                searchTermMap,
+                serviceClient,
+                mode
+            };
         }
     }
 );
@@ -365,9 +363,12 @@ export const select = createAction(
             client.setKey(item.service.authToken.privateKey);
 
             const res = await client.getMetadata('root', 0, 100);
+            const searchTermMap = await client.getSearchTermMap();
+
             const state = {
                 title: client.name,
                 serviceClient: client,
+                searchTermMap: searchTermMap,
                 items: _.map(res.mediaCollection, i => {
                     i.serviceClient = client;
                     return i;
@@ -378,6 +379,10 @@ export const select = createAction(
         }
 
         if (item.serviceClient && item.itemType !== 'track') {
+            const { searchTermMap, term } = _.last(
+                store.getState().browserList.history
+            );
+
             const client = item.serviceClient;
 
             const res = await client.getMetadata(item.id, 0, 100);
@@ -408,6 +413,8 @@ export const select = createAction(
             return {
                 title: item.title,
                 parent: item,
+                term: term,
+                searchTermMap: searchTermMap,
                 serviceClient: client,
                 total: res.total,
                 items: _.without(items, undefined)

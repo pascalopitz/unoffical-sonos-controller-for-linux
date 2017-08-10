@@ -1,7 +1,10 @@
 import _ from 'lodash';
 import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
 
-import { DEFAULT_SEARCH_MODE } from '../constants/BrowserListConstants';
+import {
+    DEFAULT_SEARCH_MODE,
+    LIBRARY_SEARCH_MODES
+} from '../constants/BrowserListConstants';
 
 export function getCurrentState(state) {
     return _.last(state.browserList.history);
@@ -21,6 +24,10 @@ export function getSearching(state) {
 
 export function getSearchMode(state) {
     return getCurrentState(state).mode || DEFAULT_SEARCH_MODE;
+}
+
+export function getAVailableSearchModes(state) {
+    return getCurrentState(state).searchTermMap || LIBRARY_SEARCH_MODES;
 }
 
 export function getHistory(state) {
@@ -45,21 +52,4 @@ export function getSearchSources(state) {
             })
         )
     );
-}
-
-export function getSearchModes() {
-    return [
-        {
-            label: 'Artists',
-            value: 'artists'
-        },
-        {
-            label: 'Albums',
-            value: 'albums'
-        },
-        {
-            label: 'Tracks',
-            value: 'tracks'
-        }
-    ];
 }

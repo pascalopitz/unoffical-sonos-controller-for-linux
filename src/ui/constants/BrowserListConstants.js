@@ -69,4 +69,41 @@ export const LIBRARY_STATE = {
 };
 
 export const DEFAULT_SEARCH_MODE = 'artists';
-export const SEARCH_MODES = ['artists', 'albums', 'tracks'];
+export const LIBRARY_SEARCH_MODES = [
+    {
+        id: 'artists',
+        mappedId: 'A:ALBUMARTIST'
+    },
+    {
+        id: 'albums',
+        mappedId: 'A:ALBUM'
+    },
+    {
+        id: 'tracks',
+        mappedId: 'A:TRACKS'
+    },
+    {
+        id: 'composers',
+        mappedId: 'A:COMPOSER'
+    },
+    {
+        id: 'contributors',
+        mappedId: 'A:ARTIST'
+    },
+    {
+        id: 'playlists',
+        mappedId: 'A:PLAYLISTS'
+    },
+    {
+        id: 'genres',
+        mappedId: 'A:GENRE'
+    },
+    {
+        id: 'radios',
+        mappedId: 'R:0'
+    },
+    {
+        id: 'favourites',
+        mappedId: 'FV:2'
+    }
+];

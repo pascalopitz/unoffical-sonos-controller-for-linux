@@ -10,8 +10,7 @@ import {
     getCurrentState,
     getSearching,
     getSearchMode,
-    getSearchSources,
-    getSearchModes
+    getSearchSources
 } from '../selectors/BrowserListSelectors';
 
 function mapStateToProps(state) {
@@ -20,8 +19,7 @@ function mapStateToProps(state) {
         currentState: getCurrentState(state),
         searching: getSearching(state),
         searchMode: getSearchMode(state),
-        sources: getSearchSources(state),
-        modes: getSearchModes(state)
+        sources: getSearchSources(state)
     };
 }
 

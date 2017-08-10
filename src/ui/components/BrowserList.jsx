@@ -4,8 +4,6 @@ import { h, Component } from 'preact';
 import { connect } from 'preact-redux';
 import VirtualList from 'preact-virtual-list';
 
-import { SEARCH_MODES } from '../constants/BrowserListConstants';
-
 import BrowserListItem from './BrowserListItem';
 
 import {
@@ -13,7 +11,8 @@ import {
     getSearching,
     getHistory,
     getSearchMode,
-    getServiceItems
+    getServiceItems,
+    getAVailableSearchModes
 } from '../selectors/BrowserListSelectors';
 
 import {
@@ -31,7 +30,8 @@ const mapStateToProps = state => {
         serviceItems: getServiceItems(state),
         searching: getSearching(state),
         history: getHistory(state),
-        searchMode: getSearchMode(state)
+        currentSearchMode: getSearchMode(state),
+        searchModes: getAVailableSearchModes(state)
     };
 };
 
@@ -99,10 +99,11 @@ export class BrowserList extends Component {
     render() {
         const {
             searching,
-            searchMode,
+            currentSearchMode,
             currentState,
             history,
-            serviceItems
+            serviceItems,
+            searchModes
         } = this.props;
         const { items, title, source } = currentState;
 
@@ -127,8 +128,9 @@ export class BrowserList extends Component {
         );
 
         if (searching) {
-            const links = SEARCH_MODES.map(mode => {
-                const className = mode === searchMode ? 'active' : 'not-active';
+            const links = searchModes.map(m => m.id).map(mode => {
+                const className =
+                    mode === currentSearchMode ? 'active' : 'not-active';
 
                 return (
                     <li

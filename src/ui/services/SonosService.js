@@ -67,7 +67,7 @@ const SonosService = {
     async searchForDevices() {
         let firstResultProcessed = false;
 
-        new Search(sonos => {
+        this.search = new Search(sonos => {
             if (sonos.model.match(/^BR/)) {
                 return;
             }
@@ -618,4 +618,10 @@ const SonosService = {
 };
 
 window.SonosService = SonosService;
+
+window.onbeforeunload = e => {
+    SonosService.search.destroy();
+    e.preventDefault();
+};
+
 export default SonosService;
