@@ -88,7 +88,9 @@ class MusicServiceClient {
         });
     }
 
-    getTrackURI(trackId, serviceId, sn) {
+    getTrackURI(item, serviceId, sn) {
+        const trackId = item.id;
+        const itemType = item.itemType;
         let protocol = 'x-sonos-http';
         let suffix = '.mp3';
 
@@ -96,48 +98,39 @@ class MusicServiceClient {
             protocol = 'x-spotify';
             suffix = '';
 
-            if (trackId.startsWith('spotify:track:')) {
-                return escape(trackId);
-            }
-
-            if (trackId.startsWith('spotify:album:')) {
-                return 'x-rincon-cpcontainer:0004206c' + escape(trackId);
-            }
-
-            if (trackId.startsWith('spotify:artistTopTracks:')) {
-                return 'x-rincon-cpcontainer:000e206c' + escape(trackId);
-            }
-
-            if (trackId.startsWith('spotify:user:')) {
-                return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
-            }
-
-            if (trackId.startsWith('spotify:artistRadio:')) {
+            if (
+                trackId.startsWith('spotify:track:') ||
+                trackId.startsWith('spotify:artistRadio:')
+            ) {
                 return escape(trackId);
             }
         }
 
-        // service ID: deezer=2, soundcloud=160
-
-        if (trackId.startsWith('playlist_spotify:')) {
+        if (
+            _.includes(
+                ['playlist', 'playList', 'artistTrackList', 'albumList'],
+                itemType
+            )
+        ) {
             return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
         }
 
-        if (trackId.startsWith('playlist:')) {
-            return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+        if (itemType === 'trackList') {
+            return 'x-rincon-cpcontainer:000e206c' + escape(trackId);
         }
 
-        if (trackId.startsWith('user-tracks:')) {
-            return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+        if (itemType === 'album') {
+            return 'x-rincon-cpcontainer:0004206c' + escape(trackId);
         }
 
-        if (trackId.startsWith('user-fav:')) {
-            return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+        if (itemType === 'program') {
+            return 'x-rincon-cpcontainer:000c206c' + escape(trackId);
         }
 
-        if (trackId.startsWith('browse:stream')) {
-            return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
-        }
+        // TODO: figure out why this doesn't work for Soundcloud
+        // if (itemType === 'track') {
+        //     return 'x-rincon-cpcontainer:00032020' + escape(trackId);
+        // }
 
         return `${protocol}:${escape(
             trackId
@@ -166,11 +159,11 @@ class MusicServiceClient {
                 type: 'object.container.playlistContainer',
                 token: '0006206c'
             },
-            playList: {
+            playlist: {
                 type: 'object.container.playlistContainer',
                 token: '0006206c'
             },
-            playlist: {
+            playList: {
                 type: 'object.container.playlistContainer',
                 token: '0006206c'
             },

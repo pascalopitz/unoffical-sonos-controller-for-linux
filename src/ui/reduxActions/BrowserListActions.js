@@ -77,7 +77,7 @@ async function _getItem(item) {
 
     if (settingsMatch) {
         const uri = client.getTrackURI(
-            item.id,
+            item,
             client._serviceDefinition.Id,
             settingsMatch.SerialNum
         );
