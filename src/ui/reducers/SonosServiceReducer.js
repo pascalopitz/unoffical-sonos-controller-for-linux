@@ -201,12 +201,7 @@ export default handleActions(
         [Constants.OPTIMISTIC_CURRENT_CROSSFADE_MODE_UPDATE]: crossFadeModeReducer,
 
         [Constants.SONOS_SERVICE_CURRENT_PLAY_MODE_UPDATE]: playModeReducer,
-        [Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE]: playModeReducer,
-
-        [Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE]: (state, action) => {
-            console.log(action.payload);
-            return state;
-        }
+        [Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE]: playModeReducer
     },
     initialState
 );

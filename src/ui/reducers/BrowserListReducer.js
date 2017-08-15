@@ -96,6 +96,12 @@ export default handleActions(
             };
         },
 
+        [Constants.MUSICSERVICE_SESSION_ID_RECEIVED]: () => {
+            return {
+                ...initialState
+            };
+        },
+
         [Constants.BROWSER_BACK]: state => {
             const { history } = state;
 

@@ -45,7 +45,7 @@ class MusicServiceClient {
                         SOAPAction: '"' + NS + '#' + action + '"',
                         'Content-type': 'text/xml; charset=utf8',
                         // Thanks SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
-                        'User-Agent': 'Linux UPnP/1.0 Sonos/26.99-12345'
+                        'User-Agent': `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`
                     },
                     body: withinEnvelope(body, headers)
                 },
@@ -117,22 +117,26 @@ class MusicServiceClient {
             }
         }
 
-        if (String(serviceId) === '160') {
-            if (trackId.startsWith('playlist:')) {
-                return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
-            }
+        // service ID: deezer=2, soundcloud=160
 
-            if (trackId.startsWith('user-tracks:')) {
-                return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
-            }
+        if (trackId.startsWith('playlist_spotify:')) {
+            return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+        }
 
-            if (trackId.startsWith('user-fav:')) {
-                return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
-            }
+        if (trackId.startsWith('playlist:')) {
+            return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+        }
 
-            if (trackId.startsWith('browse:stream')) {
-                return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
-            }
+        if (trackId.startsWith('user-tracks:')) {
+            return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+        }
+
+        if (trackId.startsWith('user-fav:')) {
+            return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+        }
+
+        if (trackId.startsWith('browse:stream')) {
+            return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
         }
 
         return `${protocol}:${escape(

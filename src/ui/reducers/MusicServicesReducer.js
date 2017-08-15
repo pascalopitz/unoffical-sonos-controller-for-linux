@@ -10,6 +10,15 @@ const initialState = {
     current: null
 };
 
+const closeDialogue = state => {
+    return {
+        ...state,
+        visible: false,
+        current: null,
+        link: null
+    };
+};
+
 export default handleActions(
     {
         [Constants.BROWSER_ADD_MUSICSERVICE]: (state, action) => {
@@ -19,24 +28,6 @@ export default handleActions(
                 ...state,
                 current: new MusicServiceClient(data),
                 visible: true
-            };
-        },
-
-        [Constants.SONOS_SERVICE_MUSICSERVICES_UPDATE]: state => {
-            return {
-                ...state,
-                visible: false,
-                current: null,
-                link: null
-            };
-        },
-
-        [Constants.MUSICSERVICE_ADD_CANCEL]: state => {
-            return {
-                ...state,
-                visible: false,
-                current: null,
-                link: null
             };
         },
 
@@ -54,14 +45,9 @@ export default handleActions(
             };
         },
 
-        [Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED]: state => {
-            return {
-                ...state,
-                visible: false,
-                current: null,
-                link: null
-            };
-        }
+        [Constants.MUSICSERVICE_ADD_CANCEL]: closeDialogue,
+        [Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED]: closeDialogue,
+        [Constants.MUSICSERVICE_SESSION_ID_RECEIVED]: closeDialogue
     },
     initialState
 );
