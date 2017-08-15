@@ -37,6 +37,18 @@ export class SearchBar extends Component {
             trailing: true,
             leading: false
         });
+
+        this.state = {
+            term: null
+        };
+    }
+
+    componentWillReceiveProps(props) {
+        if (!props.term) {
+            this.setState({
+                term: null
+            });
+        }
     }
 
     render() {
@@ -59,7 +71,7 @@ export class SearchBar extends Component {
                 <input
                     type="text"
                     id="searchfield"
-                    value={this.props.term}
+                    value={this.state.term}
                     onInput={this.inputHandler}
                 />
                 {cancelButton}
@@ -68,12 +80,21 @@ export class SearchBar extends Component {
     }
 
     _onClick() {
+        this.setState({
+            term: null
+        });
         this.props.exitSearch();
     }
 
     _onChange(e) {
         const term = e.target.value;
+
+        this.setState({
+            term
+        });
+
         this.props.search(term, this.props.searchMode);
+
         e.preventDefault();
         e.stopPropagation();
     }
