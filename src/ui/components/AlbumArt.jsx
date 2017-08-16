@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import shallowCompare from 'shallow-compare';
 
 import SonosService from '../services/SonosService';
 
@@ -14,6 +15,10 @@ class AlbumArt extends Component {
             src: null,
             visible: false
         };
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
     }
 
     _loadImage() {

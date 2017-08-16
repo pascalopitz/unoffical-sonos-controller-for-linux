@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import { h, Component } from 'preact';
 import { connect } from 'preact-redux';
+import shallowCompare from 'shallow-compare';
 
 import AlbumArt from './AlbumArt';
 
@@ -32,6 +33,10 @@ export class BrowserListItem extends Component {
         this.state = {
             isExpanded: false
         };
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
     }
 
     _onClick(e) {

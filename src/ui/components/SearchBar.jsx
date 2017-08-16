@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { h, Component } from 'preact';
 import { connect } from 'preact-redux';
+import shallowCompare from 'shallow-compare';
 
 import SearchBarSources from './SearchBarSources';
 
@@ -41,6 +42,10 @@ export class SearchBar extends Component {
         this.state = {
             term: null
         };
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
     }
 
     componentWillReceiveProps(props) {

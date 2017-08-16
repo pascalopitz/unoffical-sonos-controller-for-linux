@@ -1,7 +1,7 @@
 {
   "name": "sonos-controller-unofficial",
   "description": "Unoffical sonos controller for linux.",
-  "version": "0.1.0-alpha5",
+  "version": "0.1.0",
   "author": "Pascal Opitz <contact@pascalopitz.com>",
   "main": "main.js",
   "dependencies": {
@@ -21,6 +21,7 @@
     "redux-promise": "^0.5.3",
     "request": "^2.81.0",
     "reselect": "^3.0.1",
+    "shallow-compare": "^1.2.1",
     "uuid": "^3.1.0",
     "wake-event": "^0.0.1"
   }
