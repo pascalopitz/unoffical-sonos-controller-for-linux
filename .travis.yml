@@ -14,19 +14,12 @@ script:
 - npm run fonts
 - npm run transpile
 - npm run dist
-- ls dist/*.deb dist/*.AppImage
-- mv dist/*.deb dist/sonos-controller-unofficial-amd64.deb
-- mv dist/*.AppImage dist/sonos-controller-unofficial-amd64.AppImage
-- ls dist/*.deb dist/*.AppImage
 deploy:
   skip_cleanup: true
   overwrite: true
   provider: releases
   api_key:
     secure: fe4iMbeIWqTxwgw1QmjuuYgCkgLf7vPx3D28y7xqrW6tHk6vgIybNXpj3m4jH3QxndEsUx48jMpL9UR29anDb9JGYvsYrDadidn1d+tUXP9fqFxFpA6A2BWIfANMCUECfm8hS18WZHP1WsmR7ZfbQsV75XtUsYLUNaW8XN+6Ca4=
-  file:
-  - dist/sonos-controller-unofficial-amd64.deb
-  - dist/sonos-controller-unofficial-amd64.AppImage
   on:
     tags: true
     repo: pascalopitz/unoffical-sonos-controller-for-linux
