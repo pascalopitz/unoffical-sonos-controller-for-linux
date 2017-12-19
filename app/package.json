@@ -6,11 +6,13 @@
   "main": "main.js",
   "dependencies": {
     "array-union": "^1.0.1",
+    "bluebird": "^3.5.1",
     "deep-equal": "^1.0.1",
-    "electron-react-devtools": "^0.4.0",
+    "electron-react-devtools": "^0.5.2",
     "ip": "^1.1.5",
     "jquery-xml2json": "git+https://github.com/pascalopitz/jQuery-xml2json.git",
     "lodash": "^4.17.4",
+    "moment": "^2.20.1",
     "omit-keys": "^0.1.0",
     "preact": "^8.2.7",
     "preact-redux": "^2.0.3",
@@ -18,12 +20,10 @@
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-promise": "^0.5.3",
-    "reselect": "^3.0.1",
-    "uuid": "^3.1.0",
-    "wake-event": "^0.0.1",
-    "bluebird": "^3.5.1",
-    "moment": "^2.20.0",
     "request": "^2.83.0",
-    "shallow-compare": "^1.2.2"
+    "reselect": "^3.0.1",
+    "shallow-compare": "^1.2.2",
+    "uuid": "^3.1.0",
+    "wake-event": "^0.0.1"
   }
 }
