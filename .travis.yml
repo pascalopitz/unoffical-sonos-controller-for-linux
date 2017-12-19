@@ -23,7 +23,7 @@ deploy:
   overwrite: true
   provider: releases
   api_key:
-    secure: Pr4/K3blDB1eS21B9tp9XIYXvhlHaDP5Z6PkK8qwSmPFzBZ+swiMuTqLZDjCF5aBDL5SS7Jh7xK4iNuuPH0BOvRy4m0IxR7l9TRA2XN2Fw5PgEUBg5SqnCqivECCd4MHdL9ZLBtE4Khcf9uD5BEEZbPDp0bwas2sZsWl0wmACsk=
+    secure: fe4iMbeIWqTxwgw1QmjuuYgCkgLf7vPx3D28y7xqrW6tHk6vgIybNXpj3m4jH3QxndEsUx48jMpL9UR29anDb9JGYvsYrDadidn1d+tUXP9fqFxFpA6A2BWIfANMCUECfm8hS18WZHP1WsmR7ZfbQsV75XtUsYLUNaW8XN+6Ca4=
   file:
   - dist/sonos-controller-unofficial-amd64.deb
   - dist/sonos-controller-unofficial-amd64.AppImage
@@ -34,6 +34,3 @@ cache:
   directories:
   - "$HOME/.cache/electron-builder"
   - "$HOME/.cache/electron"
-env:
-  global:
-    secure: QXuHCPdqKWcctQVfmyf4i08Xj05gSUrCz0UJ0nKgYhqY5q74pqyli/y+G3M+Kfsrxwtm1wSRL94obZzA5h9Jeks6fYldJui/1jNqpEq72s/gtDUvzO4bw47RI3FG0ZLwHQaw6RZ2xVXhWe+3oVrqiKKaao1/uUXxhIZKBPbZ7hw=
