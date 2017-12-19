@@ -3,9 +3,11 @@ import { h } from 'preact';
 export default function CurrentTrackCollapsed(props) {
     const { expanded, toggle } = props;
 
-    const toggleNode = expanded
-        ? <i className="material-icons">expand_less</i>
-        : <i className="material-icons">expand_more</i>;
+    const toggleNode = expanded ? (
+        <i className="material-icons">expand_less</i>
+    ) : (
+        <i className="material-icons">expand_more</i>
+    );
 
     const expandClass = expanded ? 'expanded' : 'collapsed';
 

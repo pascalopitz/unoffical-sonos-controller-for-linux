@@ -1,28 +1,29 @@
 {
   "name": "sonos-controller-unofficial",
   "description": "Unoffical sonos controller for linux.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Pascal Opitz <contact@pascalopitz.com>",
   "main": "main.js",
   "dependencies": {
     "array-union": "^1.0.1",
-    "bluebird": "^3.5.0",
     "deep-equal": "^1.0.1",
+    "electron-react-devtools": "^0.4.0",
     "ip": "^1.1.5",
     "jquery-xml2json": "git+https://github.com/pascalopitz/jQuery-xml2json.git",
     "lodash": "^4.17.4",
-    "moment": "^2.18.1",
     "omit-keys": "^0.1.0",
-    "preact": "^8.2.1",
-    "preact-redux": "^2.0.2",
+    "preact": "^8.2.7",
+    "preact-redux": "^2.0.3",
     "preact-virtual-list": "^0.3.1",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-promise": "^0.5.3",
-    "request": "^2.81.0",
     "reselect": "^3.0.1",
-    "shallow-compare": "^1.2.1",
     "uuid": "^3.1.0",
-    "wake-event": "^0.0.1"
+    "wake-event": "^0.0.1",
+    "bluebird": "^3.5.1",
+    "moment": "^2.20.0",
+    "request": "^2.83.0",
+    "shallow-compare": "^1.2.2"
   }
 }

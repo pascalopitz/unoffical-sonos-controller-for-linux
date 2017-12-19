@@ -132,12 +132,11 @@ export class MusicServiceManagement extends Component {
             nextButton = null;
 
             const code =
-                link.showLinkCode !== 'true'
-                    ? null
-                    : <p>
-                          Your device link code:{' '}
-                          <strong>{link.linkCode}</strong>
-                      </p>;
+                link.showLinkCode !== 'true' ? null : (
+                    <p>
+                        Your device link code: <strong>{link.linkCode}</strong>
+                    </p>
+                );
 
             linkNode = (
                 <div>
@@ -160,9 +159,7 @@ export class MusicServiceManagement extends Component {
         return (
             <div id="music-service-management">
                 <div id="music-service-management-container">
-                    <h3>
-                        {client.name}
-                    </h3>
+                    <h3>{client.name}</h3>
 
                     <div>
                         <p>

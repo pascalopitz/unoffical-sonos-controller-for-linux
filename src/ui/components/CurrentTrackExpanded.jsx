@@ -7,11 +7,7 @@ export default function CurrentTrackExpanded(props) {
     const { currentTrack, nextTrack } = props;
 
     if (nextTrack && nextTrack.title) {
-        nextTrackInfo = (
-            <p id="next-track">
-                {nextTrack.title}
-            </p>
-        );
+        nextTrackInfo = <p id="next-track">{nextTrack.title}</p>;
     }
 
     return (
@@ -36,17 +32,11 @@ export default function CurrentTrackExpanded(props) {
                 />
                 <div>
                     <h6>Track</h6>
-                    <p id="track">
-                        {currentTrack.title}
-                    </p>
+                    <p id="track">{currentTrack.title}</p>
                     <h6>Artist</h6>
-                    <p id="artist">
-                        {currentTrack.artist}
-                    </p>
+                    <p id="artist">{currentTrack.artist}</p>
                     <h6>Album</h6>
-                    <p id="album">
-                        {currentTrack.album}
-                    </p>
+                    <p id="album">{currentTrack.album}</p>
                 </div>
 
                 <h5>Next</h5>

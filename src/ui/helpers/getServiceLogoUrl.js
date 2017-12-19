@@ -7,10 +7,12 @@ const SERVICE_LOGOS_URI =
 let ServiceImageMap;
 
 export function initialise() {
-    return fetch(SERVICE_LOGOS_URI).then(res => res.text()).then(res => {
-        const xml = xml2json(res);
-        ServiceImageMap = xml.images;
-    });
+    return fetch(SERVICE_LOGOS_URI)
+        .then(res => res.text())
+        .then(res => {
+            const xml = xml2json(res);
+            ServiceImageMap = xml.images;
+        });
 }
 
 export default function getServiceLogoUrl(id) {

@@ -1,7 +1,7 @@
 {
     "eslint.enable": true,
     "files.exclude": {
-        "app/**/*.js": true,
+        "app/ui/**/*.js": true,
         "app/**/*.js.map": true
     }
 }

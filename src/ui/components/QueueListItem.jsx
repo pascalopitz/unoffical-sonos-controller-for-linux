@@ -191,12 +191,8 @@ export class QueueListItem extends Component {
             >
                 <AlbumArt src={track.albumArtURI} />
                 <div className="trackinfo">
-                    <p className="title">
-                        {track.title}
-                    </p>
-                    <p className="artist">
-                        {track.creator}
-                    </p>
+                    <p className="title">{track.title}</p>
+                    <p className="artist">{track.creator}</p>
                 </div>
                 {selectionToggle}
                 {inlineMenu}

@@ -7,6 +7,5 @@ exports[`SearchBar renders on 1`] = `
     id="searchfield"
     onInput={[Function debounced]}
    />
-  </input>
 </div>
 `;

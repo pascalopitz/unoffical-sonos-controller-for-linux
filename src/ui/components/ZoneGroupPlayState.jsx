@@ -4,9 +4,11 @@ export function ZoneGroupPLayState(props) {
     const { playState } = props;
 
     if (playState && playState.trackInfo && playState.trackInfo.title) {
-        const icon = playState.isPlaying
-            ? <i className="material-icons">play_arrow</i>
-            : <i className="material-icons">pause</i>;
+        const icon = playState.isPlaying ? (
+            <i className="material-icons">play_arrow</i>
+        ) : (
+            <i className="material-icons">pause</i>
+        );
         let info = playState.trackInfo.title;
 
         if (playState.trackInfo.artist) {

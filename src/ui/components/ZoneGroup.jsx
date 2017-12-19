@@ -42,9 +42,9 @@ export function ZoneGroup(props) {
         ? props.playStates[coordinator.host] || {}
         : null;
 
-    const zoneNodes = items.map((item, index) =>
+    const zoneNodes = items.map((item, index) => (
         <ZoneGroupMember member={item} key={index} />
-    );
+    ));
 
     let classString = 'not-selected';
 
@@ -60,9 +60,7 @@ export function ZoneGroup(props) {
 
     return (
         <div className={classString} onClick={_onClick}>
-            <ul>
-                {zoneNodes}
-            </ul>
+            <ul>{zoneNodes}</ul>
 
             <div className="group-button" onClick={_showGroupManagement}>
                 Group

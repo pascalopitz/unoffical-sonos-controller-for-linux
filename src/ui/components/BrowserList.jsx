@@ -144,11 +144,7 @@ export class BrowserList extends Component {
                 );
             });
 
-            headlineNodes = (
-                <ul className="with-search">
-                    {links}
-                </ul>
-            );
+            headlineNodes = <ul className="with-search">{links}</ul>;
         } else if (history.length && source !== 'start') {
             headlineNodes = (
                 <h4 className="with-history">
@@ -166,17 +162,11 @@ export class BrowserList extends Component {
                     >
                         <i className="material-icons">library_music</i>
                     </a>
-                    <span>
-                        {title}
-                    </span>
+                    <span>{title}</span>
                 </h4>
             );
         } else {
-            headlineNodes = (
-                <h4>
-                    {title}
-                </h4>
-            );
+            headlineNodes = <h4>{title}</h4>;
         }
 
         if (

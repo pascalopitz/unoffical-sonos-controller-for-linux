@@ -213,11 +213,7 @@ export class BrowserListItem extends Component {
         if (creator) {
             className += ' with-creator';
 
-            artistInfo = (
-                <p className="creator">
-                    {creator}
-                </p>
-            );
+            artistInfo = <p className="creator">{creator}</p>;
         }
 
         return (
@@ -230,9 +226,7 @@ export class BrowserListItem extends Component {
                 <AlbumArt src={albumArtURI} serviceId={serviceId} />
 
                 <div className={className}>
-                    <p className="title">
-                        {item.title}
-                    </p>
+                    <p className="title">{item.title}</p>
                     {artistInfo}
                 </div>
                 {inlineMenu}

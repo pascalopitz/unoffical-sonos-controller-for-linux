@@ -113,9 +113,13 @@ function createWindow() {
             win.reload();
         }
     });
+
+    if (process.env.NODE_ENV === 'development') {
+        win.webContents.toggleDevTools();
+    }
 }
 
-const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+const shouldQuit = app.makeSingleInstance(() => {
     // Someone tried to run a second instance, we should focus our window.
     if (win) {
         if (win.isMinimized()) {

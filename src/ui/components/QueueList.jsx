@@ -55,7 +55,7 @@ export class QueueList extends Component {
         }
     }
 
-    _onClick() {
+    _onFlushClick() {
         this.props.flush();
     }
 
@@ -128,7 +128,7 @@ export class QueueList extends Component {
             clearNode = (
                 <a
                     id="queue-clear-button"
-                    onClick={this._onClick.bind(this)}
+                    onClick={this._onFlushClick.bind(this)}
                     title="Clear Queue"
                 >
                     <i className="material-icons">clear_all</i>

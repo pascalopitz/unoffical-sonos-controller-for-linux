@@ -3,12 +3,17 @@ import shallowCompare from 'shallow-compare';
 
 import SonosService from '../services/SonosService';
 
-import { getClosest } from '../helpers/dom-utility';
+import {
+    getClosest,
+    createIntersectionObserver,
+    purgeIntersectionObserver
+} from '../helpers/dom-utility';
+
 import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
 
 const MIN_RATIO = 0.5;
 
-class AlbumArt extends Component {
+export class AlbumArt extends Component {
     constructor() {
         super();
         this.state = {
@@ -106,8 +111,7 @@ class AlbumArt extends Component {
             });
         };
 
-        this.observer = new IntersectionObserver(callback, options);
-        this.observer.observe(node);
+        this.observer = createIntersectionObserver(node, options, callback);
     }
 
     componentDidUpdate() {
@@ -123,10 +127,7 @@ class AlbumArt extends Component {
     }
 
     componentWillUnmount() {
-        if (this.observer) {
-            this.observer.disconnect();
-            this.observer = null;
-        }
+        this.observer = purgeIntersectionObserver(this.observer);
 
         if (this.timeout) {
             window.clearTimeout(this.timeout);

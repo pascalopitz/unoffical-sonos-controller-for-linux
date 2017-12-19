@@ -1400,7 +1400,7 @@ class Sonos {
     getHouseholdId(callback) {
         debug('Sonos.getHouseholdId(%j)', callback);
         requestHelper(
-            'http://' + this.host + ':' + this.port + '/status/netsettings.txt',
+            'http://' + this.host + ':' + this.port + '/status/zp',
             function(err, res, body) {
                 if (err) {
                     return callback(err);
@@ -1413,9 +1413,7 @@ class Sonos {
 
                     callback(
                         null,
-                        /HouseholdID\: \[(.*)\]/gi.exec(
-                            data.ZPSupportInfo.NetSettings[0]
-                        )[1]
+                        data.ZPSupportInfo.ZPInfo[0].HouseholdControlID[0]
                     );
                 });
             }
@@ -1454,9 +1452,9 @@ class Sonos {
     }
 
     /**
-    * Get Current Position Info
-    * @param    {Function} callback (err, info)
-    */
+     * Get Current Position Info
+     * @param    {Function} callback (err, info)
+     */
     getPositionInfo(callback) {
         debug('Sonos.positionInfo(%j)', callback);
 
@@ -1473,9 +1471,9 @@ class Sonos {
     }
 
     /**
-    * Get Current Media Info
-    * @param    {Function} callback (err, info)
-    */
+     * Get Current Media Info
+     * @param    {Function} callback (err, info)
+     */
     getMediaInfo(callback) {
         debug('Sonos.positionInfo(%j)', callback);
 
@@ -1505,51 +1503,60 @@ class Sonos {
     }
 
     getAvailableServices(callback) {
-        new Services.MusicServices(
-            this.host
-        ).ListAvailableServices({}, async (err, data) => {
-            if (err) {
-                callback(err);
-                return;
-            }
+        new Services.MusicServices(this.host).ListAvailableServices(
+            {},
+            async (err, data) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
 
-            const servicesObj = xml2json(data.AvailableServiceDescriptorList, {
-                explicitArray: true
-            });
-
-            const serviceDescriptors = servicesObj.Services.Service.map(obj => {
-                const stringsUri = _.get(obj, 'Presentation.0.Strings.0.$.Uri');
-                const mapUri = _.get(
-                    obj,
-                    'Presentation.0.PresentationMap.0.$.Uri'
+                const servicesObj = xml2json(
+                    data.AvailableServiceDescriptorList,
+                    {
+                        explicitArray: true
+                    }
                 );
 
-                return _.assign({}, obj.$, obj.Policy[0].$, {
-                    presentation: {
-                        stringsUri,
-                        mapUri
+                const serviceDescriptors = servicesObj.Services.Service.map(
+                    obj => {
+                        const stringsUri = _.get(
+                            obj,
+                            'Presentation.0.Strings.0.$.Uri'
+                        );
+                        const mapUri = _.get(
+                            obj,
+                            'Presentation.0.PresentationMap.0.$.Uri'
+                        );
+
+                        return _.assign({}, obj.$, obj.Policy[0].$, {
+                            presentation: {
+                                stringsUri,
+                                mapUri
+                            }
+                        });
+                    }
+                );
+
+                const services = [];
+
+                data.AvailableServiceTypeList.split(',').forEach(async t => {
+                    const serviceId =
+                        Math.floor(Math.abs((t - 7) / 256)) || Number(t);
+                    const match = _.find(serviceDescriptors, {
+                        Id: String(serviceId)
+                    });
+
+                    if (match) {
+                        match.ServiceIDEncoded = Number(t);
+                        services.push(match);
                     }
                 });
-            });
 
-            const services = [];
-
-            data.AvailableServiceTypeList.split(',').forEach(async t => {
-                const serviceId =
-                    Math.floor(Math.abs((t - 7) / 256)) || Number(t);
-                const match = _.find(serviceDescriptors, {
-                    Id: String(serviceId)
-                });
-
-                if (match) {
-                    match.ServiceIDEncoded = Number(t);
-                    services.push(match);
-                }
-            });
-
-            console.log('Available services', services);
-            callback(null, services);
-        });
+                console.log('Available services', services);
+                callback(null, services);
+            }
+        );
     }
 }
 

@@ -12,9 +12,7 @@ export function GroupManagementNode(props) {
 
     return (
         <li>
-            <span>
-                {props.item.name}
-            </span>
+            <span>{props.item.name}</span>
             <i className="material-icons checkbox" onClick={_toggleSelection}>
                 {checkboxSymbol}
             </i>

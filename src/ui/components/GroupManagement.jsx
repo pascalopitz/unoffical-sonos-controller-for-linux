@@ -50,9 +50,7 @@ export class GroupManagement extends Component {
         return (
             <div id="zone-group-management">
                 <div id="zone-group-management-container">
-                    <ul>
-                        {zoneGroupNodes}
-                    </ul>
+                    <ul>{zoneGroupNodes}</ul>
 
                     <button
                         onClick={this._cancel.bind(this)}

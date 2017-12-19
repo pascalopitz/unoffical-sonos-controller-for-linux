@@ -12,9 +12,7 @@ export default function CurrentTrackCollapsed(props) {
     return (
         <div className="collapsed">
             <h4 id="now-playing">
-                <span id="track-short-info">
-                    {info}
-                </span>
+                <span id="track-short-info">{info}</span>
 
                 <a
                     id="current-track-toggle-button"

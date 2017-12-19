@@ -252,19 +252,13 @@ export class PositionInfo extends Component {
                     src="images/tc_progress_container_right.png"
                 />
                 <div className="content">
-                    <a onClick={this._toggleRepeat.bind(this)}>
-                        {repeat}
-                    </a>
-                    <a onClick={this._toggleShuffle.bind(this)}>
-                        {shuffle}
-                    </a>
+                    <a onClick={this._toggleRepeat.bind(this)}>{repeat}</a>
+                    <a onClick={this._toggleShuffle.bind(this)}>{shuffle}</a>
                     <a onClick={this._toggleCrossfade.bind(this)}>
                         {crossfade}
                     </a>
 
-                    <span id="countup">
-                        {fromStr}
-                    </span>
+                    <span id="countup">{fromStr}</span>
                     <div id="position-info-control">
                         <div
                             id="position-bar"
@@ -273,9 +267,7 @@ export class PositionInfo extends Component {
                             <div id="position-bar-scrubber" style={styles} />
                         </div>
                     </div>
-                    <span id="countdown">
-                        {toStr}
-                    </span>
+                    <span id="countdown">{toStr}</span>
                 </div>
             </div>
         );

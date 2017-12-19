@@ -5,7 +5,6 @@ exports[`MuteButton renders off 1`] = `
   class="mute-button"
   src="svg/mute_on.svg"
  />
-</img>
 `;
 
 exports[`MuteButton renders on 1`] = `
@@ -13,5 +12,4 @@ exports[`MuteButton renders on 1`] = `
   class="mute-button"
   src="svg/mute_off.svg"
  />
-</img>
 `;

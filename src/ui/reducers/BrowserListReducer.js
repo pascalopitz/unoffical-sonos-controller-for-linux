@@ -21,6 +21,8 @@ const initialState = {
 export default handleActions(
     {
         [Constants.BROWSER_SEARCH]: (state, action) => {
+            console.log(action);
+            return state;
             let { history } = state;
             const { term, source, mode } = action.payload;
 

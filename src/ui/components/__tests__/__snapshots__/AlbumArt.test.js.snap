@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AlbumArt renders and matches snapshot 1`] = `
+<div
+  class="img"
+  data-visible={false}
+  style="background-image: url(&quot;images/browse_missing_album_art.png&quot;); background-size: contain;"
+>
+</div>
+`;

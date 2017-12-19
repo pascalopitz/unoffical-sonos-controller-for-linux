@@ -29,9 +29,7 @@ export function ZoneGroupList(props) {
             style="width:100%;display: flex; flex-direction: column;"
         >
             <div style="overflow-y: auto;">
-                <div id="zone-wrapper">
-                    {zoneGroupNodes}
-                </div>
+                <div id="zone-wrapper">{zoneGroupNodes}</div>
             </div>
         </div>
     );

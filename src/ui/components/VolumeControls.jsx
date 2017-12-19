@@ -162,9 +162,7 @@ class VolumeControls extends Component {
 
                 return (
                     <div key={key}>
-                        <h6>
-                            {name}
-                        </h6>
+                        <h6>{name}</h6>
 
                         <MuteButton muted={muted} clickHandler={toggleMute} />
 
@@ -184,9 +182,7 @@ class VolumeControls extends Component {
                     onMouseOut={this._hideTimeStart.bind(this)}
                     onMouseOver={this._hideTimeStop.bind(this)}
                 >
-                    <div id="player-volumes">
-                        {playerRows}
-                    </div>
+                    <div id="player-volumes">{playerRows}</div>
                 </div>
             );
         }

@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "scripts": {
@@ -45,7 +45,10 @@
     "appId": "com.electron.unoffcial.sonos.controller",
     "linux": {
       "category": "Audio",
-      "target": [ "deb", "appImage" ]
+      "target": [
+        "deb",
+        "appImage"
+      ]
     }
   },
   "jest": {
@@ -70,22 +73,22 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-eslint": "^7.2.3",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.0.3",
     "babel-plugin-syntax-jsx": "^6.18.0",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.6.0",
-    "babel-register": "^6.24.1",
-    "electron": "^1.7.5",
-    "electron-builder": "^19.11.1",
-    "eslint": "^4.1.1",
-    "eslint-plugin-prettier": "^2.1.2",
-    "eslint-plugin-react": "^7.1.0",
-    "jest": "^20.0.4",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "electron": "^1.7.10",
+    "electron-builder": "^19.49.2",
+    "eslint": "^4.13.1",
+    "eslint-plugin-prettier": "^2.4.0",
+    "eslint-plugin-react": "^7.5.1",
+    "jest": "^22.0.1",
     "material-design-icons": "^3.0.1",
-    "preact-render-spy": "^1.0.0-rc.8",
-    "prettier": "^1.5.3",
+    "preact-render-spy": "^1.2.1",
+    "prettier": "^1.9.2",
     "watch": "^1.0.2"
   },
   "dependencies": {}

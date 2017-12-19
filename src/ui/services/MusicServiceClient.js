@@ -56,29 +56,28 @@ class MusicServiceClient {
                     if (!err && (res.statusCode >= 400 || fault)) {
                         if (
                             fault &&
-                            fault.indexOf('TokenRefreshRequired') > -1
+                            _.includes(fault, 'TokenRefreshRequired')
                         ) {
                             const refreshDetails = _.get(
                                 e,
                                 'Envelope.Body.Fault.detail.refreshAuthTokenResult'
                             );
                             this.setAuthToken(refreshDetails.authToken);
+                            this.setKey(refreshDetails.privateKey);
                             return reject(refreshDetails);
                         }
 
                         if (
                             fault &&
-                            fault.indexOf('Update your Sonos system') > -1
+                            _.includes(fault, 'Update your Sonos system')
                         ) {
                             return this._doRequest(uri, action, body, headers);
                         }
 
-                        console.error(body);
                         return reject(new Error(fault));
                     }
 
                     if (err) {
-                        console.error(err);
                         return reject(err);
                     }
 
@@ -188,9 +187,9 @@ class MusicServiceClient {
         } else {
             id = '-1';
             const d = moment.duration(item.trackMetadata.duration || 0);
-            resourceString = `<res protocolInfo="${uri.match(
-                /^[\w\-]+:/
-            )[0]}*${item.mimeType}*"
+            resourceString = `<res protocolInfo="${uri.match(/^[\w\-]+:/)[0]}*${
+                item.mimeType
+            }*"
                 duration="${_.padStart(d.hours(), 2, '0')}:${_.padStart(
                 d.minutes(),
                 2,
@@ -324,14 +323,22 @@ class MusicServiceClient {
             'getDeviceAuthToken',
             body,
             headers
-        ).then(res => {
-            const resp = xml2json(stripNamespaces(res));
-            const obj =
-                resp['Envelope']['Body']['getDeviceAuthTokenResponse'][
-                    'getDeviceAuthTokenResult'
-                ];
-            return obj;
-        });
+        )
+            .then(res => {
+                const resp = xml2json(stripNamespaces(res));
+                const obj =
+                    resp['Envelope']['Body']['getDeviceAuthTokenResponse'][
+                        'getDeviceAuthTokenResult'
+                    ];
+                return obj;
+            })
+            .catch(err => {
+                if (err.message.indefOf('NOT_LINKED_RETRY') > -1) {
+                    // noop
+                }
+
+                throw err;
+            });
     }
 
     getMetadata(id, index = 0, count = 200) {

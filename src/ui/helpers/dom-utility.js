@@ -10,3 +10,18 @@ export function getClosest(elem, selector) {
 
     return null;
 }
+
+export function createIntersectionObserver(node, options, callback) {
+    const observer = new IntersectionObserver(callback, options);
+    observer.observe(node);
+    return observer;
+}
+
+export function purgeIntersectionObserver(observer) {
+    if (observer) {
+        observer.disconnect();
+        observer = null;
+    }
+
+    return null;
+}
