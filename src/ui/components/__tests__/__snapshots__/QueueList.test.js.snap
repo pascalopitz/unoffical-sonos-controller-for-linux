@@ -24,7 +24,7 @@ exports[`QueueList renders and matches snapshot 1`] = `
         onScroll={[Function anonymous]}
         class="scrollcontainer"
       >
-        <div style="position:relative; overflow:hidden; width:100%; min-height:100%; height:50px;">
+        <div style="position:relative; overflow:hidden; width:100%; min-height:100%; height:53px;">
           <div style="position:absolute; top:0; left:0; height:100%; width:100%; overflow:visible; top:0px;"></div>
         </div>
       </div>
