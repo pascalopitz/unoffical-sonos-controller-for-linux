@@ -170,7 +170,7 @@ export class QueueList extends Component {
                         onDragEnd={this._onDragEnd.bind(this)}
                     >
                         <VirtualList
-                            rowHeight={50}
+                            rowHeight={53}
                             sync={true}
                             class="scrollcontainer"
                             data={queueItemNodes || []}
