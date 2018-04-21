@@ -7,17 +7,20 @@ addons:
     - icnsutils
     - graphicsmagick
 node_js:
-- '7'
+- '8'
 script:
 - npm run lint
 - npm run test
 - npm run fonts
 - npm run transpile
 - npm run dist
+- ls -lah dist
 deploy:
   skip_cleanup: true
   overwrite: true
   provider: releases
+  file_glob: true
+  file: dist/sonos-controller-unofficial*
   api_key:
     secure: fe4iMbeIWqTxwgw1QmjuuYgCkgLf7vPx3D28y7xqrW6tHk6vgIybNXpj3m4jH3QxndEsUx48jMpL9UR29anDb9JGYvsYrDadidn1d+tUXP9fqFxFpA6A2BWIfANMCUECfm8hS18WZHP1WsmR7ZfbQsV75XtUsYLUNaW8XN+6Ca4=
   on:

@@ -71,20 +71,11 @@ async function _getItem(item) {
     const client = item.serviceClient;
     const serviceType = client._serviceDefinition.ServiceIDEncoded;
 
-    const settingsMatch = _.find(SonosService._accountInfo, {
-        Type: String(serviceType)
-    });
+    if (serviceType) {
+        const uri = client.getTrackURI(item, client._serviceDefinition.Id);
 
-    if (settingsMatch) {
-        const uri = client.getTrackURI(
-            item,
-            client._serviceDefinition.Id,
-            settingsMatch.SerialNum
-        );
-        const token = client.getServiceString(
-            serviceType,
-            settingsMatch.Username
-        );
+        const token = client.getServiceString(serviceType);
+
         const meta = client.encodeItemMetadata(uri, item, token);
 
         return {

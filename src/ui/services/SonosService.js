@@ -92,33 +92,31 @@ const SonosService = {
 
                 const persistSubscription = (err, sid) => {
                     if (!err) {
-                        this._persistentSubscriptions.push({
+                        const subscriptionParams = {
                             sid: sid,
                             host: sonos.host,
                             sonos: sonos
-                        });
+                        };
+                        console.log('persistSubscription', subscriptionParams);
+                        this._persistentSubscriptions.push(subscriptionParams);
                     }
                 };
 
                 // these events happen for all players
                 listener.addService(
+                    '/MediaRenderer/Queue/Event',
+                    persistSubscription
+                );
+                listener.addService(
+                    '/MediaServer/ContentDirectory/Event',
+                    persistSubscription
+                );
+                listener.addService(
                     '/MediaRenderer/RenderingControl/Event',
                     persistSubscription
                 );
                 listener.addService(
-                    '/MusicServices/Event',
-                    persistSubscription
-                );
-                listener.addService(
                     '/MediaRenderer/AVTransport/Event',
-                    persistSubscription
-                );
-                listener.addService(
-                    '/SystemProperties/Event',
-                    persistSubscription
-                );
-                listener.addService(
-                    '/ZoneGroupTopology/Event',
                     persistSubscription
                 );
 
@@ -126,7 +124,25 @@ const SonosService = {
                 this.queryTopology(sonos);
 
                 if (!firstResultProcessed) {
-                    this.queryAccounts(sonos);
+                    listener.addService(
+                        '/ZoneGroupTopology/Event',
+                        persistSubscription
+                    );
+
+                    listener.addService(
+                        '/MusicServices/Event',
+                        persistSubscription
+                    );
+
+                    listener.addService(
+                        '/AlarmClock/Event',
+                        persistSubscription
+                    );
+
+                    listener.addService(
+                        '/SystemProperties/Event',
+                        persistSubscription
+                    );
 
                     this.householdId = await sonos
                         .getHouseholdIdAsync()
@@ -336,12 +352,6 @@ const SonosService = {
         this.queryCrossfadeMode(sonos);
     },
 
-    async queryAccounts(sonos) {
-        sonos = getSonosDeviceOrCurrentOrFirst(sonos);
-        const info = await sonos.getAccountStatusAsync();
-        this._accountInfo = info;
-    },
-
     processPlaystateUpdate(sonos, state) {
         if (state === 'transitioning') {
             window.setTimeout(() => this.queryPlayState(sonos), 100);
@@ -362,11 +372,6 @@ const SonosService = {
             }) || {};
 
         switch (endpoint) {
-            case '/SystemProperties/Event':
-            case '/MusicServices/Event':
-            case '/MediaRenderer/DeviceProperties/Event':
-                break;
-
             case '/ZoneGroupTopology/Event':
                 {
                     // Transform the message into the same format as sonos.getTopology
@@ -428,6 +433,8 @@ const SonosService = {
 
             case '/MediaRenderer/AVTransport/Event':
                 {
+                    console.log('Handled Event', endpoint, sid, data);
+
                     const lastChange = xml2json(data.LastChange);
                     const subscription = _(this._persistentSubscriptions).find({
                         sid: sid
@@ -521,6 +528,9 @@ const SonosService = {
                     this.queryMusicLibrary();
                 }
                 break;
+
+            default:
+                console.log('Ignored Event', endpoint, sid, data);
         }
     },
 

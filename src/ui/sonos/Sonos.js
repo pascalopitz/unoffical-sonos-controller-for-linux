@@ -384,12 +384,12 @@ class Sonos {
                             track.albumArtURL = !track.albumArtURI
                                 ? null
                                 : track.albumArtURI.indexOf('http') !== -1
-                                  ? track.albumArtURI
-                                  : 'http://' +
-                                    this.host +
-                                    ':' +
-                                    this.port +
-                                    track.albumArtURI;
+                                    ? track.albumArtURI
+                                    : 'http://' +
+                                      this.host +
+                                      ':' +
+                                      this.port +
+                                      track.albumArtURI;
 
                             return callback(null, track);
                         }
@@ -412,6 +412,7 @@ class Sonos {
     parseDIDL(didl) {
         if (
             !didl ||
+            didl === '' ||
             !didl['DIDL-Lite'] ||
             !Array.isArray(didl['DIDL-Lite'].item) ||
             !didl['DIDL-Lite'].item[0]

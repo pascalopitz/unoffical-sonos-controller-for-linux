@@ -37,6 +37,8 @@ class MusicServiceClient {
 
     _doRequest(uri, action, body, headers) {
         return new Promise((resolve, reject) => {
+            const soapBody = withinEnvelope(body, headers);
+
             requestHelper(
                 {
                     uri: uri,
@@ -47,7 +49,7 @@ class MusicServiceClient {
                         // Thanks SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
                         'User-Agent': `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`
                     },
-                    body: withinEnvelope(body, headers)
+                    body: soapBody
                 },
                 (err, res, body) => {
                     const e = xml2json(stripNamespaces(body));
@@ -74,7 +76,8 @@ class MusicServiceClient {
                             return this._doRequest(uri, action, body, headers);
                         }
 
-                        return reject(new Error(fault));
+                        console.error(fault, soapBody);
+                        return reject();
                     }
 
                     if (err) {
@@ -87,7 +90,7 @@ class MusicServiceClient {
         });
     }
 
-    getTrackURI(item, serviceId, sn) {
+    getTrackURI(item, serviceId) {
         const trackId = item.id;
         const itemType = item.itemType;
         let protocol = 'x-sonos-http';
@@ -133,11 +136,12 @@ class MusicServiceClient {
 
         return `${protocol}:${escape(
             trackId
-        )}${suffix}?sid=${serviceId}&sn=${sn}&flags=8224`;
+        )}${suffix}?sid=${serviceId}&sn=1&flags=8224`;
     }
 
-    getServiceString(serviceType, token) {
-        return `SA_RINCON${serviceType}_${token}`;
+    getServiceString(serviceType) {
+        // SA_RINCON3079_X_#Svc3079-0-Token
+        return `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`;
     }
 
     encodeItemMetadata(uri, item, serviceString) {
