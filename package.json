@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "homepage": "http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/",
@@ -86,8 +86,8 @@
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
-    "electron": "^1.8.4",
-    "electron-builder": "^20.10.0",
+    "electron": "^2.0.0",
+    "electron-builder": "^20.13.1",
     "eslint": "^4.19.1",
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.7.0",
