@@ -1308,18 +1308,26 @@ class Sonos {
      */
     getTopology(callback) {
         debug('Sonos.getTopology(%j)', callback);
-        requestHelper(
-            'http://' + this.host + ':' + this.port + '/status/topology',
-            function(err, res, body) {
+
+        const topologyService = new Services.ZoneGroupTopology(
+            this.host,
+            this.port
+        );
+
+        topologyService.GetZoneGroupState(
+            {
+                InstanceID: 0
+            },
+            function(err, data) {
                 if (err) {
-                    return callback(err);
+                    return reject(err);
                 }
-                debug(body);
-                new xml2js.Parser().parseString(body, function(err, topology) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    const info = topology.ZPSupportInfo;
+
+                const body = data.ZoneGroupState;
+
+                new xml2js.Parser().parseString(body, function(err, info) {
+                    console.log(err, info);
+
                     let zones = null,
                         mediaServers = null;
 
@@ -1340,6 +1348,8 @@ class Sonos {
                         );
                     }
 
+                    console.log(zones, mediaServers);
+
                     callback(null, {
                         zones: zones,
                         mediaServers: mediaServers
@@ -1347,6 +1357,47 @@ class Sonos {
                 });
             }
         );
+
+        // THIS IS BROKEN in 9.1
+        // requestHelper(
+        //     'http://' + this.host + ':' + this.port + '/status/topology',
+        //     function(err, res, body) {
+        //         if (err) {
+        //             return callback(err);
+        //         }
+        //         debug(body);
+        //         new xml2js.Parser().parseString(body, function(err, topology) {
+        //             if (err) {
+        //                 return callback(err);
+        //             }
+        //             const info = topology.ZPSupportInfo;
+        //             let zones = null,
+        //                 mediaServers = null;
+
+        //             if (info.ZonePlayers && info.ZonePlayers.length > 0) {
+        //                 zones = _.map(info.ZonePlayers[0].ZonePlayer, function(
+        //                     zone
+        //                 ) {
+        //                     return _.extend(zone.$, { name: zone._ });
+        //                 });
+        //             }
+
+        //             if (info.MediaServers && info.MediaServers.length > 0) {
+        //                 mediaServers = _.map(
+        //                     info.MediaServers[0].MediaServer,
+        //                     function(zone) {
+        //                         return _.extend(zone.$, { name: zone._ });
+        //                     }
+        //                 );
+        //             }
+
+        //             callback(null, {
+        //                 zones: zones,
+        //                 mediaServers: mediaServers
+        //             });
+        //         });
+        //     }
+        // );
     }
 
     /**
