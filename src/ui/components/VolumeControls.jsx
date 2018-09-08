@@ -207,4 +207,7 @@ class VolumeControls extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VolumeControls);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(VolumeControls);

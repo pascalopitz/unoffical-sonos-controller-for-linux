@@ -212,4 +212,7 @@ export class BrowserList extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(BrowserList);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(BrowserList);

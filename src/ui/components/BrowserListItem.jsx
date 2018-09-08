@@ -236,4 +236,7 @@ export class BrowserListItem extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(BrowserListItem);
+export default connect(
+    null,
+    mapDispatchToProps
+)(BrowserListItem);

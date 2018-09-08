@@ -42,4 +42,7 @@ export function PlayControls(props) {
     );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlayControls);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(PlayControls);

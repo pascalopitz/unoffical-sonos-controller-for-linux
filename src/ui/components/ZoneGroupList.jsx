@@ -35,4 +35,7 @@ export function ZoneGroupList(props) {
     );
 }
 
-export default connect(mapStateToProps, null)(ZoneGroupList);
+export default connect(
+    mapStateToProps,
+    null
+)(ZoneGroupList);

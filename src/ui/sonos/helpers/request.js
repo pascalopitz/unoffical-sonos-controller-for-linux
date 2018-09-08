@@ -31,8 +31,7 @@ const request = function(options, callback) {
                 xhr.responseType === 'blob' ? xhr.response : xhr.responseText;
 
             if (xhr.status === 200) {
-                xhr
-                    .getAllResponseHeaders()
+                xhr.getAllResponseHeaders()
                     .split('\n')
                     .forEach(function(l) {
                         const matches = reg.exec(l);

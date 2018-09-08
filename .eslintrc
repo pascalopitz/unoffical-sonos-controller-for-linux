@@ -9,6 +9,7 @@
     ],
     "settings": {
         "react": {
+            "version": "15.0",
             "pragma": "h"
         }
     },
@@ -49,6 +50,6 @@
         "node": true,
         "es6": true,
         "browser": true,
-        "mocha": true,
+        "mocha": true
     }
 }

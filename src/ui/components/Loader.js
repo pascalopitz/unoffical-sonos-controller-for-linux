@@ -25,4 +25,7 @@ export function Loader(props) {
     );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Loader);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Loader);

@@ -105,4 +105,7 @@ export class SearchBar extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SearchBar);

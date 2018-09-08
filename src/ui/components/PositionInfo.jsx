@@ -163,7 +163,7 @@ export class PositionInfo extends Component {
             Number(d[0]) * 60 * 60 + Number(d[1]) * 60 + Number(d[2]);
 
         // const percent = 100 / rect.width * left;
-        const time = Math.floor(totalSeconds / rect.width * left);
+        const time = Math.floor((totalSeconds / rect.width) * left);
 
         this.props.seek(time);
     }
@@ -191,7 +191,7 @@ export class PositionInfo extends Component {
                     .subtract(now.asSeconds(), 's');
 
                 toStr = `-${formatTime(to)}`;
-                percent = 100 / end.asSeconds() * now.asSeconds();
+                percent = (100 / end.asSeconds()) * now.asSeconds();
             }
 
             fromStr = `${formatTime(now)}`;
@@ -274,4 +274,7 @@ export class PositionInfo extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PositionInfo);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(PositionInfo);

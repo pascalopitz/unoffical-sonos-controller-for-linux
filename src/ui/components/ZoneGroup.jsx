@@ -71,4 +71,7 @@ export function ZoneGroup(props) {
     );
 }
 
-export default connect(null, mapDispatchToProps)(ZoneGroup);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ZoneGroup);

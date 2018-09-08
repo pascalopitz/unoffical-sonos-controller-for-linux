@@ -202,4 +202,7 @@ export class QueueListItem extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(QueueListItem);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(QueueListItem);

@@ -70,4 +70,7 @@ export class GroupManagement extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupManagement);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(GroupManagement);

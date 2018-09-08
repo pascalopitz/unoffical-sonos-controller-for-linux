@@ -44,4 +44,7 @@ export function CurrentTrack(props) {
     return <CurrentTrackExpanded {...props} toggle={toggle} />;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentTrack);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CurrentTrack);
