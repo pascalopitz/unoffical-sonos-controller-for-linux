@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "install-app-deps",
     "pack": "build --dir",
-    "dist": "build",
+    "dist": "build --x64 --armv7l",
     "build_help": "build --help",
     "develop": "npm run fonts && npm run transpile && npm run start & npm run watch",
     "start": "export NODE_ENV=development && electron .",
@@ -52,8 +52,7 @@
       "category": "Audio",
       "target": [
         "deb",
-        "appImage",
-        "snap"
+        "appImage"
       ]
     }
   },
