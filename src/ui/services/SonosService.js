@@ -381,26 +381,31 @@ const SonosService = {
 
                     const zones = [];
 
-                    _.forEach(topology.ZoneGroups.ZoneGroup, zg => {
-                        const cId = zg.$.Coordinator;
-                        const gId = zg.$.ID;
+                    _.forEach(
+                        topology.ZoneGroupState.ZoneGroups[0].ZoneGroup,
+                        zg => {
+                            const cId = zg.$.Coordinator;
+                            const gId = zg.$.ID;
 
-                        _.forEach(zg.ZoneGroupMember, z => {
-                            const zone = {};
-                            zone.group = gId;
-                            Object.keys(z.$).forEach(k => {
-                                zone[String(k).toLowerCase()] = String(z.$[k]);
+                            _.forEach(zg.ZoneGroupMember, z => {
+                                const zone = {};
+                                zone.group = gId;
+                                Object.keys(z.$).forEach(k => {
+                                    zone[String(k).toLowerCase()] = String(
+                                        z.$[k]
+                                    );
+                                });
+                                zone.name = zone.zonename;
+                                delete zone.zonename;
+
+                                if (cId === zone.uuid) {
+                                    zone.coordinator = 'true';
+                                }
+
+                                zones.push(zone);
                             });
-                            zone.name = zone.zonename;
-                            delete zone.zonename;
-
-                            if (cId === zone.uuid) {
-                                zone.coordinator = 'true';
-                            }
-
-                            zones.push(zone);
-                        });
-                    });
+                        }
+                    );
 
                     store.dispatch(serviceActions.topologyEvent(zones));
                 }

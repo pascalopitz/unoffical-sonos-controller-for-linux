@@ -19,6 +19,15 @@ const appReducer = combineReducers({
     musicServices: MusicServicesReducer
 });
 
+const ensureResolvedMiddleware = () => next => async action => {
+    const payload = await action.payload;
+
+    next({
+        ...action,
+        payload
+    });
+};
+
 const getStateMiddleware = store => next => action => {
     next({ ...action, getState: store.getState });
 };
@@ -40,5 +49,10 @@ const catcherMiddleware = () => next => action => {
 
 export default createStore(
     appReducer,
-    applyMiddleware(catcherMiddleware, promiseMiddleware, getStateMiddleware)
+    applyMiddleware(
+        catcherMiddleware,
+        promiseMiddleware,
+        ensureResolvedMiddleware,
+        getStateMiddleware
+    )
 );

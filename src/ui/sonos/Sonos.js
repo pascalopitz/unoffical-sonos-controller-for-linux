@@ -385,12 +385,12 @@ class Sonos {
                             track.albumArtURL = !track.albumArtURI
                                 ? null
                                 : track.albumArtURI.indexOf('http') !== -1
-                                    ? track.albumArtURI
-                                    : 'http://' +
-                                      this.host +
-                                      ':' +
-                                      this.port +
-                                      track.albumArtURI;
+                                ? track.albumArtURI
+                                : 'http://' +
+                                  this.host +
+                                  ':' +
+                                  this.port +
+                                  track.albumArtURI;
 
                             return callback(null, track);
                         }
@@ -1331,7 +1331,8 @@ class Sonos {
 
                     const zones = [];
 
-                    for (const zg of info.ZoneGroups.ZoneGroup) {
+                    for (const zg of info.ZoneGroupState.ZoneGroups[0]
+                        .ZoneGroup) {
                         const coordinatorID = zg.$.Coordinator;
 
                         for (const m of zg.ZoneGroupMember) {

@@ -14,7 +14,7 @@ class Search {
 
         this.foundSonosDevices = {};
 
-        const PLAYER_SEARCH = new Buffer(
+        const PLAYER_SEARCH = Buffer.from(
             [
                 'M-SEARCH * HTTP/1.1',
                 'HOST: ' + SONOS_UPNP_BROADCAST_IP + ':reservedSSDPport',

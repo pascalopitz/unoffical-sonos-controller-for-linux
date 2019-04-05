@@ -119,28 +119,29 @@ function createWindow() {
     }
 }
 
-const shouldQuit = app.makeSingleInstance(() => {
-    // Someone tried to run a second instance, we should focus our window.
-    if (win) {
-        if (win.isMinimized()) {
-            win.restore();
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+    app.quit();
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        if (win) {
+            if (win.isMinimized()) {
+                win.restore();
+            }
+            win.focus();
         }
-        win.focus();
-    }
-});
+    });
 
-if (shouldQuit) {
-    app.quit();
+    app.on('ready', createWindow);
+
+    app.on('window-all-closed', () => {
+        app.quit();
+    });
+
+    app.on('activate', () => {
+        if (win === null) {
+            createWindow();
+        }
+    });
 }
-
-app.on('ready', createWindow);
-
-app.on('window-all-closed', () => {
-    app.quit();
-});
-
-app.on('activate', () => {
-    if (win === null) {
-        createWindow();
-    }
-});

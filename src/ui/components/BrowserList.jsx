@@ -128,21 +128,23 @@ export class BrowserList extends Component {
         );
 
         if (searching) {
-            const links = searchModes.map(m => m.id).map(mode => {
-                const className =
-                    mode === currentSearchMode ? 'active' : 'not-active';
+            const links = searchModes
+                .map(m => m.id)
+                .map(mode => {
+                    const className =
+                        mode === currentSearchMode ? 'active' : 'not-active';
 
-                return (
-                    <li
-                        key={mode}
-                        className={className}
-                        onClick={this._searchModeChange.bind(this)}
-                        data-mode={mode}
-                    >
-                        {mode}
-                    </li>
-                );
-            });
+                    return (
+                        <li
+                            key={mode}
+                            className={className}
+                            onClick={this._searchModeChange.bind(this)}
+                            data-mode={mode}
+                        >
+                            {mode}
+                        </li>
+                    );
+                });
 
             headlineNodes = <ul className="with-search">{links}</ul>;
         } else if (history.length && source !== 'start') {

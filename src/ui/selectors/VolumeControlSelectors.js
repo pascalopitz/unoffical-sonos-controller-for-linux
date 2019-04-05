@@ -35,15 +35,18 @@ export const getGroupMuted = createSelector(
         }).length === 0
 );
 
-export const getGroupVolume = createSelector(getPlayers, playersMap => {
-    const players = _.values(playersMap);
+export const getGroupVolume = createSelector(
+    getPlayers,
+    playersMap => {
+        const players = _.values(playersMap);
 
-    if (!players.length) {
-        return 0;
+        if (!players.length) {
+            return 0;
+        }
+
+        const volume = Math.floor(
+            _.sum(_.map(players, p => Number(p.volume))) / players.length
+        );
+        return volume;
     }
-
-    const volume = Math.floor(
-        _.sum(_.map(players, p => Number(p.volume))) / players.length
-    );
-    return volume;
-});
+);
