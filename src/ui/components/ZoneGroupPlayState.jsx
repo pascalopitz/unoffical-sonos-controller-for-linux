@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import React from 'react';
 
 export function ZoneGroupPLayState(props) {
     const { playState } = props;

@@ -193,7 +193,7 @@ export const more = createAction(
             if (client) {
                 let res;
 
-                if (state.term) {
+                if (state.term && state.term.length) {
                     const searchTermMap = await client.getSearchTermMap();
                     const { mappedId } = _.find(searchTermMap, {
                         id: state.mode
@@ -215,13 +215,13 @@ export const more = createAction(
                     res = _transformSMAPI(res, client);
                 }
 
-                state.items = _.uniq(state.items.concat(res.items));
+                state.items = _.compact(_.uniq([...state.items, ...res.items]));
                 return state;
             }
 
-            if (state.term) {
+            if (state.term && state.term.length) {
                 const { mappedId } = _.find(LIBRARY_SEARCH_MODES, {
-                    id: state.mode
+                    id: state.mode || LIBRARY_SEARCH_MODES[0].id
                 });
 
                 const result = await sonos.searchMusicLibraryAsync(
@@ -234,7 +234,9 @@ export const more = createAction(
                     return;
                 }
 
-                state.items = _.uniq(state.items.concat(result.items));
+                state.items = _.compact(
+                    _.uniq([...state.items, ...result.items])
+                );
                 return state;
             }
 
@@ -247,7 +249,7 @@ export const more = createAction(
                 return prevState;
             }
 
-            state.items = _.uniq(state.items.concat(result.items));
+            state.items = _.compact(_.uniq([...state.items, ...result.items]));
             return state;
         } catch (err) {
             console.error(err);
@@ -290,7 +292,7 @@ export const search = createAction(
             }
 
             const { mappedId } = _.find(searchTermMap || LIBRARY_SEARCH_MODES, {
-                id: mode
+                id: mode || LIBRARY_SEARCH_MODES[0].id
             });
 
             const result = await resolver(mappedId, term);

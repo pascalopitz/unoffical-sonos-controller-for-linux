@@ -58,7 +58,7 @@ class Search {
         });
 
         this.socket.on('error', function(err) {
-            self.emit('error', err);
+            console.error('error', err);
         });
 
         this.socket.bind(options, function() {

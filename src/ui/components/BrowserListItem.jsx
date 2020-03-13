@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import shallowCompare from 'shallow-compare';
 
 import AlbumArt from './AlbumArt';
@@ -222,6 +222,7 @@ export class BrowserListItem extends Component {
                 onMouseOut={this._onMouseOut.bind(this)}
                 onMouseOver={this._onMouseOver.bind(this)}
                 data-position={this.props.position}
+                style={this.props.style}
             >
                 <AlbumArt src={albumArtURI} serviceId={serviceId} />
 
@@ -236,7 +237,4 @@ export class BrowserListItem extends Component {
     }
 }
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(BrowserListItem);
+export default connect(null, mapDispatchToProps)(BrowserListItem);

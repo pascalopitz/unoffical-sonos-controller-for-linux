@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import shallowCompare from 'shallow-compare';
 
 import SonosService from '../services/SonosService';
@@ -16,6 +16,9 @@ const MIN_RATIO = 0.5;
 export class AlbumArt extends Component {
     constructor() {
         super();
+
+        this.ref = React.createRef();
+
         this.state = {
             src: null,
             visible: false
@@ -97,7 +100,7 @@ export class AlbumArt extends Component {
     }
 
     componentDidMount() {
-        const node = this.base;
+        const node = this.ref.current;
 
         const options = {
             root: getClosest(node, this.props.parentType || 'ul'),
@@ -134,7 +137,7 @@ export class AlbumArt extends Component {
         }
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         // HACK: prevent image ghosting when pressing back button
         if (
             props.src !== this.props.src ||
@@ -167,6 +170,7 @@ export class AlbumArt extends Component {
 
         return (
             <div
+                ref={this.ref}
                 className="img"
                 data-visible={this.state.visible}
                 style={css}

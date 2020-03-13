@@ -1,10 +1,8 @@
-import { h } from 'preact';
+import React from 'react';
 import { BrowserList } from '../BrowserList';
-import BrowserListItem from '../BrowserListItem';
-import { deep } from 'preact-render-spy';
+import { render } from 'enzyme';
 
-jest.mock('../BrowserListItem');
-BrowserListItem.mockReturnValue(<p />);
+jest.mock('../BrowserListItem', () => () => <p />);
 
 describe('BrowserList', () => {
     it('renders and matches snapshot', () => {
@@ -21,13 +19,7 @@ describe('BrowserList', () => {
             history: []
         };
 
-        const context = deep(<BrowserList {...props} />);
-        expect(context.output()).toMatchSnapshot();
-
-        const [firstCall] = BrowserListItem.mock.calls;
-
-        expect(firstCall[0].model).toMatchObject({
-            id: 1
-        });
+        const context = render(<BrowserList {...props} />);
+        expect(context).toMatchSnapshot();
     });
 });

@@ -1,5 +1,5 @@
-import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import MuteButton from './MuteButton';
 import VolumeSlider from './VolumeSlider';
@@ -149,7 +149,6 @@ class VolumeControls extends Component {
                 };
 
                 const changeVolume = volume => {
-                    console.log(volume);
                     if (!this.propsexpanded) {
                         this.props.setExpanded(true);
                     }
@@ -207,7 +206,4 @@ class VolumeControls extends Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(VolumeControls);
+export default connect(mapStateToProps, mapDispatchToProps)(VolumeControls);

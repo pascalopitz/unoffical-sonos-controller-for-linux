@@ -7,6 +7,7 @@ import GroupManagement from '../services/GroupManagement';
 import MusicServices from '../services/MusicServices';
 import SystemProperties from '../services/SystemProperties';
 import ZoneGroupTopology from '../services/ZoneGroupTopology';
+import Queue from '../services/Queue';
 
 const Services = {
     AlarmClock: AlarmClock,
@@ -17,7 +18,8 @@ const Services = {
     GroupManagement: GroupManagement,
     MusicServices: MusicServices,
     SystemProperties: SystemProperties,
-    ZoneGroupTopology: ZoneGroupTopology
+    ZoneGroupTopology: ZoneGroupTopology,
+    Queue: Queue
 };
 
 export default Services;

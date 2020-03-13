@@ -8,7 +8,9 @@ const wakeEvent = require('wake-event');
 let win;
 
 function createWindow() {
-    win = new BrowserWindow({ width: 800, height: 600 });
+    win = new BrowserWindow({ width: 800, height: 600, webPreferences: {
+        nodeIntegration: true
+    }});
 
     const menu = Menu.buildFromTemplate([
         {

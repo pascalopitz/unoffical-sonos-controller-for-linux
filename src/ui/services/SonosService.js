@@ -234,6 +234,10 @@ const SonosService = {
     async queryMusicLibrary(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
 
+        if (!sonos) {
+            return;
+        }
+
         const result = await sonos
             .getMusicLibraryAsync('queue', {})
             .catch(() => null);
@@ -371,6 +375,8 @@ const SonosService = {
                 sid: sid
             }) || {};
 
+        console.log(endpoint, sid, subscription.sonos, getCurrentZone());
+
         switch (endpoint) {
             case '/ZoneGroupTopology/Event':
                 {
@@ -438,12 +444,7 @@ const SonosService = {
 
             case '/MediaRenderer/AVTransport/Event':
                 {
-                    console.log('Handled Event', endpoint, sid, data);
-
                     const lastChange = xml2json(data.LastChange);
-                    const subscription = _(this._persistentSubscriptions).find({
-                        sid: sid
-                    });
 
                     if (subscription) {
                         const transportState = subscription.sonos.translateState(
@@ -531,6 +532,12 @@ const SonosService = {
             case '/MediaServer/ContentDirectory/Event':
                 {
                     this.queryMusicLibrary();
+                }
+                break;
+
+            case '/MediaRenderer/Queue/Event':
+                {
+                    this.queryState(subscription.sonos);
                 }
                 break;
 

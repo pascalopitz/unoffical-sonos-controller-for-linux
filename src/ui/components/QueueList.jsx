@@ -1,7 +1,6 @@
-import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import VirtualList from 'preact-virtual-list';
 import { getClosest } from '../helpers/dom-utility';
 
 import QueueListItem from './QueueListItem';
@@ -40,7 +39,7 @@ export class QueueList extends Component {
         };
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    UNSAFE_componentWillUpdate(nextProps, nextState) {
         if (nextState.position && nextState.position !== this.props.position) {
             // HACK, can this be done cleanly?
             window.setTimeout(() => {
@@ -115,10 +114,6 @@ export class QueueList extends Component {
         }
     }
 
-    _renderRow(row) {
-        return row;
-    }
-
     render() {
         const tracks = this.props.tracks;
         let queueItemNodes;
@@ -169,13 +164,7 @@ export class QueueList extends Component {
                         onDragStart={this._onDragStart.bind(this)}
                         onDragEnd={this._onDragEnd.bind(this)}
                     >
-                        <VirtualList
-                            rowHeight={53}
-                            sync={true}
-                            class="scrollcontainer"
-                            data={queueItemNodes || []}
-                            renderRow={this._renderRow.bind(this)}
-                        />
+                        <div className="scrollcontainer">{queueItemNodes}</div>
                     </ul>
                 </div>
             </div>
@@ -183,7 +172,4 @@ export class QueueList extends Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(QueueList);
+export default connect(mapStateToProps, mapDispatchToProps)(QueueList);

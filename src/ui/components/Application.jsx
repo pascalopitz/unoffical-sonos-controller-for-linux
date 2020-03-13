@@ -1,5 +1,5 @@
-import { h, Component } from 'preact';
-import { Provider } from 'preact-redux';
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
 
 import store from '../reducers';
 

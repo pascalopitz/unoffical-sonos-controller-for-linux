@@ -1,8 +1,5 @@
-import { h, render } from 'preact';
+import { createElement } from 'react';
+import { render } from 'react-dom';
 import Application from './components/Application';
 
-if (process.env.NODE_ENV === 'development') {
-    require('preact/devtools');
-}
-
-render(h(Application, null), document.getElementById('root'));
+render(createElement(Application, null), document.getElementById('root'));

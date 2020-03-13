@@ -1,5 +1,5 @@
-import { h } from 'preact';
-import { connect } from 'preact-redux';
+import React from 'react';
+import { connect } from 'react-redux';
 
 import {
     getZoneGroups,
@@ -26,16 +26,13 @@ export function ZoneGroupList(props) {
     return (
         <div
             id="zone-container-inner"
-            style="width:100%;display: flex; flex-direction: column;"
+            style={{ width: '100%', display: 'flex', flexDirection: ' column' }}
         >
-            <div style="overflow-y: auto;">
+            <div style={{ overflowY: 'auto' }}>
                 <div id="zone-wrapper">{zoneGroupNodes}</div>
             </div>
         </div>
     );
 }
 
-export default connect(
-    mapStateToProps,
-    null
-)(ZoneGroupList);
+export default connect(mapStateToProps, null)(ZoneGroupList);

@@ -1,14 +1,14 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "homepage": "http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/",
   "scripts": {
     "postinstall": "install-app-deps",
-    "pack": "build --dir",
-    "dist": "build --x64 --armv7l",
-    "build_help": "build --help",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --x64 --armv7l",
+    "build_help": "electron-builder --help",
     "develop": "npm run fonts && npm run transpile && npm run start & npm run watch",
     "start": "export NODE_ENV=development && electron .",
     "watch": "babel --ignore '__tests__/*' -d ./app -s true -w ./src",
@@ -65,16 +65,11 @@
       "app/node_modules",
       "node_modules"
     ],
-    "snapshotSerializers": [
-      "preact-render-spy/snapshot"
-    ],
-    "moduleNameMapper": {
-      "^react$": "preact-compat",
-      "^react-dom$": "preact-compat"
-    },
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
-    ]
+    ],
+    "snapshotSerializers": ["enzyme-to-json/serializer"],
+    "setupFiles": ["./setupTests.js"]
   },
   "license": "ISC",
   "devDependencies": {
@@ -85,16 +80,19 @@
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
-    "electron": "^4.1.4",
-    "electron-builder": "^20.39.0",
-    "eslint": "^5.16.0",
+    "electron": "^8.1.1",
+    "electron-builder": "^22.4.1",
+    "eslint": "^6.8.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.12.4",
-    "jest": "^24.7.1",
+    "eslint-plugin-react": "^7.19.0",
+    "jest": "^25.1.0",
     "material-design-icons": "^3.0.1",
-    "preact-render-spy": "^1.2.2",
     "prettier": "^1.16.4",
     "watch": "^1.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "enzyme-to-json": "^3.4.4"
+  }
 }

@@ -74,6 +74,7 @@ export default handleActions(
 
         [Constants.BROWSER_SCROLL_RESULT]: (state, action) => {
             let { history } = state;
+
             history = _.take(history, history.length - 1).concat(
                 action.payload
             );

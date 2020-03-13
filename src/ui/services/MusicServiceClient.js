@@ -56,9 +56,15 @@ class MusicServiceClient {
                     const fault = _.get(e, 'Envelope.Body.Fault.faultstring');
 
                     if (!err && (res.statusCode >= 400 || fault)) {
+                        console.log(
+                            fault,
+                            _.includes(fault, 'tokenRefreshRequired')
+                        );
+
                         if (
                             fault &&
-                            _.includes(fault, 'TokenRefreshRequired')
+                            (_.includes(fault, 'TokenRefreshRequired') ||
+                                _.includes(fault, 'tokenRefreshRequired'))
                         ) {
                             const refreshDetails = _.get(
                                 e,
@@ -604,10 +610,19 @@ class MusicServiceClient {
     }
 
     async getSearchTermMap() {
-        if (!this.searchTermMap) {
-            const res = await fetch(
-                this._serviceDefinition.presentation.mapUri
-            );
+        let mapUri = this._serviceDefinition.presentation.mapUri;
+
+        if (this._serviceDefinition.manifestUri) {
+            const res = await fetch(this._serviceDefinition.manifestUri);
+            const jsonRes = await res.json();
+
+            if (jsonRes.presentationMap.uri) {
+                mapUri = jsonRes.presentationMap.uri;
+            }
+        }
+
+        if (!this.searchTermMap && mapUri) {
+            const res = await fetch(mapUri);
 
             const body = await res.text();
             const e = xml2json(stripNamespaces(body));
@@ -628,7 +643,7 @@ class MusicServiceClient {
             );
         }
 
-        return this.searchTermMap || [];
+        return this.searchTermMap;
     }
 }
 

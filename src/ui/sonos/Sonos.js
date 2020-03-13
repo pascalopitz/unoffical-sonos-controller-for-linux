@@ -1536,8 +1536,10 @@ class Sonos {
                             obj,
                             'Presentation.0.PresentationMap.0.$.Uri'
                         );
+                        const manifestUri = _.get(obj, 'Manifest.0.$.Uri');
 
                         return _.assign({}, obj.$, obj.Policy[0].$, {
+                            manifestUri,
                             presentation: {
                                 stringsUri,
                                 mapUri

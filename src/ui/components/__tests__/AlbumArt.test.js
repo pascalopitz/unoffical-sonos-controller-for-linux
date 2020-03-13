@@ -1,6 +1,6 @@
-import { h } from 'preact';
+import React from 'react';
 import { AlbumArt } from '../AlbumArt';
-import { deep } from 'preact-render-spy';
+import { render } from 'enzyme';
 
 import {
     getClosest,
@@ -19,7 +19,7 @@ describe('AlbumArt', () => {
             src: 'foo'
         };
 
-        const context = deep(<AlbumArt {...props} />);
-        expect(context.output()).toMatchSnapshot();
+        const context = render(<AlbumArt {...props} />);
+        expect(context).toMatchSnapshot();
     });
 });

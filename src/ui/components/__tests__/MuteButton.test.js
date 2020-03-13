@@ -1,30 +1,32 @@
-import { h } from 'preact';
+import React from 'react';
 import { MuteButton } from '../MuteButton';
-import { deep } from 'preact-render-spy';
+import { render, mount } from 'enzyme';
 
 describe('MuteButton', () => {
     it('renders on', () => {
         const props = {
             muted: false
         };
-        const context = deep(<MuteButton {...props} />);
-        expect(context.output()).toMatchSnapshot();
+        const context = render(<MuteButton {...props} />);
+        expect(context).toMatchSnapshot();
     });
 
     it('renders off', () => {
         const props = {
             muted: true
         };
-        const context = deep(<MuteButton {...props} />);
-        expect(context.output()).toMatchSnapshot();
+        const context = render(<MuteButton {...props} />);
+        expect(context).toMatchSnapshot();
     });
 
     it('clickhandler', () => {
         const props = {
             clickHandler: jest.fn()
         };
-        const context = deep(<MuteButton {...props} />);
+        const context = mount(<MuteButton {...props} />);
         context.find('.mute-button').simulate('click');
         expect(props.clickHandler).toHaveBeenCalled();
+
+        context.unmount();
     });
 });
