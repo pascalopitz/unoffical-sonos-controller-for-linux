@@ -1,7 +1,7 @@
-import { h } from 'preact';
+import React from 'react';
 import { BrowserList } from '../BrowserList';
 import BrowserListItem from '../BrowserListItem';
-import { deep } from 'preact-render-spy';
+import { deep } from 'react-render-spy';
 
 jest.mock('../BrowserListItem');
 BrowserListItem.mockReturnValue(<p />);

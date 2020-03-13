@@ -1,7 +1,7 @@
-import { h } from 'preact';
+import React from 'react';
 import { QueueList } from '../QueueList';
 import QueueListItem from '../QueueListItem';
-import { deep } from 'preact-render-spy';
+import { deep } from 'react-render-spy';
 
 jest.mock('../QueueListItem');
 QueueListItem.mockReturnValue(<p className="queue-list-item" />);

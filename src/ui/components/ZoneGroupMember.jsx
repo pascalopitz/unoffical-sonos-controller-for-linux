@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import React from 'react';
 
 export function ZoneGroupMember(props) {
     return (

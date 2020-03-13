@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import AlbumArt from './AlbumArt';
 
 import {
@@ -202,7 +202,4 @@ export class QueueListItem extends Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(QueueListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(QueueListItem);

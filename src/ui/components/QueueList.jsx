@@ -1,7 +1,7 @@
-import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import VirtualList from 'preact-virtual-list';
+import VirtualList from 'react-virtual-list';
 import { getClosest } from '../helpers/dom-utility';
 
 import QueueListItem from './QueueListItem';
@@ -40,7 +40,7 @@ export class QueueList extends Component {
         };
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    UNSAFE_componentWillUpdate(nextProps, nextState) {
         if (nextState.position && nextState.position !== this.props.position) {
             // HACK, can this be done cleanly?
             window.setTimeout(() => {
@@ -183,7 +183,4 @@ export class QueueList extends Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(QueueList);
+export default connect(mapStateToProps, mapDispatchToProps)(QueueList);

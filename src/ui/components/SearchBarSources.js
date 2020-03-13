@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import React from 'react';
 
 export default function SearchBarSources({ sources, currentState }) {
     let source = sources.find(s => !s.client);

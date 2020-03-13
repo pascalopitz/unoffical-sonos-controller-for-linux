@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
 import moment from 'moment';
-import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import {
     setPlayMode,
@@ -55,7 +55,7 @@ export class PositionInfo extends Component {
         this._interval = null;
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         if (!_.isMatch(props.info, this.props.info)) {
             this.setState({
                 offset: 0
@@ -274,7 +274,4 @@ export class PositionInfo extends Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(PositionInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(PositionInfo);

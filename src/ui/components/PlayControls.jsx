@@ -1,5 +1,5 @@
-import { h } from 'preact';
-import { connect } from 'preact-redux';
+import React from 'react';
+import { connect } from 'react-redux';
 
 import { play, pause, playNext, playPrev } from '../reduxActions/PlayerActions';
 
@@ -42,7 +42,4 @@ export function PlayControls(props) {
     );
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(PlayControls);
+export default connect(mapStateToProps, mapDispatchToProps)(PlayControls);

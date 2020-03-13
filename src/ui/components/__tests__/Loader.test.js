@@ -1,6 +1,6 @@
-import { h } from 'preact';
+import React from 'react';
 import { Loader } from '../Loader';
-import { deep } from 'preact-render-spy';
+import { deep } from 'react-render-spy';
 
 describe('Loader', () => {
     it('renders when props.hasCurrent is false', () => {

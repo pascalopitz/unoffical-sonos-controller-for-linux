@@ -1,5 +1,5 @@
-import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import GroupManagementNode from './GroupManagementNode';
 
@@ -70,7 +70,4 @@ export class GroupManagement extends Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(GroupManagement);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupManagement);

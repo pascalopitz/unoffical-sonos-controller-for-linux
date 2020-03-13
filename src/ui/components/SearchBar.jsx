@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import shallowCompare from 'shallow-compare';
 
 import SearchBarSources from './SearchBarSources';
@@ -48,7 +48,7 @@ export class SearchBar extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         if (!props.term) {
             this.setState({
                 term: null
@@ -105,7 +105,4 @@ export class SearchBar extends Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(SearchBar);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

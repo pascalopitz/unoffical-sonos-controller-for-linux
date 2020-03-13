@@ -1,5 +1,5 @@
-import { h } from 'preact';
-import { connect } from 'preact-redux';
+import React from 'react';
+import { connect } from 'react-redux';
 
 import CurrentTrackExpanded from './CurrentTrackExpanded';
 import CurrentTrackCollapsed from './CurrentTrackCollapsed';
@@ -44,7 +44,4 @@ export function CurrentTrack(props) {
     return <CurrentTrackExpanded {...props} toggle={toggle} />;
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CurrentTrack);
+export default connect(mapStateToProps, mapDispatchToProps)(CurrentTrack);

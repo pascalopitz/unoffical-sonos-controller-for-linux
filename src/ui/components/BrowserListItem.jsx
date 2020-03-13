@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import shallowCompare from 'shallow-compare';
 
 import AlbumArt from './AlbumArt';
@@ -236,7 +236,4 @@ export class BrowserListItem extends Component {
     }
 }
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(BrowserListItem);
+export default connect(null, mapDispatchToProps)(BrowserListItem);

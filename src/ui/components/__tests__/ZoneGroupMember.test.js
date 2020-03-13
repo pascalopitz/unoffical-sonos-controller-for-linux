@@ -1,6 +1,6 @@
-import { h } from 'preact';
+import React from 'react';
 import { ZoneGroupMember } from '../ZoneGroupMember';
-import { deep } from 'preact-render-spy';
+import { deep } from 'react-render-spy';
 
 describe('ZoneGroupMember', () => {
     it('matches snapshot', () => {

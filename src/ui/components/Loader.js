@@ -1,5 +1,5 @@
-import { h } from 'preact';
-import { connect } from 'preact-redux';
+import React from 'react';
+import { connect } from 'react-redux';
 
 import { getHasCurrent } from '../selectors/LoaderSelectors';
 
@@ -25,7 +25,4 @@ export function Loader(props) {
     );
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Loader);
+export default connect(mapStateToProps, mapDispatchToProps)(Loader);

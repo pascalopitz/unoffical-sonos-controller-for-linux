@@ -1,5 +1,5 @@
-import { h, Component } from 'preact';
-import { Provider } from 'preact-redux';
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
 
 import store from '../reducers';
 
@@ -30,10 +30,10 @@ export class Application extends Component {
                 <div>
                     <div id="application">
                         <header id="top-control">
-                            <VolumeControls />
+                            {/*<VolumeControls />
                             <PlayControls />
                             <PositionInfo />
-                            <SearchBar />
+                            <SearchBar />*/}
                         </header>
                         <div id="column-container">
                             <div id="zone-container">

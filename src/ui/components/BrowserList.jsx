@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
-import VirtualList from 'preact-virtual-list';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import VirtualList from 'react-virtual-list';
 
 import BrowserListItem from './BrowserListItem';
 
@@ -62,7 +62,7 @@ export class BrowserList extends Component {
         this.props.home();
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         const elem = document.querySelector('#browser-container>div');
         if (props.history.length !== this.props.history.length) {
             elem.scrollTop = 0;
@@ -214,7 +214,4 @@ export class BrowserList extends Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(BrowserList);
+export default connect(mapStateToProps, mapDispatchToProps)(BrowserList);

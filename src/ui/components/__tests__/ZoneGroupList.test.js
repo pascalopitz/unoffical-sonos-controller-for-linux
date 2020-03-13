@@ -1,7 +1,7 @@
-import { h } from 'preact';
+import React from 'react';
 import { ZoneGroupList } from '../ZoneGroupList';
 import ZoneGroup from '../ZoneGroup';
-import { deep } from 'preact-render-spy';
+import { deep } from 'react-render-spy';
 
 jest.mock('../ZoneGroup');
 ZoneGroup.mockReturnValue(<p />);

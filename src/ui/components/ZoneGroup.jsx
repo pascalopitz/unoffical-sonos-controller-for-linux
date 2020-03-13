@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { h } from 'preact';
-import { connect } from 'preact-redux';
+import React from 'react';
+import { connect } from 'react-redux';
 
 import ZoneGroupPlayState from './ZoneGroupPlayState';
 import ZoneGroupMember from './ZoneGroupMember';
@@ -71,7 +71,4 @@ export function ZoneGroup(props) {
     );
 }
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ZoneGroup);
+export default connect(null, mapDispatchToProps)(ZoneGroup);

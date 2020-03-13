@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import React from 'react';
 
 export default function CurrentTrackCollapsed(props) {
     const { expanded, toggle } = props;

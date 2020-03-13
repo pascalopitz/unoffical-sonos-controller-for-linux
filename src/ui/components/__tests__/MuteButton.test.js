@@ -1,6 +1,6 @@
-import { h } from 'preact';
+import React from 'react';
 import { MuteButton } from '../MuteButton';
-import { deep } from 'preact-render-spy';
+import { deep } from 'react-render-spy';
 
 describe('MuteButton', () => {
     it('renders on', () => {

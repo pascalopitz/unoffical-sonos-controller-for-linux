@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 
 class VolumeSlider extends Component {
     constructor() {

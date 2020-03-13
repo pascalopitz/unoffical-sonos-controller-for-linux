@@ -1,6 +1,6 @@
-import { h } from 'preact';
+import React from 'react';
 import { SearchBar } from '../SearchBar';
-import { deep } from 'preact-render-spy';
+import { deep } from 'react-render-spy';
 
 describe('SearchBar', () => {
     it('renders on', () => {
