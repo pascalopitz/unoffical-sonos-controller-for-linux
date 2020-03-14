@@ -34,14 +34,13 @@ function mapDispatchToProps(dispatch) {
 export class SearchBar extends Component {
     constructor() {
         super();
+
+        this.ref = React.createRef();
+
         this.inputHandler = _.debounce(this._onChange.bind(this), 800, {
             trailing: true,
             leading: false
         });
-
-        this.state = {
-            term: null
-        };
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -49,10 +48,8 @@ export class SearchBar extends Component {
     }
 
     UNSAFE_componentWillReceiveProps(props) {
-        if (!props.term) {
-            this.setState({
-                term: null
-            });
+        if (!props.term || props.term === '') {
+            this.ref.current.value = '';
         }
     }
 
@@ -74,11 +71,10 @@ export class SearchBar extends Component {
             <div id="search">
                 <SearchBarSources {...this.props} />
                 <input
+                    ref={this.ref}
                     type="text"
                     id="searchfield"
-                    value={this.state.term || ''}
-                    onInput={this.inputHandler}
-                    onChange={() => {}}
+                    onChange={this.inputHandler}
                 />
                 {cancelButton}
             </div>
@@ -86,23 +82,13 @@ export class SearchBar extends Component {
     }
 
     _onClick() {
-        this.setState({
-            term: null
-        });
         this.props.exitSearch();
+        this.ref.current.value = '';
     }
 
     _onChange(e) {
-        const term = e.target.value;
-
-        this.setState({
-            term
-        });
-
+        const term = this.ref.current.value;
         this.props.search(term, this.props.searchMode);
-
-        e.preventDefault();
-        e.stopPropagation();
     }
 }
 

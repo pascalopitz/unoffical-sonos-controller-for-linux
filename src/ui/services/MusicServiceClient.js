@@ -604,13 +604,19 @@ class MusicServiceClient {
     }
 
     async getSearchTermMap() {
-        if (
-            !this.searchTermMap &&
-            this._serviceDefinition.presentation.mapUri
-        ) {
-            const res = await fetch(
-                this._serviceDefinition.presentation.mapUri
-            );
+        let mapUri = this._serviceDefinition.presentation.mapUri;
+
+        if (this._serviceDefinition.manifestUri) {
+            const res = await fetch(this._serviceDefinition.manifestUri);
+            const jsonRes = await res.json();
+
+            if (jsonRes.presentationMap.uri) {
+                mapUri = jsonRes.presentationMap.uri;
+            }
+        }
+
+        if (!this.searchTermMap && mapUri) {
+            const res = await fetch(mapUri);
 
             const body = await res.text();
             const e = xml2json(stripNamespaces(body));
@@ -631,7 +637,7 @@ class MusicServiceClient {
             );
         }
 
-        return this.searchTermMap || [];
+        return this.searchTermMap;
     }
 }
 
