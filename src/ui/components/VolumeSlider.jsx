@@ -61,6 +61,7 @@ class VolumeSlider extends Component {
                     min="0"
                     max="100"
                     value={Number(volume)}
+                    onChange={() => {}}
                     onMouseDown={this._onStart.bind(this)}
                     onMouseUp={this._onStop.bind(this)}
                     onInput={_.throttle(this._onChange.bind(this), 100)}

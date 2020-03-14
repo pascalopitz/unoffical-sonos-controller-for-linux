@@ -76,8 +76,9 @@ export class SearchBar extends Component {
                 <input
                     type="text"
                     id="searchfield"
-                    value={this.state.term}
+                    value={this.state.term || ''}
                     onInput={this.inputHandler}
+                    onChange={() => {}}
                 />
                 {cancelButton}
             </div>

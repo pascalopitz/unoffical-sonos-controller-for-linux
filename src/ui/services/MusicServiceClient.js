@@ -604,7 +604,10 @@ class MusicServiceClient {
     }
 
     async getSearchTermMap() {
-        if (!this.searchTermMap) {
+        if (
+            !this.searchTermMap &&
+            this._serviceDefinition.presentation.mapUri
+        ) {
             const res = await fetch(
                 this._serviceDefinition.presentation.mapUri
             );

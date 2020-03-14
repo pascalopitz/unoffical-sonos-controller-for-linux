@@ -30,10 +30,10 @@ export class Application extends Component {
                 <div>
                     <div id="application">
                         <header id="top-control">
-                            {/*<VolumeControls />
+                            <VolumeControls />
                             <PlayControls />
                             <PositionInfo />
-                            <SearchBar />*/}
+                            <SearchBar />
                         </header>
                         <div id="column-container">
                             <div id="zone-container">

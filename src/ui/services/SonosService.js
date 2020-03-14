@@ -234,6 +234,10 @@ const SonosService = {
     async queryMusicLibrary(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
 
+        if (!sonos) {
+            return;
+        }
+
         const result = await sonos
             .getMusicLibraryAsync('queue', {})
             .catch(() => null);

@@ -193,7 +193,7 @@ export const more = createAction(
             if (client) {
                 let res;
 
-                if (state.term) {
+                if (state.term && state.term.length) {
                     const searchTermMap = await client.getSearchTermMap();
                     const { mappedId } = _.find(searchTermMap, {
                         id: state.mode
@@ -219,7 +219,7 @@ export const more = createAction(
                 return state;
             }
 
-            if (state.term) {
+            if (state.term && state.term.length) {
                 const { mappedId } = _.find(LIBRARY_SEARCH_MODES, {
                     id: state.mode
                 });

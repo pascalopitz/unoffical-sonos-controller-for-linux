@@ -147,7 +147,7 @@ export class MusicServiceManagement extends Component {
                     <a
                         onClick={this._openLink.bind(this)}
                         target="_blank"
-                        style="cursor: pointer;"
+                        style={{ cursor: 'pointer' }}
                     >
                         {link.regUrl}
                     </a>

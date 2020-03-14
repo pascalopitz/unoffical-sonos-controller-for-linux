@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import VirtualList from 'react-virtual-list';
 
 import BrowserListItem from './BrowserListItem';
 
@@ -90,10 +89,6 @@ export class BrowserList extends Component {
     _searchModeChange(e) {
         const mode = e.target.getAttribute('data-mode');
         this.props.search(this.props.term, mode);
-    }
-
-    _renderRow(row) {
-        return row;
     }
 
     render() {
@@ -201,13 +196,9 @@ export class BrowserList extends Component {
             >
                 {headlineNodes}
                 <ul id="browser-container">
-                    <VirtualList
-                        rowHeight={50}
-                        sync={true}
-                        class="scrollcontainer"
-                        data={[actionNodes].concat(listItemNodes)}
-                        renderRow={this._renderRow.bind(this)}
-                    />
+                    <div className="scrollcontainer">
+                        {[actionNodes].concat(listItemNodes)}
+                    </div>
                 </ul>
             </div>
         );
