@@ -297,7 +297,7 @@ export const search = createAction(
 
             const result = await resolver(mappedId, term);
 
-            items = [...result.items];
+            items = _.compact(_.uniq([...result.items]));
             total = result.total;
             return {
                 items,
