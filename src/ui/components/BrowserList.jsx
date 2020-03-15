@@ -3,6 +3,9 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import AutoSizer from 'react-virtualized-auto-sizer';
+import VirtualList from 'react-tiny-virtual-list';
+
 import BrowserListItem from './BrowserListItem';
 
 import {
@@ -103,24 +106,9 @@ export class BrowserList extends Component {
         const { items, title, source } = currentState;
 
         let headlineNodes;
-        let actionNodes;
 
         const displayItems =
             source === 'start' ? items.concat(serviceItems) : items;
-
-        const listItemNodes = _.map(
-            _.reject(displayItems, i => !i),
-            (item, p) => {
-                const position = p + 1;
-                return (
-                    <BrowserListItem
-                        key={item.id}
-                        model={item}
-                        position={position}
-                    />
-                );
-            }
-        );
 
         if (searching) {
             const links = searchModes
@@ -166,29 +154,6 @@ export class BrowserList extends Component {
             headlineNodes = <h4>{title}</h4>;
         }
 
-        if (
-            this.props.currentState.class ===
-                'object.container.album.musicAlbum' ||
-            this.props.currentState.class ===
-                'object.container.playlistContainer' ||
-            JSON.parse(
-                String(
-                    _.get(this, 'state.currentState.parent.canPlay') || 'false'
-                )
-            )
-        ) {
-            const albumState = _.cloneDeep(this.props.currentState);
-            albumState.creator = null;
-            albumState.title = `${items.length} Tracks`;
-
-            if (_.get(albumState, 'parent.serviceClient')) {
-                albumState.serviceClient = this.props.currentState.serviceClient;
-                albumState.parent.serviceClient = this.props.currentState.parent.serviceClient;
-            }
-
-            actionNodes = <BrowserListItem model={albumState} />;
-        }
-
         return (
             <div
                 id="music-sources-container"
@@ -196,9 +161,29 @@ export class BrowserList extends Component {
             >
                 {headlineNodes}
                 <ul id="browser-container">
-                    <div className="scrollcontainer">
-                        {[actionNodes].concat(listItemNodes)}
-                    </div>
+                    <AutoSizer>
+                        {({ height, width }) => (
+                            <VirtualList
+                                className="scrollcontainer"
+                                height={height}
+                                width={width}
+                                itemSize={53}
+                                itemCount={displayItems.length}
+                                renderItem={({ index, style }) => {
+                                    const position = index + 1;
+                                    const item = displayItems[index];
+                                    return (
+                                        <BrowserListItem
+                                            style={style}
+                                            key={item.id}
+                                            model={item}
+                                            position={position}
+                                        />
+                                    );
+                                }}
+                            />
+                        )}
+                    </AutoSizer>
                 </ul>
             </div>
         );

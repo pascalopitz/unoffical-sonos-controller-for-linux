@@ -222,6 +222,7 @@ export class BrowserListItem extends Component {
                 onMouseOut={this._onMouseOut.bind(this)}
                 onMouseOver={this._onMouseOver.bind(this)}
                 data-position={this.props.position}
+                style={this.props.style}
             >
                 <AlbumArt src={albumArtURI} serviceId={serviceId} />
 

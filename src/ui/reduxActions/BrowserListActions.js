@@ -221,7 +221,7 @@ export const more = createAction(
 
             if (state.term && state.term.length) {
                 const { mappedId } = _.find(LIBRARY_SEARCH_MODES, {
-                    id: state.mode
+                    id: state.mode || LIBRARY_SEARCH_MODES[0].id
                 });
 
                 const result = await sonos.searchMusicLibraryAsync(
@@ -290,7 +290,7 @@ export const search = createAction(
             }
 
             const { mappedId } = _.find(searchTermMap || LIBRARY_SEARCH_MODES, {
-                id: mode
+                id: mode || LIBRARY_SEARCH_MODES[0].id
             });
 
             const result = await resolver(mappedId, term);
