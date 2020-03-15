@@ -51,14 +51,6 @@ npm run dist
 This might require some additional binaries, like `graphicsMagick` and
 `icnsutils`, which you can install via apt
 
-## Snap Install
-
-You can install with snap. Currently you need to pass the `--dangerous`. Once you have downloaded the snap run:
-
-```bash
-snap install sonos-controller-unofficial_0.1.3_amd64.snap --dangerous
-```
-
 ## Firewall settings
 
 You will need to whitelist these if you run Ubuntu firewall for example:
