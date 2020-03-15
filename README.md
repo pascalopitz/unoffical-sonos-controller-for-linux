@@ -4,7 +4,7 @@
 
 First I was tinkering with chrome apps and sonos, but chrome apps are
 a dying platform, so I've moved over to Electron. The project is written
-in mostly ES6 and utilizes Preact and Redux to manage the UI
+in mostly ES6 and utilizes React and Redux to manage the UI
 
 ![](http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/screenshots/screenshot_1.png?raw=true)
 
