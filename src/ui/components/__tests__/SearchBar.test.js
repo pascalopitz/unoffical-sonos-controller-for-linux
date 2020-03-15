@@ -1,6 +1,8 @@
 import React from 'react';
 import { SearchBar } from '../SearchBar';
-import { deep } from 'react-render-spy';
+import { render } from 'enzyme';
+
+jest.mock('../SearchBarSources', () => () => <p />);
 
 describe('SearchBar', () => {
     it('renders on', () => {
@@ -8,7 +10,7 @@ describe('SearchBar', () => {
             sources: [],
             currentState: {}
         };
-        const context = deep(<SearchBar {...props} />);
-        expect(context.output()).toMatchSnapshot();
+        const context = render(<SearchBar {...props} />);
+        expect(context).toMatchSnapshot();
     });
 });

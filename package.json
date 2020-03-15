@@ -65,16 +65,11 @@
       "app/node_modules",
       "node_modules"
     ],
-    "snapshotSerializers": [
-      "preact-render-spy/snapshot"
-    ],
-    "moduleNameMapper": {
-      "^react$": "preact-compat",
-      "^react-dom$": "preact-compat"
-    },
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
-    ]
+    ],
+    "snapshotSerializers": ["enzyme-to-json/serializer"],
+    "setupFiles": ["./setupTests.js"]
   },
   "license": "ISC",
   "devDependencies": {
@@ -95,5 +90,9 @@
     "prettier": "^1.16.4",
     "watch": "^1.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "enzyme-to-json": "^3.4.4"
+  }
 }

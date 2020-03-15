@@ -1,10 +1,8 @@
 import React from 'react';
 import { QueueList } from '../QueueList';
-import QueueListItem from '../QueueListItem';
-import { deep } from 'react-render-spy';
+import { render, mount } from 'enzyme';
 
-jest.mock('../QueueListItem');
-QueueListItem.mockReturnValue(<p className="queue-list-item" />);
+jest.mock('../QueueListItem', () => () => <p className="queue-list-item" />);
 
 describe('QueueList', () => {
     it('renders and matches snapshot', () => {
@@ -15,8 +13,8 @@ describe('QueueList', () => {
                 }
             ]
         };
-        const context = deep(<QueueList {...props} />);
-        expect(context.output()).toMatchSnapshot();
+        const context = render(<QueueList {...props} />);
+        expect(context).toMatchSnapshot();
     });
 
     it('clicking executed props.flush clickHandler', () => {
@@ -30,8 +28,10 @@ describe('QueueList', () => {
             ],
             flush
         };
-        const context = deep(<QueueList {...props} />);
+        const context = mount(<QueueList {...props} />);
         context.find('#queue-clear-button').simulate('click');
         expect(flush.mock.calls.length).toBe(1);
+
+        context.unmount();
     });
 });

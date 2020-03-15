@@ -5,28 +5,33 @@ exports[`QueueList renders and matches snapshot 1`] = `
   class="collapsed"
   id="queue-list-container-wrapper"
 >
-  <h4 id="queue">QUEUE</h4>
-  <div id="queue-list-container">
+  <h4
+    id="queue"
+  >
+    QUEUE
+  </h4>
+  <div
+    id="queue-list-container"
+  >
     <a
       id="queue-clear-button"
-      onClick={[Function bound _onFlushClick]}
       title="Clear Queue"
     >
-      <i class="material-icons">clear_all</i>
+      <i
+        class="material-icons"
+      >
+        clear_all
+      </i>
     </a>
     <ul
       id="queue-container"
-      onDragOver={[Function bound _onDragOver]}
-      onDragStart={[Function bound _onDragStart]}
-      onDragEnd={[Function bound _onDragEnd]}
     >
       <div
-        onScroll={[Function anonymous]}
         class="scrollcontainer"
       >
-        <div style="position:relative; overflow:hidden; width:100%; min-height:100%; height:53px;">
-          <div style="position:absolute; top:0; left:0; height:100%; width:100%; overflow:visible; top:0px;"></div>
-        </div>
+        <p
+          class="queue-list-item"
+        />
       </div>
     </ul>
   </div>

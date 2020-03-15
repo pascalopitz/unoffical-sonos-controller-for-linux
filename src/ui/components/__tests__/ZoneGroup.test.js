@@ -1,11 +1,9 @@
 import React from 'react';
 import { ZoneGroup } from '../ZoneGroup';
 import ZoneGroupPlayState from '../ZoneGroupPlayState';
-import ZoneGroupMember from '../ZoneGroupMember';
-import { deep } from 'react-render-spy';
+import { mount } from 'enzyme';
 
-jest.mock('../ZoneGroupMember');
-ZoneGroupMember.mockReturnValue(<p className="member" />);
+jest.mock('../ZoneGroupMember', () => () => <p className="member" />);
 
 jest.mock('../ZoneGroupPlayState');
 ZoneGroupPlayState.mockReturnValue(<p className="play-state" />);
@@ -33,8 +31,8 @@ describe('ZoneGroup', () => {
     });
 
     it('matches snapshot', () => {
-        const context = deep(<ZoneGroup {...props} />);
-        expect(context.output()).toMatchSnapshot();
+        const context = mount(<ZoneGroup {...props} />);
+        expect(context).toMatchSnapshot();
         expect(context.find('.not-selected').length).toBe(1);
         expect(ZoneGroupPlayState).toHaveBeenCalled();
 
@@ -44,6 +42,8 @@ describe('ZoneGroup', () => {
                 playing: true
             }
         });
+
+        context.unmount();
     });
 
     it('matches snapshot when selected', () => {
@@ -54,19 +54,21 @@ describe('ZoneGroup', () => {
             currentHost
         };
 
-        const context = deep(<ZoneGroup {...props} />);
-        expect(context.output()).toMatchSnapshot();
+        const context = mount(<ZoneGroup {...props} />);
+        expect(context).toMatchSnapshot();
         expect(context.find('.selected').length).toBe(1);
+        context.unmount();
     });
 
     it('clicking whole group selects it', () => {
-        const context = deep(<ZoneGroup {...props} />);
+        const context = mount(<ZoneGroup {...props} />);
         context.find('.zone-group').simulate('click');
         expect(props.selectGroup).toHaveBeenCalled();
+        context.unmount();
     });
 
     it('clicking button opens management', () => {
-        const context = deep(<ZoneGroup {...props} />);
+        const context = mount(<ZoneGroup {...props} />);
 
         context.find('.group-button').simulate('click', {
             preventDefault: jest.fn(),
@@ -74,5 +76,6 @@ describe('ZoneGroup', () => {
         });
 
         expect(props.showManagement).toHaveBeenCalled();
+        context.unmount();
     });
 });

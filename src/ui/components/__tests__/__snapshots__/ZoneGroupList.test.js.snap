@@ -3,21 +3,93 @@
 exports[`ZoneGroupList matches snapshot 1`] = `
 <div
   id="zone-container-inner"
-  style="width:100%;display: flex; flex-direction: column;"
+  style="width:100%;display:flex;flex-direction:column"
 >
-  <div style="overflow-y: auto;">
-    <div id="zone-wrapper"></div>
+  <div
+    style="overflow-y:auto"
+  >
+    <div
+      id="zone-wrapper"
+    />
   </div>
 </div>
 `;
 
 exports[`ZoneGroupList renders group items 1`] = `
-<div
-  id="zone-container-inner"
-  style="width:100%;display: flex; flex-direction: column;"
+<ZoneGroupList
+  groups={
+    Object {
+      "1": Object {
+        "foo": true,
+      },
+      "2": Object {
+        "foo": false,
+      },
+    }
+  }
 >
-  <div style="overflow-y: auto;">
-    <div id="zone-wrapper"></div>
+  <div
+    id="zone-container-inner"
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": " column",
+        "width": "100%",
+      }
+    }
+  >
+    <div
+      style={
+        Object {
+          "overflowY": "auto",
+        }
+      }
+    >
+      <div
+        id="zone-wrapper"
+      >
+        <Component
+          group={
+            Object {
+              "foo": true,
+            }
+          }
+          groups={
+            Object {
+              "1": Object {
+                "foo": true,
+              },
+              "2": Object {
+                "foo": false,
+              },
+            }
+          }
+          key="1"
+        >
+          <p />
+        </Component>
+        <Component
+          group={
+            Object {
+              "foo": false,
+            }
+          }
+          groups={
+            Object {
+              "1": Object {
+                "foo": true,
+              },
+              "2": Object {
+                "foo": false,
+              },
+            }
+          }
+          key="2"
+        >
+          <p />
+        </Component>
+      </div>
+    </div>
   </div>
-</div>
+</ZoneGroupList>
 `;

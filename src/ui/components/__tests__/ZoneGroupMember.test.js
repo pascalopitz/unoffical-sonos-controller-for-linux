@@ -1,6 +1,6 @@
 import React from 'react';
 import { ZoneGroupMember } from '../ZoneGroupMember';
-import { deep } from 'react-render-spy';
+import { render } from 'enzyme';
 
 describe('ZoneGroupMember', () => {
     it('matches snapshot', () => {
@@ -9,7 +9,7 @@ describe('ZoneGroupMember', () => {
                 name: 'My Name'
             }
         };
-        const context = deep(<ZoneGroupMember {...props} />);
-        expect(context.output()).toMatchSnapshot();
+        const context = render(<ZoneGroupMember {...props} />);
+        expect(context).toMatchSnapshot();
     });
 });

@@ -149,7 +149,6 @@ class VolumeControls extends Component {
                 };
 
                 const changeVolume = volume => {
-                    console.log(volume);
                     if (!this.propsexpanded) {
                         this.props.setExpanded(true);
                     }

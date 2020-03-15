@@ -1,37 +1,126 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ZoneGroup matches snapshot 1`] = `
-<div
-  class="not-selected zone-group"
-  onClick={[Function _onClick]}
+<ZoneGroup
+  group={
+    Array [
+      Object {
+        "coordinator": "true",
+        "host": "myhost",
+        "member": 1,
+      },
+    ]
+  }
+  playStates={
+    Object {
+      "myhost": Object {
+        "playing": true,
+      },
+    }
+  }
+  selectGroup={[MockFunction]}
+  showManagement={[MockFunction]}
 >
-  <ul>
-    <p class="member"></p>
-  </ul>
   <div
-    class="group-button"
-    onClick={[Function _showGroupManagement]}
+    className="not-selected zone-group"
+    onClick={[Function]}
   >
-    Group
+    <ul>
+      <Component
+        key="0"
+        member={
+          Object {
+            "coordinator": "true",
+            "host": "myhost",
+            "member": 1,
+          }
+        }
+      >
+        <p
+          className="member"
+        />
+      </Component>
+    </ul>
+    <div
+      className="group-button"
+      onClick={[Function]}
+    >
+      Group
+    </div>
+    <ZoneGroupPLayState
+      playState={
+        Object {
+          "playing": true,
+        }
+      }
+    >
+      <p
+        className="play-state"
+      />
+    </ZoneGroupPLayState>
   </div>
-  <p class="play-state"></p>
-</div>
+</ZoneGroup>
 `;
 
 exports[`ZoneGroup matches snapshot when selected 1`] = `
-<div
-  class="selected zone-group"
-  onClick={[Function _onClick]}
+<ZoneGroup
+  currentHost="myhost"
+  group={
+    Array [
+      Object {
+        "coordinator": "true",
+        "host": "myhost",
+        "member": 1,
+      },
+    ]
+  }
+  playStates={
+    Object {
+      "myhost": Object {
+        "playing": true,
+      },
+    }
+  }
+  selectGroup={[MockFunction]}
+  showManagement={[MockFunction]}
 >
-  <ul>
-    <p class="member"></p>
-  </ul>
   <div
-    class="group-button"
-    onClick={[Function _showGroupManagement]}
+    className="selected zone-group"
+    onClick={[Function]}
   >
-    Group
+    <ul>
+      <Component
+        key="0"
+        member={
+          Object {
+            "coordinator": "true",
+            "host": "myhost",
+            "member": 1,
+          }
+        }
+      >
+        <p
+          className="member"
+        />
+      </Component>
+    </ul>
+    <div
+      className="group-button"
+      onClick={[Function]}
+    >
+      Group
+    </div>
+    <ZoneGroupPLayState
+      playState={
+        Object {
+          "playing": true,
+        }
+      }
+    >
+      <p
+        className="play-state"
+      />
+    </ZoneGroupPLayState>
   </div>
-  <p class="play-state"></p>
-</div>
+</ZoneGroup>
 `;

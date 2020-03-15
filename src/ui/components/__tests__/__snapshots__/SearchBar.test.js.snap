@@ -1,11 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SearchBar renders on 1`] = `
-<div id="search">
+<div
+  id="search"
+>
+  <p />
   <input
-    type="text"
     id="searchfield"
-    onInput={[Function debounced]}
-   />
+    type="text"
+  />
 </div>
 `;
