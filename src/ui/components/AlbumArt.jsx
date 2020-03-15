@@ -10,6 +10,7 @@ import {
 } from '../helpers/dom-utility';
 
 import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
+import makeCancelable from '../helpers/makeCancelable';
 
 const MIN_RATIO = 0.5;
 
@@ -61,42 +62,44 @@ export class AlbumArt extends Component {
                   sonos.port +
                   decodeURIComponent(url);
 
-        new Promise((resolve, reject) => {
-            const img = new Image();
-            img.src = srcUrl;
-            img.onload = resolve;
-            img.onerror = reject;
-        })
-            .then(() => {
-                if (
-                    this.props.src === url ||
-                    this.props.serviceId === serviceId
-                ) {
-                    this.setState({
-                        src: srcUrl,
-                        loading: false
-                    });
-                } else {
-                    this.setState({
-                        loading: false
-                    });
-                }
+        this.loadPromise = makeCancelable(
+            new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = srcUrl;
+                img.onload = resolve;
+                img.onerror = reject;
             })
-            .catch(() => {
-                if (
-                    this.props.src === url ||
-                    this.props.serviceId === serviceId
-                ) {
-                    this.setState({
-                        failed: true,
-                        loading: false
-                    });
-                } else {
-                    this.setState({
-                        loading: false
-                    });
-                }
-            });
+                .then(() => {
+                    if (
+                        this.props.src === url ||
+                        this.props.serviceId === serviceId
+                    ) {
+                        this.setState({
+                            src: srcUrl,
+                            loading: false
+                        });
+                    } else {
+                        this.setState({
+                            loading: false
+                        });
+                    }
+                })
+                .catch(() => {
+                    if (
+                        this.props.src === url ||
+                        this.props.serviceId === serviceId
+                    ) {
+                        this.setState({
+                            failed: true,
+                            loading: false
+                        });
+                    } else {
+                        this.setState({
+                            loading: false
+                        });
+                    }
+                })
+        );
     }
 
     componentDidMount() {
@@ -134,6 +137,10 @@ export class AlbumArt extends Component {
 
         if (this.timeout) {
             window.clearTimeout(this.timeout);
+        }
+
+        if (this.loadPromise) {
+            this.loadPromise.cancel();
         }
     }
 

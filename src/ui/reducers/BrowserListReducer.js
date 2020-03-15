@@ -72,6 +72,23 @@ export default handleActions(
             };
         },
 
+        [Constants.BROWSER_SCROLL_POSITION]: (state, action) => {
+            const { history } = state;
+
+            const lastItem = _.last(history);
+            const scrollPosition = action.payload;
+
+            history[history.length - 1] = {
+                ...lastItem,
+                scrollPosition
+            };
+
+            return {
+                ...state,
+                history
+            };
+        },
+
         [Constants.BROWSER_SCROLL_RESULT]: (state, action) => {
             let { history } = state;
 

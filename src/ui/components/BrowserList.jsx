@@ -22,6 +22,7 @@ import {
     back,
     more,
     search,
+    scroll,
     playCurrentAlbum
 } from '../reduxActions/BrowserListActions';
 
@@ -39,6 +40,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        scroll: position => dispatch(scroll(position)),
         home: () => dispatch(home()),
         back: () => dispatch(back()),
         more: currentState => dispatch(more(currentState)),
@@ -50,6 +52,8 @@ const mapDispatchToProps = dispatch => {
 export class BrowserList extends Component {
     constructor(props) {
         super(props);
+
+        this.scrollRef = React.createRef();
 
         this.moreHandler = _.throttle(() => {
             this.props.more(this.props.currentState);
@@ -64,9 +68,17 @@ export class BrowserList extends Component {
         this.props.home();
     }
 
-    UNSAFE_componentWillReceiveProps(props) {
-        const elem = document.querySelector('#browser-container>div');
-        if (props.history.length !== this.props.history.length) {
+    UNSAFE_componentWillReceiveProps({ history, currentState }) {
+        const elem = this.scrollRef.current.rootNode;
+
+        if (
+            history.length === this.props.history.length - 1 &&
+            currentState.scrollPosition
+        ) {
+            window.setTimeout(() => {
+                elem.scrollTop = currentState.scrollPosition;
+            }, 10);
+        } else if (history.length !== this.props.history.length) {
             elem.scrollTop = 0;
         }
     }
@@ -79,6 +91,8 @@ export class BrowserList extends Component {
         if (height === -1 || node.scrollTop === 0) {
             return;
         }
+
+        this.props.scroll(node.scrollTop);
 
         if (node.scrollTop + 50 > height) {
             this.moreHandler();
@@ -155,10 +169,7 @@ export class BrowserList extends Component {
         }
 
         return (
-            <div
-                id="music-sources-container"
-                onScrollCapture={this._onScroll.bind(this)}
-            >
+            <div id="music-sources-container">
                 {headlineNodes}
                 <ul id="browser-container">
                     <AutoSizer>
@@ -169,6 +180,8 @@ export class BrowserList extends Component {
                                 width={width}
                                 itemSize={53}
                                 itemCount={displayItems.length}
+                                onScrollCapture={this._onScroll.bind(this)}
+                                ref={this.scrollRef}
                                 renderItem={({ index, style }) => {
                                     const position = index + 1;
                                     const item = displayItems[index];

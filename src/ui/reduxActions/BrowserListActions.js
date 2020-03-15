@@ -165,6 +165,8 @@ export const home = createAction(Constants.BROWSER_HOME);
 
 export const back = createAction(Constants.BROWSER_BACK);
 
+export const scroll = createAction(Constants.BROWSER_SCROLL_POSITION);
+
 export const more = createAction(
     Constants.BROWSER_SCROLL_RESULT,
     async prevState => {
@@ -410,7 +412,7 @@ export const select = createAction(
                 searchTermMap: searchTermMap,
                 serviceClient: client,
                 total: res.total,
-                items: _.without(items, undefined)
+                items: _.compact(_.uniq(items))
             };
         }
 
