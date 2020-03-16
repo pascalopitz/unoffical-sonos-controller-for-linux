@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "homepage": "http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/",
@@ -68,8 +68,12 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
     ],
-    "snapshotSerializers": ["enzyme-to-json/serializer"],
-    "setupFiles": ["./setupTests.js"]
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "setupFiles": [
+      "./setupTests.js"
+    ]
   },
   "license": "ISC",
   "devDependencies": {
