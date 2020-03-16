@@ -21,7 +21,8 @@ describe('BrowserListSeelctors', () => {
         it('returns false if search term is falsy', () => {
             const state = {
                 browserList: {
-                    searchTerm: null
+                    searchTerm: null,
+                    history: [{}]
                 }
             };
 
@@ -33,13 +34,36 @@ describe('BrowserListSeelctors', () => {
         it('returns true if search term is set', () => {
             const state = {
                 browserList: {
-                    searchTerm: 'search'
+                    searchTerm: 'search',
+                    history: [
+                        {
+                            mode: 'artists'
+                        }
+                    ]
                 }
             };
 
             const res = s.getSearching(state);
 
             expect(res).toBe(true);
+        });
+
+        it('returns false if search term is set but sub item browsed', () => {
+            const state = {
+                browserList: {
+                    searchTerm: 'search',
+                    history: [
+                        {
+                            mode: 'artists'
+                        },
+                        {}
+                    ]
+                }
+            };
+
+            const res = s.getSearching(state);
+
+            expect(res).toBe(false);
         });
     });
 });

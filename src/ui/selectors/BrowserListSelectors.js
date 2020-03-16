@@ -19,9 +19,8 @@ export function getServiceItems(state) {
 }
 
 export function getSearching(state) {
-    return (
-        !!state.browserList.searchTerm && _.last(state.browserList.history).mode
-    );
+    const lastItem = _.last(state.browserList.history) || {};
+    return !!state.browserList.searchTerm && !!lastItem.mode;
 }
 
 export function getSearchMode(state) {
