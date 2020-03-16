@@ -8,9 +8,13 @@ const wakeEvent = require('wake-event');
 let win;
 
 function createWindow() {
-    win = new BrowserWindow({ width: 800, height: 600, webPreferences: {
-        nodeIntegration: true
-    }});
+    win = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
 
     const menu = Menu.buildFromTemplate([
         {
@@ -118,6 +122,7 @@ function createWindow() {
 
     if (process.env.NODE_ENV === 'development') {
         win.webContents.toggleDevTools();
+        win.maximize();
     }
 }
 
