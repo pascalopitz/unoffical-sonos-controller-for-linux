@@ -446,7 +446,7 @@ const SonosService = {
                 {
                     const lastChange = xml2json(data.LastChange);
 
-                    if (subscription) {
+                    if (subscription && this._currentDevice) {
                         const transportState = subscription.sonos.translateState(
                             lastChange.Event.InstanceID.TransportState.$.val
                         );

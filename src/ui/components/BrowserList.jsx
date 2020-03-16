@@ -188,7 +188,10 @@ export class BrowserList extends Component {
                                     return (
                                         <BrowserListItem
                                             style={style}
-                                            key={item.id}
+                                            key={
+                                                item.id ||
+                                                `position-${position}`
+                                            }
                                             model={item}
                                             position={position}
                                         />
