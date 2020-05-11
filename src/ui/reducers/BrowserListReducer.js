@@ -4,7 +4,7 @@ import Constants from '../constants';
 
 import {
     START_STATE,
-    DEFAULT_SEARCH_MODE
+    DEFAULT_SEARCH_MODE,
 } from '../constants/BrowserListConstants';
 
 const initialState = {
@@ -13,9 +13,9 @@ const initialState = {
     searchMode: DEFAULT_SEARCH_MODE,
     history: [
         {
-            ...START_STATE
-        }
-    ]
+            ...START_STATE,
+        },
+    ],
 };
 
 export default handleActions(
@@ -29,7 +29,7 @@ export default handleActions(
                     ...state,
                     source,
                     searchTerm: null,
-                    searchMode: mode
+                    searchMode: mode,
                 };
             }
 
@@ -39,20 +39,20 @@ export default handleActions(
                 ...state,
                 source,
                 searchTerm: term,
-                history
+                history,
             };
         },
 
-        [Constants.BROWSER_SEARCH_EXIT]: state => {
+        [Constants.BROWSER_SEARCH_EXIT]: (state) => {
             let { history } = state;
 
-            history = history.filter(h => !h.term);
+            history = history.filter((h) => !h.term);
 
             return {
                 ...state,
                 history,
                 searchTerm: null,
-                searchMode: DEFAULT_SEARCH_MODE
+                searchMode: DEFAULT_SEARCH_MODE,
             };
         },
 
@@ -68,7 +68,7 @@ export default handleActions(
             return {
                 ...state,
                 searchTerm: term,
-                history
+                history,
             };
         },
 
@@ -80,12 +80,12 @@ export default handleActions(
 
             history[history.length - 1] = {
                 ...lastItem,
-                scrollPosition
+                scrollPosition,
             };
 
             return {
                 ...state,
-                history
+                history,
             };
         },
 
@@ -98,29 +98,29 @@ export default handleActions(
 
             return {
                 ...state,
-                history
+                history,
             };
         },
 
         [Constants.BROWSER_HOME]: () => {
             return {
-                ...initialState
+                ...initialState,
             };
         },
 
         [Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED]: () => {
             return {
-                ...initialState
+                ...initialState,
             };
         },
 
         [Constants.MUSICSERVICE_SESSION_ID_RECEIVED]: () => {
             return {
-                ...initialState
+                ...initialState,
             };
         },
 
-        [Constants.BROWSER_BACK]: state => {
+        [Constants.BROWSER_BACK]: (state) => {
             const { history } = state;
 
             if (history.length === 1) {
@@ -129,9 +129,9 @@ export default handleActions(
 
             return {
                 ...state,
-                history: _.take(history, history.length - 1)
+                history: _.take(history, history.length - 1),
             };
-        }
+        },
     },
     initialState
 );

@@ -4,22 +4,24 @@ import { connect } from 'react-redux';
 import {
     getZoneGroups,
     getCurrentHost,
-    getPlayStates
+    getCurrentTracks,
+    getPlayStates,
 } from '../selectors/ZoneGroupSelectors';
 
 import ZoneGroup from './ZoneGroup';
 
-export const mapStateToProps = state => {
+export const mapStateToProps = (state) => {
     return {
         groups: getZoneGroups(state),
+        currentTracks: getCurrentTracks(state),
         playStates: getPlayStates(state),
-        currentHost: getCurrentHost(state)
+        currentHost: getCurrentHost(state),
     };
 };
 
 export function ZoneGroupList(props) {
-    const zoneGroupNodes = Object.keys(props.groups || {}).map(key => {
-        const item = props.groups[key];
+    const zoneGroupNodes = props.groups.map((item) => {
+        const key = item.ID;
         return <ZoneGroup key={key} group={item} {...props} />;
     });
 

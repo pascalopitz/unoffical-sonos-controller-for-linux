@@ -16,26 +16,26 @@ const appReducer = combineReducers({
     volume: VolumeControlReducer,
     queue: QueueReducer,
     browserList: BrowserListReducer,
-    musicServices: MusicServicesReducer
+    musicServices: MusicServicesReducer,
 });
 
-const ensureResolvedMiddleware = () => next => async action => {
+const ensureResolvedMiddleware = () => (next) => async (action) => {
     const payload = await action.payload;
 
     next({
         ...action,
-        payload
+        payload,
     });
 };
 
-const getStateMiddleware = store => next => action => {
+const getStateMiddleware = (store) => (next) => (action) => {
     next({ ...action, getState: store.getState });
 };
 
-const catcherMiddleware = () => next => action => {
+const catcherMiddleware = () => (next) => (action) => {
     const payload =
         action.payload instanceof Promise
-            ? action.payload.catch(err => {
+            ? action.payload.catch((err) => {
                   console.error(err);
                   throw err;
               })
@@ -43,7 +43,7 @@ const catcherMiddleware = () => next => action => {
 
     next({
         ...action,
-        payload
+        payload,
     });
 };
 

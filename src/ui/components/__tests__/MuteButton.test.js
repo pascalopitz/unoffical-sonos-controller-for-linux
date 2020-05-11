@@ -5,7 +5,7 @@ import { render, mount } from 'enzyme';
 describe('MuteButton', () => {
     it('renders on', () => {
         const props = {
-            muted: false
+            muted: false,
         };
         const context = render(<MuteButton {...props} />);
         expect(context).toMatchSnapshot();
@@ -13,7 +13,7 @@ describe('MuteButton', () => {
 
     it('renders off', () => {
         const props = {
-            muted: true
+            muted: true,
         };
         const context = render(<MuteButton {...props} />);
         expect(context).toMatchSnapshot();
@@ -21,7 +21,7 @@ describe('MuteButton', () => {
 
     it('clickhandler', () => {
         const props = {
-            clickHandler: jest.fn()
+            clickHandler: jest.fn(),
         };
         const context = mount(<MuteButton {...props} />);
         context.find('.mute-button').simulate('click');

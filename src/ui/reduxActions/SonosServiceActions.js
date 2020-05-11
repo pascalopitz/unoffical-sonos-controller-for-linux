@@ -24,6 +24,8 @@ export const queueUpdate = createAction(Constants.SONOS_SERVICE_QUEUE_UPDATE);
 
 export const volumeUpdate = createAction(Constants.SONOS_SERVICE_VOLUME_UPDATE);
 
+export const mutedUpdate = createAction(Constants.SONOS_SERVICE_MUTED_UPDATE);
+
 export const currentTrackUpdate = createAction(
     Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE
 );

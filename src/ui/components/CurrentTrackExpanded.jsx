@@ -7,7 +7,11 @@ export default function CurrentTrackExpanded(props) {
     const { currentTrack, nextTrack } = props;
 
     if (nextTrack && nextTrack.title) {
-        nextTrackInfo = <p id="next-track">{nextTrack.title}</p>;
+        nextTrackInfo = (
+            <p id="next-track">
+                {nextTrack.title} - {nextTrack.artist}
+            </p>
+        );
     }
 
     return (

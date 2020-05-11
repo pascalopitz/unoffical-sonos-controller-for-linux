@@ -2,7 +2,9 @@
 
 # Unofficial Sonos Controller for Linux
 
-First I was tinkering with chrome apps and sonos, but chrome apps are
+First I was tinkering with Chrome apps and sonos. I released this as a
+Chrome app, which had a good 70k users on the Chrome store.
+Subsequently Chrome apps turned out to be
 a dying platform, so I've moved over to Electron. The project is written
 in mostly ES6 and utilizes React and Redux to manage the UI
 
@@ -13,9 +15,8 @@ in mostly ES6 and utilizes React and Redux to manage the UI
 I use Ubuntu as my main OS, and there's no decent controller app.
 So I am aiming to at some point provide a usable sonos controller that
 can run on Linux also, installed via deb file. Maybe it won't have all
-the functions of the real sonos player, but if I can browse the library
-and manage the queue, I'll be pretty damn happy. Previously this was a
-chrome app, and I had a good 70k users on the chrome store.
+the functions of the real sonos player, but if I can browse the library, Spotify
+and manage the queue, I'll be pretty damn happy.
 
 ## Install via .deb file
 
@@ -62,9 +63,10 @@ You will need to whitelist these if you run Ubuntu firewall for example:
 
 ## Thanks to other projects
 
-- I ported nearly all of https://github.com/bencevans/node-sonos/
+- Because this started out as chrome app, I originally ported nearly all of https://github.com/bencevans/node-sonos/
   so that it worked in chrome, and made minor modifications.
   Also made it into an ES6 code base where it was easy to do.
+  Then, for version 0.2.0 I have removed the ported/modified code and am now using node-sonos vanilla.
 
 - The web interface markup and css is poached from https://github.com/jishi/node-sonos-web-controller/
 

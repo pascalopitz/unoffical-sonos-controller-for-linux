@@ -33,7 +33,7 @@ export const getSession = createAction(
             }
 
             const authToken = {
-                authToken: sessionId
+                authToken: sessionId,
             };
 
             // TODO: fix this
@@ -49,7 +49,7 @@ export const getSession = createAction(
 
 export const getLink = createAction(
     Constants.MUSICSERVICE_ADD_LINK_RECEIVED,
-    async client => {
+    async (client) => {
         let link;
 
         if (client.auth === 'DeviceLink') {

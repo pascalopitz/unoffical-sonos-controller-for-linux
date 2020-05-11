@@ -6,7 +6,7 @@ import SonosService from '../services/SonosService';
 import {
     getClosest,
     createIntersectionObserver,
-    purgeIntersectionObserver
+    purgeIntersectionObserver,
 } from '../helpers/dom-utility';
 
 import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
@@ -22,7 +22,7 @@ export class AlbumArt extends Component {
 
         this.state = {
             src: null,
-            visible: false
+            visible: false,
         };
     }
 
@@ -48,7 +48,7 @@ export class AlbumArt extends Component {
             : this.props.src;
 
         this.setState({
-            loading: true
+            loading: true,
         });
 
         const srcUrl =
@@ -76,11 +76,11 @@ export class AlbumArt extends Component {
                     ) {
                         this.setState({
                             src: srcUrl,
-                            loading: false
+                            loading: false,
                         });
                     } else {
                         this.setState({
-                            loading: false
+                            loading: false,
                         });
                     }
                 })
@@ -91,11 +91,11 @@ export class AlbumArt extends Component {
                     ) {
                         this.setState({
                             failed: true,
-                            loading: false
+                            loading: false,
                         });
                     } else {
                         this.setState({
-                            loading: false
+                            loading: false,
                         });
                     }
                 })
@@ -108,12 +108,12 @@ export class AlbumArt extends Component {
         const options = {
             root: getClosest(node, this.props.parentType || 'ul'),
             rootMargin: '0px',
-            threshold: MIN_RATIO
+            threshold: MIN_RATIO,
         };
 
         const callback = ([entry]) => {
             this.setState({
-                visible: entry.intersectionRatio >= MIN_RATIO
+                visible: entry.intersectionRatio >= MIN_RATIO,
             });
         };
 
@@ -152,7 +152,7 @@ export class AlbumArt extends Component {
         ) {
             this.setState({
                 src: null,
-                failed: null
+                failed: null,
             });
 
             if (this.state.visible) {
@@ -172,7 +172,7 @@ export class AlbumArt extends Component {
 
         const css = {
             backgroundImage: `url("${src}")`,
-            backgroundSize: 'contain'
+            backgroundSize: 'contain',
         };
 
         return (

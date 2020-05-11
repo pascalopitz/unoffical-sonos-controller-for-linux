@@ -8,22 +8,22 @@ import {
     removeTrack,
     removeSelectedTracks,
     select,
-    deselect
+    deselect,
 } from '../reduxActions/QueueActions';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-        selected: state.queue.selected
+        selected: state.queue.selected,
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        select: pos => dispatch(select(pos)),
-        deselect: pos => dispatch(deselect(pos)),
-        gotoPosition: pos => dispatch(gotoPosition(pos)),
-        removeTrack: pos => dispatch(removeTrack(pos)),
-        removeSelectedTracks: () => dispatch(removeSelectedTracks())
+        select: (pos) => dispatch(select(pos)),
+        deselect: (pos) => dispatch(deselect(pos)),
+        gotoPosition: (pos) => dispatch(gotoPosition(pos)),
+        removeTrack: (pos) => dispatch(removeTrack(pos)),
+        removeSelectedTracks: () => dispatch(removeSelectedTracks()),
     };
 };
 
@@ -31,7 +31,7 @@ export class QueueListItem extends Component {
     constructor() {
         super();
         this.state = {
-            isExpanded: false
+            isExpanded: false,
         };
     }
 
@@ -46,14 +46,14 @@ export class QueueListItem extends Component {
     _hideMenu() {
         if (this.state.isExpanded) {
             this.setState({
-                isExpanded: false
+                isExpanded: false,
             });
         }
     }
 
     _toggle(e) {
         this.setState({
-            isExpanded: !this.state.isExpanded
+            isExpanded: !this.state.isExpanded,
         });
         e.preventDefault();
         e.stopPropagation();
@@ -174,7 +174,7 @@ export class QueueListItem extends Component {
             dragOver = this.props.dragOverMode;
         }
 
-        const htmlTitle = 'Play "' + track.creator + ' - ' + track.title + '"';
+        const htmlTitle = 'Play "' + track.artist + ' - ' + track.title + '"';
 
         return (
             <li
@@ -192,7 +192,7 @@ export class QueueListItem extends Component {
                 <AlbumArt src={track.albumArtURI} />
                 <div className="trackinfo">
                     <p className="title">{track.title}</p>
-                    <p className="artist">{track.creator}</p>
+                    <p className="artist">{track.artist}</p>
                 </div>
                 {selectionToggle}
                 {inlineMenu}

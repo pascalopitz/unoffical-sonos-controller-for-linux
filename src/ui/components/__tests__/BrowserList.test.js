@@ -10,13 +10,13 @@ describe('BrowserList', () => {
             currentState: {
                 items: [
                     {
-                        id: 1
-                    }
+                        id: 1,
+                    },
                 ],
                 title: 'My List',
-                sournce: 'source'
+                sournce: 'source',
             },
-            history: []
+            history: [],
         };
 
         const context = render(<BrowserList {...props} />);

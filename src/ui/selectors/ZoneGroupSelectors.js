@@ -2,10 +2,7 @@ import _ from 'lodash';
 
 export function getZoneGroups(state) {
     const zones = state.sonosService.zones;
-    return _(zones)
-        .sortBy('name')
-        .groupBy('group')
-        .value();
+    return _(zones).sortBy('Name').value();
 }
 
 export function getCurrentHost(state) {
@@ -17,5 +14,19 @@ export function getCurrentGroup(state) {
 }
 
 export function getPlayStates(state) {
+    return state.sonosService.playStates;
+}
+
+export function getCurrentTracks(state) {
     return state.sonosService.currentTracks;
+}
+
+export function getCurrentPlayer(state) {
+    const { currentHost, deviceSearches } = state.sonosService;
+    return deviceSearches[currentHost];
+}
+
+export function getFirstPlayer(state) {
+    const [first] = Object.values(state.sonosService.deviceSearches);
+    return first;
 }

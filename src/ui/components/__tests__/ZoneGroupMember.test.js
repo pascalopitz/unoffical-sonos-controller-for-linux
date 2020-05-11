@@ -6,8 +6,8 @@ describe('ZoneGroupMember', () => {
     it('matches snapshot', () => {
         const props = {
             member: {
-                name: 'My Name'
-            }
+                name: 'My Name',
+            },
         };
         const context = render(<ZoneGroupMember {...props} />);
         expect(context).toMatchSnapshot();

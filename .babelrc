@@ -12,7 +12,8 @@
   "plugins": [
     "@babel/plugin-proposal-object-rest-spread",
     "syntax-jsx",
-    ["transform-react-jsx"]
+    "transform-react-jsx",
+    "react-hot-loader/babel"
   ],
   "sourceMaps": true
 }

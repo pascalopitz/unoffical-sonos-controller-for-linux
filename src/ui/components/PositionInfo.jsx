@@ -8,31 +8,31 @@ import {
     setPlayMode,
     setCrossfade,
     seek,
-    refreshPosition
+    refreshPosition,
 } from '../reduxActions/PlayerActions';
 
 import {
     getPlaying,
     getCrossfadeMode,
     getPlayMode,
-    getPositionInfo
+    getPositionInfo,
 } from '../selectors/PlayerSelectors';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         isPlaying: getPlaying(state),
         info: getPositionInfo(state),
         playMode: getPlayMode(state),
-        isCrossfade: getCrossfadeMode(state)
+        isCrossfade: getCrossfadeMode(state),
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        setPlayMode: mode => dispatch(setPlayMode(mode)),
-        setCrossfade: mode => dispatch(setCrossfade(mode)),
-        seek: position => dispatch(seek(position)),
-        refreshPosition: () => dispatch(refreshPosition())
+        setPlayMode: (mode) => dispatch(setPlayMode(mode)),
+        setCrossfade: (mode) => dispatch(setCrossfade(mode)),
+        seek: (position) => dispatch(seek(position)),
+        refreshPosition: () => dispatch(refreshPosition()),
     };
 };
 
@@ -49,7 +49,7 @@ export class PositionInfo extends Component {
         super();
 
         this.state = {
-            offset: 0
+            offset: 0,
         };
 
         this._interval = null;
@@ -58,7 +58,7 @@ export class PositionInfo extends Component {
     UNSAFE_componentWillReceiveProps(props) {
         if (!_.isMatch(props.info, this.props.info)) {
             this.setState({
-                offset: 0
+                offset: 0,
             });
         }
     }
@@ -142,7 +142,7 @@ export class PositionInfo extends Component {
     _onInterval() {
         if (this.props.isPlaying) {
             this.setState({
-                offset: this.state.offset + 1
+                offset: this.state.offset + 1,
             });
         }
     }
@@ -198,7 +198,7 @@ export class PositionInfo extends Component {
         }
 
         const styles = {
-            left: String(Math.round(percent)) + '%'
+            left: String(Math.round(percent)) + '%',
         };
 
         let repeat = <i className="material-icons repeat">repeat</i>;

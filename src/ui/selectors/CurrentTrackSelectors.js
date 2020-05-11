@@ -1,11 +1,9 @@
 export function getNextTrack(state) {
     const { nextTracks, currentHost } = state.sonosService;
-    return nextTracks[currentHost] ? nextTracks[currentHost].trackInfo : null;
+    return nextTracks[currentHost] || null;
 }
 
 export function getCurrentTrack(state) {
     const { currentTracks, currentHost } = state.sonosService;
-    return currentTracks[currentHost]
-        ? currentTracks[currentHost].trackInfo
-        : null;
+    return currentTracks[currentHost] || null;
 }

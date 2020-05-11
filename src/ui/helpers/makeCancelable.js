@@ -3,8 +3,9 @@ export default function makeCancelable(promise) {
 
     const wrappedPromise = new Promise((resolve, reject) => {
         promise.then(
-            val => (hasCanceled_ ? reject({ isCanceled: true }) : resolve(val)),
-            error =>
+            (val) =>
+                hasCanceled_ ? reject({ isCanceled: true }) : resolve(val),
+            (error) =>
                 hasCanceled_ ? reject({ isCanceled: true }) : reject(error)
         );
     });
@@ -13,6 +14,6 @@ export default function makeCancelable(promise) {
         promise: wrappedPromise,
         cancel() {
             hasCanceled_ = true;
-        }
+        },
     };
 }

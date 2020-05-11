@@ -11,7 +11,7 @@ class VolumeSlider extends Component {
     _onStart(e) {
         this.setState({
             dragging: true,
-            volume: Number(e.target.value)
+            volume: Number(e.target.value),
         });
 
         this.props.startHandler();
@@ -20,7 +20,7 @@ class VolumeSlider extends Component {
     _onStop() {
         this.setState({
             dragging: false,
-            volume: null
+            volume: null,
         });
 
         this.props.stopHandler();
@@ -31,7 +31,7 @@ class VolumeSlider extends Component {
 
         this.setState({
             dragging: true,
-            volume: Number(e.target.value)
+            volume: Number(e.target.value),
         });
 
         this._setVolume(volume);

@@ -8,7 +8,7 @@ describe('SearchBar', () => {
     it('renders on', () => {
         const props = {
             sources: [],
-            currentState: {}
+            currentState: {},
         };
         const context = render(<SearchBar {...props} />);
         expect(context).toMatchSnapshot();

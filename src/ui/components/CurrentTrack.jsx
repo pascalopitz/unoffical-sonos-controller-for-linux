@@ -7,22 +7,22 @@ import CurrentTrackNoMusic from './CurrentTrackNoMusic';
 
 import {
     getCurrentTrack,
-    getNextTrack
+    getNextTrack,
 } from '../selectors/CurrentTrackSelectors';
 
 import { toggleExpanded } from '../reduxActions/CurrentTrackActions';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         expanded: state.currentTrack.expanded,
         nextTrack: getNextTrack(state),
-        currentTrack: getCurrentTrack(state)
+        currentTrack: getCurrentTrack(state),
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        toggleExpanded: expanded => dispatch(toggleExpanded(expanded))
+        toggleExpanded: (expanded) => dispatch(toggleExpanded(expanded)),
     };
 };
 

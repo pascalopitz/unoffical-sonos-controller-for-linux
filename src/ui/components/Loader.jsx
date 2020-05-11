@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 
 import { getHasCurrent } from '../selectors/LoaderSelectors';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-        hasCurrent: getHasCurrent(state)
+        hasCurrent: getHasCurrent(state),
     };
 };
 

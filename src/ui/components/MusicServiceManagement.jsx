@@ -6,24 +6,25 @@ import {
     hideManagement,
     getSession,
     getLink,
-    addAnonymousService
+    addAnonymousService,
 } from '../reduxActions/MusicServicesActions';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         client: state.musicServices.current,
         link: state.musicServices.link,
-        visible: state.musicServices.visible
+        visible: state.musicServices.visible,
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         hideManagement: () => dispatch(hideManagement()),
         getSession: (service, username, client) =>
             dispatch(getSession(service, username, client)),
-        getLink: service => dispatch(getLink(service)),
-        addAnonymousService: service => dispatch(addAnonymousService(service))
+        getLink: (service) => dispatch(getLink(service)),
+        addAnonymousService: (service) =>
+            dispatch(addAnonymousService(service)),
     };
 };
 
@@ -48,7 +49,7 @@ export class MusicServiceManagement extends Component {
             client,
             addAnonymousService,
             getLink,
-            getSession
+            getSession,
         } = this.props;
         const { auth } = client;
 
@@ -67,13 +68,13 @@ export class MusicServiceManagement extends Component {
 
     _changeUserName(e) {
         this.setState({
-            username: e.target.value
+            username: e.target.value,
         });
     }
 
     _changePassword(e) {
         this.setState({
-            password: e.target.value
+            password: e.target.value,
         });
     }
 

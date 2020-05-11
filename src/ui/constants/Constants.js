@@ -48,6 +48,7 @@ const Constants = {
     SONOS_SERVICE_ZONEGROUPS_DEFAULT: '',
     SONOS_SERVICE_QUEUE_UPDATE: '',
     SONOS_SERVICE_VOLUME_UPDATE: '',
+    SONOS_SERVICE_MUTED_UPDATE: '',
     SONOS_SERVICE_PLAYSTATE_UPDATE: '',
     SONOS_SERVICE_NEXT_TRACK_UPDATE: '',
     SONOS_SERVICE_POSITION_INFO_UPDATE: '',
@@ -67,10 +68,10 @@ const Constants = {
     MUSICSERVICE_SESSION_ID_RECEIVED: '',
     MUSICSERVICE_ANONYMOUS: '',
 
-    CURRENT_TRACK_TOGGLE_EXPANDED: ''
+    CURRENT_TRACK_TOGGLE_EXPANDED: '',
 };
 
-Object.keys(Constants).forEach(k => {
+Object.keys(Constants).forEach((k) => {
     Constants[k] = Symbol(k);
 });
 

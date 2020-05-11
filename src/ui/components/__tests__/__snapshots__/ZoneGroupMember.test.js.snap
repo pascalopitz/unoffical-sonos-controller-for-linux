@@ -2,8 +2,6 @@
 
 exports[`ZoneGroupMember matches snapshot 1`] = `
 <li>
-  <span>
-    My Name
-  </span>
+  <span />
 </li>
 `;

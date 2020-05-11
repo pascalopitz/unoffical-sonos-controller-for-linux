@@ -13,25 +13,25 @@ import {
     addQueue,
     replaceQueue,
     removeService,
-    addService
+    addService,
 } from '../reduxActions/BrowserListActions';
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        select: item => dispatch(select(item)),
-        playNow: item => dispatch(playNow(item)),
-        playNext: item => dispatch(playNext(item)),
-        addQueue: item => dispatch(addQueue(item)),
-        replaceQueue: item => dispatch(replaceQueue(item)),
-        removeService: item => dispatch(removeService(item)),
-        addService: item => dispatch(addService(item))
+        select: (item) => dispatch(select(item)),
+        playNow: (item) => dispatch(playNow(item)),
+        playNext: (item) => dispatch(playNext(item)),
+        addQueue: (item) => dispatch(addQueue(item)),
+        replaceQueue: (item) => dispatch(replaceQueue(item)),
+        removeService: (item) => dispatch(removeService(item)),
+        addService: (item) => dispatch(addService(item)),
     };
 };
 export class BrowserListItem extends Component {
     constructor() {
         super();
         this.state = {
-            isExpanded: false
+            isExpanded: false,
         };
     }
 
@@ -40,9 +40,6 @@ export class BrowserListItem extends Component {
     }
 
     _onClick(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
         const item = this.props.model;
 
         if (
@@ -58,6 +55,23 @@ export class BrowserListItem extends Component {
         }
 
         return false;
+    }
+
+    handleClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!this._delayedClick) {
+            this._delayedClick = _.debounce(this._onClick, 500);
+        }
+        if (this.clickedOnce) {
+            this._delayedClick.cancel();
+            this.clickedOnce = false;
+            console.log('double click');
+        } else {
+            this._delayedClick(e);
+            this.clickedOnce = true;
+        }
     }
 
     _playNow(e) {
@@ -92,7 +106,7 @@ export class BrowserListItem extends Component {
 
     _toggle(e) {
         this.setState({
-            isExpanded: !this.state.isExpanded
+            isExpanded: !this.state.isExpanded,
         });
         e.preventDefault();
         e.stopPropagation();
@@ -101,7 +115,7 @@ export class BrowserListItem extends Component {
     _hideMenu() {
         if (this.state.isExpanded) {
             this.setState({
-                isExpanded: false
+                isExpanded: false,
             });
         }
     }
@@ -218,7 +232,7 @@ export class BrowserListItem extends Component {
 
         return (
             <li
-                onClick={this._onClick.bind(this)}
+                onClick={this.handleClick.bind(this)}
                 onMouseOut={this._onMouseOut.bind(this)}
                 onMouseOver={this._onMouseOver.bind(this)}
                 data-position={this.props.position}

@@ -1,15 +1,22 @@
 import _ from 'lodash';
 
 import moment from 'moment';
-
-import requestHelper from 'request';
-import xml2json from 'jquery-xml2json';
+import { Helpers } from 'sonos';
 
 import SonosService from '../services/SonosService';
 
 const NS = 'http://www.sonos.com/Services/1.1';
 const deviceProviderName = 'unofficial-sonos-controller-for-linux';
 const RUNTIME_ID = 'unofficial-sonos-controller-for-linux';
+
+class RefreshError extends Error {
+    constructor({ authToken, privateKey }) {
+        super('tokenRefreshRequired');
+
+        this.authToken = authToken;
+        this.authToken = privateKey;
+    }
+}
 
 function withinEnvelope(body, headers = '') {
     return [
@@ -19,7 +26,7 @@ function withinEnvelope(body, headers = '') {
             '">',
         '<s:Header>' + headers + '</s:Header>',
         '<s:Body>' + body + '</s:Body>',
-        '</s:Envelope>'
+        '</s:Envelope>',
     ].join('');
 }
 
@@ -35,65 +42,57 @@ class MusicServiceClient {
         this.auth = serviceDefinition.Auth;
     }
 
-    _doRequest(uri, action, body, headers) {
-        return new Promise((resolve, reject) => {
-            const soapBody = withinEnvelope(body, headers);
+    async _doRequest(uri, action, requestBody, headers, retry = false) {
+        const soapHeaders =
+            typeof headers === 'function' ? headers.call(this) : headers;
+        const soapBody = withinEnvelope(requestBody, soapHeaders);
 
-            requestHelper(
-                {
-                    uri: uri,
-                    method: 'POST',
-                    headers: {
-                        SOAPAction: '"' + NS + '#' + action + '"',
-                        'Content-type': 'text/xml; charset=utf8',
-                        // Thanks SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
-                        'User-Agent': `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`
-                    },
-                    body: soapBody
-                },
-                (err, res, body) => {
-                    const e = xml2json(stripNamespaces(body));
-                    const fault = _.get(e, 'Envelope.Body.Fault.faultstring');
-
-                    if (!err && (res.statusCode >= 400 || fault)) {
-                        console.log(
-                            fault,
-                            _.includes(fault, 'tokenRefreshRequired')
-                        );
-
-                        if (
-                            fault &&
-                            (_.includes(fault, 'TokenRefreshRequired') ||
-                                _.includes(fault, 'tokenRefreshRequired'))
-                        ) {
-                            const refreshDetails = _.get(
-                                e,
-                                'Envelope.Body.Fault.detail.refreshAuthTokenResult'
-                            );
-                            this.setAuthToken(refreshDetails.authToken);
-                            this.setKey(refreshDetails.privateKey);
-                            return reject(refreshDetails);
-                        }
-
-                        if (
-                            fault &&
-                            _.includes(fault, 'Update your Sonos system')
-                        ) {
-                            return this._doRequest(uri, action, body, headers);
-                        }
-
-                        console.error(fault, soapBody);
-                        return reject();
-                    }
-
-                    if (err) {
-                        return reject(err);
-                    }
-
-                    resolve(body);
-                }
-            );
+        const response = await fetch(uri, {
+            method: 'POST',
+            headers: {
+                SOAPAction: `"${NS}#${action}"`,
+                'Content-type': 'text/xml; charset=utf8',
+                // Thanks SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
+                'User-Agent': `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`,
+            },
+            body: soapBody,
         });
+
+        const body = await response.text();
+
+        const e = await Helpers.ParseXml(stripNamespaces(body));
+        const fault = _.get(e, 'Envelope.Body.Fault.faultstring');
+
+        if (response.status >= 400 || fault) {
+            console.log(fault, _.includes(fault, 'tokenRefreshRequired'));
+            if (
+                !retry &&
+                fault &&
+                (_.includes(fault, 'TokenRefreshRequired') ||
+                    _.includes(fault, 'tokenRefreshRequired'))
+            ) {
+                const refreshDetails = _.get(
+                    e,
+                    'Envelope.Body.Fault.detail.refreshAuthTokenResult'
+                );
+                this.setAuthToken(refreshDetails.authToken);
+                this.setKey(refreshDetails.privateKey);
+
+                return this._doRequest(uri, action, requestBody, headers, true);
+            }
+
+            if (
+                !retry &&
+                fault &&
+                _.includes(fault, 'Update your Sonos system')
+            ) {
+                return this._doRequest(uri, action, requestBody, headers, true);
+            }
+
+            throw new Error(fault);
+        }
+
+        return body;
     }
 
     getTrackURI(item, serviceId) {
@@ -154,37 +153,37 @@ class MusicServiceClient {
         const TYPE_MAPPINGS = {
             track: {
                 type: 'object.item.audioItem.musicTrack',
-                token: '00032020'
+                token: '00032020',
             },
             album: {
                 type: 'object.container.album.musicAlbum',
-                token: '0004206c'
+                token: '0004206c',
             },
             trackList: {
                 type: 'object.container.playlistContainer',
-                token: '000e206c'
+                token: '000e206c',
             },
             albumList: {
                 type: 'object.container.playlistContainer',
-                token: '0006206c'
+                token: '0006206c',
             },
             playlist: {
                 type: 'object.container.playlistContainer',
-                token: '0006206c'
+                token: '0006206c',
             },
             playList: {
                 type: 'object.container.playlistContainer',
-                token: '0006206c'
+                token: '0006206c',
             },
             artistTrackList: {
                 type: 'object.container.playlistContainer',
-                token: '0006206c'
+                token: '0006206c',
             },
             program: {
                 type:
                     'object.item.audioItem.audioBroadcast.#' + item.displayType,
-                token: '000c206c'
-            }
+                token: '000c206c',
+            },
         };
 
         let resourceString, id, trackData;
@@ -211,8 +210,9 @@ class MusicServiceClient {
             trackData = `<dc:creator>${_.escape(
                 item.trackMetadata.artist
             )}</dc:creator>
-            <upnp:albumArtURI>${item.trackMetadata.albumArtURI ||
-                ''}</upnp:albumArtURI>
+            <upnp:albumArtURI>${
+                item.trackMetadata.albumArtURI || ''
+            }</upnp:albumArtURI>
             <upnp:album>${_.escape(
                 item.trackMetadata.album || ''
             )}</upnp:album>`;
@@ -250,7 +250,7 @@ class MusicServiceClient {
             '<ns:deviceProvider>',
             deviceProviderName,
             '</ns:deviceProvider>',
-            '</ns:credentials>'
+            '</ns:credentials>',
         ].join('');
 
         const body = [
@@ -258,7 +258,7 @@ class MusicServiceClient {
             '<ns:householdId>',
             SonosService.householdId,
             '</ns:householdId>',
-            '</ns:getDeviceLinkCode>'
+            '</ns:getDeviceLinkCode>',
         ].join('');
 
         return this._doRequest(
@@ -266,8 +266,8 @@ class MusicServiceClient {
             'getDeviceLinkCode',
             body,
             headers
-        ).then(res => {
-            const resp = xml2json(stripNamespaces(res));
+        ).then(async (res) => {
+            const resp = await Helpers.ParseXml(stripNamespaces(res));
             const obj =
                 resp['Envelope']['Body']['getDeviceLinkCodeResponse'][
                     'getDeviceLinkCodeResult'
@@ -284,7 +284,7 @@ class MusicServiceClient {
             '<ns:householdId>',
             SonosService.householdId,
             '</ns:householdId>',
-            '</ns:getAppLink>'
+            '</ns:getAppLink>',
         ].join('');
 
         return this._doRequest(
@@ -292,8 +292,8 @@ class MusicServiceClient {
             'getAppLink',
             body,
             headers
-        ).then(res => {
-            const resp = xml2json(stripNamespaces(res));
+        ).then(async (res) => {
+            const resp = await Helpers.ParseXml(stripNamespaces(res));
             const obj =
                 resp['Envelope']['Body']['getAppLinkResponse'][
                     'getAppLinkResult'
@@ -311,7 +311,7 @@ class MusicServiceClient {
             '<ns:deviceProvider>',
             deviceProviderName,
             '</ns:deviceProvider>',
-            '</ns:credentials>'
+            '</ns:credentials>',
         ].join('');
 
         const body = [
@@ -325,7 +325,7 @@ class MusicServiceClient {
             '<ns:linkDeviceId>',
             linkDeviceId,
             '</ns:linkDeviceId>',
-            '</ns:getDeviceAuthToken>'
+            '</ns:getDeviceAuthToken>',
         ].join('');
 
         return this._doRequest(
@@ -334,15 +334,15 @@ class MusicServiceClient {
             body,
             headers
         )
-            .then(res => {
-                const resp = xml2json(stripNamespaces(res));
+            .then(async (res) => {
+                const resp = await Helpers.ParseXml(stripNamespaces(res));
                 const obj =
                     resp['Envelope']['Body']['getDeviceAuthTokenResponse'][
                         'getDeviceAuthTokenResult'
                     ];
                 return obj;
             })
-            .catch(err => {
+            .catch((err) => {
                 if (err.message.indefOf('NOT_LINKED_RETRY') > -1) {
                     // noop
                 }
@@ -352,8 +352,6 @@ class MusicServiceClient {
     }
 
     getMetadata(id, index = 0, count = 200) {
-        const headers = this.getAuthHeaders();
-
         const body = [
             '<ns:getMetadata>',
             '<ns:id>',
@@ -365,7 +363,7 @@ class MusicServiceClient {
             '<ns:count>',
             count,
             '</ns:count>',
-            '</ns:getMetadata>'
+            '</ns:getMetadata>',
         ].join('');
 
         return new Promise((resolve, reject) => {
@@ -373,37 +371,29 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'getMetadata',
                 body,
-                headers
+                this.getAuthHeaders
             )
-                .then(res => {
-                    const resp = xml2json(stripNamespaces(res));
+                .then(async (res) => {
+                    const resp = await Helpers.ParseXml(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['getMetadataResponse'][
                             'getMetadataResult'
                         ];
                     resolve(obj);
                 })
-                .catch(response => {
-                    if (response.authToken) {
-                        this.getMetadata(id, index, count).then(obj => {
-                            resolve(obj);
-                        });
-                    } else {
-                        reject(response);
-                    }
+                .catch((response) => {
+                    reject(response);
                 });
         });
     }
 
     getExtendedMetadata(id) {
-        const headers = this.getAuthHeaders();
-
         const body = [
             '<ns:getExtendedMetadata>',
             '<ns:id>',
             id,
             '</ns:id>',
-            '</ns:getExtendedMetadata>'
+            '</ns:getExtendedMetadata>',
         ].join('');
 
         return new Promise((resolve, reject) => {
@@ -411,31 +401,23 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'getExtendedMetadata',
                 body,
-                headers
+                this.getAuthHeaders
             )
-                .then(res => {
-                    const resp = xml2json(stripNamespaces(res));
+                .then(async (res) => {
+                    const resp = await Helpers.ParseXml(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['getExtendedMetadataResponse'][
                             'getExtendedMetadataResult'
                         ];
                     resolve(obj);
                 })
-                .catch(authToken => {
-                    if (authToken) {
-                        this.getExtendedMetadata(id).then(obj => {
-                            resolve(obj);
-                        });
-                    } else {
-                        reject();
-                    }
+                .catch((response) => {
+                    reject(response);
                 });
         });
     }
 
     search(id, term, index = 0, count = 200) {
-        const headers = this.getAuthHeaders();
-
         const body = [
             '<ns:search>',
             '<ns:id>',
@@ -450,7 +432,7 @@ class MusicServiceClient {
             '<ns:count>',
             count,
             '</ns:count>',
-            '</ns:search>'
+            '</ns:search>',
         ].join('');
 
         return new Promise((resolve, reject) => {
@@ -458,37 +440,29 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'search',
                 body,
-                headers
+                this.getAuthHeaders
             )
-                .then(res => {
-                    const resp = xml2json(stripNamespaces(res));
+                .then(async (res) => {
+                    const resp = await Helpers.ParseXml(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['searchResponse'][
                             'searchResult'
                         ];
                     resolve(obj);
                 })
-                .catch(authToken => {
-                    if (authToken) {
-                        this.search(id, term, index, count).then(obj => {
-                            resolve(obj);
-                        });
-                    } else {
-                        reject();
-                    }
+                .catch((response) => {
+                    reject(response);
                 });
         });
     }
 
     getMediaURI(id) {
-        const headers = this.getAuthHeaders();
-
         const body = [
             '<ns:getMediaURI>',
             '<ns:id>',
             id,
             '</ns:id>',
-            '</ns:getMediaURI>'
+            '</ns:getMediaURI>',
         ].join('');
 
         return new Promise((resolve, reject) => {
@@ -496,24 +470,18 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'getMediaURI',
                 body,
-                headers
+                this.getAuthHeaders
             )
-                .then(res => {
-                    const resp = xml2json(stripNamespaces(res));
+                .then(async (res) => {
+                    const resp = await Helpers.ParseXml(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['getMediaURIResponse'][
                             'getMediaURIResult'
                         ];
                     return resolve(obj);
                 })
-                .catch(authToken => {
-                    if (authToken) {
-                        this.getMediaURI(id).then(obj => {
-                            resolve(obj);
-                        });
-                    } else {
-                        reject();
-                    }
+                .catch((response) => {
+                    reject(response);
                 });
         });
     }
@@ -527,7 +495,7 @@ class MusicServiceClient {
             '<ns:deviceProvider>',
             deviceProviderName,
             '</ns:deviceProvider>',
-            '</ns:credentials>'
+            '</ns:credentials>',
         ].join('');
 
         const body = [
@@ -538,7 +506,7 @@ class MusicServiceClient {
             '<ns:password>',
             password,
             '</ns:password>',
-            '</ns:getSessionId>'
+            '</ns:getSessionId>',
         ].join('');
 
         return this._doRequest(
@@ -546,8 +514,8 @@ class MusicServiceClient {
             'getSessionId',
             body,
             headers
-        ).then(res => {
-            const resp = xml2json(stripNamespaces(res));
+        ).then(async (res) => {
+            const resp = await Helpers.ParseXml(stripNamespaces(res));
             const obj =
                 resp['Envelope']['Body']['getSessionIdResponse'][
                     'getSessionIdResult'
@@ -569,7 +537,7 @@ class MusicServiceClient {
                 '<ns:sessionId>',
                 this.authToken,
                 '</ns:sessionId>',
-                '</ns:credentials>'
+                '</ns:credentials>',
             ].join('');
         }
 
@@ -593,7 +561,7 @@ class MusicServiceClient {
                 SonosService.householdId,
                 '</ns:householdId>',
                 '</ns:loginToken>',
-                '</ns:credentials>'
+                '</ns:credentials>',
             ].join('');
         }
 
@@ -605,7 +573,7 @@ class MusicServiceClient {
             '<ns:deviceProvider>',
             deviceProviderName,
             '</ns:deviceProvider>',
-            '</ns:credentials>'
+            '</ns:credentials>',
         ].join('');
     }
 
@@ -625,11 +593,11 @@ class MusicServiceClient {
             const res = await fetch(mapUri);
 
             const body = await res.text();
-            const e = xml2json(stripNamespaces(body));
+            const e = await Helpers.ParseXml(stripNamespaces(body));
 
             const map = _.find(
                 e.Presentation.PresentationMap,
-                m => !!_.get(m, 'Match.SearchCategories')
+                (m) => !!_.get(m, 'Match.SearchCategories')
             );
 
             let searchCategories = _.get(map, 'Match.SearchCategories');
@@ -638,9 +606,7 @@ class MusicServiceClient {
                 searchCategories = searchCategories[0];
             }
 
-            this.searchTermMap = _.get(searchCategories, 'Category').map(
-                c => c.$
-            );
+            this.searchTermMap = _.get(searchCategories, 'Category');
         }
 
         return this.searchTermMap;

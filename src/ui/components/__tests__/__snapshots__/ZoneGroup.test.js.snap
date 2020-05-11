@@ -2,20 +2,25 @@
 
 exports[`ZoneGroup matches snapshot 1`] = `
 <ZoneGroup
+  currentTracks={
+    Object {
+      "myhost": Object {},
+    }
+  }
   group={
-    Array [
-      Object {
-        "coordinator": "true",
-        "host": "myhost",
-        "member": 1,
-      },
-    ]
+    Object {
+      "ZoneGroupMember": Array [
+        Object {
+          "Coordinator": "true",
+          "member": 1,
+        },
+      ],
+      "host": "myhost",
+    }
   }
   playStates={
     Object {
-      "myhost": Object {
-        "playing": true,
-      },
+      "myhost": "playing",
     }
   }
   selectGroup={[MockFunction]}
@@ -30,8 +35,7 @@ exports[`ZoneGroup matches snapshot 1`] = `
         key="0"
         member={
           Object {
-            "coordinator": "true",
-            "host": "myhost",
+            "Coordinator": "true",
             "member": 1,
           }
         }
@@ -47,17 +51,14 @@ exports[`ZoneGroup matches snapshot 1`] = `
     >
       Group
     </div>
-    <ZoneGroupPLayState
-      playState={
-        Object {
-          "playing": true,
-        }
-      }
+    <ZoneGroupPlayState
+      currentTrack={Object {}}
+      playState="playing"
     >
       <p
         className="play-state"
       />
-    </ZoneGroupPLayState>
+    </ZoneGroupPlayState>
   </div>
 </ZoneGroup>
 `;
@@ -65,20 +66,25 @@ exports[`ZoneGroup matches snapshot 1`] = `
 exports[`ZoneGroup matches snapshot when selected 1`] = `
 <ZoneGroup
   currentHost="myhost"
+  currentTracks={
+    Object {
+      "myhost": Object {},
+    }
+  }
   group={
-    Array [
-      Object {
-        "coordinator": "true",
-        "host": "myhost",
-        "member": 1,
-      },
-    ]
+    Object {
+      "ZoneGroupMember": Array [
+        Object {
+          "Coordinator": "true",
+          "member": 1,
+        },
+      ],
+      "host": "myhost",
+    }
   }
   playStates={
     Object {
-      "myhost": Object {
-        "playing": true,
-      },
+      "myhost": "playing",
     }
   }
   selectGroup={[MockFunction]}
@@ -93,8 +99,7 @@ exports[`ZoneGroup matches snapshot when selected 1`] = `
         key="0"
         member={
           Object {
-            "coordinator": "true",
-            "host": "myhost",
+            "Coordinator": "true",
             "member": 1,
           }
         }
@@ -110,17 +115,14 @@ exports[`ZoneGroup matches snapshot when selected 1`] = `
     >
       Group
     </div>
-    <ZoneGroupPLayState
-      playState={
-        Object {
-          "playing": true,
-        }
-      }
+    <ZoneGroupPlayState
+      currentTrack={Object {}}
+      playState="playing"
     >
       <p
         className="play-state"
       />
-    </ZoneGroupPLayState>
+    </ZoneGroupPlayState>
   </div>
 </ZoneGroup>
 `;

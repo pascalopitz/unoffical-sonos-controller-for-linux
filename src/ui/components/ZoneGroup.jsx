@@ -7,52 +7,46 @@ import ZoneGroupMember from './ZoneGroupMember';
 
 import {
     showGroupManagement,
-    selectGroup
+    selectGroup,
 } from '../reduxActions/ZoneGroupActions';
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        showManagement: group => dispatch(showGroupManagement(group)),
-        selectGroup: group => dispatch(selectGroup(group))
+        showManagement: (group) => dispatch(showGroupManagement(group)),
+        selectGroup: (group) => dispatch(selectGroup(group)),
     };
 };
 
 export function ZoneGroup(props) {
+    const {
+        group,
+        showManagement,
+        selectGroup,
+        playStates,
+        currentTracks,
+        currentHost,
+    } = props;
+
     const _onClick = () => {
-        props.selectGroup(props.group);
+        selectGroup(group);
     };
 
-    const _showGroupManagement = e => {
-        props.showManagement(props.group);
+    const _showGroupManagement = (e) => {
+        showManagement(group);
         e.preventDefault();
         e.stopPropagation();
     };
 
-    const items = props.group;
+    const playState = playStates[group.host] || 'stopped';
+    const currentTrack = currentTracks[group.host] || {};
 
-    if (!items) {
-        return null;
-    }
-
-    const coordinator = _(items).find({
-        coordinator: 'true'
-    });
-
-    const playState = coordinator
-        ? props.playStates[coordinator.host] || {}
-        : null;
-
-    const zoneNodes = items.map((item, index) => (
+    const zoneNodes = group.ZoneGroupMember.map((item, index) => (
         <ZoneGroupMember member={item} key={index} />
     ));
 
     let classString = 'not-selected';
 
-    if (
-        props.currentHost &&
-        coordinator &&
-        coordinator.host === props.currentHost
-    ) {
+    if (currentHost && group.host === currentHost) {
         classString = 'selected';
     }
 
@@ -61,12 +55,13 @@ export function ZoneGroup(props) {
     return (
         <div className={classString} onClick={_onClick}>
             <ul>{zoneNodes}</ul>
-
             <div className="group-button" onClick={_showGroupManagement}>
                 Group
             </div>
-
-            <ZoneGroupPlayState playState={playState} />
+            <ZoneGroupPlayState
+                playState={playState}
+                currentTrack={currentTrack}
+            />
         </div>
     );
 }

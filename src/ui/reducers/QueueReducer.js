@@ -2,34 +2,45 @@ import _ from 'lodash';
 import { handleActions } from 'redux-actions';
 import Constants from '../constants';
 
-import SonosService from '../services/SonosService';
-
 const initialState = {
+    currentHost: null,
+    currentGroup: null,
     playerItems: {},
-    selected: []
+    selected: [],
 };
 
 function removalReducer(state, action) {
-    const host = SonosService._currentDevice.host;
+    const host = state.currentHost;
     const removed = action.payload;
 
     const items = []
         .concat(state.playerItems[host].items)
-        .filter(item => !_.includes(removed, item.id));
+        .filter((item) => !_.includes(removed, item.id));
 
-    const selected = state.selected.filter(id => !_.includes(removed, id));
+    const selected = state.selected.filter((id) => !_.includes(removed, id));
 
     const newState = {
         ...state,
-        selected
+        selected,
     };
 
     newState.playerItems[host].items = items;
     return newState;
 }
 
+function zoneGroupSelectReducer(state, action) {
+    return {
+        ...state,
+        currentHost: action.payload.host,
+        currentGroup: action.payload.ID,
+    };
+}
+
 export default handleActions(
     {
+        [Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT]: zoneGroupSelectReducer,
+        [Constants.ZONE_GROUP_SELECT]: zoneGroupSelectReducer,
+
         [Constants.SONOS_SERVICE_QUEUE_UPDATE]: (state, action) => {
             if (!action.payload) {
                 return state;
@@ -41,8 +52,8 @@ export default handleActions(
                 ...state,
                 playerItems: {
                     ...state.playerItems,
-                    [host]: result
-                }
+                    [host]: result,
+                },
             };
         },
 
@@ -50,7 +61,7 @@ export default handleActions(
         [Constants.QUEUE_REMOVE]: removalReducer,
 
         [Constants.QUEUE_REORDER]: (state, action) => {
-            const host = SonosService._currentDevice.host;
+            const host = state.currentHost;
             const { position, newPosition } = action.payload;
 
             const items = [].concat(state.playerItems[host].items);
@@ -59,7 +70,7 @@ export default handleActions(
             items.splice(newPosition - 1, 0, slice[0]);
 
             const newState = {
-                ...state
+                ...state,
             };
             newState.playerItems[host].items = items;
 
@@ -67,47 +78,47 @@ export default handleActions(
         },
 
         [Constants.QUEUE_SELECT]: (state, action) => {
-            const host = SonosService._currentDevice.host;
+            const host = state.currentHost;
             const position = action.payload;
             const trackId = state.playerItems[host].items[position - 1].id;
             const selected = [].concat(state.selected, [trackId]);
 
             return {
                 ...state,
-                selected
+                selected,
             };
         },
 
         [Constants.QUEUE_DESELECT]: (state, action) => {
-            const host = SonosService._currentDevice.host;
+            const host = state.currentHost;
             const position = action.payload;
             const trackId = state.playerItems[host].items[position - 1].id;
-            const selected = state.selected.filter(i => i !== trackId);
+            const selected = state.selected.filter((i) => i !== trackId);
 
             return {
                 ...state,
-                selected
+                selected,
             };
         },
 
-        [Constants.ZONE_GROUP_SELECT]: state => {
+        [Constants.ZONE_GROUP_SELECT]: (state) => {
             return {
                 ...state,
-                selected: []
+                selected: [],
             };
         },
 
-        [Constants.QUEUE_FLUSH]: (state, action) => {
-            const host = SonosService._currentDevice.host;
+        [Constants.QUEUE_FLUSH]: (state) => {
+            const host = state.currentHost;
 
             return {
                 ...state,
                 playerItems: {
                     ...state.playerItems,
-                    [host]: null
-                }
+                    [host]: null,
+                },
             };
-        }
+        },
     },
     initialState
 );

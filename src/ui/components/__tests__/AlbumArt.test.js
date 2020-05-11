@@ -5,7 +5,7 @@ import { render } from 'enzyme';
 import {
     getClosest,
     createIntersectionObserver,
-    purgeIntersectionObserver
+    purgeIntersectionObserver,
 } from '../../helpers/dom-utility';
 
 jest.mock('../../helpers/dom-utility');
@@ -16,7 +16,7 @@ purgeIntersectionObserver.mockReturnValue(null);
 describe('AlbumArt', () => {
     it('renders and matches snapshot', () => {
         const props = {
-            src: 'foo'
+            src: 'foo',
         };
 
         const context = render(<AlbumArt {...props} />);
