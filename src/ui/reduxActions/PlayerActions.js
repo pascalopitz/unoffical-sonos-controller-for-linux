@@ -1,71 +1,70 @@
 import { createAction } from 'redux-actions';
 import Constants from '../constants';
 
-import SonosService from '../services/SonosService';
-import serviceFactory from '../sonos/helpers/ServiceFactory';
+import SonosService, { getCurrentZone } from '../services/SonosService';
 
 export const pause = createAction(Constants.PLAYER_PAUSE, async () => {
-    const sonos = SonosService._currentDevice; // TODO: fix this
-    await sonos.pauseAsync();
+    const sonos = getCurrentZone();
+    await sonos.pause();
     SonosService.queryState();
 });
 
 export const play = createAction(Constants.PLAYER_PLAY, async () => {
-    const sonos = SonosService._currentDevice; // TODO: fix this
-    await sonos.playAsync();
+    const sonos = getCurrentZone();
+    await sonos.play();
     SonosService.queryState();
 });
 
 export const playPrev = createAction(Constants.PLAYER_PREV, async () => {
-    const sonos = SonosService._currentDevice; // TODO: fix this
-    await sonos.previousAsync();
+    const sonos = getCurrentZone();
+    await sonos.previous();
     SonosService.queryState();
 });
 
 export const playNext = createAction(Constants.PLAYER_NEXT, async () => {
-    const sonos = SonosService._currentDevice; // TODO: fix this
-    await sonos.nextAsync();
+    const sonos = getCurrentZone();
+    await sonos.next();
     SonosService.queryState();
 });
 
-export const seek = createAction(Constants.PLAYER_SEEK, async time => {
-    const sonos = SonosService._currentDevice; // TODO: fix this
-    await sonos.seekAsync(time);
+export const seek = createAction(Constants.PLAYER_SEEK, async (time) => {
+    const sonos = getCurrentZone();
+    await sonos.seek(time);
     SonosService.queryState();
 });
 
 export const setPlayMode = createAction(
     Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE,
-    async mode => {
-        const sonos = SonosService._currentDevice; // TODO: fix this
-        const avTransport = serviceFactory('AVTransport', sonos);
+    async (mode) => {
+        const sonos = getCurrentZone();
+        const avTransport = sonos.avTransportService();
 
-        await avTransport.SetPlayModeAsync({
+        await avTransport.SetPlayMode({
             InstanceID: 0,
-            NewPlayMode: mode
+            NewPlayMode: mode,
         });
 
         return {
             mode,
-            host: sonos.host
+            host: sonos.host,
         };
     }
 );
 
 export const setCrossfade = createAction(
     Constants.OPTIMISTIC_CURRENT_CROSSFADE_MODE_UPDATE,
-    async mode => {
+    async (mode) => {
         const sonos = SonosService._currentDevice; // TODO: fix this
-        const avTransport = serviceFactory('AVTransport', sonos);
+        const avTransport = sonos.avTransportService();
 
-        await avTransport.SetCrossfadeModeAsync({
+        await avTransport.SetCrossfadeMode({
             InstanceID: 0,
-            CrossfadeMode: Number(mode)
+            CrossfadeMode: Number(mode),
         });
 
         return {
             mode,
-            host: sonos.host
+            host: sonos.host,
         };
     }
 );

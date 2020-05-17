@@ -7,10 +7,10 @@ export const setPlayerMuted = createAction(
     Constants.VOLUME_CONTROLS_MUTE_SET,
     async (host, muted) => {
         const sonos = SonosService.getDeviceByHost(host);
-        await sonos.setMutedAsync(muted);
+        await sonos.setMuted(muted);
         return {
             host,
-            muted
+            muted,
         };
     }
 );
@@ -19,10 +19,10 @@ export const setPlayerVolume = createAction(
     Constants.VOLUME_CONTROLS_VOLUME_SET,
     async (host, volume) => {
         const sonos = SonosService.getDeviceByHost(host);
-        await sonos.setVolumeAsync(volume);
+        await sonos.setVolume(volume);
         return {
             host,
-            volume
+            volume,
         };
     }
 );

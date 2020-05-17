@@ -18,9 +18,11 @@ export const saveGroups = createAction(
         const { zones } = state.sonosService;
         const { selected, currentGroup } = state.groupManagement;
 
-        const currentGroupMembers = zones.filter(z => z.group === currentGroup);
+        const currentGroupMembers = zones.filter(
+            (z) => z.group === currentGroup
+        );
 
-        const targetGroupMembers = zones.filter(z =>
+        const targetGroupMembers = zones.filter((z) =>
             _.includes(selected, z.uuid)
         );
 
@@ -32,37 +34,37 @@ export const saveGroups = createAction(
         const coordinator =
             _.find(targetGroupMembers, {
                 coordinator: 'true',
-                group: currentGroup
+                group: currentGroup,
             }) ||
             _.find(targetGroupMembers, {
-                coordinator: 'true'
+                coordinator: 'true',
             }) ||
             _.head(targetGroupMembers);
 
         const addingGroupMembers = targetGroupMembers.filter(
-            z => z !== coordinator
+            (z) => z !== coordinator
         );
 
         try {
             for (const z of addingGroupMembers) {
                 const sonos = SonosService.getDeviceByHost(z.host);
                 const avTransport = serviceFactory('AVTransport', sonos);
-                await avTransport.SetAVTransportURIAsync({
+                await avTransport.SetAVTransportURI({
                     InstanceID: 0,
                     CurrentURI: 'x-rincon:' + coordinator.uuid,
-                    CurrentURIMetaData: ''
+                    CurrentURIMetaData: '',
                 });
             }
 
             for (const z of removingGroupMembers) {
                 const sonos = SonosService.getDeviceByHost(z.host);
                 const avTransport = serviceFactory('AVTransport', sonos);
-                await avTransport.BecomeCoordinatorOfStandaloneGroupAsync({
-                    InstanceID: 0
+                await avTransport.BecomeCoordinatorOfStandaloneGroup({
+                    InstanceID: 0,
                 });
             }
 
-            [1, 500, 1000, 1500, 2000, 3000, 5000, 10000].forEach(num => {
+            [1, 500, 1000, 1500, 2000, 3000, 5000, 10000].forEach((num) => {
                 window.setTimeout(() => {
                     SonosService.queryTopology();
                 }, num);

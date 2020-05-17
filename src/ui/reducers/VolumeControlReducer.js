@@ -5,7 +5,7 @@ const initialState = {
     dragging: false,
     expanded: false,
     volume: {},
-    muted: {}
+    muted: {},
 };
 
 export default handleActions(
@@ -17,8 +17,8 @@ export default handleActions(
                 ...state,
                 volume: {
                     ...state.volume,
-                    [host]: volume
-                }
+                    [host]: volume,
+                },
             };
         },
 
@@ -29,17 +29,17 @@ export default handleActions(
                 ...state,
                 muted: {
                     ...state.muted,
-                    [host]: muted
-                }
+                    [host]: muted,
+                },
             };
         },
 
-        [Constants.SONOS_SERVICE_VOLUME_UPDATE]: (state, action) => {
-            const { host, volume, muted } = action.payload;
+        [Constants.SONOS_SERVICE_MUTED_UPDATE]: (state, action) => {
+            const { host, muted } = action.payload;
 
             if (state.dragging) {
                 return {
-                    ...state
+                    ...state,
                 };
             }
 
@@ -47,28 +47,42 @@ export default handleActions(
                 ...state,
                 muted: {
                     ...state.muted,
-                    [host]: muted
+                    [host]: muted,
                 },
+            };
+        },
+
+        [Constants.SONOS_SERVICE_VOLUME_UPDATE]: (state, action) => {
+            const { host, volume } = action.payload;
+
+            if (state.dragging) {
+                return {
+                    ...state,
+                };
+            }
+
+            return {
+                ...state,
                 volume: {
                     ...state.volume,
-                    [host]: volume
-                }
+                    [host]: volume,
+                },
             };
         },
 
         [Constants.VOLUME_CONTROLS_EXPANDED]: (state, action) => {
             return {
                 ...state,
-                expanded: action.payload
+                expanded: action.payload,
             };
         },
 
         [Constants.VOLUME_CONTROLS_DRAGGING]: (state, action) => {
             return {
                 ...state,
-                dragging: action.payload
+                dragging: action.payload,
             };
-        }
+        },
     },
     initialState
 );

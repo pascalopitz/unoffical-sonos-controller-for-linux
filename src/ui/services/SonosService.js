@@ -1,30 +1,19 @@
 import _ from 'lodash';
+import { Helpers, Listener } from 'sonos';
 
-import bb from 'bluebird';
-import xml2json from 'jquery-xml2json';
-
-import serviceFactory from '../sonos/helpers/ServiceFactory';
 import { initialise as intialiseServiceLogos } from '../helpers/getServiceLogoUrl';
 
-import Search from '../sonos/Search';
-import Listener from '../sonos/events/listener';
+import { discoverMultiple } from '../helpers/sonos';
 
 import * as serviceActions from '../reduxActions/SonosServiceActions';
 
 import store from '../reducers';
 
-import { getZoneGroups } from '../selectors/ZoneGroupSelectors';
-
-const REG = /^http:\/\/([\d\.]+)/;
 const SECOND_QUERY_INTERVAL = 60;
 
-function getCurrentZone() {
+export function getCurrentZone() {
     const { currentHost, deviceSearches } = store.getState().sonosService;
     return deviceSearches[currentHost];
-}
-
-function getAllZones() {
-    return getZoneGroups(store.getState());
 }
 
 function getSonosDeviceOrCurrentOrFirst(sonos) {
@@ -44,215 +33,130 @@ function getDeviceByHost(host) {
 }
 
 const SonosService = {
-    _currentDevice: null, // TODO: get rid of this
     _queryTimeout: null,
-    _listeners: {},
-    _persistentSubscriptions: [],
-    _currentSubscriptions: [],
-    _searchInterval: null,
     _musicServices: [], // TODO: get rid of this
 
     getDeviceByHost,
 
     async mount() {
-        this._searchInterval = window.setInterval(
-            this.searchForDevices.bind(this),
-            1000
-        );
         await intialiseServiceLogos();
         this.searchForDevices();
         this.restoreMusicServices();
     },
 
+    get _currentDevice() {
+        return getSonosDeviceOrCurrentOrFirst();
+    },
+
     async searchForDevices() {
-        let firstResultProcessed = false;
+        const devices = await discoverMultiple({ timeout: 2000 });
 
-        this.search = new Search(sonos => {
-            if (sonos.model.match(/^BR/)) {
-                return;
-            }
+        const [first] = devices;
+        const groups = await first.getAllGroups();
 
-            bb.promisifyAll(sonos);
+        this.householdId = await first.getHouseholdId().catch(() => null);
+
+        Listener.on('ZonesChanged', (...args) =>
+            this.onZoneGroupTopologyEvent(first, ...args)
+        );
+
+        for (const sonos of devices) {
             store.dispatch(serviceActions.deviceSearchResult(sonos));
 
-            if (this._searchInterval) {
-                window.clearInterval(this._searchInterval);
-            }
+            sonos.on('AlarmClock', (...args) =>
+                this.onAlarmClockEvent(sonos, ...args)
+            );
+            sonos.on('Queue', (...args) => this.onQueueEvent(sonos, ...args));
 
-            const listener = new Listener(sonos);
+            sonos.on('GroupRenderingControl', (...args) =>
+                this.onGroupRenderingControlEvent(sonos, ...args)
+            );
 
-            this._listeners[sonos.host] = listener;
+            sonos.on('ContentDirectory', (...args) =>
+                this.onContentDirectoryEvent(sonos, ...args)
+            );
 
-            listener.listen(async err => {
-                if (err) {
-                    throw err;
-                }
+            sonos.on('Muted', (...args) => this.onMutedEvent(sonos, ...args));
 
-                listener.onServiceEvent(this.onServiceEvent.bind(this));
+            sonos.on('Volume', (...args) => this.onVolumeEvent(sonos, ...args));
 
-                const persistSubscription = (err, sid) => {
-                    if (!err) {
-                        const subscriptionParams = {
-                            sid: sid,
-                            host: sonos.host,
-                            sonos: sonos
-                        };
-                        console.log('persistSubscription', subscriptionParams);
-                        this._persistentSubscriptions.push(subscriptionParams);
-                    }
-                };
+            sonos.on('PlayState', (...args) =>
+                this.onPlayStateEvent(sonos, ...args)
+            );
 
-                // these events happen for all players
-                listener.addService(
-                    '/MediaRenderer/Queue/Event',
-                    persistSubscription
-                );
-                listener.addService(
-                    '/MediaServer/ContentDirectory/Event',
-                    persistSubscription
-                );
-                listener.addService(
-                    '/MediaRenderer/RenderingControl/Event',
-                    persistSubscription
-                );
-                listener.addService(
-                    '/MediaRenderer/AVTransport/Event',
-                    persistSubscription
-                );
+            sonos.on('CurrentTrack', (...args) =>
+                this.onCurrentTrackEvent(sonos, ...args)
+            );
 
-                this.queryCurrentTrackAndPlaystate(sonos);
-                this.queryTopology(sonos);
+            sonos.on('NextTrack', (...args) =>
+                this.onNextTrackEvent(sonos, ...args)
+            );
 
-                if (!firstResultProcessed) {
-                    listener.addService(
-                        '/ZoneGroupTopology/Event',
-                        persistSubscription
-                    );
-
-                    listener.addService(
-                        '/MusicServices/Event',
-                        persistSubscription
-                    );
-
-                    listener.addService(
-                        '/AlarmClock/Event',
-                        persistSubscription
-                    );
-
-                    listener.addService(
-                        '/SystemProperties/Event',
-                        persistSubscription
-                    );
-
-                    this.householdId = await sonos
-                        .getHouseholdIdAsync()
-                        .catch(() => null);
-
-                    firstResultProcessed = true;
-                }
-            });
-        });
-    },
-
-    async queryTopology(sonos) {
-        sonos = getSonosDeviceOrCurrentOrFirst(sonos);
-
-        const currentZone = getCurrentZone();
-        let currentGroupMatch;
-
-        const info = await sonos.getTopologyAsync();
-
-        // find out whether current group still exists
-        if (currentZone) {
-            currentGroupMatch = _(info.zones).find({
-                group: currentZone.group
-            });
+            this.queryState(sonos);
+            //             Event: 'CurrentTrack'
+            // Event: 'NextTrack'
+            // Event: 'PlayState' and 'PlaybackStopped'
+            // Event: 'AVTransport'
+            // Event: 'Volume'
+            // Event: 'Muted'
+            // Event: 'RenderingControl'
         }
 
-        if (!currentGroupMatch || !currentZone) {
-            let zone = _(info.zones)
-                .reject(function(z) {
-                    return z.name.toLocaleLowerCase().match('bridge');
-                })
-                .reject(function(z) {
-                    return z.name.toLocaleLowerCase().match('boost');
-                })
-                .find({
-                    coordinator: 'true'
-                });
+        store.dispatch(serviceActions.topologyUpdate(groups));
 
-            if (window.localStorage.zone) {
-                const match = _(info.zones)
-                    .reject(function(z) {
-                        return z.name.toLocaleLowerCase().match('bridge');
-                    })
-                    .reject(function(z) {
-                        return z.name.toLocaleLowerCase().match('boost');
-                    })
-                    .find({
-                        uuid: window.localStorage.zone,
-                        coordinator: 'true'
-                    });
+        const storedZone = window.localStorage.zone;
 
-                zone = match || zone;
-            }
+        const [zone] = storedZone
+            ? groups.filter((g) => g.Coordinator === storedZone)
+            : groups;
 
-            // HACK: trying to prevent listener not having server throw, race condition?
-            window.setTimeout(() => {
-                this.selectCurrentZone(zone);
-                store.dispatch(serviceActions.selectCurrentZone(zone));
-            }, 500);
-        }
-
-        store.dispatch(serviceActions.topologyUpdate(info.zones));
+        store.dispatch(serviceActions.selectCurrentZone(zone));
+        this.selectCurrentZone(first);
+        this.queryCurrentTrackAndPlaystate(first);
     },
 
-    queryVolumeInfo() {
-        const topology = getAllZones();
-
-        for (const key of _.keys(topology)) {
-            const players = topology[key];
-
-            players.forEach(async m => {
-                const [, host] = REG.exec(m.location);
-                const sonos = getDeviceByHost(host);
-
-                const muted = await sonos.getMutedAsync();
-                const volume = await sonos.getVolumeAsync();
-
-                store.dispatch(
-                    serviceActions.volumeUpdate({
-                        volume,
-                        muted,
-                        host
-                    })
-                );
-            });
+    async queryVolumeInfo(sonos) {
+        if (!sonos) {
+            return;
         }
+
+        const { host } = sonos;
+
+        const muted = await sonos.getMuted();
+        const volume = await sonos.getVolume();
+
+        store.dispatch(
+            serviceActions.volumeUpdate({
+                volume,
+                muted,
+                host,
+            })
+        );
     },
 
-    async queryMusicLibrary(sonos) {
+    async queryQueue(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
 
         if (!sonos) {
             return;
         }
 
-        const result = await sonos
-            .getMusicLibraryAsync('queue', {})
-            .catch(() => null);
+        const result = await sonos.getQueue().catch((err) => {
+            console.error(err);
+            return null;
+        });
 
         store.dispatch(
             serviceActions.queueUpdate({
                 result,
-                host: sonos.host
+                host: sonos.host,
             })
         );
     },
 
     async queryCurrentTrackAndPlaystate(sonos) {
         try {
-            const state = await sonos.getCurrentStateAsync();
+            const state = await sonos.getCurrentState();
 
             if (state === 'transitioning') {
                 window.setTimeout(() => {
@@ -261,16 +165,14 @@ const SonosService = {
                 return;
             }
 
-            let track = await sonos.currentTrackAsync();
+            let track = await sonos.currentTrack();
 
             if (track.class === 'object.item') {
-                const mediaInfo = await sonos.getMediaInfoAsync();
+                const mediaInfo = await sonos.getMediaInfo();
 
-                const trackMeta = sonos.parseDIDL(
-                    xml2json(mediaInfo.CurrentURIMetaData, {
-                        explicitArray: true
-                    })
-                );
+                const trackMeta = await Helpers.ParseXml(
+                    mediaInfo.CurrentURIMetaData
+                ).then(Helpers.ParseDIDL);
 
                 track = Object.assign(track, trackMeta);
             }
@@ -279,7 +181,7 @@ const SonosService = {
                 serviceActions.zoneGroupTrackUpdate({
                     track: track,
                     host: sonos.host,
-                    playState: state
+                    playState: state,
                 })
             );
         } catch (e) {
@@ -289,21 +191,20 @@ const SonosService = {
 
     async queryPlayState(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
-        const state = await sonos.getCurrentStateAsync();
+        const state = await sonos.getCurrentState();
         this.processPlaystateUpdate(sonos, state);
     },
 
     async queryPositionInfo(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
 
-        // TODO: I should be able to do all of these in a promise based op
-        // i.e. seek->getPosition
-        const info = await sonos.getPositionInfoAsync();
+        const avTransport = sonos.avTransportService();
+        const info = await avTransport.GetPositionInfo();
 
         store.dispatch(
             serviceActions.positionInfoUpdate({
                 host: sonos.host,
-                info
+                info,
             })
         );
     },
@@ -311,15 +212,15 @@ const SonosService = {
     async queryCrossfadeMode(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
 
-        const avTransport = serviceFactory('AVTransport', sonos);
-        const mode = await avTransport.GetCrossfadeModeAsync({
-            InstanceID: 0
+        const avTransport = sonos.avTransportService();
+        const mode = await avTransport.GetCrossfadeMode({
+            InstanceID: 0,
         });
 
         store.dispatch(
             serviceActions.crossfadeModeUpdate({
                 host: sonos.host,
-                mode: !!Number(mode.CrossfadeMode)
+                mode: !!Number(mode.CrossfadeMode),
             })
         );
     },
@@ -327,9 +228,9 @@ const SonosService = {
     async queryTransportSettings(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
 
-        const avTransport = serviceFactory('AVTransport', sonos);
-        const result = await avTransport.GetTransportSettingsAsync({
-            InstanceID: 0
+        const avTransport = sonos.avTransportService();
+        const result = await avTransport.GetTransportSettings({
+            InstanceID: 0,
         });
 
         const currentPlayMode = result.PlayMode;
@@ -337,7 +238,7 @@ const SonosService = {
         store.dispatch(
             serviceActions.currentPlayModeUpdate({
                 host: sonos.host,
-                mode: currentPlayMode
+                mode: currentPlayMode,
             })
         );
     },
@@ -345,11 +246,13 @@ const SonosService = {
     async queryState(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
 
-        this.queryVolumeInfo();
+        if (!sonos) {
+            return;
+        }
 
-        // this.queryTopology(sonos);
+        this.queryVolumeInfo(sonos);
         this.queryPositionInfo(sonos);
-        this.queryMusicLibrary(sonos);
+        this.queryQueue(sonos);
         this.queryPlayState(sonos);
         this.queryTransportSettings(sonos);
         this.queryCurrentTrackAndPlaystate(sonos);
@@ -364,219 +267,13 @@ const SonosService = {
         store.dispatch(
             serviceActions.playStateUpdate({
                 playState: state,
-                host: sonos.host
+                host: sonos.host,
             })
         );
     },
 
-    onServiceEvent(endpoint, sid, data) {
-        const subscription =
-            _(this._persistentSubscriptions).find({
-                sid: sid
-            }) || {};
-
-        console.log(endpoint, sid, subscription.sonos, getCurrentZone());
-
-        switch (endpoint) {
-            case '/ZoneGroupTopology/Event':
-                {
-                    // Transform the message into the same format as sonos.getTopology
-                    const topology = xml2json(data.ZoneGroupState, {
-                        explicitArray: true
-                    });
-
-                    const zones = [];
-
-                    _.forEach(
-                        topology.ZoneGroupState.ZoneGroups[0].ZoneGroup,
-                        zg => {
-                            const cId = zg.$.Coordinator;
-                            const gId = zg.$.ID;
-
-                            _.forEach(zg.ZoneGroupMember, z => {
-                                const zone = {};
-                                zone.group = gId;
-                                Object.keys(z.$).forEach(k => {
-                                    zone[String(k).toLowerCase()] = String(
-                                        z.$[k]
-                                    );
-                                });
-                                zone.name = zone.zonename;
-                                delete zone.zonename;
-
-                                if (cId === zone.uuid) {
-                                    zone.coordinator = 'true';
-                                }
-
-                                zones.push(zone);
-                            });
-                        }
-                    );
-
-                    store.dispatch(serviceActions.topologyEvent(zones));
-                }
-                break;
-
-            case '/MediaRenderer/RenderingControl/Event':
-                {
-                    const lastChange = xml2json(data.LastChange, {
-                        explicitArray: false
-                    });
-
-                    if (subscription) {
-                        store.dispatch(
-                            serviceActions.volumeUpdate({
-                                volume: Number(
-                                    lastChange.Event.InstanceID.Volume[0].$.val
-                                ),
-                                muted: Boolean(
-                                    Number(
-                                        lastChange.Event.InstanceID.Mute[0].$
-                                            .val
-                                    )
-                                ),
-                                host: subscription.host
-                            })
-                        );
-                    }
-                }
-                break;
-
-            case '/MediaRenderer/AVTransport/Event':
-                {
-                    const lastChange = xml2json(data.LastChange);
-
-                    if (subscription && this._currentDevice) {
-                        const transportState = subscription.sonos.translateState(
-                            lastChange.Event.InstanceID.TransportState.$.val
-                        );
-
-                        const avTransportMetaDIDL = xml2json(
-                            lastChange.Event.InstanceID.AVTransportURIMetaData.$
-                                .val,
-                            {
-                                explicitArray: true
-                            }
-                        );
-
-                        const currentTrackDIDL = xml2json(
-                            lastChange.Event.InstanceID.CurrentTrackMetaData.$
-                                .val,
-                            {
-                                explicitArray: true
-                            }
-                        );
-
-                        store.dispatch(
-                            serviceActions.zoneGroupTrackUpdate({
-                                track: subscription.sonos.parseDIDL(
-                                    currentTrackDIDL
-                                ),
-                                avTransportMeta: this._currentDevice.parseDIDL(
-                                    avTransportMetaDIDL
-                                ),
-                                host: subscription.host,
-                                playState: transportState
-                            })
-                        );
-
-                        const currentPlayMode =
-                            lastChange.Event.InstanceID.CurrentPlayMode.$.val;
-
-                        const currentCrossfadeMode = Boolean(
-                            Number(
-                                lastChange.Event.InstanceID.CurrentCrossfadeMode
-                                    .$.val
-                            )
-                        );
-
-                        const nextTrackDIDL = xml2json(
-                            lastChange.Event.InstanceID['r:NextTrackMetaData'].$
-                                .val,
-                            {
-                                explicitArray: true
-                            }
-                        );
-
-                        store.dispatch(
-                            serviceActions.currentPlayModeUpdate({
-                                host: subscription.host,
-                                mode: currentPlayMode
-                            })
-                        );
-
-                        store.dispatch(
-                            serviceActions.crossfadeModeUpdate({
-                                host: subscription.host,
-                                mode: currentCrossfadeMode
-                            })
-                        );
-
-                        store.dispatch(
-                            serviceActions.nextTrackUpdate({
-                                host: subscription.host,
-                                track: this._currentDevice.parseDIDL(
-                                    nextTrackDIDL
-                                )
-                            })
-                        );
-
-                        this.processPlaystateUpdate(
-                            subscription.sonos,
-                            transportState
-                        );
-                    }
-                }
-                break;
-
-            case '/MediaServer/ContentDirectory/Event':
-                {
-                    this.queryMusicLibrary();
-                }
-                break;
-
-            case '/MediaRenderer/Queue/Event':
-                {
-                    this.queryState(subscription.sonos);
-                }
-                break;
-
-            default:
-                console.log('Ignored Event', endpoint, sid, data);
-        }
-    },
-
-    subscribeServiceEvents(sonos) {
-        const x = this._listeners[sonos.host];
-
-        const cb = (error, sid) => {
-            if (error) {
-                throw error;
-            }
-            this._currentSubscriptions.push(sid);
-        };
-
-        x.addService('/MediaRenderer/GroupRenderingControl/Event', cb);
-        x.addService('/MediaServer/ContentDirectory/Event', cb);
-    },
-
-    unsubscribeServiceEvents(sonos) {
-        const x = this._listeners[sonos.host];
-
-        this._currentSubscriptions.forEach(sid => {
-            x.removeService(sid, error => {
-                if (error) {
-                    throw error;
-                }
-                // console.log('Successfully unsubscribed');
-            });
-        });
-
-        this._currentSubscriptions = [];
-    },
-
     selectCurrentZone(value) {
-        const [, host] = REG.exec(value.location);
+        const { host } = value;
         const sonos = getDeviceByHost(host);
 
         if (sonos === this._currentDevice) {
@@ -584,23 +281,16 @@ const SonosService = {
             return;
         }
 
-        window.localStorage.zone = value.uuid;
-
         if (sonos) {
-            if (this._currentDevice) {
-                this.unsubscribeServiceEvents(this._currentDevice);
-            }
+            window.localStorage.zone = value.Coordinator;
 
             if (this._queryTimeout) {
                 window.clearInterval(this._queryTimeout);
             }
 
-            this._currentDevice = sonos;
-
-            this.subscribeServiceEvents(sonos);
             this.queryState(sonos);
             this._queryTimeout = window.setInterval(
-                () => this.queryState(),
+                () => this.queryState(sonos),
                 SECOND_QUERY_INTERVAL * 1000
             );
         }
@@ -609,7 +299,7 @@ const SonosService = {
     async rememberMusicService(service, authToken) {
         this._musicServices.push({
             service: service,
-            authToken: authToken
+            authToken: authToken,
         });
 
         window.localStorage.musicServices = JSON.stringify(this._musicServices);
@@ -620,7 +310,7 @@ const SonosService = {
     removeMusicService(service) {
         let currentServices = JSON.parse(window.localStorage.musicServices);
 
-        currentServices = _.reject(currentServices, s => {
+        currentServices = _.reject(currentServices, (s) => {
             return s.service.Id == service.Id;
         });
 
@@ -636,25 +326,82 @@ const SonosService = {
             : [];
 
         store.dispatch(serviceActions.updateMusicServices(this._musicServices));
-    }
+    },
+
+    onAlarmClockEvent(sonos, ...args) {
+        console.log('onAlarmClockEvent', sonos, ...args);
+    },
+
+    async onZoneGroupTopologyEvent(sonos, ...args) {
+        console.log('onZoneGroupTopologyEvent', sonos, ...args);
+        const groups = await sonos.getAllGroups();
+        store.dispatch(serviceActions.topologyEvent(groups));
+    },
+
+    onQueueEvent(sonos, ...args) {
+        console.log('onQueueEvent', sonos, ...args);
+        this.queryState(sonos);
+    },
+
+    onGroupRenderingControlEvent(sonos, ...args) {
+        console.log('onGroupRenderingControlEvent', sonos, ...args);
+        this.queryQueue(sonos);
+    },
+
+    onContentDirectoryEvent(sonos, ...args) {
+        console.log('onContentDirectoryEvent', args);
+    },
+
+    onMutedEvent({ host }, muted) {
+        console.log('onMutedEvent', host, muted);
+        store.dispatch(
+            serviceActions.mutedUpdate({
+                muted,
+                host,
+            })
+        );
+    },
+
+    onVolumeEvent({ host }, volume) {
+        console.log('onVolumeEvent', host, volume);
+        store.dispatch(
+            serviceActions.volumeUpdate({
+                volume,
+                host,
+            })
+        );
+    },
+
+    onPlayStateEvent(sonos, transportState) {
+        console.log('onPlayStateEvent', transportState);
+        this.processPlaystateUpdate(sonos, transportState);
+    },
+
+    onCurrentTrackEvent({ host }, track) {
+        console.log('onCurrentTrackEvent', host, track);
+        store.dispatch(
+            serviceActions.zoneGroupTrackUpdate({
+                track,
+                host,
+            })
+        );
+    },
+
+    onNextTrackEvent({ host }, track) {
+        console.log('onNextTrackEvent', host, track);
+        store.dispatch(
+            serviceActions.nextTrackUpdate({
+                host,
+                track,
+            })
+        );
+    },
+
+    onContentDirectoryEvent(sonos, ...args) {
+        console.log('onContentDirectoryEvent', sonos, ...args);
+        this.queryQueue(sonos);
+    },
 };
 
 window.SonosService = SonosService;
-
-window.onbeforeunload = () => {
-    try {
-        SonosService.search.destroy();
-    } catch (e) {
-        console.warning(e);
-    }
-
-    _.each(SonosService._listeners, l => {
-        try {
-            l.destroy();
-        } catch (e) {
-            console.warning(e);
-        }
-    });
-};
-
 export default SonosService;

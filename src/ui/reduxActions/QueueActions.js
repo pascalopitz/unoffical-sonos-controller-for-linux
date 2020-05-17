@@ -2,7 +2,6 @@ import { createAction } from 'redux-actions';
 import Constants from '../constants';
 
 import SonosService from '../services/SonosService';
-import serviceFactory from '../sonos/helpers/ServiceFactory';
 
 import store from '../reducers';
 import getSelectionSeries from '../helpers/getSelectionSeries';
@@ -12,16 +11,16 @@ export const deselect = createAction(Constants.QUEUE_DESELECT);
 
 export const flush = createAction(Constants.QUEUE_FLUSH, async () => {
     const sonos = SonosService._currentDevice; // TODO: fix this
-    await sonos.flushAsync();
+    await sonos.flush();
 });
 
 export const gotoPosition = createAction(
     Constants.QUEUE_GOTO,
-    async position => {
+    async (position) => {
         const sonos = SonosService._currentDevice; // TODO: fix this
-        await sonos.selectQueueAsync();
-        await sonos.gotoAsync(position);
-        await sonos.playAsync(position);
+        await sonos.selectQueue();
+        await sonos.goto(position);
+        await sonos.play(position);
 
         SonosService.queryState(sonos);
 
@@ -33,32 +32,32 @@ export const changePosition = createAction(
     Constants.QUEUE_REORDER,
     async (position, newPosition, updateId) => {
         const sonos = SonosService._currentDevice; // TODO: fix this
-        const avTransport = serviceFactory('AVTransport', sonos);
+        const avTransport = sonos.avTransportService();
 
         const params = {
             InstanceID: 0,
             StartingIndex: position,
             InsertBefore: newPosition,
             NumberOfTracks: 1,
-            UpdateID: updateId
+            UpdateID: updateId,
         };
 
-        await avTransport.ReorderTracksInQueueAsync(params);
+        await avTransport.ReorderTracksInQueue(params);
 
         SonosService.queryState(sonos);
 
         return {
             position,
-            newPosition
+            newPosition,
         };
     }
 );
 
 export const removeTrack = createAction(
     Constants.QUEUE_REMOVE,
-    async position => {
+    async (position) => {
         const sonos = SonosService._currentDevice; // TODO: fix this
-        const avTransport = serviceFactory('AVTransport', sonos);
+        const avTransport = sonos.avTransportService();
 
         const state = store.getState();
         const { currentHost } = state.sonosService;
@@ -69,10 +68,10 @@ export const removeTrack = createAction(
             InstanceID: 0,
             UpdateID: 0,
             StartingIndex: position,
-            NumberOfTracks: 1
+            NumberOfTracks: 1,
         };
 
-        await avTransport.RemoveTrackRangeFromQueueAsync(params);
+        await avTransport.RemoveTrackRangeFromQueue(params);
 
         SonosService.queryState(sonos);
 
@@ -84,7 +83,7 @@ export const removeSelectedTracks = createAction(
     Constants.QUEUE_REMOVE_SELECTED,
     async () => {
         const sonos = SonosService._currentDevice; // TODO: fix this
-        const avTransport = serviceFactory('AVTransport', sonos);
+        const avTransport = sonos.avTransportService();
 
         const state = store.getState();
         const { currentHost } = state.sonosService;
@@ -93,7 +92,7 @@ export const removeSelectedTracks = createAction(
 
         let removed = 0;
 
-        getSelectionSeries(tracks, selected).forEach(async arr => {
+        getSelectionSeries(tracks, selected).forEach(async (arr) => {
             const StartingIndex = arr[0] - removed;
             const NumberOfTracks = arr.length;
             removed = removed + NumberOfTracks;
@@ -102,10 +101,10 @@ export const removeSelectedTracks = createAction(
                 InstanceID: 0,
                 UpdateID: 0,
                 StartingIndex: StartingIndex,
-                NumberOfTracks: NumberOfTracks
+                NumberOfTracks: NumberOfTracks,
             };
 
-            await avTransport.RemoveTrackRangeFromQueueAsync(params);
+            await avTransport.RemoveTrackRangeFromQueue(params);
         });
 
         SonosService.queryState(sonos);

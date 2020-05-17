@@ -19,7 +19,7 @@ function withinEnvelope(body, headers = '') {
             '">',
         '<s:Header>' + headers + '</s:Header>',
         '<s:Body>' + body + '</s:Body>',
-        '</s:Envelope>'
+        '</s:Envelope>',
     ].join('');
 }
 
@@ -47,9 +47,9 @@ class MusicServiceClient {
                         SOAPAction: '"' + NS + '#' + action + '"',
                         'Content-type': 'text/xml; charset=utf8',
                         // Thanks SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
-                        'User-Agent': `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`
+                        'User-Agent': `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`,
                     },
-                    body: soapBody
+                    body: soapBody,
                 },
                 (err, res, body) => {
                     const e = xml2json(stripNamespaces(body));
@@ -154,37 +154,37 @@ class MusicServiceClient {
         const TYPE_MAPPINGS = {
             track: {
                 type: 'object.item.audioItem.musicTrack',
-                token: '00032020'
+                token: '00032020',
             },
             album: {
                 type: 'object.container.album.musicAlbum',
-                token: '0004206c'
+                token: '0004206c',
             },
             trackList: {
                 type: 'object.container.playlistContainer',
-                token: '000e206c'
+                token: '000e206c',
             },
             albumList: {
                 type: 'object.container.playlistContainer',
-                token: '0006206c'
+                token: '0006206c',
             },
             playlist: {
                 type: 'object.container.playlistContainer',
-                token: '0006206c'
+                token: '0006206c',
             },
             playList: {
                 type: 'object.container.playlistContainer',
-                token: '0006206c'
+                token: '0006206c',
             },
             artistTrackList: {
                 type: 'object.container.playlistContainer',
-                token: '0006206c'
+                token: '0006206c',
             },
             program: {
                 type:
                     'object.item.audioItem.audioBroadcast.#' + item.displayType,
-                token: '000c206c'
-            }
+                token: '000c206c',
+            },
         };
 
         let resourceString, id, trackData;
@@ -211,8 +211,9 @@ class MusicServiceClient {
             trackData = `<dc:creator>${_.escape(
                 item.trackMetadata.artist
             )}</dc:creator>
-            <upnp:albumArtURI>${item.trackMetadata.albumArtURI ||
-                ''}</upnp:albumArtURI>
+            <upnp:albumArtURI>${
+                item.trackMetadata.albumArtURI || ''
+            }</upnp:albumArtURI>
             <upnp:album>${_.escape(
                 item.trackMetadata.album || ''
             )}</upnp:album>`;
@@ -250,7 +251,7 @@ class MusicServiceClient {
             '<ns:deviceProvider>',
             deviceProviderName,
             '</ns:deviceProvider>',
-            '</ns:credentials>'
+            '</ns:credentials>',
         ].join('');
 
         const body = [
@@ -258,7 +259,7 @@ class MusicServiceClient {
             '<ns:householdId>',
             SonosService.householdId,
             '</ns:householdId>',
-            '</ns:getDeviceLinkCode>'
+            '</ns:getDeviceLinkCode>',
         ].join('');
 
         return this._doRequest(
@@ -266,7 +267,7 @@ class MusicServiceClient {
             'getDeviceLinkCode',
             body,
             headers
-        ).then(res => {
+        ).then((res) => {
             const resp = xml2json(stripNamespaces(res));
             const obj =
                 resp['Envelope']['Body']['getDeviceLinkCodeResponse'][
@@ -284,7 +285,7 @@ class MusicServiceClient {
             '<ns:householdId>',
             SonosService.householdId,
             '</ns:householdId>',
-            '</ns:getAppLink>'
+            '</ns:getAppLink>',
         ].join('');
 
         return this._doRequest(
@@ -292,7 +293,7 @@ class MusicServiceClient {
             'getAppLink',
             body,
             headers
-        ).then(res => {
+        ).then((res) => {
             const resp = xml2json(stripNamespaces(res));
             const obj =
                 resp['Envelope']['Body']['getAppLinkResponse'][
@@ -311,7 +312,7 @@ class MusicServiceClient {
             '<ns:deviceProvider>',
             deviceProviderName,
             '</ns:deviceProvider>',
-            '</ns:credentials>'
+            '</ns:credentials>',
         ].join('');
 
         const body = [
@@ -325,7 +326,7 @@ class MusicServiceClient {
             '<ns:linkDeviceId>',
             linkDeviceId,
             '</ns:linkDeviceId>',
-            '</ns:getDeviceAuthToken>'
+            '</ns:getDeviceAuthToken>',
         ].join('');
 
         return this._doRequest(
@@ -334,7 +335,7 @@ class MusicServiceClient {
             body,
             headers
         )
-            .then(res => {
+            .then((res) => {
                 const resp = xml2json(stripNamespaces(res));
                 const obj =
                     resp['Envelope']['Body']['getDeviceAuthTokenResponse'][
@@ -342,7 +343,7 @@ class MusicServiceClient {
                     ];
                 return obj;
             })
-            .catch(err => {
+            .catch((err) => {
                 if (err.message.indefOf('NOT_LINKED_RETRY') > -1) {
                     // noop
                 }
@@ -365,7 +366,7 @@ class MusicServiceClient {
             '<ns:count>',
             count,
             '</ns:count>',
-            '</ns:getMetadata>'
+            '</ns:getMetadata>',
         ].join('');
 
         return new Promise((resolve, reject) => {
@@ -375,7 +376,7 @@ class MusicServiceClient {
                 body,
                 headers
             )
-                .then(res => {
+                .then((res) => {
                     const resp = xml2json(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['getMetadataResponse'][
@@ -383,9 +384,9 @@ class MusicServiceClient {
                         ];
                     resolve(obj);
                 })
-                .catch(response => {
+                .catch((response) => {
                     if (response.authToken) {
-                        this.getMetadata(id, index, count).then(obj => {
+                        this.getMetadata(id, index, count).then((obj) => {
                             resolve(obj);
                         });
                     } else {
@@ -403,7 +404,7 @@ class MusicServiceClient {
             '<ns:id>',
             id,
             '</ns:id>',
-            '</ns:getExtendedMetadata>'
+            '</ns:getExtendedMetadata>',
         ].join('');
 
         return new Promise((resolve, reject) => {
@@ -413,7 +414,7 @@ class MusicServiceClient {
                 body,
                 headers
             )
-                .then(res => {
+                .then((res) => {
                     const resp = xml2json(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['getExtendedMetadataResponse'][
@@ -421,9 +422,9 @@ class MusicServiceClient {
                         ];
                     resolve(obj);
                 })
-                .catch(authToken => {
+                .catch((authToken) => {
                     if (authToken) {
-                        this.getExtendedMetadata(id).then(obj => {
+                        this.getExtendedMetadata(id).then((obj) => {
                             resolve(obj);
                         });
                     } else {
@@ -450,7 +451,7 @@ class MusicServiceClient {
             '<ns:count>',
             count,
             '</ns:count>',
-            '</ns:search>'
+            '</ns:search>',
         ].join('');
 
         return new Promise((resolve, reject) => {
@@ -460,7 +461,7 @@ class MusicServiceClient {
                 body,
                 headers
             )
-                .then(res => {
+                .then((res) => {
                     const resp = xml2json(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['searchResponse'][
@@ -468,9 +469,9 @@ class MusicServiceClient {
                         ];
                     resolve(obj);
                 })
-                .catch(authToken => {
+                .catch((authToken) => {
                     if (authToken) {
-                        this.search(id, term, index, count).then(obj => {
+                        this.search(id, term, index, count).then((obj) => {
                             resolve(obj);
                         });
                     } else {
@@ -488,7 +489,7 @@ class MusicServiceClient {
             '<ns:id>',
             id,
             '</ns:id>',
-            '</ns:getMediaURI>'
+            '</ns:getMediaURI>',
         ].join('');
 
         return new Promise((resolve, reject) => {
@@ -498,7 +499,7 @@ class MusicServiceClient {
                 body,
                 headers
             )
-                .then(res => {
+                .then((res) => {
                     const resp = xml2json(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['getMediaURIResponse'][
@@ -506,9 +507,9 @@ class MusicServiceClient {
                         ];
                     return resolve(obj);
                 })
-                .catch(authToken => {
+                .catch((authToken) => {
                     if (authToken) {
-                        this.getMediaURI(id).then(obj => {
+                        this.getMediaURI(id).then((obj) => {
                             resolve(obj);
                         });
                     } else {
@@ -527,7 +528,7 @@ class MusicServiceClient {
             '<ns:deviceProvider>',
             deviceProviderName,
             '</ns:deviceProvider>',
-            '</ns:credentials>'
+            '</ns:credentials>',
         ].join('');
 
         const body = [
@@ -538,7 +539,7 @@ class MusicServiceClient {
             '<ns:password>',
             password,
             '</ns:password>',
-            '</ns:getSessionId>'
+            '</ns:getSessionId>',
         ].join('');
 
         return this._doRequest(
@@ -546,7 +547,7 @@ class MusicServiceClient {
             'getSessionId',
             body,
             headers
-        ).then(res => {
+        ).then((res) => {
             const resp = xml2json(stripNamespaces(res));
             const obj =
                 resp['Envelope']['Body']['getSessionIdResponse'][
@@ -569,7 +570,7 @@ class MusicServiceClient {
                 '<ns:sessionId>',
                 this.authToken,
                 '</ns:sessionId>',
-                '</ns:credentials>'
+                '</ns:credentials>',
             ].join('');
         }
 
@@ -593,7 +594,7 @@ class MusicServiceClient {
                 SonosService.householdId,
                 '</ns:householdId>',
                 '</ns:loginToken>',
-                '</ns:credentials>'
+                '</ns:credentials>',
             ].join('');
         }
 
@@ -605,7 +606,7 @@ class MusicServiceClient {
             '<ns:deviceProvider>',
             deviceProviderName,
             '</ns:deviceProvider>',
-            '</ns:credentials>'
+            '</ns:credentials>',
         ].join('');
     }
 
@@ -629,7 +630,7 @@ class MusicServiceClient {
 
             const map = _.find(
                 e.Presentation.PresentationMap,
-                m => !!_.get(m, 'Match.SearchCategories')
+                (m) => !!_.get(m, 'Match.SearchCategories')
             );
 
             let searchCategories = _.get(map, 'Match.SearchCategories');
@@ -639,7 +640,7 @@ class MusicServiceClient {
             }
 
             this.searchTermMap = _.get(searchCategories, 'Category').map(
-                c => c.$
+                (c) => c.$
             );
         }
 

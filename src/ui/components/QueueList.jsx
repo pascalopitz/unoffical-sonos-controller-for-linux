@@ -9,25 +9,25 @@ import {
     getExpanded,
     getTracks,
     getPositionInfo,
-    getUpdateId
+    getUpdateId,
 } from '../selectors/QueueSelectors';
 
 import { changePosition, flush } from '../reduxActions/QueueActions';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         tracks: getTracks(state),
         position: getPositionInfo(state),
         expanded: getExpanded(state),
-        updateId: getUpdateId(state)
+        updateId: getUpdateId(state),
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         flush: () => dispatch(flush()),
         changePosition: (oldPos, newPos, updateId) =>
-            dispatch(changePosition(oldPos, newPos, updateId))
+            dispatch(changePosition(oldPos, newPos, updateId)),
     };
 };
 
@@ -35,7 +35,7 @@ export class QueueList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dragging: false
+            dragging: false,
         };
     }
 
@@ -61,7 +61,7 @@ export class QueueList extends Component {
     _onDragStart(e) {
         this.setState({
             dragPosition: Number(e.target.getAttribute('data-position')),
-            dragging: true
+            dragging: true,
         });
     }
 
@@ -81,7 +81,7 @@ export class QueueList extends Component {
             dragPosition: false,
             dragging: false,
             dragOverPosition: null,
-            dragOverMode: null
+            dragOverMode: null,
         });
     }
 
@@ -104,18 +104,18 @@ export class QueueList extends Component {
 
             this.setState({
                 dragOverPosition: position,
-                dragOverMode: mode
+                dragOverMode: mode,
             });
         } else if (this.state.dragOverMode || this.state.dragOverPosition) {
             this.setState({
                 dragOverPosition: null,
-                dragOverMode: null
+                dragOverMode: null,
             });
         }
     }
 
     render() {
-        const tracks = this.props.tracks;
+        const tracks = this.props.tracks || [];
         let queueItemNodes;
         let clearNode;
 

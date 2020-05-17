@@ -1,4 +1,6 @@
 const electron = require('electron');
+require('dotenv').config();
+
 const { app, Menu, BrowserWindow } = electron;
 const path = require('path');
 const url = require('url');

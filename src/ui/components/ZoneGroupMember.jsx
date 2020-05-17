@@ -3,7 +3,7 @@ import React from 'react';
 export function ZoneGroupMember(props) {
     return (
         <li>
-            <span>{props.member.name}</span>
+            <span>{props.member.ZoneName}</span>
         </li>
     );
 }

@@ -9,24 +9,24 @@ import store from '../reducers';
 
 import {
     LIBRARY_STATE,
-    LIBRARY_SEARCH_MODES
+    LIBRARY_SEARCH_MODES,
 } from '../constants/BrowserListConstants';
 
 async function _fetchLineIns() {
     const { deviceSearches } = store.getState().sonosService;
 
-    const promises = _.map(deviceSearches, async sonos => {
+    const promises = _.map(deviceSearches, async (sonos) => {
         try {
-            const result = await sonos.getMusicLibraryAsync('AI:', {});
+            const result = await sonos.getMusicLibrary('AI:', {});
             const items = result && result.items ? result.items : [];
 
             if (items.length === 0) {
                 return [];
             }
 
-            const data = await sonos.getZoneAttrsAsync();
+            const data = await sonos.getZoneAttrs();
 
-            items.forEach(i => {
+            items.forEach((i) => {
                 i.title = i.title + ': ' + data.CurrentZoneName;
             });
 
@@ -43,22 +43,22 @@ async function _fetchLineIns() {
 
 async function _fetchMusicServices() {
     const sonos = SonosService._currentDevice; // TODO: fix this
-    const existingIds = SonosService._musicServices.map(s => s.service.Id); // TODO: fix this
+    const existingIds = SonosService._musicServices.map((s) => s.service.Id); // TODO: fix this
 
-    const services = await sonos.getAvailableServicesAsync();
+    const services = await sonos.getAvailableServices();
 
-    let data = _.reject(services, item => {
+    let data = _.reject(services, (item) => {
         return _.includes(existingIds, item.Id);
     });
 
     data = _.orderBy(data, 'Name');
 
-    return data.map(out => {
+    return data.map((out) => {
         return {
             action: 'addService',
             title: out.Name,
             id: Number(out.Id),
-            data: out
+            data: out,
         };
     });
 }
@@ -80,7 +80,7 @@ async function _getItem(item) {
 
         return {
             uri: _.escape(uri),
-            metadata: meta
+            metadata: meta,
         };
     }
 
@@ -88,7 +88,7 @@ async function _getItem(item) {
 
     return {
         uri: _.escape(uri),
-        metadata: client.encodeItemMetadata(uri, item)
+        metadata: client.encodeItemMetadata(uri, item),
     };
 }
 
@@ -98,23 +98,23 @@ async function _createLibrarySearchPromise(type, term, options = {}) {
     const sonos = SonosService._currentDevice;
 
     try {
-        const result = await sonos.searchMusicLibraryAsync(type, term, options);
+        const result = await sonos.searchMusicLibrary(type, term, options);
         return _.assign(result, {
             type,
             term,
-            search: true
+            search: true,
         });
     } catch (err) {
         return {
             returned: 0,
             total: 0,
-            items: []
+            items: [],
         };
     }
 }
 
 function _getServiceSearchPromise(client) {
-    return async function(type, term, index, count) {
+    return async function (type, term, index, count) {
         try {
             const result = await client.search(type, term, index, count);
             return _transformSMAPI(result, client);
@@ -122,7 +122,7 @@ function _getServiceSearchPromise(client) {
             return {
                 returned: 0,
                 total: 0,
-                items: []
+                items: [],
             };
         }
     };
@@ -136,7 +136,7 @@ function _transformSMAPI(res, client) {
             res.mediaMetadata = [res.mediaMetadata];
         }
 
-        res.mediaMetadata.forEach(i => {
+        res.mediaMetadata.forEach((i) => {
             i.serviceClient = client;
             items[i.$$position] = i;
         });
@@ -147,7 +147,7 @@ function _transformSMAPI(res, client) {
             res.mediaCollection = [res.mediaCollection];
         }
 
-        res.mediaCollection.forEach(i => {
+        res.mediaCollection.forEach((i) => {
             i.serviceClient = client;
             items[i.$$position] = i;
         });
@@ -156,7 +156,7 @@ function _transformSMAPI(res, client) {
     return {
         returned: res.count,
         total: res.total,
-        items: items
+        items: items,
     };
 }
 // Actions below
@@ -169,7 +169,7 @@ export const scroll = createAction(Constants.BROWSER_SCROLL_POSITION);
 
 export const more = createAction(
     Constants.BROWSER_SCROLL_RESULT,
-    async prevState => {
+    async (prevState) => {
         try {
             if (
                 prevState.action === 'linein' ||
@@ -183,7 +183,7 @@ export const more = createAction(
 
             const sonos = SonosService._currentDevice; // TODO: fix this
             const params = {
-                start: state.items.length
+                start: state.items.length,
             };
 
             if (state.items.length >= state.total) {
@@ -198,7 +198,7 @@ export const more = createAction(
                 if (state.term && state.term.length) {
                     const searchTermMap = await client.getSearchTermMap();
                     const { mappedId } = _.find(searchTermMap, {
-                        id: state.mode
+                        id: state.mode,
                     });
 
                     res = await _getServiceSearchPromise(client)(
@@ -223,10 +223,10 @@ export const more = createAction(
 
             if (state.term && state.term.length) {
                 const { mappedId } = _.find(LIBRARY_SEARCH_MODES, {
-                    id: state.mode || LIBRARY_SEARCH_MODES[0].id
+                    id: state.mode || LIBRARY_SEARCH_MODES[0].id,
                 });
 
-                const result = await sonos.searchMusicLibraryAsync(
+                const result = await sonos.searchMusicLibrary(
                     mappedId,
                     state.term,
                     params
@@ -242,7 +242,7 @@ export const more = createAction(
                 return state;
             }
 
-            const result = await sonos.getMusicLibraryAsync(
+            const result = await sonos.getMusicLibrary(
                 state.id || state.searchType,
                 params
             );
@@ -279,7 +279,7 @@ export const search = createAction(
                     title,
                     term,
                     searchTermMap,
-                    serviceClient
+                    serviceClient,
                 };
             }
 
@@ -294,7 +294,7 @@ export const search = createAction(
             }
 
             const { mappedId } = _.find(searchTermMap || LIBRARY_SEARCH_MODES, {
-                id: mode || LIBRARY_SEARCH_MODES[0].id
+                id: mode || LIBRARY_SEARCH_MODES[0].id,
             });
 
             const result = await resolver(mappedId, term);
@@ -307,7 +307,7 @@ export const search = createAction(
                 term,
                 searchTermMap,
                 serviceClient,
-                mode
+                mode,
             };
         } catch (err) {
             console.error(err);
@@ -317,7 +317,7 @@ export const search = createAction(
                 term,
                 searchTermMap,
                 serviceClient,
-                mode
+                mode,
             };
         }
     }
@@ -327,14 +327,14 @@ export const playCurrentAlbum = createAction(Constants.BROWSER_PLAY);
 
 export const select = createAction(
     Constants.BROWSER_SELECT_ITEM,
-    async item => {
+    async (item) => {
         const sonos = SonosService._currentDevice;
         let prendinBrowserUpdate;
         let objectId = item.searchType;
 
         if (item.action && item.action === 'library') {
             return {
-                ...LIBRARY_STATE
+                ...LIBRARY_STATE,
             };
         }
 
@@ -364,10 +364,10 @@ export const select = createAction(
                 title: client.name,
                 serviceClient: client,
                 searchTermMap: searchTermMap,
-                items: _.map(res.mediaCollection, i => {
+                items: _.map(res.mediaCollection, (i) => {
                     i.serviceClient = client;
                     return i;
-                })
+                }),
             };
 
             return state;
@@ -388,7 +388,7 @@ export const select = createAction(
                     res.mediaMetadata = [res.mediaMetadata];
                 }
 
-                res.mediaMetadata.forEach(i => {
+                res.mediaMetadata.forEach((i) => {
                     i.serviceClient = client;
                     items[i.$$position] = i;
                 });
@@ -399,7 +399,7 @@ export const select = createAction(
                     res.mediaCollection = [res.mediaCollection];
                 }
 
-                res.mediaCollection.forEach(i => {
+                res.mediaCollection.forEach((i) => {
                     i.serviceClient = client;
                     items[i.$$position] = i;
                 });
@@ -412,7 +412,7 @@ export const select = createAction(
                 searchTermMap: searchTermMap,
                 serviceClient: client,
                 total: res.total,
-                items: _.compact(_.uniq(items))
+                items: _.compact(_.uniq(items)),
             };
         }
 
@@ -421,7 +421,7 @@ export const select = createAction(
                 title: item.title,
                 term: term,
                 searchTermMap: searchTermMap,
-                searchType: item.searchType
+                searchType: item.searchType,
             };
         } else {
             prendinBrowserUpdate = item;
@@ -432,7 +432,7 @@ export const select = createAction(
         }
 
         try {
-            const result = await sonos.getMusicLibraryAsync(objectId, {});
+            const result = await sonos.getMusicLibrary(objectId, {});
             const state = prendinBrowserUpdate;
             state.items = result.items;
 
@@ -445,7 +445,7 @@ export const select = createAction(
 
 export const playNow = createAction(
     Constants.BROWSER_PLAY,
-    async eventTarget => {
+    async (eventTarget) => {
         const sonos = SonosService._currentDevice; // TODO: fix this
 
         const item = await _getItem(eventTarget);
@@ -455,15 +455,15 @@ export const playNow = createAction(
             item.metadataRaw &&
             item.metadata.class === 'object.item.audioItem.audioBroadcast'
         ) {
-            await sonos.playAsync({
+            await sonos.play({
                 uri: item.uri,
-                metadata: item.metadataRaw
+                metadata: item.metadataRaw,
             });
         } else if (item.class && item.class === 'object.item.audioItem') {
-            await sonos.playAsync(item.uri);
+            await sonos.play(item.uri);
         } else {
             const res = await sonos
-                .getMusicLibraryAsync('queue', { total: 0 })
+                .getMusicLibrary('queue', { total: 0 })
                 .catch(() => null);
 
             let pos = 1;
@@ -471,9 +471,9 @@ export const playNow = createAction(
                 pos = Number(res.total) + 1;
             }
 
-            await sonos.queueAsync(item);
-            await sonos.gotoAsync(pos);
-            await sonos.playAsync();
+            await sonos.queue(item);
+            await sonos.goto(pos);
+            await sonos.play();
         }
 
         SonosService.queryState(sonos);
@@ -482,13 +482,13 @@ export const playNow = createAction(
 
 export const playNext = createAction(
     Constants.BROWSER_PLAY_NEXT,
-    async eventTarget => {
+    async (eventTarget) => {
         const sonos = SonosService._currentDevice; // TODO: fix this
 
         const item = await _getItem(eventTarget);
-        const info = await sonos.getPositionInfoAsync();
+        const info = await sonos.getPositionInfo();
         const pos = Number(info.Track) + 1;
-        await sonos.queueAsync(item, pos);
+        await sonos.queue(item, pos);
 
         SonosService.queryState(sonos);
     }
@@ -496,11 +496,11 @@ export const playNext = createAction(
 
 export const addQueue = createAction(
     Constants.BROWSER_ADD_QUEUE,
-    async eventTarget => {
+    async (eventTarget) => {
         const sonos = SonosService._currentDevice; // TODO: fix this
 
         const item = await _getItem(eventTarget);
-        await sonos.queueAsync(item);
+        await sonos.queue(item);
 
         SonosService.queryState(sonos);
     }
@@ -508,13 +508,13 @@ export const addQueue = createAction(
 
 export const replaceQueue = createAction(
     Constants.BROWSER_REPLACE_QUEUE,
-    async eventTarget => {
+    async (eventTarget) => {
         const sonos = SonosService._currentDevice; // TODO: fix this
 
         const item = await _getItem(eventTarget);
-        await sonos.flushAsync();
-        await sonos.queueAsync(item);
-        await sonos.playAsync();
+        await sonos.flush();
+        await sonos.queue(item);
+        await sonos.play();
 
         SonosService.queryState(sonos);
     }
@@ -522,7 +522,7 @@ export const replaceQueue = createAction(
 
 export const removeService = createAction(
     Constants.BROWSER_REMOVE_MUSICSERVICE,
-    async client => {
+    async (client) => {
         await SonosService.removeMusicService(client.service);
         return client;
     }
