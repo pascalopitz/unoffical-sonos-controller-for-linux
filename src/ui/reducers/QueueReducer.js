@@ -95,7 +95,7 @@ export default handleActions(
             };
         },
 
-        [Constants.QUEUE_FLUSH]: (state, action) => {
+        [Constants.QUEUE_FLUSH]: (state) => {
             const host = state.sonosService.currentHost;
 
             return {

@@ -39,10 +39,7 @@ export const setPlayMode = createAction(
         const sonos = getCurrentZone();
         const avTransport = sonos.avTransportService();
 
-        await avTransport.SetPlayMode({
-            InstanceID: 0,
-            NewPlayMode: mode,
-        });
+        await avTransport.SetPlayMode(mode);
 
         return {
             mode,
