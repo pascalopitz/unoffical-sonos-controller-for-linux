@@ -96,13 +96,7 @@ export default handleActions(
                 ...state,
                 currentTracks: {
                     ...state.currentTracks,
-                    [host]: {
-                        host,
-                        trackInfo: {
-                            title: track.title,
-                            albumArtURI: track.albumArtURI,
-                        },
-                    },
+                    [host]: track,
                 },
             };
         },
@@ -136,6 +130,10 @@ export default handleActions(
 
             return {
                 ...state,
+                playStates: {
+                    ...state.playStates,
+                    [host]: playState,
+                },
                 currentTracks: {
                     ...state.currentTracks,
                     [host]: {

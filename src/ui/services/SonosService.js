@@ -178,7 +178,6 @@ const SonosService = {
                 serviceActions.zoneGroupTrackUpdate({
                     track: track,
                     host: sonos.host,
-                    playState: state,
                 })
             );
         } catch (e) {

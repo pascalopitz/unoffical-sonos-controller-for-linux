@@ -174,7 +174,7 @@ export class QueueListItem extends Component {
             dragOver = this.props.dragOverMode;
         }
 
-        const htmlTitle = 'Play "' + track.creator + ' - ' + track.title + '"';
+        const htmlTitle = 'Play "' + track.artist + ' - ' + track.title + '"';
 
         return (
             <li
@@ -192,7 +192,7 @@ export class QueueListItem extends Component {
                 <AlbumArt src={track.albumArtURI} />
                 <div className="trackinfo">
                     <p className="title">{track.title}</p>
-                    <p className="artist">{track.creator}</p>
+                    <p className="artist">{track.artist}</p>
                 </div>
                 {selectionToggle}
                 {inlineMenu}

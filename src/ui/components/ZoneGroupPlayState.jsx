@@ -1,18 +1,18 @@
 import React from 'react';
 
-export function ZoneGroupPLayState(props) {
+export function ZoneGroupPlayState(props) {
     const { playState } = props;
 
-    if (playState && playState.trackInfo && playState.trackInfo.title) {
+    if (playState && playState.title) {
         const icon = playState.isPlaying ? (
             <i className="material-icons">play_arrow</i>
         ) : (
             <i className="material-icons">pause</i>
         );
-        let info = playState.trackInfo.title;
+        let info = playState.title;
 
-        if (playState.trackInfo.artist) {
-            info = info + ' - ' + playState.trackInfo.artist;
+        if (playState.artist) {
+            info = info + ' - ' + playState.artist;
         }
 
         return (
@@ -25,4 +25,4 @@ export function ZoneGroupPLayState(props) {
     return <div className="play-state" />;
 }
 
-export default ZoneGroupPLayState;
+export default ZoneGroupPlayState;

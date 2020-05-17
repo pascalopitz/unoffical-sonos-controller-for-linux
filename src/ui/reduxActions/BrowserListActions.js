@@ -7,6 +7,8 @@ import MusicServiceClient from '../services/MusicServiceClient';
 
 import store from '../reducers';
 
+import { getCurrentTrack } from '../selectors/CurrentTrackSelectors';
+
 import {
     LIBRARY_STATE,
     LIBRARY_SEARCH_MODES,
@@ -222,12 +224,8 @@ export const more = createAction(
             }
 
             if (state.term && state.term.length) {
-                const { mappedId } = _.find(LIBRARY_SEARCH_MODES, {
-                    id: state.mode || LIBRARY_SEARCH_MODES[0].id,
-                });
-
                 const result = await sonos.searchMusicLibrary(
-                    mappedId,
+                    state.mode,
                     state.term,
                     params
                 );
@@ -486,8 +484,8 @@ export const playNext = createAction(
         const sonos = SonosService._currentDevice; // TODO: fix this
 
         const item = await _getItem(eventTarget);
-        const info = await sonos.getPositionInfo();
-        const pos = Number(info.Track) + 1;
+        const currentTrack = getCurrentTrack(store.getState());
+        const pos = Number(currentTrack.queuePosition) + 1;
         await sonos.queue(item, pos);
 
         SonosService.queryState(sonos);
