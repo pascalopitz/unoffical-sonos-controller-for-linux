@@ -13,25 +13,25 @@ import {
     addQueue,
     replaceQueue,
     removeService,
-    addService
+    addService,
 } from '../reduxActions/BrowserListActions';
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        select: item => dispatch(select(item)),
-        playNow: item => dispatch(playNow(item)),
-        playNext: item => dispatch(playNext(item)),
-        addQueue: item => dispatch(addQueue(item)),
-        replaceQueue: item => dispatch(replaceQueue(item)),
-        removeService: item => dispatch(removeService(item)),
-        addService: item => dispatch(addService(item))
+        select: (item) => dispatch(select(item)),
+        playNow: (item) => dispatch(playNow(item)),
+        playNext: (item) => dispatch(playNext(item)),
+        addQueue: (item) => dispatch(addQueue(item)),
+        replaceQueue: (item) => dispatch(replaceQueue(item)),
+        removeService: (item) => dispatch(removeService(item)),
+        addService: (item) => dispatch(addService(item)),
     };
 };
 export class BrowserListItem extends Component {
     constructor() {
         super();
         this.state = {
-            isExpanded: false
+            isExpanded: false,
         };
     }
 
@@ -92,7 +92,7 @@ export class BrowserListItem extends Component {
 
     _toggle(e) {
         this.setState({
-            isExpanded: !this.state.isExpanded
+            isExpanded: !this.state.isExpanded,
         });
         e.preventDefault();
         e.stopPropagation();
@@ -101,7 +101,7 @@ export class BrowserListItem extends Component {
     _hideMenu() {
         if (this.state.isExpanded) {
             this.setState({
-                isExpanded: false
+                isExpanded: false,
             });
         }
     }

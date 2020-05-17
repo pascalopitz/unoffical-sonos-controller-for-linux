@@ -11,7 +11,7 @@ import {
     getCurrentState,
     getSearching,
     getSearchMode,
-    getSearchSources
+    getSearchSources,
 } from '../selectors/BrowserListSelectors';
 
 function mapStateToProps(state) {
@@ -20,14 +20,14 @@ function mapStateToProps(state) {
         currentState: getCurrentState(state),
         searching: getSearching(state),
         searchMode: getSearchMode(state),
-        sources: getSearchSources(state)
+        sources: getSearchSources(state),
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         search: (term, mode) => dispatch(search(term, mode)),
-        exitSearch: () => dispatch(exitSearch())
+        exitSearch: () => dispatch(exitSearch()),
     };
 }
 
@@ -39,7 +39,7 @@ export class SearchBar extends Component {
 
         this.inputHandler = _.debounce(this._onChange.bind(this), 800, {
             trailing: true,
-            leading: false
+            leading: false,
         });
     }
 

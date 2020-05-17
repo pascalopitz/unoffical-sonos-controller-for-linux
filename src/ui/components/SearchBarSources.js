@@ -1,11 +1,11 @@
 import React from 'react';
 
 export default function SearchBarSources({ sources, currentState }) {
-    let source = sources.find(s => !s.client);
+    let source = sources.find((s) => !s.client);
 
     if (currentState.serviceClient) {
         source = sources.find(
-            s =>
+            (s) =>
                 s.client &&
                 currentState.serviceClient &&
                 s.client.service.Id ===

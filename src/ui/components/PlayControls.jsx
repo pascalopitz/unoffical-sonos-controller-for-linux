@@ -5,18 +5,18 @@ import { play, pause, playNext, playPrev } from '../reduxActions/PlayerActions';
 
 import { getPlaying } from '../selectors/PlayerSelectors';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-        playing: getPlaying(state)
+        playing: getPlaying(state),
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         play: () => dispatch(play()),
         pause: () => dispatch(pause()),
         prev: () => dispatch(playPrev()),
-        next: () => dispatch(playNext())
+        next: () => dispatch(playNext()),
     };
 };
 

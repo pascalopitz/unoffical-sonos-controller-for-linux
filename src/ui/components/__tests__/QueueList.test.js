@@ -9,9 +9,9 @@ describe('QueueList', () => {
         const props = {
             tracks: [
                 {
-                    id: 'foo'
-                }
-            ]
+                    id: 'foo',
+                },
+            ],
         };
         const context = render(<QueueList {...props} />);
         expect(context).toMatchSnapshot();
@@ -23,10 +23,10 @@ describe('QueueList', () => {
         const props = {
             tracks: [
                 {
-                    id: 'foo'
-                }
+                    id: 'foo',
+                },
             ],
-            flush
+            flush,
         };
         const context = mount(<QueueList {...props} />);
         context.find('#queue-clear-button').simulate('click');

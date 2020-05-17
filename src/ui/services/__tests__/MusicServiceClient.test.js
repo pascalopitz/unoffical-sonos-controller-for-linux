@@ -18,7 +18,7 @@ describe('MusicServiceClient', () => {
 
     beforeEach(() => {
         client = new MusicServiceClient({
-            Name: 'Service'
+            Name: 'Service',
         });
     });
 
@@ -30,7 +30,7 @@ describe('MusicServiceClient', () => {
                 cb(
                     null,
                     {
-                        statusCode: 200
+                        statusCode: 200,
                     },
                     mockSoapResponse('getDeviceLinkCode', expectedReturn)
                 )
@@ -49,7 +49,7 @@ describe('MusicServiceClient', () => {
                 cb(
                     null,
                     {
-                        statusCode: 200
+                        statusCode: 200,
                     },
                     mockSoapResponse(
                         'getAppLink',
@@ -73,7 +73,7 @@ describe('MusicServiceClient', () => {
                 cb(
                     null,
                     {
-                        statusCode: 200
+                        statusCode: 200,
                     },
                     mockSoapResponse('getDeviceAuthToken', expectedReturn)
                 )
@@ -95,7 +95,7 @@ describe('MusicServiceClient', () => {
                 cb(
                     null,
                     {
-                        statusCode: 200
+                        statusCode: 200,
                     },
                     mockSoapResponse('getMetadata', expectedReturn)
                 )
@@ -114,7 +114,7 @@ describe('MusicServiceClient', () => {
                 cb(
                     null,
                     {
-                        statusCode: 200
+                        statusCode: 200,
                     },
                     mockSoapResponse('getExtendedMetadata', expectedReturn)
                 )
@@ -133,7 +133,7 @@ describe('MusicServiceClient', () => {
                 cb(
                     null,
                     {
-                        statusCode: 200
+                        statusCode: 200,
                     },
                     mockSoapResponse('search', expectedReturn)
                 )
@@ -152,7 +152,7 @@ describe('MusicServiceClient', () => {
                 cb(
                     null,
                     {
-                        statusCode: 200
+                        statusCode: 200,
                     },
                     mockSoapResponse('getMediaURI', expectedReturn)
                 )
@@ -171,7 +171,7 @@ describe('MusicServiceClient', () => {
                 cb(
                     null,
                     {
-                        statusCode: 200
+                        statusCode: 200,
                     },
                     mockSoapResponse('getSessionId', expectedReturn)
                 )

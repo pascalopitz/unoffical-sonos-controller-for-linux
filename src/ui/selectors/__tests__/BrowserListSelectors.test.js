@@ -5,14 +5,14 @@ describe('BrowserListSeelctors', () => {
         it('returns last item in browserList history', () => {
             const state = {
                 browserList: {
-                    history: [{ id: 'one' }, { id: 'two' }]
-                }
+                    history: [{ id: 'one' }, { id: 'two' }],
+                },
             };
 
             const res = s.getCurrentState(state);
 
             expect(res).toMatchObject({
-                id: 'two'
+                id: 'two',
             });
         });
     });
@@ -22,8 +22,8 @@ describe('BrowserListSeelctors', () => {
             const state = {
                 browserList: {
                     searchTerm: null,
-                    history: [{}]
-                }
+                    history: [{}],
+                },
             };
 
             const res = s.getSearching(state);
@@ -37,10 +37,10 @@ describe('BrowserListSeelctors', () => {
                     searchTerm: 'search',
                     history: [
                         {
-                            mode: 'artists'
-                        }
-                    ]
-                }
+                            mode: 'artists',
+                        },
+                    ],
+                },
             };
 
             const res = s.getSearching(state);
@@ -54,11 +54,11 @@ describe('BrowserListSeelctors', () => {
                     searchTerm: 'search',
                     history: [
                         {
-                            mode: 'artists'
+                            mode: 'artists',
                         },
-                        {}
-                    ]
-                }
+                        {},
+                    ],
+                },
             };
 
             const res = s.getSearching(state);

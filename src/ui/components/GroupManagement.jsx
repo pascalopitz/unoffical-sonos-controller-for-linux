@@ -6,24 +6,24 @@ import GroupManagementNode from './GroupManagementNode';
 import {
     hideGroupManagement,
     toggleZoneChecked,
-    saveGroups
+    saveGroups,
 } from '../reduxActions/GroupManagementActions';
 
 import { getPlayers } from '../selectors/GroupManagementSelectors';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         players: getPlayers(state),
         visible: state.groupManagement.visible,
-        selected: state.groupManagement.selected
+        selected: state.groupManagement.selected,
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         hideGroupManagement: () => dispatch(hideGroupManagement()),
-        toggleZone: group => dispatch(toggleZoneChecked(group)),
-        saveGroups: selected => dispatch(saveGroups(selected))
+        toggleZone: (group) => dispatch(toggleZoneChecked(group)),
+        saveGroups: (selected) => dispatch(saveGroups(selected)),
     };
 };
 

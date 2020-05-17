@@ -8,34 +8,34 @@ import {
     setDragging,
     setExpanded,
     setPlayerMuted,
-    setPlayerVolume
+    setPlayerVolume,
 } from '../reduxActions/VolumeControlActions';
 
 import {
     getPlayers,
     getCurrentGroupKeys,
     getGroupVolume,
-    getGroupMuted
+    getGroupMuted,
 } from '../selectors/VolumeControlSelectors';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         players: getPlayers(state),
         currentGroupKeys: getCurrentGroupKeys(state),
         groupVolume: getGroupVolume(state),
         groupMuted: getGroupMuted(state),
         dragging: state.volume.dragging,
-        expanded: state.volume.expanded
+        expanded: state.volume.expanded,
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         setPlayerVolume: (host, volume) =>
             dispatch(setPlayerVolume(host, volume)),
         setPlayerMuted: (host, muted) => dispatch(setPlayerMuted(host, muted)),
-        setDragging: value => dispatch(setDragging(value)),
-        setExpanded: value => dispatch(setExpanded(value))
+        setDragging: (value) => dispatch(setDragging(value)),
+        setExpanded: (value) => dispatch(setExpanded(value)),
     };
 };
 
@@ -48,7 +48,7 @@ class VolumeControls extends Component {
     _toggleGoupMute() {
         const muted = this.props.groupMuted;
 
-        this.props.currentGroupKeys.forEach(host => {
+        this.props.currentGroupKeys.forEach((host) => {
             this.props.setPlayerMuted(host, !muted);
         });
     }
@@ -136,7 +136,7 @@ class VolumeControls extends Component {
         }
 
         if (this.props.expanded && keys.length > 1) {
-            const playerRows = Object.keys(this.props.players).map(key => {
+            const playerRows = Object.keys(this.props.players).map((key) => {
                 const { volume, muted, name } = this.props.players[key];
 
                 const startVolume = () => {
@@ -148,7 +148,7 @@ class VolumeControls extends Component {
                     this._dragEnd();
                 };
 
-                const changeVolume = volume => {
+                const changeVolume = (volume) => {
                     if (!this.propsexpanded) {
                         this.props.setExpanded(true);
                     }

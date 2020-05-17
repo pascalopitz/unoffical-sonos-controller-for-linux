@@ -5,7 +5,7 @@ import Constants from '../constants';
 const initialState = {
     selected: [],
     visible: false,
-    current: null
+    current: null,
 };
 
 function resetReducer() {
@@ -17,9 +17,9 @@ export default handleActions(
         [Constants.GROUP_MANAGEMENT_SHOW]: (state, action) => {
             return {
                 ...state,
-                selected: _.map(action.payload, g => g.uuid),
+                selected: _.map(action.payload, (g) => g.uuid),
                 currentGroup: action.payload[0].group,
-                visible: true
+                visible: true,
             };
         },
 
@@ -28,17 +28,17 @@ export default handleActions(
 
             const selected =
                 state.selected.indexOf(uuid) > -1
-                    ? state.selected.filter(i => i != uuid)
+                    ? state.selected.filter((i) => i != uuid)
                     : state.selected.concat([uuid]);
 
             return {
                 ...state,
-                selected
+                selected,
             };
         },
 
         [Constants.GROUP_MANAGEMENT_HIDE]: resetReducer,
-        [Constants.GROUP_MANAGEMENT_SAVE]: resetReducer
+        [Constants.GROUP_MANAGEMENT_SAVE]: resetReducer,
     },
     initialState
 );

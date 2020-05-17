@@ -3,7 +3,7 @@ import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
 
 import {
     DEFAULT_SEARCH_MODE,
-    LIBRARY_SEARCH_MODES
+    LIBRARY_SEARCH_MODES,
 } from '../constants/BrowserListConstants';
 
 export function getCurrentState(state) {
@@ -11,10 +11,10 @@ export function getCurrentState(state) {
 }
 
 export function getServiceItems(state) {
-    return state.musicServices.active.map(ser => ({
+    return state.musicServices.active.map((ser) => ({
         title: ser.service.Name,
         action: 'service',
-        service: ser
+        service: ser,
     }));
 }
 
@@ -41,14 +41,14 @@ export function getSearchSources(state) {
             {
                 label: 'Music Library',
                 client: null,
-                logo: './svg/ic_audiotrack_48px.svg'
-            }
+                logo: './svg/ic_audiotrack_48px.svg',
+            },
         ].concat(
-            _.map(state.musicServices.active, s => {
+            _.map(state.musicServices.active, (s) => {
                 return {
                     logo: getServiceLogoUrl(s.service.Id),
                     label: s.service.Name,
-                    client: s
+                    client: s,
                 };
             })
         )

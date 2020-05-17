@@ -17,16 +17,16 @@ describe('ZoneGroup', () => {
                 {
                     member: 1,
                     coordinator: 'true',
-                    host: 'myhost'
-                }
+                    host: 'myhost',
+                },
             ],
             selectGroup: jest.fn(),
             showManagement: jest.fn(),
             playStates: {
                 myhost: {
-                    playing: true
-                }
-            }
+                    playing: true,
+                },
+            },
         };
     });
 
@@ -39,8 +39,8 @@ describe('ZoneGroup', () => {
         const [lastCall] = ZoneGroupPlayState.mock.calls;
         expect(lastCall[0]).toMatchObject({
             playState: {
-                playing: true
-            }
+                playing: true,
+            },
         });
 
         context.unmount();
@@ -51,7 +51,7 @@ describe('ZoneGroup', () => {
 
         props = {
             ...props,
-            currentHost
+            currentHost,
         };
 
         const context = mount(<ZoneGroup {...props} />);
@@ -72,7 +72,7 @@ describe('ZoneGroup', () => {
 
         context.find('.group-button').simulate('click', {
             preventDefault: jest.fn(),
-            stopPropagation: jest.fn()
+            stopPropagation: jest.fn(),
         });
 
         expect(props.showManagement).toHaveBeenCalled();

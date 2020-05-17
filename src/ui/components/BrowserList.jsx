@@ -14,7 +14,7 @@ import {
     getHistory,
     getSearchMode,
     getServiceItems,
-    getAVailableSearchModes
+    getAVailableSearchModes,
 } from '../selectors/BrowserListSelectors';
 
 import {
@@ -23,10 +23,10 @@ import {
     more,
     search,
     scroll,
-    playCurrentAlbum
+    playCurrentAlbum,
 } from '../reduxActions/BrowserListActions';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         term: state.browserList.searchTerm,
         currentState: getCurrentState(state),
@@ -34,18 +34,18 @@ const mapStateToProps = state => {
         searching: getSearching(state),
         history: getHistory(state),
         currentSearchMode: getSearchMode(state),
-        searchModes: getAVailableSearchModes(state)
+        searchModes: getAVailableSearchModes(state),
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        scroll: position => dispatch(scroll(position)),
+        scroll: (position) => dispatch(scroll(position)),
         home: () => dispatch(home()),
         back: () => dispatch(back()),
-        more: currentState => dispatch(more(currentState)),
+        more: (currentState) => dispatch(more(currentState)),
         search: (term, mode) => dispatch(search(term, mode)),
-        playCurrentAlbum: () => dispatch(playCurrentAlbum())
+        playCurrentAlbum: () => dispatch(playCurrentAlbum()),
     };
 };
 
@@ -115,7 +115,7 @@ export class BrowserList extends Component {
             currentState,
             history,
             serviceItems,
-            searchModes
+            searchModes,
         } = this.props;
         const { items, title, source } = currentState;
 
@@ -126,8 +126,8 @@ export class BrowserList extends Component {
 
         if (searching) {
             const links = searchModes
-                .map(m => m.id)
-                .map(mode => {
+                .map((m) => m.id)
+                .map((mode) => {
                     const className =
                         mode === currentSearchMode ? 'active' : 'not-active';
 

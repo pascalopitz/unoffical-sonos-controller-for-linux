@@ -27,11 +27,11 @@ describe('ZoneGroupList', () => {
     it('renders group items', () => {
         props.groups = {
             1: {
-                foo: true
+                foo: true,
             },
             2: {
-                foo: false
-            }
+                foo: false,
+            },
         };
 
         const context = mount(<ZoneGroupList {...props} />);
