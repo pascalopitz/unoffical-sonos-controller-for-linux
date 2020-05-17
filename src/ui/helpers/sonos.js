@@ -87,20 +87,3 @@ export async function discoverMultiple(options = { timeout: 5000 }) {
         });
     });
 }
-
-export function parseDIDL(didl) {
-    if (!didl || didl === '' || !didl['DIDL-Lite'] || !didl['DIDL-Lite'].item) {
-        return {};
-    }
-
-    const { item } = didl['DIDL-Lite'];
-
-    return {
-        title: item['dc:title'] || null,
-        artist: item['dc:creator'] || null,
-        album: item['upnp:album'] || null,
-        class: item['upnp:class'] || null,
-        albumArtURI: item['upnp:albumArtURI'] || null,
-        originalTrackNumber: item['upnp:originalTrackNumber'] || null,
-    };
-}

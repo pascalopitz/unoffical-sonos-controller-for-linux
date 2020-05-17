@@ -7,21 +7,18 @@ import { discoverMultiple } from '../helpers/sonos';
 
 import * as serviceActions from '../reduxActions/SonosServiceActions';
 
+import {
+    getCurrentPlayer,
+    getFirstPlayer,
+} from '../selectors/ZoneGroupSelectors';
+
 import store from '../reducers';
 
 const SECOND_QUERY_INTERVAL = 60;
 
-export function getCurrentZone() {
-    const { currentHost, deviceSearches } = store.getState().sonosService;
-    return deviceSearches[currentHost];
-}
-
 function getSonosDeviceOrCurrentOrFirst(sonos) {
-    return (
-        sonos ||
-        getCurrentZone() ||
-        _.first(_.get(store.getState(), 'sonosService.deviceSearches'))
-    );
+    const state = store.getState();
+    return sonos || getCurrentPlayer(state) || getFirstPlayer(state);
 }
 
 function getDeviceByHost(host) {

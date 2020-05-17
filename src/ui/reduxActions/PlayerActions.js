@@ -1,34 +1,34 @@
 import { createAction } from 'redux-actions';
 import Constants from '../constants';
 
-import SonosService, { getCurrentZone } from '../services/SonosService';
+import SonosService from '../services/SonosService';
 
 export const pause = createAction(Constants.PLAYER_PAUSE, async () => {
-    const sonos = getCurrentZone();
+    const sonos = SonosService._currentDevice;
     await sonos.pause();
     SonosService.queryState();
 });
 
 export const play = createAction(Constants.PLAYER_PLAY, async () => {
-    const sonos = getCurrentZone();
+    const sonos = SonosService._currentDevice;
     await sonos.play();
     SonosService.queryState();
 });
 
 export const playPrev = createAction(Constants.PLAYER_PREV, async () => {
-    const sonos = getCurrentZone();
+    const sonos = SonosService._currentDevice;
     await sonos.previous();
     SonosService.queryState();
 });
 
 export const playNext = createAction(Constants.PLAYER_NEXT, async () => {
-    const sonos = getCurrentZone();
+    const sonos = SonosService._currentDevice;
     await sonos.next();
     SonosService.queryState();
 });
 
 export const seek = createAction(Constants.PLAYER_SEEK, async (time) => {
-    const sonos = getCurrentZone();
+    const sonos = SonosService._currentDevice;
     await sonos.seek(time);
     SonosService.queryState();
 });
@@ -36,7 +36,7 @@ export const seek = createAction(Constants.PLAYER_SEEK, async (time) => {
 export const setPlayMode = createAction(
     Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE,
     async (mode) => {
-        const sonos = getCurrentZone();
+        const sonos = SonosService._currentDevice;
         const avTransport = sonos.avTransportService();
 
         await avTransport.SetPlayMode(mode);
@@ -51,7 +51,7 @@ export const setPlayMode = createAction(
 export const setCrossfade = createAction(
     Constants.OPTIMISTIC_CURRENT_CROSSFADE_MODE_UPDATE,
     async (mode) => {
-        const sonos = SonosService._currentDevice; // TODO: fix this
+        const sonos = SonosService._currentDevice;
         const avTransport = sonos.avTransportService();
 
         await avTransport.SetCrossfadeMode({
