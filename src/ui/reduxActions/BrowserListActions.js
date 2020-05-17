@@ -19,7 +19,7 @@ async function _fetchLineIns() {
 
     const promises = _.map(deviceSearches, async (sonos) => {
         try {
-            const result = await sonos.getMusicLibrary('AI:', {});
+            const result = await sonos.queryMusicLibrary('AI:', null, {});
             const items = result && result.items ? result.items : [];
 
             if (items.length === 0) {
@@ -100,7 +100,7 @@ async function _createLibrarySearchPromise(type, term, options = {}) {
     const sonos = SonosService._currentDevice;
 
     try {
-        const result = await sonos.searchMusicLibrary(type, term, options);
+        const result = await sonos.queryMusicLibrary(type, term, options);
         return _.assign(result, {
             type,
             term,
@@ -224,7 +224,7 @@ export const more = createAction(
             }
 
             if (state.term && state.term.length) {
-                const result = await sonos.searchMusicLibrary(
+                const result = await sonos.queryMusicLibrary(
                     state.mode,
                     state.term,
                     params
@@ -240,8 +240,9 @@ export const more = createAction(
                 return state;
             }
 
-            const result = await sonos.getMusicLibrary(
+            const result = await sonos.queryMusicLibrary(
                 state.id || state.searchType,
+                null,
                 params
             );
 
@@ -425,12 +426,14 @@ export const select = createAction(
             prendinBrowserUpdate = item;
         }
 
-        if (item.class) {
-            objectId = item.id ? item.id : item.uri.split('#')[1];
+        if (item.uri && item.uri.indexOf('#') > -1) {
+            objectId = item.uri.split('#')[1];
+        } else if (item.uri) {
+            objectId = item.uri;
         }
 
         try {
-            const result = await sonos.getMusicLibrary(objectId, {});
+            const result = await sonos.queryMusicLibrary(objectId, null, {});
             const state = prendinBrowserUpdate;
             state.items = result.items;
 
@@ -460,9 +463,7 @@ export const playNow = createAction(
         } else if (item.class && item.class === 'object.item.audioItem') {
             await sonos.play(item.uri);
         } else {
-            const res = await sonos
-                .getMusicLibrary('queue', { total: 0 })
-                .catch(() => null);
+            const res = await sonos.getQueue().catch(() => null);
 
             let pos = 1;
             if (res.total) {

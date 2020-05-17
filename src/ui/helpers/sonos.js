@@ -55,14 +55,51 @@ class SonosEnhanced extends Sonos {
         return services;
     }
 
-    translateState(inputState) {
-        switch (inputState) {
-            case 'PAUSED_PLAYBACK':
-                return 'paused';
+    async queryMusicLibrary(
+        searchType,
+        searchTerm,
+        requestOptions = {},
+        separator = ':'
+    ) {
+        const searchTypes = {
+            artists: 'A:ARTIST',
+            albumArtists: 'A:ALBUMARTIST',
+            albums: 'A:ALBUM',
+            genres: 'A:GENRE',
+            composers: 'A:COMPOSER',
+            tracks: 'A:TRACKS',
+            playlists: 'A:PLAYLISTS',
+            sonos_playlists: 'SQ',
+            share: 'S',
+        };
+        const defaultOptions = {
+            BrowseFlag: 'BrowseDirectChildren',
+            Filter: '*',
+            StartingIndex: '0',
+            RequestedCount: '100',
+            SortCriteria: '',
+        };
 
-            default:
-                return inputState.toLowerCase();
+        let searches = searchTypes[searchType]
+            ? `${searchTypes[searchType]}${separator}`
+            : searchType;
+
+        if (searchTerm && searchTerm !== '') {
+            searches = searches.concat(encodeURIComponent(searchTerm));
         }
+
+        let opts = {
+            ObjectID: searches,
+        };
+        if (requestOptions && requestOptions.start !== undefined) {
+            opts.StartingIndex = requestOptions.start;
+        }
+        if (requestOptions && requestOptions.total !== undefined) {
+            opts.RequestedCount = requestOptions.total;
+        }
+        // opts = _.extend(defaultOptions, opts)
+        opts = Object.assign({}, defaultOptions, opts);
+        return this.contentDirectoryService().GetResult(opts);
     }
 }
 
