@@ -5,7 +5,7 @@ import Contants from '../constants';
 import store from '../reducers';
 
 import SonosService from '../services/SonosService';
-import serviceFactory from '../sonos/helpers/ServiceFactory';
+import { getPlayers } from '../selectors/GroupManagementSelectors';
 
 export const hideGroupManagement = createAction(Contants.GROUP_MANAGEMENT_HIDE);
 
@@ -15,15 +15,16 @@ export const saveGroups = createAction(
     Contants.GROUP_MANAGEMENT_SAVE,
     async () => {
         const state = store.getState();
-        const { zones } = state.sonosService;
         const { selected, currentGroup } = state.groupManagement;
 
-        const currentGroupMembers = zones.filter(
-            (z) => z.group === currentGroup
+        const allPlayers = getPlayers(state);
+
+        const currentGroupMembers = allPlayers.filter(
+            (z) => z.inGroup === currentGroup
         );
 
-        const targetGroupMembers = zones.filter((z) =>
-            _.includes(selected, z.uuid)
+        const targetGroupMembers = allPlayers.filter((z) =>
+            _.includes(selected, z.UUID)
         );
 
         const removingGroupMembers = _.difference(
@@ -33,11 +34,11 @@ export const saveGroups = createAction(
 
         const coordinator =
             _.find(targetGroupMembers, {
-                coordinator: 'true',
+                isCoordinator: true,
                 group: currentGroup,
             }) ||
             _.find(targetGroupMembers, {
-                coordinator: 'true',
+                isCoordinator: true,
             }) ||
             _.head(targetGroupMembers);
 
@@ -48,27 +49,16 @@ export const saveGroups = createAction(
         try {
             for (const z of addingGroupMembers) {
                 const sonos = SonosService.getDeviceByHost(z.host);
-                const avTransport = serviceFactory('AVTransport', sonos);
-                await avTransport.SetAVTransportURI({
-                    InstanceID: 0,
-                    CurrentURI: 'x-rincon:' + coordinator.uuid,
-                    CurrentURIMetaData: '',
+                await sonos.setAVTransportURI({
+                    uri: `x-rincon:${coordinator.UUID}`,
+                    onlySetUri: true,
                 });
             }
 
             for (const z of removingGroupMembers) {
                 const sonos = SonosService.getDeviceByHost(z.host);
-                const avTransport = serviceFactory('AVTransport', sonos);
-                await avTransport.BecomeCoordinatorOfStandaloneGroup({
-                    InstanceID: 0,
-                });
+                await sonos.becomeCoordinatorOfStandaloneGroup();
             }
-
-            [1, 500, 1000, 1500, 2000, 3000, 5000, 10000].forEach((num) => {
-                window.setTimeout(() => {
-                    SonosService.queryTopology();
-                }, num);
-            });
         } catch (e) {
             console.error(e);
             throw e;

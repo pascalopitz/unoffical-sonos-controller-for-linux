@@ -17,14 +17,14 @@ export default handleActions(
         [Constants.GROUP_MANAGEMENT_SHOW]: (state, action) => {
             return {
                 ...state,
-                selected: _.map(action.payload, (g) => g.uuid),
-                currentGroup: action.payload[0].group,
+                selected: _.map(action.payload.ZoneGroupMember, (g) => g.UUID),
+                currentGroup: action.payload.ID,
                 visible: true,
             };
         },
 
         [Constants.GROUP_MANAGEMENT_TOGGLE]: (state, action) => {
-            const uuid = action.payload.uuid;
+            const uuid = action.payload.UUID;
 
             const selected =
                 state.selected.indexOf(uuid) > -1
