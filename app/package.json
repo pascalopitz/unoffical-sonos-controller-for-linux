@@ -1,7 +1,7 @@
 {
   "name": "sonos-controller-unofficial",
   "description": "Unoffical sonos controller for linux.",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "author": "Pascal Opitz <contact@pascalopitz.com>",
   "main": "main.js",
   "dependencies": {
@@ -12,7 +12,6 @@
     "dotenv": "^8.2.0",
     "electron-react-devtools": "^0.5.3",
     "ip": "^1.1.5",
-    "jquery-xml2json": "git+https://github.com/pascalopitz/jQuery-xml2json.git",
     "lodash": "^4.17.11",
     "moment": "^2.25.3",
     "omit-keys": "^0.1.0",

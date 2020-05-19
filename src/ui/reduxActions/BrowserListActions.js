@@ -138,9 +138,9 @@ function _transformSMAPI(res, client) {
             res.mediaMetadata = [res.mediaMetadata];
         }
 
-        res.mediaMetadata.forEach((i) => {
+        res.mediaMetadata.forEach((i, idx) => {
             i.serviceClient = client;
-            items[i.$$position] = i;
+            items[idx] = i;
         });
     }
 
@@ -149,9 +149,9 @@ function _transformSMAPI(res, client) {
             res.mediaCollection = [res.mediaCollection];
         }
 
-        res.mediaCollection.forEach((i) => {
+        res.mediaCollection.forEach((i, idx) => {
             i.serviceClient = client;
-            items[i.$$position] = i;
+            items[idx] = i;
         });
     }
 
@@ -387,9 +387,9 @@ export const select = createAction(
                     res.mediaMetadata = [res.mediaMetadata];
                 }
 
-                res.mediaMetadata.forEach((i) => {
+                res.mediaMetadata.forEach((i, idx) => {
                     i.serviceClient = client;
-                    items[i.$$position] = i;
+                    items[idx] = i;
                 });
             }
 
@@ -398,9 +398,9 @@ export const select = createAction(
                     res.mediaCollection = [res.mediaCollection];
                 }
 
-                res.mediaCollection.forEach((i) => {
+                res.mediaCollection.forEach((i, idx) => {
                     i.serviceClient = client;
-                    items[i.$$position] = i;
+                    items[idx] = i;
                 });
             }
 

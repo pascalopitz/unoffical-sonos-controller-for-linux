@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import moment from 'moment';
-import xml2json from 'jquery-xml2json';
+import { Helpers } from 'sonos';
 
 import SonosService from '../services/SonosService';
 
@@ -42,8 +42,10 @@ class MusicServiceClient {
         this.auth = serviceDefinition.Auth;
     }
 
-    async _doRequest(uri, action, requestBody, headers) {
-        const soapBody = withinEnvelope(requestBody, headers);
+    async _doRequest(uri, action, requestBody, headers, retry = false) {
+        const soapHeaders =
+            typeof headers === 'function' ? headers.call(this) : headers;
+        const soapBody = withinEnvelope(requestBody, soapHeaders);
 
         const response = await fetch(uri, {
             method: 'POST',
@@ -58,13 +60,13 @@ class MusicServiceClient {
 
         const body = await response.text();
 
-        const e = xml2json(stripNamespaces(body));
+        const e = await Helpers.ParseXml(stripNamespaces(body));
         const fault = _.get(e, 'Envelope.Body.Fault.faultstring');
 
         if (response.status >= 400 || fault) {
             console.log(fault, _.includes(fault, 'tokenRefreshRequired'));
-
             if (
+                !retry &&
                 fault &&
                 (_.includes(fault, 'TokenRefreshRequired') ||
                     _.includes(fault, 'tokenRefreshRequired'))
@@ -76,14 +78,17 @@ class MusicServiceClient {
                 this.setAuthToken(refreshDetails.authToken);
                 this.setKey(refreshDetails.privateKey);
 
-                throw new RefreshError(refreshDetails);
+                return this._doRequest(uri, action, requestBody, headers, true);
             }
 
-            if (fault && _.includes(fault, 'Update your Sonos system')) {
-                return this._doRequest(uri, action, requestBody, headers);
+            if (
+                !retry &&
+                fault &&
+                _.includes(fault, 'Update your Sonos system')
+            ) {
+                return this._doRequest(uri, action, requestBody, headers, true);
             }
 
-            console.error(fault, soapBody);
             throw new Error(fault);
         }
 
@@ -261,8 +266,8 @@ class MusicServiceClient {
             'getDeviceLinkCode',
             body,
             headers
-        ).then((res) => {
-            const resp = xml2json(stripNamespaces(res));
+        ).then(async (res) => {
+            const resp = await Helpers.ParseXml(stripNamespaces(res));
             const obj =
                 resp['Envelope']['Body']['getDeviceLinkCodeResponse'][
                     'getDeviceLinkCodeResult'
@@ -287,8 +292,8 @@ class MusicServiceClient {
             'getAppLink',
             body,
             headers
-        ).then((res) => {
-            const resp = xml2json(stripNamespaces(res));
+        ).then(async (res) => {
+            const resp = await Helpers.ParseXml(stripNamespaces(res));
             const obj =
                 resp['Envelope']['Body']['getAppLinkResponse'][
                     'getAppLinkResult'
@@ -329,8 +334,8 @@ class MusicServiceClient {
             body,
             headers
         )
-            .then((res) => {
-                const resp = xml2json(stripNamespaces(res));
+            .then(async (res) => {
+                const resp = await Helpers.ParseXml(stripNamespaces(res));
                 const obj =
                     resp['Envelope']['Body']['getDeviceAuthTokenResponse'][
                         'getDeviceAuthTokenResult'
@@ -347,8 +352,6 @@ class MusicServiceClient {
     }
 
     getMetadata(id, index = 0, count = 200) {
-        const headers = this.getAuthHeaders();
-
         const body = [
             '<ns:getMetadata>',
             '<ns:id>',
@@ -368,10 +371,10 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'getMetadata',
                 body,
-                headers
+                this.getAuthHeaders
             )
-                .then((res) => {
-                    const resp = xml2json(stripNamespaces(res));
+                .then(async (res) => {
+                    const resp = await Helpers.ParseXml(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['getMetadataResponse'][
                             'getMetadataResult'
@@ -379,20 +382,12 @@ class MusicServiceClient {
                     resolve(obj);
                 })
                 .catch((response) => {
-                    if (response.authToken) {
-                        this.getMetadata(id, index, count).then((obj) => {
-                            resolve(obj);
-                        });
-                    } else {
-                        reject(response);
-                    }
+                    reject(response);
                 });
         });
     }
 
     getExtendedMetadata(id) {
-        const headers = this.getAuthHeaders();
-
         const body = [
             '<ns:getExtendedMetadata>',
             '<ns:id>',
@@ -406,31 +401,23 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'getExtendedMetadata',
                 body,
-                headers
+                this.getAuthHeaders
             )
-                .then((res) => {
-                    const resp = xml2json(stripNamespaces(res));
+                .then(async (res) => {
+                    const resp = await Helpers.ParseXml(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['getExtendedMetadataResponse'][
                             'getExtendedMetadataResult'
                         ];
                     resolve(obj);
                 })
-                .catch((authToken) => {
-                    if (authToken) {
-                        this.getExtendedMetadata(id).then((obj) => {
-                            resolve(obj);
-                        });
-                    } else {
-                        reject();
-                    }
+                .catch((response) => {
+                    reject(response);
                 });
         });
     }
 
     search(id, term, index = 0, count = 200) {
-        const headers = this.getAuthHeaders();
-
         const body = [
             '<ns:search>',
             '<ns:id>',
@@ -453,31 +440,23 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'search',
                 body,
-                headers
+                this.getAuthHeaders
             )
-                .then((res) => {
-                    const resp = xml2json(stripNamespaces(res));
+                .then(async (res) => {
+                    const resp = await Helpers.ParseXml(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['searchResponse'][
                             'searchResult'
                         ];
                     resolve(obj);
                 })
-                .catch((authToken) => {
-                    if (authToken) {
-                        this.search(id, term, index, count).then((obj) => {
-                            resolve(obj);
-                        });
-                    } else {
-                        reject();
-                    }
+                .catch((response) => {
+                    reject(response);
                 });
         });
     }
 
     getMediaURI(id) {
-        const headers = this.getAuthHeaders();
-
         const body = [
             '<ns:getMediaURI>',
             '<ns:id>',
@@ -491,24 +470,18 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'getMediaURI',
                 body,
-                headers
+                this.getAuthHeaders
             )
-                .then((res) => {
-                    const resp = xml2json(stripNamespaces(res));
+                .then(async (res) => {
+                    const resp = await Helpers.ParseXml(stripNamespaces(res));
                     const obj =
                         resp['Envelope']['Body']['getMediaURIResponse'][
                             'getMediaURIResult'
                         ];
                     return resolve(obj);
                 })
-                .catch((authToken) => {
-                    if (authToken) {
-                        this.getMediaURI(id).then((obj) => {
-                            resolve(obj);
-                        });
-                    } else {
-                        reject();
-                    }
+                .catch((response) => {
+                    reject(response);
                 });
         });
     }
@@ -541,8 +514,8 @@ class MusicServiceClient {
             'getSessionId',
             body,
             headers
-        ).then((res) => {
-            const resp = xml2json(stripNamespaces(res));
+        ).then(async (res) => {
+            const resp = await Helpers.ParseXml(stripNamespaces(res));
             const obj =
                 resp['Envelope']['Body']['getSessionIdResponse'][
                     'getSessionIdResult'
@@ -620,7 +593,7 @@ class MusicServiceClient {
             const res = await fetch(mapUri);
 
             const body = await res.text();
-            const e = xml2json(stripNamespaces(body));
+            const e = await Helpers.ParseXml(stripNamespaces(body));
 
             const map = _.find(
                 e.Presentation.PresentationMap,
