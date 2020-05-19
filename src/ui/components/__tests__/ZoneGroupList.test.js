@@ -9,7 +9,9 @@ describe('ZoneGroupList', () => {
     let props;
 
     beforeEach(() => {
-        props = {};
+        props = {
+            groups: [],
+        };
     });
 
     it('matches snapshot', () => {
@@ -25,14 +27,16 @@ describe('ZoneGroupList', () => {
     });
 
     it('renders group items', () => {
-        props.groups = {
-            1: {
+        props.groups = [
+            {
+                ID: 1,
                 foo: true,
             },
-            2: {
+            {
+                ID: 2,
                 foo: false,
             },
-        };
+        ];
 
         const context = mount(<ZoneGroupList {...props} />);
         expect(context).toMatchSnapshot();

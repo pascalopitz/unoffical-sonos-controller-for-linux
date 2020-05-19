@@ -1,7 +1,6 @@
 import MusicServiceClient from '../MusicServiceClient';
-import request from 'request';
-
-jest.mock('request');
+import { enableFetchMocks } from 'jest-fetch-mock';
+enableFetchMocks();
 
 function mockSoapResponse(name, value) {
     return `<Envelope>
@@ -19,6 +18,7 @@ describe('MusicServiceClient', () => {
     beforeEach(() => {
         client = new MusicServiceClient({
             Name: 'Service',
+            SecureUri: 'https://my.uri',
         });
     });
 
@@ -26,14 +26,8 @@ describe('MusicServiceClient', () => {
         it('sends SOAP request, returns response', async () => {
             const expectedReturn = 'Res';
 
-            request.mockImplementationOnce((params, cb) =>
-                cb(
-                    null,
-                    {
-                        statusCode: 200,
-                    },
-                    mockSoapResponse('getDeviceLinkCode', expectedReturn)
-                )
+            fetch.mockResponseOnce(
+                mockSoapResponse('getDeviceLinkCode', expectedReturn)
             );
 
             const res = await client.getDeviceLinkCode();
@@ -45,18 +39,12 @@ describe('MusicServiceClient', () => {
         it('sends SOAP request, returns response', async () => {
             const expectedReturn = 'Res';
 
-            request.mockImplementationOnce((params, cb) =>
-                cb(
-                    null,
-                    {
-                        statusCode: 200,
-                    },
-                    mockSoapResponse(
-                        'getAppLink',
-                        `<authorizeAccount>
+            fetch.mockResponseOnce(
+                mockSoapResponse(
+                    'getAppLink',
+                    `<authorizeAccount>
                             <deviceLink>${expectedReturn}</deviceLink>
                         </authorizeAccount>`
-                    )
                 )
             );
 
@@ -69,14 +57,8 @@ describe('MusicServiceClient', () => {
         it('sends SOAP request, returns response', async () => {
             const expectedReturn = 'Res';
 
-            request.mockImplementationOnce((params, cb) =>
-                cb(
-                    null,
-                    {
-                        statusCode: 200,
-                    },
-                    mockSoapResponse('getDeviceAuthToken', expectedReturn)
-                )
+            fetch.mockResponseOnce(
+                mockSoapResponse('getDeviceAuthToken', expectedReturn)
             );
 
             const res = await client.getDeviceAuthToken(
@@ -91,14 +73,8 @@ describe('MusicServiceClient', () => {
         it('sends SOAP request, returns response', async () => {
             const expectedReturn = 'Res';
 
-            request.mockImplementationOnce((params, cb) =>
-                cb(
-                    null,
-                    {
-                        statusCode: 200,
-                    },
-                    mockSoapResponse('getMetadata', expectedReturn)
-                )
+            fetch.mockResponseOnce(
+                mockSoapResponse('getMetadata', expectedReturn)
             );
 
             const res = await client.getMetadata('id');
@@ -110,14 +86,8 @@ describe('MusicServiceClient', () => {
         it('sends SOAP request, returns response', async () => {
             const expectedReturn = 'Res';
 
-            request.mockImplementationOnce((params, cb) =>
-                cb(
-                    null,
-                    {
-                        statusCode: 200,
-                    },
-                    mockSoapResponse('getExtendedMetadata', expectedReturn)
-                )
+            fetch.mockResponseOnce(
+                mockSoapResponse('getExtendedMetadata', expectedReturn)
             );
 
             const res = await client.getExtendedMetadata('id');
@@ -129,15 +99,7 @@ describe('MusicServiceClient', () => {
         it('sends SOAP request, returns response', async () => {
             const expectedReturn = 'Res';
 
-            request.mockImplementationOnce((params, cb) =>
-                cb(
-                    null,
-                    {
-                        statusCode: 200,
-                    },
-                    mockSoapResponse('search', expectedReturn)
-                )
-            );
+            fetch.mockResponseOnce(mockSoapResponse('search', expectedReturn));
 
             const res = await client.search('id', 'term');
             expect(res).toBe(expectedReturn);
@@ -148,14 +110,8 @@ describe('MusicServiceClient', () => {
         it('sends SOAP request, returns response', async () => {
             const expectedReturn = 'Res';
 
-            request.mockImplementationOnce((params, cb) =>
-                cb(
-                    null,
-                    {
-                        statusCode: 200,
-                    },
-                    mockSoapResponse('getMediaURI', expectedReturn)
-                )
+            fetch.mockResponseOnce(
+                mockSoapResponse('getMediaURI', expectedReturn)
             );
 
             const res = await client.getMediaURI('id');
@@ -167,14 +123,8 @@ describe('MusicServiceClient', () => {
         it('sends SOAP request, returns response', async () => {
             const expectedReturn = 'Res';
 
-            request.mockImplementationOnce((params, cb) =>
-                cb(
-                    null,
-                    {
-                        statusCode: 200,
-                    },
-                    mockSoapResponse('getSessionId', expectedReturn)
-                )
+            fetch.mockResponseOnce(
+                mockSoapResponse('getSessionId', expectedReturn)
             );
 
             const res = await client.getSessionId('username', 'password');

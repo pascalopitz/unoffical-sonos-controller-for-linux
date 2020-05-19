@@ -46,7 +46,6 @@ class MusicServiceClient {
         const soapBody = withinEnvelope(requestBody, headers);
 
         const response = await fetch(uri, {
-            uri: uri,
             method: 'POST',
             headers: {
                 SOAPAction: `"${NS}#${action}"`,

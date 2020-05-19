@@ -13,13 +13,15 @@ describe('ZoneGroup', () => {
 
     beforeEach(() => {
         props = {
-            group: [
-                {
-                    member: 1,
-                    coordinator: 'true',
-                    host: 'myhost',
-                },
-            ],
+            group: {
+                host: 'myhost',
+                ZoneGroupMember: [
+                    {
+                        member: 1,
+                        Coordinator: 'true',
+                    },
+                ],
+            },
             selectGroup: jest.fn(),
             showManagement: jest.fn(),
             playStates: {

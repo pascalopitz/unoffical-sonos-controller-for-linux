@@ -18,14 +18,16 @@ exports[`ZoneGroupList matches snapshot 1`] = `
 exports[`ZoneGroupList renders group items 1`] = `
 <ZoneGroupList
   groups={
-    Object {
-      "1": Object {
+    Array [
+      Object {
+        "ID": 1,
         "foo": true,
       },
-      "2": Object {
+      Object {
+        "ID": 2,
         "foo": false,
       },
-    }
+    ]
   }
 >
   <div
@@ -51,18 +53,21 @@ exports[`ZoneGroupList renders group items 1`] = `
         <Component
           group={
             Object {
+              "ID": 1,
               "foo": true,
             }
           }
           groups={
-            Object {
-              "1": Object {
+            Array [
+              Object {
+                "ID": 1,
                 "foo": true,
               },
-              "2": Object {
+              Object {
+                "ID": 2,
                 "foo": false,
               },
-            }
+            ]
           }
           key="1"
         >
@@ -71,18 +76,21 @@ exports[`ZoneGroupList renders group items 1`] = `
         <Component
           group={
             Object {
+              "ID": 2,
               "foo": false,
             }
           }
           groups={
-            Object {
-              "1": Object {
+            Array [
+              Object {
+                "ID": 1,
                 "foo": true,
               },
-              "2": Object {
+              Object {
+                "ID": 2,
                 "foo": false,
               },
-            }
+            ]
           }
           key="2"
         >

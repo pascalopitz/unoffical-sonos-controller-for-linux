@@ -3,13 +3,15 @@
 exports[`ZoneGroup matches snapshot 1`] = `
 <ZoneGroup
   group={
-    Array [
-      Object {
-        "coordinator": "true",
-        "host": "myhost",
-        "member": 1,
-      },
-    ]
+    Object {
+      "ZoneGroupMember": Array [
+        Object {
+          "Coordinator": "true",
+          "member": 1,
+        },
+      ],
+      "host": "myhost",
+    }
   }
   playStates={
     Object {
@@ -30,8 +32,7 @@ exports[`ZoneGroup matches snapshot 1`] = `
         key="0"
         member={
           Object {
-            "coordinator": "true",
-            "host": "myhost",
+            "Coordinator": "true",
             "member": 1,
           }
         }
@@ -47,7 +48,7 @@ exports[`ZoneGroup matches snapshot 1`] = `
     >
       Group
     </div>
-    <ZoneGroupPLayState
+    <ZoneGroupPlayState
       playState={
         Object {
           "playing": true,
@@ -57,7 +58,7 @@ exports[`ZoneGroup matches snapshot 1`] = `
       <p
         className="play-state"
       />
-    </ZoneGroupPLayState>
+    </ZoneGroupPlayState>
   </div>
 </ZoneGroup>
 `;
@@ -66,13 +67,15 @@ exports[`ZoneGroup matches snapshot when selected 1`] = `
 <ZoneGroup
   currentHost="myhost"
   group={
-    Array [
-      Object {
-        "coordinator": "true",
-        "host": "myhost",
-        "member": 1,
-      },
-    ]
+    Object {
+      "ZoneGroupMember": Array [
+        Object {
+          "Coordinator": "true",
+          "member": 1,
+        },
+      ],
+      "host": "myhost",
+    }
   }
   playStates={
     Object {
@@ -93,8 +96,7 @@ exports[`ZoneGroup matches snapshot when selected 1`] = `
         key="0"
         member={
           Object {
-            "coordinator": "true",
-            "host": "myhost",
+            "Coordinator": "true",
             "member": 1,
           }
         }
@@ -110,7 +112,7 @@ exports[`ZoneGroup matches snapshot when selected 1`] = `
     >
       Group
     </div>
-    <ZoneGroupPLayState
+    <ZoneGroupPlayState
       playState={
         Object {
           "playing": true,
@@ -120,7 +122,7 @@ exports[`ZoneGroup matches snapshot when selected 1`] = `
       <p
         className="play-state"
       />
-    </ZoneGroupPLayState>
+    </ZoneGroupPlayState>
   </div>
 </ZoneGroup>
 `;
