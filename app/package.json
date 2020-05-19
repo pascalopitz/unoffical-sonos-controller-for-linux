@@ -26,7 +26,6 @@
     "redux": "^4.0.1",
     "redux-actions": "^2.6.5",
     "redux-promise": "^0.6.0",
-    "request": "^2.88.0",
     "reselect": "^4.0.0",
     "shallow-compare": "^1.2.2",
     "sonos": "^1.13.0",

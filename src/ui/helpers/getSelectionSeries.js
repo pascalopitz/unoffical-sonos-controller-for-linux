@@ -25,6 +25,5 @@ export default function getSelectionSeries(tracks, selected) {
         prevSelected = isSelected;
     });
 
-    console.log(series);
     return series;
 }
