@@ -325,27 +325,27 @@ const SonosService = {
     },
 
     onAlarmClockEvent(sonos, ...args) {
-        console.log('onAlarmClockEvent', sonos, ...args);
+        console.log('onAlarmClockEvent', sonos.host, ...args);
     },
 
     async onZoneGroupTopologyEvent(sonos, ...args) {
-        console.log('onZoneGroupTopologyEvent', sonos, ...args);
+        console.log('onZoneGroupTopologyEvent', sonos.host, ...args);
         const groups = await sonos.getAllGroups();
         store.dispatch(serviceActions.topologyEvent(groups));
     },
 
     onQueueEvent(sonos, ...args) {
-        console.log('onQueueEvent', sonos, ...args);
+        console.log('onQueueEvent', sonos.host, ...args);
         this.queryState(sonos);
     },
 
     onGroupRenderingControlEvent(sonos, ...args) {
-        console.log('onGroupRenderingControlEvent', sonos, ...args);
+        console.log('onGroupRenderingControlEvent', sonos.host, ...args);
         this.queryQueue(sonos);
     },
 
     onContentDirectoryEvent(sonos, ...args) {
-        console.log('onContentDirectoryEvent', args);
+        console.log('onContentDirectoryEvent', sonos.host, args);
     },
 
     onMutedEvent({ host }, muted) {
@@ -369,7 +369,7 @@ const SonosService = {
     },
 
     onPlayStateEvent(sonos, transportState) {
-        console.log('onPlayStateEvent', transportState);
+        console.log('onPlayStateEvent', sonos.host, transportState);
         this.processPlaystateUpdate(sonos, transportState);
     },
 

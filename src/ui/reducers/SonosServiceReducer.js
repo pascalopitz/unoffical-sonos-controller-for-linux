@@ -120,26 +120,11 @@ export default handleActions(
         [Constants.SONOS_SERVICE_PLAYSTATE_UPDATE]: (state, action) => {
             const { host, playState } = action.payload;
 
-            if (playState === 'transitioning') {
-                return {
-                    ...state,
-                };
-            }
-
-            const isPlaying = playState === 'playing';
-
             return {
                 ...state,
                 playStates: {
                     ...state.playStates,
                     [host]: playState,
-                },
-                currentTracks: {
-                    ...state.currentTracks,
-                    [host]: {
-                        ...state.currentTracks[host],
-                        isPlaying,
-                    },
                 },
             };
         },

@@ -14,6 +14,10 @@ export function getCurrentGroup(state) {
 }
 
 export function getPlayStates(state) {
+    return state.sonosService.playStates;
+}
+
+export function getCurrentTracks(state) {
     return state.sonosService.currentTracks;
 }
 

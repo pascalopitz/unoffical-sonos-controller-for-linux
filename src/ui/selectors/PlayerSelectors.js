@@ -4,10 +4,10 @@ export function getPositionInfo(state) {
 }
 
 export function getPlaying(state) {
-    const { currentHost, currentTracks } = state.sonosService;
-    const currentTrack = currentTracks[currentHost];
-    const playing = currentTrack ? currentTrack.isPlaying : false;
-    return !!playing;
+    const { currentHost, playStates } = state.sonosService;
+    const playState = playStates[currentHost];
+    const playing = playState && playState === 'playing';
+    return playing;
 }
 
 export function getCrossfadeMode(state) {

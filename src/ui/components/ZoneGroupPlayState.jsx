@@ -1,18 +1,19 @@
 import React from 'react';
 
 export function ZoneGroupPlayState(props) {
-    const { playState } = props;
+    const { currentTrack, playState } = props;
 
-    if (playState && playState.title) {
-        const icon = playState.isPlaying ? (
-            <i className="material-icons">play_arrow</i>
-        ) : (
-            <i className="material-icons">pause</i>
-        );
-        let info = playState.title;
+    if (currentTrack && currentTrack.title) {
+        const icon =
+            playState === 'playing' ? (
+                <i className="material-icons">play_arrow</i>
+            ) : (
+                <i className="material-icons">pause</i>
+            );
+        let info = currentTrack.title;
 
-        if (playState.artist) {
-            info = info + ' - ' + playState.artist;
+        if (currentTrack.artist) {
+            info = info + ' - ' + currentTrack.artist;
         }
 
         return (

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
     getZoneGroups,
     getCurrentHost,
+    getCurrentTracks,
     getPlayStates,
 } from '../selectors/ZoneGroupSelectors';
 
@@ -12,6 +13,7 @@ import ZoneGroup from './ZoneGroup';
 export const mapStateToProps = (state) => {
     return {
         groups: getZoneGroups(state),
+        currentTracks: getCurrentTracks(state),
         playStates: getPlayStates(state),
         currentHost: getCurrentHost(state),
     };

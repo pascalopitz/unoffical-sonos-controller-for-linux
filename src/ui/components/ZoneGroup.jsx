@@ -23,6 +23,7 @@ export function ZoneGroup(props) {
         showManagement,
         selectGroup,
         playStates,
+        currentTracks,
         currentHost,
     } = props;
 
@@ -36,7 +37,8 @@ export function ZoneGroup(props) {
         e.stopPropagation();
     };
 
-    const playState = playStates[group.host] || {};
+    const playState = playStates[group.host] || 'stopped';
+    const currentTrack = currentTracks[group.host] || {};
 
     const zoneNodes = group.ZoneGroupMember.map((item, index) => (
         <ZoneGroupMember member={item} key={index} />
@@ -53,12 +55,13 @@ export function ZoneGroup(props) {
     return (
         <div className={classString} onClick={_onClick}>
             <ul>{zoneNodes}</ul>
-
             <div className="group-button" onClick={_showGroupManagement}>
                 Group
             </div>
-
-            <ZoneGroupPlayState playState={playState} />
+            <ZoneGroupPlayState
+                playState={playState}
+                currentTrack={currentTrack}
+            />
         </div>
     );
 }
