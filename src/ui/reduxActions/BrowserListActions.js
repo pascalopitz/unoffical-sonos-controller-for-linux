@@ -75,9 +75,7 @@ async function _getItem(item) {
 
     if (serviceType) {
         const uri = client.getTrackURI(item, client._serviceDefinition.Id);
-
         const token = client.getServiceString(serviceType);
-
         const meta = client.encodeItemMetadata(uri, item, token);
 
         return {
@@ -95,9 +93,8 @@ async function _getItem(item) {
 }
 
 async function _createLibrarySearchPromise(type, term, options = {}) {
-    term = escape(term);
-
     const sonos = SonosService._currentDevice;
+    term = escape(term);
 
     try {
         const result = await sonos.queryMusicLibrary(type, term, options);
@@ -324,6 +321,98 @@ export const search = createAction(
 
 export const playCurrentAlbum = createAction(Constants.BROWSER_PLAY);
 
+const selectLineIns = async (item) => {
+    const results = await _fetchLineIns();
+    const state = _.cloneDeep(item);
+    state.items = results || [];
+    return state;
+};
+
+const selectBrowseServices = async (item) => {
+    const results = await _fetchMusicServices();
+    const state = _.cloneDeep(item);
+    state.items = results || [];
+    return state;
+};
+
+const selectService = async (item) => {
+    const client = new MusicServiceClient(item.service.service);
+    client.setAuthToken(item.service.authToken.authToken);
+    client.setKey(item.service.authToken.privateKey);
+
+    const res = await client.getMetadata('root', 0, 100);
+    const searchTermMap = await client.getSearchTermMap();
+
+    const state = {
+        title: client.name,
+        serviceClient: client,
+        searchTermMap: searchTermMap,
+        items: _.map(res.mediaCollection, (i) => {
+            i.serviceClient = client;
+            return i;
+        }),
+    };
+
+    return state;
+};
+
+const selectSonosPlaylist = async (item) => {
+    const sonos = SonosService._currentDevice;
+
+    const {
+        _raw: { id },
+    } = item;
+
+    const result = await sonos.queryMusicLibrary(id);
+
+    const state = _.cloneDeep(item);
+    state.items = result.items || [];
+    return state;
+};
+
+const selectServiceMediaCollectionItem = async (item) => {
+    const { searchTermMap, term } = _.last(
+        store.getState().browserList.history
+    );
+
+    const client = item.serviceClient;
+
+    const res = await client.getMetadata(item.id, 0, 100);
+    const items = [];
+
+    if (res.mediaMetadata) {
+        if (!_.isArray(res.mediaMetadata)) {
+            res.mediaMetadata = [res.mediaMetadata];
+        }
+
+        res.mediaMetadata.forEach((i, idx) => {
+            i.serviceClient = client;
+            items[idx] = i;
+        });
+    }
+
+    if (res.mediaCollection) {
+        if (!_.isArray(res.mediaCollection)) {
+            res.mediaCollection = [res.mediaCollection];
+        }
+
+        res.mediaCollection.forEach((i, idx) => {
+            i.serviceClient = client;
+            items[idx] = i;
+        });
+    }
+
+    return {
+        title: item.title,
+        parent: item,
+        term: term,
+        searchTermMap: searchTermMap,
+        serviceClient: client,
+        total: res.total,
+        items: _.compact(_.uniq(items)),
+    };
+};
+
 export const select = createAction(
     Constants.BROWSER_SELECT_ITEM,
     async (item) => {
@@ -338,38 +427,19 @@ export const select = createAction(
         }
 
         if (item.action && item.action === 'linein') {
-            const results = await _fetchLineIns();
-            const state = _.cloneDeep(item);
-            state.items = results || [];
-            return state;
+            return await selectLineIns(item);
         }
 
         if (item.action && item.action === 'browseServices') {
-            const results = await _fetchMusicServices();
-            const state = _.cloneDeep(item);
-            state.items = results || [];
-            return state;
+            return await selectBrowseServices(item);
         }
 
         if (item.action && item.action === 'service') {
-            const client = new MusicServiceClient(item.service.service);
-            client.setAuthToken(item.service.authToken.authToken);
-            client.setKey(item.service.authToken.privateKey);
+            return await selectService(item);
+        }
 
-            const res = await client.getMetadata('root', 0, 100);
-            const searchTermMap = await client.getSearchTermMap();
-
-            const state = {
-                title: client.name,
-                serviceClient: client,
-                searchTermMap: searchTermMap,
-                items: _.map(res.mediaCollection, (i) => {
-                    i.serviceClient = client;
-                    return i;
-                }),
-            };
-
-            return state;
+        if (item.class === 'object.container.playlistContainer') {
+            return await selectSonosPlaylist(item);
         }
 
         const { searchTermMap, term } = _.last(
@@ -377,42 +447,7 @@ export const select = createAction(
         );
 
         if (item.serviceClient && item.itemType !== 'track') {
-            const client = item.serviceClient;
-
-            const res = await client.getMetadata(item.id, 0, 100);
-            const items = [];
-
-            if (res.mediaMetadata) {
-                if (!_.isArray(res.mediaMetadata)) {
-                    res.mediaMetadata = [res.mediaMetadata];
-                }
-
-                res.mediaMetadata.forEach((i, idx) => {
-                    i.serviceClient = client;
-                    items[idx] = i;
-                });
-            }
-
-            if (res.mediaCollection) {
-                if (!_.isArray(res.mediaCollection)) {
-                    res.mediaCollection = [res.mediaCollection];
-                }
-
-                res.mediaCollection.forEach((i, idx) => {
-                    i.serviceClient = client;
-                    items[idx] = i;
-                });
-            }
-
-            return {
-                title: item.title,
-                parent: item,
-                term: term,
-                searchTermMap: searchTermMap,
-                serviceClient: client,
-                total: res.total,
-                items: _.compact(_.uniq(items)),
-            };
+            return await selectServiceMediaCollectionItem(item);
         }
 
         if (item.searchType || term) {

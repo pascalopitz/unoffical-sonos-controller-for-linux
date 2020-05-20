@@ -1,13 +1,14 @@
 {
   "name": "sonos-controller-unofficial",
   "description": "Unoffical sonos controller for linux.",
-  "version": "0.2.0-alpha1",
+  "version": "0.2.0-alpha2",
   "author": "Pascal Opitz <contact@pascalopitz.com>",
   "main": "main.js",
   "dependencies": {
     "array-union": "^2.0.0",
     "axios": "^0.19.2",
     "bluebird": "^3.5.4",
+    "classnames": "^2.2.6",
     "deep-equal": "^2.0.3",
     "dotenv": "^8.2.0",
     "electron-react-devtools": "^0.5.3",

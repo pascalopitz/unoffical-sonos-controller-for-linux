@@ -1,6 +1,5 @@
 import React from 'react';
 import { ZoneGroupList } from '../ZoneGroupList';
-import ZoneGroup from '../ZoneGroup';
 import { render, mount } from 'enzyme';
 
 jest.mock('../ZoneGroup', () => () => <p />);

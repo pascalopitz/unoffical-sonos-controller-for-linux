@@ -11,6 +11,7 @@
   ],
   "plugins": [
     "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-syntax-class-properties",
     "syntax-jsx",
     "transform-react-jsx",
     "react-hot-loader/babel"

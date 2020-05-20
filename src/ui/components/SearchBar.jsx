@@ -86,7 +86,7 @@ export class SearchBar extends Component {
         this.ref.current.value = '';
     }
 
-    _onChange(e) {
+    _onChange() {
         const term = this.ref.current.value;
         this.props.search(term, this.props.searchMode);
     }

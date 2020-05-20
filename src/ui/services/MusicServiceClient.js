@@ -9,15 +9,6 @@ const NS = 'http://www.sonos.com/Services/1.1';
 const deviceProviderName = 'unofficial-sonos-controller-for-linux';
 const RUNTIME_ID = 'unofficial-sonos-controller-for-linux';
 
-class RefreshError extends Error {
-    constructor({ authToken, privateKey }) {
-        super('tokenRefreshRequired');
-
-        this.authToken = authToken;
-        this.authToken = privateKey;
-    }
-}
-
 function withinEnvelope(body, headers = '') {
     return [
         '<?xml version="1.0" encoding="utf-8"?>',

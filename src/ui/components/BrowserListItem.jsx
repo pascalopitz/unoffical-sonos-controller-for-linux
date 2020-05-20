@@ -1,8 +1,11 @@
 import _ from 'lodash';
 
-import React, { Component } from 'react';
+import React, { Fragment, Component, PureComponent, createRef } from 'react';
 import { connect } from 'react-redux';
 import shallowCompare from 'shallow-compare';
+
+import { getClosest } from '../helpers/dom-utility';
+import classnames from 'classnames';
 
 import AlbumArt from './AlbumArt';
 
@@ -27,9 +30,116 @@ const mapDispatchToProps = (dispatch) => {
         addService: (item) => dispatch(addService(item)),
     };
 };
+
+class InlineMenu extends PureComponent {
+    _playNow = (e) => {
+        const item = _.get(this, 'props.model.parent') || this.props.model;
+        this.props.playNow(item);
+        this.props.toggle(e);
+    };
+
+    _playNext = (e) => {
+        const item = _.get(this, 'props.model.parent') || this.props.model;
+        this.props.playNext(item);
+        this.props.toggle(e);
+    };
+
+    _addQueue = (e) => {
+        const item = _.get(this, 'props.model.parent') || this.props.model;
+        this.props.addQueue(item);
+        this.props.toggle(e);
+    };
+
+    _replaceQueue = (e) => {
+        const item = _.get(this, 'props.model.parent') || this.props.model;
+        this.props.replaceQueue(item);
+        this.props.toggle(e);
+    };
+
+    _removeService = (e) => {
+        const item = this.props.model;
+        this.props.removeService(item.service);
+        this.props.toggle(e);
+    };
+
+    render() {
+        const {
+            model: item,
+            isExpanded,
+            onMouseOut,
+            onMouseOver,
+            containerRef,
+        } = this.props;
+
+        if (!isExpanded) {
+            return null;
+        }
+
+        const isPlayNow =
+            item.class === 'object.item.audioItem' ||
+            (item.metadata &&
+                item.metadata.class === 'object.item.audioItem.audioBroadcast');
+
+        const isService = item.action === 'service';
+
+        const scrollContainerNode = getClosest(
+            containerRef.current,
+            '.scrollcontainer'
+        );
+
+        const inlineMenutOffset = isPlayNow || isService ? 37 : 37 * 4;
+
+        const { top, height: listItemHeight } = getComputedStyle(
+            containerRef.current
+        );
+        const { height: scrollContainerHeight } = getComputedStyle(
+            scrollContainerNode
+        );
+
+        const openUpwards =
+            parseInt(scrollContainerHeight) - parseInt(top) < inlineMenutOffset;
+
+        const menuTop = openUpwards
+            ? 10 - inlineMenutOffset
+            : parseInt(listItemHeight) - 10;
+
+        const menuClass = classnames({
+            'inline-menu': true,
+            upwards: openUpwards,
+        });
+
+        const styles = {
+            top: `${menuTop}px`,
+        };
+
+        return (
+            <ul
+                style={styles}
+                className={menuClass}
+                onMouseOut={onMouseOut}
+                onMouseOver={onMouseOver}
+            >
+                {isPlayNow ? (
+                    <li onClick={this._playNow}>Play Now</li>
+                ) : isService ? (
+                    <li onClick={this._removeService}>Remove</li>
+                ) : (
+                    <Fragment>
+                        <li onClick={this._playNow}>Play Now</li>
+                        <li onClick={this._playNext}>Play Next</li>
+                        <li onClick={this._addQueue}>Add to Queue</li>
+                        <li onClick={this._replaceQueue}>Replace Queue</li>
+                    </Fragment>
+                )}
+            </ul>
+        );
+    }
+}
+
 export class BrowserListItem extends Component {
     constructor() {
         super();
+        this.liRef = createRef();
         this.state = {
             isExpanded: false,
         };
@@ -39,7 +149,15 @@ export class BrowserListItem extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
 
-    _onClick(e) {
+    componentDidUpdate(prevProps) {
+        if (this.props.model !== prevProps.model && this.clickedOnce) {
+            console.log('reset');
+            this.clickedOnce = false;
+            this._delayedClick = null;
+        }
+    }
+
+    _onClick = () => {
         const item = this.props.model;
 
         if (
@@ -55,14 +173,14 @@ export class BrowserListItem extends Component {
         }
 
         return false;
-    }
+    };
 
-    handleClick(e) {
+    handleClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
 
         if (!this._delayedClick) {
-            this._delayedClick = _.debounce(this._onClick, 500);
+            this._delayedClick = _.debounce(this._onClick, 200);
         }
         if (this.clickedOnce) {
             this._delayedClick.cancel();
@@ -72,70 +190,39 @@ export class BrowserListItem extends Component {
             this._delayedClick(e);
             this.clickedOnce = true;
         }
-    }
+    };
 
-    _playNow(e) {
-        const item = _.get(this, 'props.model.parent') || this.props.model;
-        this.props.playNow(item);
-        this._toggle(e);
-    }
-
-    _playNext(e) {
-        const item = _.get(this, 'props.model.parent') || this.props.model;
-        this.props.playNext(item);
-        this._toggle(e);
-    }
-
-    _addQueue(e) {
-        const item = _.get(this, 'props.model.parent') || this.props.model;
-        this.props.addQueue(item);
-        this._toggle(e);
-    }
-
-    _replaceQueue(e) {
-        const item = _.get(this, 'props.model.parent') || this.props.model;
-        this.props.replaceQueue(item);
-        this._toggle(e);
-    }
-
-    _removeService(e) {
-        const item = this.props.model;
-        this.props.removeService(item.service);
-        this._toggle(e);
-    }
-
-    _toggle(e) {
+    _toggle = (e) => {
         this.setState({
             isExpanded: !this.state.isExpanded,
         });
         e.preventDefault();
         e.stopPropagation();
-    }
+    };
 
-    _hideMenu() {
+    _hideMenu = () => {
         if (this.state.isExpanded) {
             this.setState({
                 isExpanded: false,
             });
         }
-    }
+    };
 
-    _onMouseOut(e) {
-        this._hideTimeout = window.setTimeout(this._hideMenu.bind(this), 500);
+    _onMouseOut = (e) => {
+        this._hideTimeout = window.setTimeout(this._hideMenu, 500);
         e.preventDefault();
         e.stopPropagation();
-    }
+    };
 
-    _onMouseOver(e) {
+    _onMouseOver = (e) => {
         if (this._hideTimeout) {
             window.clearTimeout(this._hideTimeout);
         }
         e.preventDefault();
         e.stopPropagation();
-    }
+    };
 
     render() {
-        let inlineMenu;
         let inlineMenuButton;
         const item = this.props.model;
         let className = 'trackinfo';
@@ -167,51 +254,6 @@ export class BrowserListItem extends Component {
                     arrow_drop_down_circle
                 </i>
             );
-
-            if (
-                this.state.isExpanded &&
-                (item.class === 'object.item.audioItem' ||
-                    (item.metadata &&
-                        item.metadata.class ===
-                            'object.item.audioItem.audioBroadcast'))
-            ) {
-                inlineMenu = (
-                    <ul
-                        className="inline-menu"
-                        onMouseOut={this._onMouseOut.bind(this)}
-                        onMouseOver={this._onMouseOver.bind(this)}
-                    >
-                        <li onClick={this._playNow.bind(this)}>Play Now</li>
-                    </ul>
-                );
-            } else if (this.state.isExpanded && item.action === 'service') {
-                inlineMenu = (
-                    <ul
-                        className="inline-menu"
-                        onMouseOut={this._onMouseOut.bind(this)}
-                        onMouseOver={this._onMouseOver.bind(this)}
-                    >
-                        <li onClick={this._removeService.bind(this)}>Remove</li>
-                    </ul>
-                );
-            } else if (this.state.isExpanded) {
-                inlineMenu = (
-                    <ul
-                        className="inline-menu"
-                        onMouseOut={this._onMouseOut.bind(this)}
-                        onMouseOver={this._onMouseOver.bind(this)}
-                    >
-                        <li onClick={this._playNow.bind(this)}>Play Now</li>
-                        <li onClick={this._playNext.bind(this)}>Play Next</li>
-                        <li onClick={this._addQueue.bind(this)}>
-                            Add to Queue
-                        </li>
-                        <li onClick={this._replaceQueue.bind(this)}>
-                            Replace Queue
-                        </li>
-                    </ul>
-                );
-            }
         }
 
         const creator =
@@ -232,9 +274,10 @@ export class BrowserListItem extends Component {
 
         return (
             <li
-                onClick={this.handleClick.bind(this)}
-                onMouseOut={this._onMouseOut.bind(this)}
-                onMouseOver={this._onMouseOver.bind(this)}
+                ref={this.liRef}
+                onClick={this.handleClick}
+                onMouseOut={this._onMouseOut}
+                onMouseOver={this._onMouseOver}
                 data-position={this.props.position}
                 style={this.props.style}
             >
@@ -244,7 +287,14 @@ export class BrowserListItem extends Component {
                     <p className="title">{item.title}</p>
                     {artistInfo}
                 </div>
-                {inlineMenu}
+                <InlineMenu
+                    {...this.props}
+                    containerRef={this.liRef}
+                    isExpanded={this.state.isExpanded}
+                    toggle={this._toggle}
+                    onMouseOut={this._onMouseOut}
+                    onMouseOver={this._onMouseOver}
+                />
                 {inlineMenuButton}
             </li>
         );

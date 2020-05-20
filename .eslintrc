@@ -7,7 +7,11 @@
     "extends": [
         "plugin:react/recommended"
     ],
-    "settings": {},
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
     "rules": {
         "prettier/prettier": [ "error", {
             "singleQuote": true,

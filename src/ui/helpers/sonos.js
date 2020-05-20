@@ -7,32 +7,29 @@ class ContentDirectoryEnhanced extends Services.ContentDirectory {
         if (resultcontainer === undefined) {
             return;
         }
-        if (Array.isArray(resultcontainer)) {
-            const convertItem = function (item) {
-                const res = Helpers.ParseDIDLItem(
-                    item,
-                    this.host,
-                    this.port,
-                    item.res._
-                );
 
-                return {
-                    ...res,
-                    class: item['upnp:class'],
-                };
-            }.bind(this);
-
-            return resultcontainer.map(convertItem);
-        } else {
-            return [
-                Helpers.ParseDIDLItem(
-                    resultcontainer,
-                    this.host,
-                    this.port,
-                    resultcontainer.res._
-                ),
-            ];
+        if (!Array.isArray(resultcontainer)) {
+            resultcontainer = [resultcontainer];
         }
+
+        const convertItem = function (item) {
+            const res = Helpers.ParseDIDLItem(
+                item,
+                this.host,
+                this.port,
+                _.get(item, 'res._')
+            );
+
+            return {
+                ...res,
+                class: item['upnp:class'],
+                _raw: {
+                    ...item,
+                },
+            };
+        }.bind(this);
+
+        return resultcontainer.map(convertItem);
     }
 }
 

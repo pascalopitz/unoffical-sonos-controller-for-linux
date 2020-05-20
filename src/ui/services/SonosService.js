@@ -90,24 +90,19 @@ const SonosService = {
             );
 
             this.queryState(sonos);
-            //             Event: 'CurrentTrack'
-            // Event: 'NextTrack'
-            // Event: 'PlayState' and 'PlaybackStopped'
-            // Event: 'AVTransport'
-            // Event: 'Volume'
-            // Event: 'Muted'
-            // Event: 'RenderingControl'
         }
 
         store.dispatch(serviceActions.topologyUpdate(groups));
 
         const storedZone = window.localStorage.zone;
-
-        const [zone] = storedZone
+        const filteredGroups = storedZone
             ? groups.filter((g) => g.Coordinator === storedZone)
-            : groups;
+            : [];
 
-        store.dispatch(serviceActions.selectCurrentZone(zone));
+        const [zone] =
+            storedZone && filteredGroups.length ? filteredGroups : groups;
+
+        store.dispatch(serviceActions.selectCurrentZone(zone || groups[0]));
         this.selectCurrentZone(first);
         this.queryCurrentTrackAndPlaystate(first);
     },

@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { createAction } from 'redux-actions';
 import Constants from '../constants';
 

@@ -12,6 +12,7 @@ export const deselect = createAction(Constants.QUEUE_DESELECT);
 export const flush = createAction(Constants.QUEUE_FLUSH, async () => {
     const sonos = SonosService._currentDevice; // TODO: fix this
     await sonos.flush();
+    SonosService.queryState(sonos);
 });
 
 export const gotoPosition = createAction(
