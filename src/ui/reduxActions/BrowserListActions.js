@@ -14,6 +14,8 @@ import {
     LIBRARY_SEARCH_MODES,
 } from '../constants/BrowserListConstants';
 
+import { loadPlaylists } from './PlaylistActions';
+
 async function _fetchLineIns() {
     const { deviceSearches } = store.getState().sonosService;
 
@@ -65,7 +67,7 @@ async function _fetchMusicServices() {
     });
 }
 
-async function _getItem(item) {
+export async function _getItem(item) {
     if (!item.serviceClient) {
         return item;
     }
@@ -563,3 +565,11 @@ export const removeService = createAction(
 );
 
 export const addService = createAction(Constants.BROWSER_ADD_MUSICSERVICE);
+
+export const addToPlaylist = createAction(
+    Constants.BROWSER_ADD_TO_PLAYLIST,
+    async (item) => {
+        store.dispatch(loadPlaylists());
+        return item;
+    }
+);

@@ -18,6 +18,7 @@ const Constants = {
     BROWSER_REPLACE_QUEUE: '',
     BROWSER_ADD_MUSICSERVICE: '',
     BROWSER_REMOVE_MUSICSERVICE: '',
+    BROWSER_ADD_TO_PLAYLIST: '',
 
     PLAYER_PAUSE: '',
     PLAYER_PLAY: '',
@@ -34,6 +35,12 @@ const Constants = {
     QUEUE_REORDER: '',
 
     ZONE_GROUP_SELECT: '',
+
+    PLAYLISTS_SHOW: '',
+    PLAYLISTS_HIDE: '',
+    PLAYLISTS_LOAD: '',
+    PLAYLISTS_TOGGLE: '',
+    PLAYLISTS_ADD_ITEM: '',
 
     GROUP_MANAGEMENT_HIDE: '',
     GROUP_MANAGEMENT_SHOW: '',

@@ -8,6 +8,7 @@ import VolumeControlReducer from './VolumeControlReducer';
 import QueueReducer from './QueueReducer';
 import BrowserListReducer from './BrowserListReducer';
 import MusicServicesReducer from './MusicServicesReducer';
+import PlaylistReducer from './PlaylistReducer';
 
 const appReducer = combineReducers({
     sonosService: SonosServiceReducer,
@@ -17,6 +18,7 @@ const appReducer = combineReducers({
     queue: QueueReducer,
     browserList: BrowserListReducer,
     musicServices: MusicServicesReducer,
+    playlists: PlaylistReducer,
 });
 
 const ensureResolvedMiddleware = () => (next) => async (action) => {

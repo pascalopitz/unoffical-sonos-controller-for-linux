@@ -48,8 +48,11 @@ export class GroupManagement extends Component {
         });
 
         return (
-            <div id="zone-group-management">
-                <div id="zone-group-management-container">
+            <div id="zone-group-management" className="modal">
+                <div
+                    id="zone-group-management-container"
+                    className="modal-inner"
+                >
                     <ul>{zoneGroupNodes}</ul>
 
                     <button

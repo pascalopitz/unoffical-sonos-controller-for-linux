@@ -17,18 +17,18 @@ import {
     replaceQueue,
     removeService,
     addService,
+    addToPlaylist,
 } from '../reduxActions/BrowserListActions';
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        select: (item) => dispatch(select(item)),
-        playNow: (item) => dispatch(playNow(item)),
-        playNext: (item) => dispatch(playNext(item)),
-        addQueue: (item) => dispatch(addQueue(item)),
-        replaceQueue: (item) => dispatch(replaceQueue(item)),
-        removeService: (item) => dispatch(removeService(item)),
-        addService: (item) => dispatch(addService(item)),
-    };
+const mapDispatchToProps = {
+    select,
+    playNow,
+    playNext,
+    addQueue,
+    replaceQueue,
+    removeService,
+    addService,
+    addToPlaylist,
 };
 
 class InlineMenu extends PureComponent {
@@ -62,6 +62,12 @@ class InlineMenu extends PureComponent {
         this.props.toggle(e);
     };
 
+    _addToPlaylist = (e) => {
+        const item = _.get(this, 'props.model.parent') || this.props.model;
+        this.props.addToPlaylist(item);
+        this.props.toggle(e);
+    };
+
     render() {
         const {
             model: item,
@@ -87,7 +93,7 @@ class InlineMenu extends PureComponent {
             '.scrollcontainer'
         );
 
-        const inlineMenutOffset = isPlayNow || isService ? 37 : 37 * 4;
+        const inlineMenutOffset = isPlayNow || isService ? 37 : 37 * 5;
 
         const { top, height: listItemHeight } = getComputedStyle(
             containerRef.current
@@ -129,6 +135,7 @@ class InlineMenu extends PureComponent {
                         <li onClick={this._playNext}>Play Next</li>
                         <li onClick={this._addQueue}>Add to Queue</li>
                         <li onClick={this._replaceQueue}>Replace Queue</li>
+                        <li onClick={this._addToPlaylist}>Add to playlist</li>
                     </Fragment>
                 )}
             </ul>

@@ -158,8 +158,11 @@ export class MusicServiceManagement extends Component {
         }
 
         return (
-            <div id="music-service-management">
-                <div id="music-service-management-container">
+            <div id="music-service-management" className="modal">
+                <div
+                    id="music-service-management-container"
+                    className="modal-inner"
+                >
                     <h3>{client.name}</h3>
 
                     <div>
