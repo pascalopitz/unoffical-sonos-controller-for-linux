@@ -138,7 +138,7 @@ export class QueueList extends Component {
 
                 return (
                     <QueueListItem
-                        key={position}
+                        key={`${track.id || 'position'}-${position}`}
                         track={track}
                         position={position}
                         isCurrent={isCurrent}

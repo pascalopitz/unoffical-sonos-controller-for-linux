@@ -17,6 +17,14 @@ export const loadPlaylists = createAction(
     }
 );
 
+export const loadPlaylistItems = createAction(
+    Constants.PLAYLISTS_ITEMS_LOAD,
+    async (listId) => {
+        const sonos = SonosService._currentDevice;
+        return await sonos.queryMusicLibrary(listId);
+    }
+);
+
 export const addItem = createAction(
     Constants.PLAYLISTS_ADD_ITEM,
     async (listId, item) => {
@@ -32,5 +40,43 @@ export const addItem = createAction(
         await sonos.addToPlaylist(listId, uri);
 
         store.dispatch(hide());
+    }
+);
+
+export const deleteItem = createAction(
+    Constants.PLAYLISTS_DELETE_ITEM,
+    async (ObjectID, UpdateID = 0, position) => {
+        const sonos = SonosService._currentDevice;
+
+        const params = {
+            ObjectID,
+            UpdateID,
+            InstanceID: 0,
+            TrackList: position - 1,
+            NewPositionList: '',
+        };
+
+        return await sonos
+            .avTransportService()
+            .ReorderTracksInSavedQueue(params);
+    }
+);
+
+export const moveItem = createAction(
+    Constants.PLAYLISTS_MOVE_ITEM,
+    async (ObjectID, UpdateID = 0, oldPosition, newPosition) => {
+        const sonos = SonosService._currentDevice;
+
+        const params = {
+            ObjectID,
+            UpdateID,
+            InstanceID: 0,
+            TrackList: oldPosition - 1,
+            NewPositionList: newPosition - 1,
+        };
+
+        return await sonos
+            .avTransportService()
+            .ReorderTracksInSavedQueue(params);
     }
 );

@@ -107,6 +107,7 @@ class SonosEnhanced extends Sonos {
             sonos_playlists: 'SQ',
             share: 'S',
         };
+
         const defaultOptions = {
             BrowseFlag: 'BrowseDirectChildren',
             Filter: '*',
@@ -120,7 +121,9 @@ class SonosEnhanced extends Sonos {
             : searchType;
 
         if (searchTerm && searchTerm !== '') {
-            searches = searches.concat(encodeURIComponent(searchTerm));
+            searches = `${searches}${separator}${encodeURIComponent(
+                searchTerm
+            )}`;
         }
 
         let opts = {

@@ -839,6 +839,7 @@ input[type=range]:focus {
     font-size: 33px;
 }
 
+.playlist-tracks li[data-position],
 #browser-container li[data-position],
 #queue-container li[data-position] {
     position: relative;
@@ -851,12 +852,14 @@ input[type=range]:focus {
     transition: all 0.15s;
 }
 
+.playlist-tracks li:hover,
 #browser-container li:hover,
 #queue-container li:hover {
     background: rgba(255, 255, 255, 0.07);
     outline: none;
 }
 
+.playlist-tracks li:focus,
 #browser-container li:focus,
 #queue-container li:focus,
 body #queue-container li[data-is-current=true] {
@@ -880,6 +883,7 @@ body #queue-container li[data-is-current=true] {
     justify-content: center;
 }
 
+.playlist-tracks li .img,
 #browser-container li .img,
 #queue-container li .img {
     width: 50px;
@@ -891,12 +895,14 @@ body #queue-container li[data-is-current=true] {
     transition: background-image 0.2s ease-in-out;
 }
 
+.playlist-tracks li div,
 #browser-container li div,
 #queue-container li div {
     display: inline-block;
     width: calc(100% - 53px);
 }
 
+.playlist-tracks li div p,
 #browser-container li div.with-creator p,
 #queue-container li div p {
     margin: 0;
@@ -914,6 +920,7 @@ body #queue-container li[data-is-current=true] {
     color: #aaa;
 }
 
+.playlist-tracks li span,
 #browser-container li span {
     padding: 3px;
     line-height: 22px;
@@ -938,6 +945,7 @@ body #queue-container li[data-is-current=true] {
     width: calc(100% - 53px - 80px);
 }
 
+.playlist-tracks li div.trackinfo,
 #browser-container .playable.trackinfo {
     position: relative;
     width: calc(100% - 53px - 40px);
@@ -1036,6 +1044,27 @@ body #queue-container li[data-is-current=true] {
     position: relative;
 }
 
+#playlist-management.modal.edit .modal-inner {
+    height: 80vh;
+}
+
+#playlist-management.modal.edit .modal-inner ul {
+    height: calc(80vh - 100px);
+    overflow-y: scroll;
+}
+
+.modal-inner ::-webkit-scrollbar-track {
+    background: rgba(180, 180, 180);
+}
+.modal-inner ::-webkit-scrollbar-thumb {
+    background: rgba(150, 150, 150);
+    border-radius: 10px;
+}
+.modal-inner ::-webkit-scrollbar-thumb:hover {
+    background: rgba(160, 160, 160);
+}
+
+
 .modal-inner ul {
     margin: 0;
     padding: 0;
@@ -1047,6 +1076,18 @@ body #queue-container li[data-is-current=true] {
     text-shadow: none;
     margin: 0;
 }
+
+.modal-inner li[data-dragover=before]:before,
+.modal-inner li[data-dragover=after]:after {
+    content: '';
+    display: block;
+    height: 53px;
+    background: rgba(255, 255, 255, .2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
 .modal-inner li span {
     width: calc(100% - 40px);

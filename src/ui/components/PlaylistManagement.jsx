@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { hide, toggle, addItem } from '../reduxActions/PlaylistActions';
+import {
+    hide,
+    toggle,
+    addItem,
+    moveItem,
+    deleteItem,
+} from '../reduxActions/PlaylistActions';
+
+import classnames from 'classnames';
+
+import PlaylistManagementAddTrack from './PlaylistManagementAddTrack';
+import PlaylistManagementEdit from './PlaylistManagementEdit';
 
 const mapStateToProps = (state) => {
     return {
-        item: state.playlists.item,
-        selected: state.playlists.selected,
-        visible: state.playlists.visible,
-        playlists: state.playlists.playlists,
+        ...state.playlists,
     };
 };
 
@@ -16,69 +24,39 @@ const mapDispatchToProps = {
     hide,
     toggle,
     addItem,
+    moveItem,
+    deleteItem,
 };
 
-export class PlaylistManagement extends Component {
-    _cancel = (e) => {
-        e.preventDefault();
-        this.props.hide();
-    };
-
-    _save = (e) => {
-        e.preventDefault();
-        const { selected, item, addItem} = this.props;
-
-        const [id] = selected;
-        this.props.addItem(id, item);
-    };
-
+export class PlaylistManagementControl extends Component {
     render() {
-        const { visible, playlists, selected, toggle } = this.props;
+        const { visible, mode } = this.props;
 
         if (!visible) {
             return null;
         }
 
-        const playlistNodes = playlists.map((list) => {
-            const checkboxSymbol =
-                selected.indexOf(list.id) > -1
-                    ? 'check_box'
-                    : 'check_box_outline_blank';
-
-            const _toggleSelection = () => {
-                toggle(list);
-            };
-
-            return (
-                <li key={list.id}>
-                    <span>{list.title}</span>
-                    <i
-                        className="material-icons checkbox"
-                        onClick={_toggleSelection}
-                    >
-                        {checkboxSymbol}
-                    </i>
-                </li>
-            );
-        });
-
         return (
-            <div id="playlist-management" className="modal">
+            <div
+                id="playlist-management"
+                className={classnames({
+                    modal: true,
+                    [mode]: true,
+                })}
+            >
                 <div id="playlist-management-container" className="modal-inner">
-                    <h3>Playlists</h3>
-
-                    <ul>{playlistNodes}</ul>
-
-                    <button onClick={this._cancel} className="cancel-button">
-                        Cancel
-                    </button>
-                    <button onClick={this._save} className="save-button">
-                        Save
-                    </button>
+                    {mode === 'add' && (
+                        <PlaylistManagementAddTrack {...this.props} />
+                    )}
+                    {mode === 'edit' && (
+                        <PlaylistManagementEdit {...this.props} />
+                    )}
                 </div>
             </div>
         );
     }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(PlaylistManagement);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(PlaylistManagementControl);

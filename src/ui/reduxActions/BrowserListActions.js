@@ -14,7 +14,7 @@ import {
     LIBRARY_SEARCH_MODES,
 } from '../constants/BrowserListConstants';
 
-import { loadPlaylists } from './PlaylistActions';
+import { loadPlaylists, loadPlaylistItems } from './PlaylistActions';
 
 async function _fetchLineIns() {
     const { deviceSearches } = store.getState().sonosService;
@@ -187,7 +187,7 @@ export const more = createAction(
                 start: state.items.length,
             };
 
-            if (state.items.length >= state.total) {
+            if (state.total && state.items.length >= state.total) {
                 return prevState;
             }
 
@@ -222,7 +222,7 @@ export const more = createAction(
                 return state;
             }
 
-            if (state.term && state.term.length) {
+            if (state.mode && state.term && state.term.length) {
                 const result = await sonos.queryMusicLibrary(
                     state.mode,
                     state.term,
@@ -472,6 +472,7 @@ export const select = createAction(
         try {
             const result = await sonos.queryMusicLibrary(objectId, null, {});
             const state = prendinBrowserUpdate;
+            state.id = objectId;
             state.items = result.items;
 
             return state;
@@ -569,7 +570,16 @@ export const addService = createAction(Constants.BROWSER_ADD_MUSICSERVICE);
 export const addToPlaylist = createAction(
     Constants.BROWSER_ADD_TO_PLAYLIST,
     async (item) => {
-        store.dispatch(loadPlaylists());
+        await store.dispatch(loadPlaylists());
+        return item;
+    }
+);
+
+export const editPlaylist = createAction(
+    Constants.BROWSER_EDIT_PLAYLIST,
+    async (item) => {
+        await store.dispatch(loadPlaylists());
+        await store.dispatch(loadPlaylistItems(item._raw.id));
         return item;
     }
 );

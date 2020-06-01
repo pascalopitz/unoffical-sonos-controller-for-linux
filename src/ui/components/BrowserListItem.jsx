@@ -18,6 +18,7 @@ import {
     removeService,
     addService,
     addToPlaylist,
+    editPlaylist,
 } from '../reduxActions/BrowserListActions';
 
 const mapDispatchToProps = {
@@ -29,42 +30,56 @@ const mapDispatchToProps = {
     removeService,
     addService,
     addToPlaylist,
+    editPlaylist,
 };
 
 class InlineMenu extends PureComponent {
     _playNow = (e) => {
+        e.preventDefault();
         const item = _.get(this, 'props.model.parent') || this.props.model;
         this.props.playNow(item);
         this.props.toggle(e);
     };
 
     _playNext = (e) => {
+        e.preventDefault();
         const item = _.get(this, 'props.model.parent') || this.props.model;
         this.props.playNext(item);
         this.props.toggle(e);
     };
 
     _addQueue = (e) => {
+        e.preventDefault();
         const item = _.get(this, 'props.model.parent') || this.props.model;
         this.props.addQueue(item);
         this.props.toggle(e);
     };
 
     _replaceQueue = (e) => {
+        e.preventDefault();
         const item = _.get(this, 'props.model.parent') || this.props.model;
         this.props.replaceQueue(item);
         this.props.toggle(e);
     };
 
     _removeService = (e) => {
+        e.preventDefault();
         const item = this.props.model;
         this.props.removeService(item.service);
         this.props.toggle(e);
     };
 
     _addToPlaylist = (e) => {
+        e.preventDefault();
         const item = _.get(this, 'props.model.parent') || this.props.model;
         this.props.addToPlaylist(item);
+        this.props.toggle(e);
+    };
+
+    _editPlaylist = (e) => {
+        e.preventDefault();
+        const item = _.get(this, 'props.model.parent') || this.props.model;
+        this.props.editPlaylist(item);
         this.props.toggle(e);
     };
 
@@ -87,6 +102,7 @@ class InlineMenu extends PureComponent {
                 item.metadata.class === 'object.item.audioItem.audioBroadcast');
 
         const isService = item.action === 'service';
+        const isSonosPlaylist = item._raw.parentID === 'SQ:';
 
         const scrollContainerNode = getClosest(
             containerRef.current,
@@ -135,7 +151,14 @@ class InlineMenu extends PureComponent {
                         <li onClick={this._playNext}>Play Next</li>
                         <li onClick={this._addQueue}>Add to Queue</li>
                         <li onClick={this._replaceQueue}>Replace Queue</li>
-                        <li onClick={this._addToPlaylist}>Add to playlist</li>
+                        {!isSonosPlaylist && (
+                            <li onClick={this._addToPlaylist}>
+                                Add to playlist
+                            </li>
+                        )}
+                        {isSonosPlaylist && (
+                            <li onClick={this._editPlaylist}>Edit playlist</li>
+                        )}
                     </Fragment>
                 )}
             </ul>

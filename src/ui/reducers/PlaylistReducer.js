@@ -2,10 +2,12 @@ import { handleActions } from 'redux-actions';
 import Constants from '../constants';
 
 const initialState = {
+    mode: null,
     visible: false,
     item: null,
     playlists: [],
     selected: [],
+    items: [],
 };
 
 export default handleActions(
@@ -15,6 +17,18 @@ export default handleActions(
 
             return {
                 ...state,
+                mode: 'add',
+                item,
+                visible: true,
+            };
+        },
+
+        [Constants.BROWSER_EDIT_PLAYLIST]: (state, action) => {
+            const item = action.payload;
+
+            return {
+                ...state,
+                mode: 'edit',
                 item,
                 visible: true,
             };
@@ -23,8 +37,11 @@ export default handleActions(
         [Constants.PLAYLISTS_HIDE]: (state) => {
             return {
                 ...state,
+                updateID: null,
                 item: null,
                 visible: false,
+                mode: null,
+                selected: [],
             };
         },
 
@@ -43,6 +60,28 @@ export default handleActions(
             return {
                 ...state,
                 selected,
+            };
+        },
+
+        [Constants.PLAYLISTS_ITEMS_LOAD]: (state, action) => {
+            return {
+                ...state,
+                updateID: action.payload.updateID,
+                items: [...action.payload.items],
+            };
+        },
+
+        [Constants.PLAYLISTS_DELETE_ITEM]: (state, action) => {
+            return {
+                ...state,
+                updateID: action.payload.NewUpdateID,
+            };
+        },
+
+        [Constants.PLAYLISTS_MOVE_ITEM]: (state, action) => {
+            return {
+                ...state,
+                updateID: action.payload.NewUpdateID,
             };
         },
     },
