@@ -21,12 +21,35 @@ function getSonosDeviceOrCurrentOrFirst(sonos) {
     return sonos || getCurrentPlayer(state) || getFirstPlayer(state);
 }
 
+function getAllDevices() {
+    return Object.values(
+        _.get(store.getState(), 'sonosService.deviceSearches', {})
+    );
+}
+
 function getDeviceByHost(host) {
     const deviceSearches = _.get(
         store.getState(),
         'sonosService.deviceSearches'
     );
     return deviceSearches[host];
+}
+
+async function getGroupAttributes(devices) {
+    const map = {};
+
+    for (const sonos of devices) {
+        const attributes = await sonos
+            .zoneGroupTopologyService()
+            .GetZoneGroupAttributes();
+
+        map[sonos.host] = {
+            ...attributes,
+            host: sonos.host,
+        };
+    }
+
+    return map;
 }
 
 const SonosService = {
@@ -92,7 +115,8 @@ const SonosService = {
             this.queryState(sonos);
         }
 
-        store.dispatch(serviceActions.topologyUpdate(groups));
+        const groupAttributes = await getGroupAttributes([...devices]);
+        store.dispatch(serviceActions.topologyUpdate(groups, groupAttributes));
 
         const storedZone = window.localStorage.zone;
         const filteredGroups = storedZone
@@ -326,7 +350,9 @@ const SonosService = {
     async onZoneGroupTopologyEvent(sonos, ...args) {
         console.log('onZoneGroupTopologyEvent', sonos.host, ...args);
         const groups = await sonos.getAllGroups();
-        store.dispatch(serviceActions.topologyEvent(groups));
+        const devices = getAllDevices();
+        const groupAttributes = await getGroupAttributes(devices);
+        store.dispatch(serviceActions.topologyEvent(groups, groupAttributes));
     },
 
     onQueueEvent(sonos, ...args) {

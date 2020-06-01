@@ -1,9 +1,12 @@
 const electron = require('electron');
 require('dotenv').config();
 
-const { app, Menu, BrowserWindow } = electron;
+const { app, Menu, BrowserWindow, clipboard } = electron;
 const path = require('path');
 const url = require('url');
+
+const blacklist = ['authToken', 'password', 'secret', 'CurrentMuseHouseholdId'];
+const maskJson = require('mask-json')(blacklist);
 
 const wakeEvent = require('wake-event');
 
@@ -14,8 +17,8 @@ function createWindow() {
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: true
-        }
+            nodeIntegration: true,
+        },
     });
 
     const menu = Menu.buildFromTemplate([
@@ -23,30 +26,30 @@ function createWindow() {
             label: 'View',
             submenu: [
                 {
-                    role: 'quit'
+                    role: 'quit',
                 },
                 {
-                    role: 'close'
+                    role: 'close',
                 },
                 {
-                    type: 'separator'
+                    type: 'separator',
                 },
                 {
-                    role: 'resetzoom'
+                    role: 'resetzoom',
                 },
                 {
-                    role: 'zoomin'
+                    role: 'zoomin',
                 },
                 {
-                    role: 'zoomout'
+                    role: 'zoomout',
                 },
                 {
-                    type: 'separator'
+                    type: 'separator',
                 },
                 {
-                    role: 'togglefullscreen'
-                }
-            ]
+                    role: 'togglefullscreen',
+                },
+            ],
         },
         {
             label: 'Developer',
@@ -58,7 +61,7 @@ function createWindow() {
                         if (focusedWindow) {
                             focusedWindow.reload();
                         }
-                    }
+                    },
                 },
                 {
                     label: 'Toggle Developer Tools',
@@ -67,9 +70,30 @@ function createWindow() {
                         if (focusedWindow) {
                             focusedWindow.webContents.toggleDevTools();
                         }
-                    }
-                }
-            ]
+                    },
+                },
+                {
+                    label: 'Copy app state to clipboard',
+                    click(item, focusedWindow) {
+                        if (focusedWindow) {
+                            focusedWindow.webContents
+                                .executeJavaScript(
+                                    'JSON.stringify(store.getState())',
+                                    true
+                                )
+                                .then((result) => {
+                                    clipboard.writeText(
+                                        JSON.stringify(
+                                            maskJson(JSON.parse(result)),
+                                            1,
+                                            4
+                                        )
+                                    );
+                                });
+                        }
+                    },
+                },
+            ],
         },
         {
             role: 'help',
@@ -80,7 +104,7 @@ function createWindow() {
                         electron.shell.openExternal(
                             'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux'
                         );
-                    }
+                    },
                 },
                 {
                     label: 'Report an Issue',
@@ -88,7 +112,7 @@ function createWindow() {
                         electron.shell.openExternal(
                             'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/issues'
                         );
-                    }
+                    },
                 },
                 {
                     label: 'Latest Releases',
@@ -96,10 +120,10 @@ function createWindow() {
                         electron.shell.openExternal(
                             'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/releases'
                         );
-                    }
-                }
-            ]
-        }
+                    },
+                },
+            ],
+        },
     ]);
 
     Menu.setApplicationMenu(menu);
@@ -108,7 +132,7 @@ function createWindow() {
         url.format({
             pathname: path.join(__dirname, 'window.html'),
             protocol: 'file:',
-            slashes: true
+            slashes: true,
         })
     );
 

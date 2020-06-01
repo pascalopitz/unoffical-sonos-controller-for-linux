@@ -6,10 +6,18 @@ export const deviceSearchResult = createAction(
 );
 
 export const topologyUpdate = createAction(
-    Constants.SONOS_SERVICE_TOPOLOGY_UPDATE
+    Constants.SONOS_SERVICE_TOPOLOGY_UPDATE,
+    (groups, attributes) => ({
+        groups,
+        attributes,
+    })
 );
 export const topologyEvent = createAction(
-    Constants.SONOS_SERVICE_TOPOLOGY_EVENT
+    Constants.SONOS_SERVICE_TOPOLOGY_EVENT,
+    (groups, attributes) => ({
+        groups,
+        attributes,
+    })
 );
 
 export const selectCurrentZone = createAction(

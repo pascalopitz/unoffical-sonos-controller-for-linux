@@ -11,6 +11,7 @@ export function getPlayers(state) {
     }
 
     const matches = zones.filter((z) => z.ID === currentGroup);
+
     const [current] = matches.length ? matches : zones;
     const members = current.ZoneGroupMember;
 

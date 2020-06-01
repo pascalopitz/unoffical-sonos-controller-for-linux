@@ -17,9 +17,41 @@ const initialState = {
 export const REG = /^http:\/\/([\d\.]+)/;
 
 function topologyReducer(state, action) {
+    const { groups, attributes } = action.payload;
+
+    const zones = groups.map((g) => {
+        const { CurrentZonePlayerUUIDsInGroup } = attributes[g.host] || {};
+
+        const ZoneGroupMember = g.ZoneGroupMember.filter(
+            (m) =>
+                !CurrentZonePlayerUUIDsInGroup ||
+                CurrentZonePlayerUUIDsInGroup.indexOf(m.UUID) !== -1
+        ).map((m) => {
+            const matches = g.ZoneGroupMember.filter(
+                (n) => n.ZoneName === m.ZoneName
+            );
+
+            const namePresentTwice = matches.length === 2;
+
+            return {
+                ...m,
+                ZoneName: namePresentTwice
+                    ? `${m.ZoneName} (L + R)`
+                    : m.ZoneName,
+            };
+        });
+
+        return {
+            ...g,
+            ZoneGroupAttributes: attributes[g.host],
+            _ZoneGroupMember: g.ZoneGroupMember,
+            ZoneGroupMember,
+        };
+    });
+
     return {
         ...state,
-        zones: action.payload,
+        zones,
     };
 }
 
