@@ -3,6 +3,7 @@
 exports[`AlbumArt renders and matches snapshot 1`] = `
 <div
   class="img"
+  data-src-prop="foo"
   data-visible="false"
   style="background-image:url(\\"images/browse_missing_album_art.png\\");background-size:contain"
 />

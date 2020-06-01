@@ -55,7 +55,6 @@ class MusicServiceClient {
         const fault = _.get(e, 'Envelope.Body.Fault.faultstring');
 
         if (response.status >= 400 || fault) {
-            console.log(fault, _.includes(fault, 'tokenRefreshRequired'));
             if (
                 !retry &&
                 fault &&

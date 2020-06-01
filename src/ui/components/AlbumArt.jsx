@@ -15,92 +15,61 @@ import makeCancelable from '../helpers/makeCancelable';
 const MIN_RATIO = 0.5;
 
 export class AlbumArt extends Component {
+    state = {
+        src: null,
+        visible: false,
+        loading: false,
+        loaded: false,
+    };
+
     constructor() {
         super();
-
         this.ref = React.createRef();
-
-        this.state = {
-            src: null,
-            visible: false,
-        };
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
-
-    _loadImage() {
+    async _loadImage() {
+        const { visible, failed, src } = this.state;
         // here we make sure it's still visible, a URL and hasn't failed previously
-        if (
-            !this.state.visible ||
-            (!this.props.src && !this.props.serviceId) ||
-            this.state.failed
-        ) {
+        if (!visible || failed) {
             return;
         }
 
-        const sonos = SonosService._currentDevice;
-        const serviceId = this.props.serviceId;
+        this.loadPromise = this.makeLoadPromise(src);
+        this.loadPromise.promise
+            .then(() => {
+                this.setState({
+                    failed: false,
+                    loading: false,
+                    loaded: true,
+                });
+            })
+            .catch((err) => {
+                if (err && err.isCancelled) {
+                    return;
+                }
 
-        const url = this.props.serviceId
-            ? getServiceLogoUrl(this.props.serviceId)
-            : this.props.src;
+                if (!this.ref.current || !this.state.visible) {
+                    return;
+                }
 
-        this.setState({
-            loading: true,
-        });
+                this.setState({
+                    failed: true,
+                    loading: false,
+                    loaded: false,
+                });
+            });
+    }
 
-        const srcUrl =
-            url.indexOf('https://') === 0 ||
-            url.indexOf('http://') === 0 ||
-            url.match(/^\.\/(svg|images)/)
-                ? url
-                : 'http://' +
-                  sonos.host +
-                  ':' +
-                  sonos.port +
-                  decodeURIComponent(url);
-
-        this.loadPromise = makeCancelable(
+    makeLoadPromise = () => {
+        return makeCancelable(
             new Promise((resolve, reject) => {
                 const img = new Image();
-                img.src = srcUrl;
+                img.src = this.state.src;
                 img.onload = resolve;
                 img.onerror = reject;
             })
-                .then(() => {
-                    if (
-                        this.props.src === url ||
-                        this.props.serviceId === serviceId
-                    ) {
-                        this.setState({
-                            src: srcUrl,
-                            loading: false,
-                        });
-                    } else {
-                        this.setState({
-                            loading: false,
-                        });
-                    }
-                })
-                .catch(() => {
-                    if (
-                        this.props.src === url ||
-                        this.props.serviceId === serviceId
-                    ) {
-                        this.setState({
-                            failed: true,
-                            loading: false,
-                        });
-                    } else {
-                        this.setState({
-                            loading: false,
-                        });
-                    }
-                })
         );
-    }
+    };
 
     componentDidMount() {
         const node = this.ref.current;
@@ -120,18 +89,6 @@ export class AlbumArt extends Component {
         this.observer = createIntersectionObserver(node, options, callback);
     }
 
-    componentDidUpdate() {
-        if (this.state.visible && !this.state.src && !this.state.loading) {
-            // wait some time, to prevent random scrolling fast through viewport
-            // stuff to get loaded
-            this.timeout = window.setTimeout(this._loadImage.bind(this), 500);
-        }
-
-        if (!this.state.visible && this.timeout) {
-            window.clearTimeout(this.timeout);
-        }
-    }
-
     componentWillUnmount() {
         this.observer = purgeIntersectionObserver(this.observer);
 
@@ -142,36 +99,102 @@ export class AlbumArt extends Component {
         if (this.loadPromise) {
             this.loadPromise.cancel();
         }
+
+        this.setState({
+            src: null,
+            loaded: false,
+            loading: false,
+            visible: false,
+        });
     }
 
-    UNSAFE_componentWillReceiveProps(props) {
-        // HACK: prevent image ghosting when pressing back button
-        if (
-            props.src !== this.props.src ||
-            props.serviceId !== this.props.serviceId
-        ) {
-            this.setState({
-                src: null,
-                failed: null,
-            });
+    static getDerivedStateFromProps(nextProps, ownState) {
+        const { visible, loading, propsSrc, propsServiceId } = ownState;
+        const { serviceId, src } = nextProps;
 
-            if (this.state.visible) {
-                if (this.timeout) {
-                    window.clearTimeout(this.timeout);
-                }
-                this.timeout = window.setTimeout(
-                    this._loadImage.bind(this),
-                    500
-                );
+        if (
+            !visible ||
+            (propsSrc && src === propsSrc) ||
+            (propsServiceId && serviceId === propsServiceId)
+        ) {
+            return null;
+        }
+
+        const needsRecompute =
+            src ||
+            serviceId ||
+            (propsSrc && !src) ||
+            (!serviceId && propsServiceId);
+
+        if (visible && needsRecompute) {
+            const sonos = SonosService._currentDevice;
+
+            const url = serviceId ? getServiceLogoUrl(serviceId) : src;
+
+            if (url) {
+                const srcUrl =
+                    url.indexOf('https://') === 0 ||
+                    url.indexOf('http://') === 0 ||
+                    url.match(/^\.\/(svg|images)/)
+                        ? url
+                        : 'http://' +
+                          sonos.host +
+                          ':' +
+                          sonos.port +
+                          decodeURIComponent(url);
+
+                return {
+                    failed: false,
+                    loaded: false,
+                    loading: true,
+                    src: srcUrl,
+                    propsSrc: src,
+                    propsServiceId: serviceId,
+                };
+            } else {
+                return {
+                    failed: false,
+                    loaded: true,
+                    loading: false,
+                    src: null,
+                    propsSrc: src,
+                    propsServiceId: serviceId,
+                };
             }
+        }
+
+        if (!visible && loading) {
+            return {
+                failed: false,
+                loaded: false,
+                loading: false,
+                src: null,
+            };
+        }
+
+        return null;
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.loading && !prevState.loading) {
+            this._loadImage();
         }
     }
 
     render() {
-        const src = this.state.src || 'images/browse_missing_album_art.png';
+        const { visible, loaded, loading, src } = this.state;
+
+        const srcUrl =
+            src && loaded && !loading
+                ? src
+                : 'images/browse_missing_album_art.png';
 
         const css = {
-            backgroundImage: `url("${src}")`,
+            backgroundImage: `url("${srcUrl}")`,
             backgroundSize: 'contain',
         };
 
@@ -179,8 +202,10 @@ export class AlbumArt extends Component {
             <div
                 ref={this.ref}
                 className="img"
-                data-visible={this.state.visible}
+                data-visible={visible}
                 style={css}
+                data-src-computed={src}
+                data-src-prop={this.props.src}
             />
         );
     }

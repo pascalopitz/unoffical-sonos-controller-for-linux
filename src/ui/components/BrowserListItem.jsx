@@ -181,7 +181,6 @@ export class BrowserListItem extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.model !== prevProps.model && this.clickedOnce) {
-            console.log('reset');
             this.clickedOnce = false;
             this._delayedClick = null;
         }
