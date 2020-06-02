@@ -339,8 +339,11 @@ const selectBrowseServices = async (item) => {
 
 const selectService = async (item) => {
     const client = new MusicServiceClient(item.service.service);
-    client.setAuthToken(item.service.authToken.authToken);
-    client.setKey(item.service.authToken.privateKey);
+
+    if (client.auth !== 'Anonymous') {
+        client.setAuthToken(item.service.authToken.authToken);
+        client.setKey(item.service.authToken.privateKey);
+    }
 
     const res = await client.getMetadata('root', 0, 100);
     const searchTermMap = await client.getSearchTermMap();

@@ -48,6 +48,7 @@ export default handleActions(
         [Constants.MUSICSERVICE_ADD_CANCEL]: closeDialogue,
         [Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED]: closeDialogue,
         [Constants.MUSICSERVICE_SESSION_ID_RECEIVED]: closeDialogue,
+        [Constants.MUSICSERVICE_ANONYMOUS]: closeDialogue,
     },
     initialState
 );

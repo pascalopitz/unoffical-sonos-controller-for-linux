@@ -42,14 +42,14 @@ class SonosEnhanced extends Sonos {
         return new ContentDirectoryEnhanced(this.host, this.port);
     }
 
-    async getHouseholdId() {
+    async getZPInfo() {
         const data = await request(
             'http://' + this.host + ':' + this.port + '/status/zp'
         )
             .then((response) => response.data)
             .then(Helpers.ParseXml);
 
-        return data.ZPSupportInfo.ZPInfo.HouseholdControlID;
+        return data.ZPSupportInfo.ZPInfo;
     }
 
     async getAvailableServices() {

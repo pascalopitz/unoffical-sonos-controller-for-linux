@@ -84,5 +84,12 @@ export const getLink = createAction(
 );
 
 export const addAnonymousService = createAction(
-    Constants.MUSICSERVICE_ANONYMOUS
+    Constants.MUSICSERVICE_ANONYMOUS,
+    async (client) => {
+        // TODO: fix this
+        await SonosService.rememberMusicService(
+            client._serviceDefinition,
+            null
+        );
+    }
 );

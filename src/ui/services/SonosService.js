@@ -74,7 +74,10 @@ const SonosService = {
         const [first] = devices;
         const groups = await first.getAllGroups();
 
-        this.householdId = await first.getHouseholdId().catch(() => null);
+        const zpInfo = await first.getZPInfo().catch(() => {});
+
+        this.householdId = zpInfo.HouseholdControlID;
+        this.deviceId = zpInfo.SerialNumber;
 
         Listener.on('ZonesChanged', (...args) =>
             this.onZoneGroupTopologyEvent(first, ...args)

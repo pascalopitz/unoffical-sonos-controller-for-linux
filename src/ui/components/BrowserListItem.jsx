@@ -102,7 +102,7 @@ class InlineMenu extends PureComponent {
                 item.metadata.class === 'object.item.audioItem.audioBroadcast');
 
         const isService = item.action === 'service';
-        const isSonosPlaylist = item._raw.parentID === 'SQ:';
+        const isSonosPlaylist = item._raw && item._raw.parentID === 'SQ:';
 
         const scrollContainerNode = getClosest(
             containerRef.current,

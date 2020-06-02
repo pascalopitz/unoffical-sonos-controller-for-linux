@@ -6,8 +6,7 @@ import { Helpers } from 'sonos';
 import SonosService from '../services/SonosService';
 
 const NS = 'http://www.sonos.com/Services/1.1';
-const deviceProviderName = 'unofficial-sonos-controller-for-linux';
-const RUNTIME_ID = 'unofficial-sonos-controller-for-linux';
+const deviceProviderName = 'Sonos';
 
 function withinEnvelope(body, headers = '') {
     return [
@@ -43,8 +42,7 @@ class MusicServiceClient {
             headers: {
                 SOAPAction: `"${NS}#${action}"`,
                 'Content-type': 'text/xml; charset=utf8',
-                // Thanks SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
-                'User-Agent': `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`,
+                'Accept-Language': 'en,en-AU;q=0.9,en-US;q=0.5',
             },
             body: soapBody,
         });
@@ -235,7 +233,7 @@ class MusicServiceClient {
         const headers = [
             '<ns:credentials>',
             '<ns:deviceId>',
-            RUNTIME_ID,
+            SonosService.deviceId,
             '</ns:deviceId>',
             '<ns:deviceProvider>',
             deviceProviderName,
@@ -296,7 +294,7 @@ class MusicServiceClient {
         const headers = [
             '<ns:credentials>',
             '<ns:deviceId>',
-            RUNTIME_ID,
+            SonosService.deviceId,
             '</ns:deviceId>',
             '<ns:deviceProvider>',
             deviceProviderName,
@@ -353,6 +351,7 @@ class MusicServiceClient {
             '<ns:count>',
             count,
             '</ns:count>',
+            '<ns:recursive>false</ns:recursive>',
             '</ns:getMetadata>',
         ].join('');
 
@@ -480,7 +479,7 @@ class MusicServiceClient {
         const headers = [
             '<ns:credentials>',
             '<ns:deviceId>',
-            RUNTIME_ID,
+            SonosService.deviceId,
             '</ns:deviceId>',
             '<ns:deviceProvider>',
             deviceProviderName,
@@ -519,7 +518,7 @@ class MusicServiceClient {
             return [
                 '<ns:credentials>',
                 '<ns:deviceId>',
-                RUNTIME_ID,
+                SonosService.deviceId,
                 '</ns:deviceId>',
                 '<ns:deviceProvider>',
                 deviceProviderName,
@@ -535,7 +534,7 @@ class MusicServiceClient {
             return [
                 '<ns:credentials>',
                 '<ns:deviceId>',
-                RUNTIME_ID,
+                SonosService.deviceId,
                 '</ns:deviceId>',
                 '<ns:deviceProvider>',
                 deviceProviderName,
@@ -548,7 +547,7 @@ class MusicServiceClient {
                 this.key,
                 '</ns:key>',
                 '<ns:householdId>',
-                SonosService.householdId,
+                SonosService.householdId.split('.')[0],
                 '</ns:householdId>',
                 '</ns:loginToken>',
                 '</ns:credentials>',
@@ -558,7 +557,7 @@ class MusicServiceClient {
         return [
             '<ns:credentials>',
             '<ns:deviceId>',
-            RUNTIME_ID,
+            SonosService.deviceId,
             '</ns:deviceId>',
             '<ns:deviceProvider>',
             deviceProviderName,

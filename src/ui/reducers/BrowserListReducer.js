@@ -18,6 +18,12 @@ const initialState = {
     ],
 };
 
+const resetState = () => {
+    return {
+        ...initialState,
+    };
+};
+
 export default handleActions(
     {
         [Constants.BROWSER_SEARCH]: (state, action) => {
@@ -102,23 +108,10 @@ export default handleActions(
             };
         },
 
-        [Constants.BROWSER_HOME]: () => {
-            return {
-                ...initialState,
-            };
-        },
-
-        [Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED]: () => {
-            return {
-                ...initialState,
-            };
-        },
-
-        [Constants.MUSICSERVICE_SESSION_ID_RECEIVED]: () => {
-            return {
-                ...initialState,
-            };
-        },
+        [Constants.BROWSER_HOME]: resetState,
+        [Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED]: resetState,
+        [Constants.MUSICSERVICE_ANONYMOUS]: resetState,
+        [Constants.MUSICSERVICE_SESSION_ID_RECEIVED]: resetState,
 
         [Constants.BROWSER_BACK]: (state) => {
             const { history } = state;
