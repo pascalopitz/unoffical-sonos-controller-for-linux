@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import { createAction } from 'redux-actions';
 import Constants from '../constants';
 
@@ -15,6 +16,8 @@ import {
 } from '../constants/BrowserListConstants';
 
 import { loadPlaylists, loadPlaylistItems } from './PlaylistActions';
+
+const TUNEIN_ID = 65031;
 
 async function _fetchLineIns() {
     const { deviceSearches } = store.getState().sonosService;
@@ -81,16 +84,17 @@ export async function _getItem(item) {
         const meta = client.encodeItemMetadata(uri, item, token);
 
         return {
-            uri: _.escape(uri),
-            metadata: meta,
+            uri,
+            ...meta,
         };
     }
 
     const uri = await client.getMediaURI(item.id);
+    const meta = client.encodeItemMetadata(uri, item);
 
     return {
-        uri: _.escape(uri),
-        metadata: client.encodeItemMetadata(uri, item),
+        uri,
+        ...meta,
     };
 }
 
@@ -338,12 +342,10 @@ const selectBrowseServices = async (item) => {
 };
 
 const selectService = async (item) => {
-    const client = new MusicServiceClient(item.service.service);
-
-    if (client.auth !== 'Anonymous') {
-        client.setAuthToken(item.service.authToken.authToken);
-        client.setKey(item.service.authToken.privateKey);
-    }
+    const client = new MusicServiceClient(
+        item.service.service,
+        item.service.authToken || {}
+    );
 
     const res = await client.getMetadata('root', 0, 100);
     const searchTermMap = await client.getSearchTermMap();
@@ -451,7 +453,11 @@ export const select = createAction(
             store.getState().browserList.history
         );
 
-        if (item.serviceClient && item.itemType !== 'track') {
+        if (
+            item.serviceClient &&
+            item.itemType !== 'track' &&
+            item.itemType !== 'stream'
+        ) {
             return await selectServiceMediaCollectionItem(item);
         }
 
@@ -493,14 +499,18 @@ export const playNow = createAction(
         const item = await _getItem(eventTarget);
 
         if (
-            item.metadata &&
-            item.metadataRaw &&
-            item.metadata.class === 'object.item.audioItem.audioBroadcast'
+            _.get(
+                eventTarget,
+                'serviceClient._serviceDefinition.ServiceIDEncoded'
+            ) === TUNEIN_ID
         ) {
-            await sonos.play({
-                uri: item.uri,
-                metadata: item.metadataRaw,
-            });
+            await sonos.playTuneinRadio(eventTarget.id, eventTarget.title);
+            await sonos.play();
+        } else if (
+            item.metadata &&
+            item.class === 'object.item.audioItem.audioBroadcast'
+        ) {
+            await sonos.setAVTransportURI(item);
         } else if (item.class && item.class === 'object.item.audioItem') {
             await sonos.play(item.uri);
         } else {

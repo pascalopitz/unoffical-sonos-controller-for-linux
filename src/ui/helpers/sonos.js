@@ -2,6 +2,8 @@ import { DeviceDiscovery, Sonos, Helpers, Services } from 'sonos';
 import request from 'axios';
 import _ from 'lodash';
 
+const TUNEIN_ID = 65031;
+
 class ContentDirectoryEnhanced extends Services.ContentDirectory {
     _enumItems(resultcontainer) {
         if (resultcontainer === undefined) {
@@ -59,6 +61,8 @@ class SonosEnhanced extends Sonos {
             data.AvailableServiceDescriptorList
         );
 
+        console.log(servicesObj);
+
         const serviceDescriptors = servicesObj.Services.Service.map((obj) => {
             const stringsUri = _.get(obj, 'Presentation.Strings.Uri');
             const mapUri = _.get(obj, 'Presentation.PresentationMap.Uri');
@@ -75,17 +79,20 @@ class SonosEnhanced extends Sonos {
 
         const services = [];
 
-        data.AvailableServiceTypeList.split(',').forEach(async (t) => {
-            const serviceId = Math.floor(Math.abs((t - 7) / 256)) || Number(t);
-            const match = _.find(serviceDescriptors, {
-                Id: String(serviceId),
-            });
+        [TUNEIN_ID, ...data.AvailableServiceTypeList.split(',')].forEach(
+            async (t) => {
+                const serviceId =
+                    Math.floor(Math.abs((t - 7) / 256)) || Number(t);
+                const match = _.find(serviceDescriptors, {
+                    Id: String(serviceId),
+                });
 
-            if (match) {
-                match.ServiceIDEncoded = Number(t);
-                services.push(match);
+                if (match) {
+                    match.ServiceIDEncoded = Number(t);
+                    services.push(match);
+                }
             }
-        });
+        );
 
         return services;
     }

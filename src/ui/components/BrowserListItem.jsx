@@ -99,7 +99,7 @@ class InlineMenu extends PureComponent {
         const isPlayNow =
             item.class === 'object.item.audioItem' ||
             (item.metadata &&
-                item.metadata.class === 'object.item.audioItem.audioBroadcast');
+                item.class === 'object.item.audioItem.audioBroadcast');
 
         const isService = item.action === 'service';
         const isSonosPlaylist = item._raw && item._raw.parentID === 'SQ:';
@@ -192,6 +192,7 @@ export class BrowserListItem extends Component {
         if (
             item.class === 'object.item.audioItem.musicTrack' ||
             item.class === 'object.item.audioItem' ||
+            item.streamMetadata ||
             item.trackMetadata
         ) {
             this.props.playNow(item);

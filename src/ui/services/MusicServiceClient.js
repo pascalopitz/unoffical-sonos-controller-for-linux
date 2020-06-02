@@ -5,6 +5,8 @@ import { Helpers } from 'sonos';
 
 import SonosService from '../services/SonosService';
 
+import store from '../reducers';
+
 const NS = 'http://www.sonos.com/Services/1.1';
 const deviceProviderName = 'Sonos';
 
@@ -25,11 +27,22 @@ function stripNamespaces(xml) {
 }
 
 class MusicServiceClient {
-    constructor(serviceDefinition) {
+    constructor(serviceDefinition, { authToken, privateKey } = {}) {
         this._serviceDefinition = serviceDefinition;
 
         this.name = serviceDefinition.Name;
         this.auth = serviceDefinition.Auth;
+
+        this.authToken = authToken;
+        this.key = privateKey;
+    }
+
+    setAuthToken(token) {
+        this.authToken = token;
+    }
+
+    setKey(key) {
+        this.key = key;
     }
 
     async _doRequest(uri, action, requestBody, headers, retry = false) {
@@ -122,6 +135,12 @@ class MusicServiceClient {
             return 'x-rincon-cpcontainer:000c206c' + escape(trackId);
         }
 
+        if (itemType === 'stream') {
+            return `x-sonosapi-stream:${escape(
+                trackId
+            )}&sid=${serviceId}&flags=8224&sn=0`;
+        }
+
         // TODO: figure out why this doesn't work for Soundcloud
         // if (itemType === 'track') {
         //     return 'x-rincon-cpcontainer:00032020' + escape(trackId);
@@ -133,10 +152,10 @@ class MusicServiceClient {
     }
 
     getServiceString(serviceType) {
-        // SA_RINCON3079_X_#Svc3079-0-Token
         return `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`;
     }
 
+    // TODO: maybe we can use node-sonos Helpers.GenerateMetadata etc???
     encodeItemMetadata(uri, item, serviceString) {
         const TYPE_MAPPINGS = {
             track: {
@@ -167,6 +186,11 @@ class MusicServiceClient {
                 type: 'object.container.playlistContainer',
                 token: '0006206c',
             },
+            stream: {
+                type: 'object.item.audioItem.audioBroadcast',
+                token: 'F00092020',
+                parentId: 'parentID="L"',
+            },
             program: {
                 type:
                     'object.item.audioItem.audioBroadcast.#' + item.displayType,
@@ -174,12 +198,15 @@ class MusicServiceClient {
             },
         };
 
-        let resourceString, id, trackData;
-        //let servceId = item.serviceClient._serviceDefinition.ServiceIDEncoded;
+        let resourceString,
+            id,
+            trackData,
+            parentId = '';
 
         if (serviceString) {
             const prefix = TYPE_MAPPINGS[item.itemType].token;
             id = prefix + escape(item.id);
+            parentId = TYPE_MAPPINGS[item.itemType].parentId || '';
             resourceString = `<desc id="cdudn" nameSpace="urn:schemas-rinconnetworks-com:metadata-1-0/">${serviceString}</desc>`;
         } else {
             id = '-1';
@@ -210,7 +237,7 @@ class MusicServiceClient {
         xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
         xmlns:r="urn:schemas-rinconnetworks-com:metadata-1-0/"
         xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
-        <item id="${id}" restricted="true">
+        <item id="${id}" restricted="true" ${parentId}>
         ${resourceString}
         <dc:title>${_.escape(item.title)}</dc:title>
         <upnp:class>${TYPE_MAPPINGS[item.itemType].type}</upnp:class>
@@ -218,15 +245,10 @@ class MusicServiceClient {
         </item>
         </DIDL-Lite>`;
 
-        return didl;
-    }
-
-    setAuthToken(token) {
-        this.authToken = token;
-    }
-
-    setKey(key) {
-        this.key = key;
+        return {
+            metadata: didl,
+            class: TYPE_MAPPINGS[item.itemType].type,
+        };
     }
 
     getDeviceLinkCode() {
@@ -581,25 +603,44 @@ class MusicServiceClient {
         if (!this.searchTermMap && mapUri) {
             const res = await fetch(mapUri);
 
-            const body = await res.text();
-            const e = await Helpers.ParseXml(stripNamespaces(body));
+            if (res.status < 400) {
+                const body = await res.text();
+                const e = await Helpers.ParseXml(stripNamespaces(body));
 
-            const map = _.find(
-                e.Presentation.PresentationMap,
-                (m) => !!_.get(m, 'Match.SearchCategories')
-            );
+                const map = _.find(
+                    e.Presentation.PresentationMap,
+                    (m) => !!_.get(m, 'Match.SearchCategories')
+                );
 
-            let searchCategories = _.get(map, 'Match.SearchCategories');
+                let searchCategories = _.get(map, 'Match.SearchCategories');
 
-            if (_.isArray(searchCategories)) {
-                searchCategories = searchCategories[0];
+                if (_.isArray(searchCategories)) {
+                    searchCategories = searchCategories[0];
+                }
+
+                this.searchTermMap = _.get(searchCategories, 'Category');
             }
-
-            this.searchTermMap = _.get(searchCategories, 'Category');
         }
 
         return this.searchTermMap;
     }
 }
+
+export const getByServiceId = (sid) => {
+    const {
+        musicServices: { active: activeServices },
+    } = store.getState();
+
+    const serviceDefinition = activeServices.find((s) => s.service.Id === sid);
+
+    if (!serviceDefinition) {
+        return null;
+    }
+
+    return new MusicServiceClient(
+        serviceDefinition.service,
+        serviceDefinition.authToken || {}
+    );
+};
 
 export default MusicServiceClient;

@@ -1,7 +1,10 @@
+import _ from 'lodash';
+
 import React, { Component } from 'react';
 import shallowCompare from 'shallow-compare';
 
 import SonosService from '../services/SonosService';
+import { getByServiceId } from '../services/MusicServiceClient';
 
 import {
     getClosest,
@@ -28,10 +31,14 @@ export class AlbumArt extends Component {
     }
 
     async _loadImage() {
-        const { visible, failed, src } = this.state;
+        const { visible, failed, src, propsSrc } = this.state;
         // here we make sure it's still visible, a URL and hasn't failed previously
         if (!visible || failed) {
             return;
+        }
+
+        if (this.loadPromise) {
+            this.loadPromise.cancel();
         }
 
         this.loadPromise = this.makeLoadPromise(src);
@@ -43,13 +50,60 @@ export class AlbumArt extends Component {
                     loaded: true,
                 });
             })
-            .catch((err) => {
+            .catch(async (err) => {
                 if (err && err.isCancelled) {
                     return;
                 }
 
                 if (!this.ref.current || !this.state.visible) {
                     return;
+                }
+
+                try {
+                    const urlToParse = propsSrc.match(/^\//)
+                        ? `http://localhost${propsSrc}`
+                        : propsSrc;
+
+                    const parsed = new URL(
+                        new URL(urlToParse).searchParams.get('u')
+                    );
+
+                    const sid = parsed.searchParams.get('sid');
+
+                    if (!sid) {
+                        return;
+                    }
+
+                    const client = getByServiceId(sid);
+
+                    if (!client) {
+                        return null;
+                    }
+
+                    const response = await client.getExtendedMetadata(
+                        decodeURIComponent(parsed.pathname).replace('.mp3', '')
+                    );
+
+                    const newSrc = _.get(
+                        response,
+                        'mediaMetadata.trackMetadata.albumArtURI'
+                    );
+
+                    if (newSrc) {
+                        this.setState(
+                            {
+                                src: newSrc,
+                                loading: false,
+                            },
+                            () => {
+                                this._loadImage();
+                            }
+                        );
+
+                        return;
+                    }
+                } catch (e) {
+                    // noop
                 }
 
                 this.setState({
@@ -129,9 +183,14 @@ export class AlbumArt extends Component {
         if (visible && needsRecompute) {
             const sonos = SonosService._currentDevice;
 
-            const url = serviceId ? getServiceLogoUrl(serviceId) : src;
+            const url =
+                src && typeof src === 'object' && src._
+                    ? src._
+                    : serviceId
+                    ? getServiceLogoUrl(serviceId)
+                    : src;
 
-            if (url) {
+            if (url && typeof url === 'string') {
                 const srcUrl =
                     url.indexOf('https://') === 0 ||
                     url.indexOf('http://') === 0 ||
