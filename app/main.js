@@ -1,9 +1,11 @@
 const electron = require('electron');
 require('dotenv').config();
 
-const { app, Menu, BrowserWindow, clipboard } = electron;
+const { app, Menu, BrowserWindow, clipboard, dialog } = electron;
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
+const util = require('util');
 
 const blacklist = ['authToken', 'password', 'secret', 'CurrentMuseHouseholdId'];
 const maskJson = require('mask-json')(blacklist);
@@ -13,6 +15,9 @@ const wakeEvent = require('wake-event');
 const deviceProviderName = 'unofficial-sonos-controller-for-linux';
 
 let win;
+
+const writeFileAsync = util.promisify(fs.writeFile).bind(fs);
+const readFileAsync = util.promisify(fs.readFile).bind(fs);
 
 function createWindow() {
     win = new BrowserWindow({
@@ -75,23 +80,118 @@ function createWindow() {
                     },
                 },
                 {
+                    type: 'separator',
+                },
+                {
                     label: 'Copy app state to clipboard',
-                    click(item, focusedWindow) {
+                    async click(item, focusedWindow) {
                         if (focusedWindow) {
-                            focusedWindow.webContents
-                                .executeJavaScript(
-                                    'JSON.stringify(store.getState())',
-                                    true
+                            const result = await focusedWindow.webContents.executeJavaScript(
+                                'JSON.stringify(store.getState())',
+                                true
+                            );
+
+                            clipboard.writeText(
+                                JSON.stringify(
+                                    maskJson(JSON.parse(result)),
+                                    1,
+                                    4
                                 )
-                                .then((result) => {
-                                    clipboard.writeText(
-                                        JSON.stringify(
-                                            maskJson(JSON.parse(result)),
-                                            1,
-                                            4
-                                        )
-                                    );
-                                });
+                            );
+                        }
+                    },
+                },
+                {
+                    label: 'Save app state to file',
+                    async click(item, focusedWindow) {
+                        if (focusedWindow) {
+                            const choice = await dialog.showSaveDialog({
+                                defaultPath: path.resolve(
+                                    process.env.HOME,
+                                    './Downloads/unoffical-sonos-controller.appState.json'
+                                ),
+                            });
+
+                            if (choice.cancelled) {
+                                return;
+                            }
+
+                            const result = await focusedWindow.webContents.executeJavaScript(
+                                'JSON.stringify(store.getState())',
+                                true
+                            );
+
+                            await writeFileAsync(
+                                choice.filePath,
+                                JSON.stringify(
+                                    maskJson(JSON.parse(result)),
+                                    1,
+                                    4
+                                ),
+                                'utf8'
+                            );
+                        }
+                    },
+                },
+                {
+                    type: 'separator',
+                },
+                {
+                    label: 'Export app settings',
+                    async click(item, focusedWindow) {
+                        if (focusedWindow) {
+                            const choice = await dialog.showSaveDialog({
+                                defaultPath: path.resolve(
+                                    process.env.HOME,
+                                    './Downloads/unoffical-sonos-controller.settings.json'
+                                ),
+                            });
+
+                            if (choice.cancelled) {
+                                return;
+                            }
+
+                            const result = await focusedWindow.webContents.executeJavaScript(
+                                'JSON.stringify(window.localStorage, 1, 4)',
+                                true
+                            );
+
+                            await writeFileAsync(
+                                choice.filePath,
+                                result,
+                                'utf8'
+                            );
+                        }
+                    },
+                },
+                {
+                    label: 'Import app settings',
+                    async click(item, focusedWindow) {
+                        if (focusedWindow) {
+                            const choice = await dialog.showOpenDialog({
+                                properties: ['openFile'],
+                                defaultPath: path.resolve(
+                                    process.env.HOME,
+                                    './Downloads/unoffical-sonos-controller.settings.json'
+                                ),
+                            });
+
+                            if (choice.cancelled) {
+                                return;
+                            }
+
+                            const json = await readFileAsync(
+                                choice.filePaths[0],
+                                'utf8'
+                            );
+
+                            await focusedWindow.webContents.executeJavaScript(
+                                `var x = ${json};
+                                    Object.keys(x).forEach(k => window.localStorage[k] = x[k]);
+                                    window.location.reload();
+                                `,
+                                true
+                            );
                         }
                     },
                 },
