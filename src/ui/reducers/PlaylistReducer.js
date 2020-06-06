@@ -12,6 +12,17 @@ const initialState = {
 
 export default handleActions(
     {
+        [Constants.QUEUE_SAVE]: (state, action) => {
+            const items = action.payload;
+
+            return {
+                ...state,
+                mode: 'save',
+                items,
+                visible: true,
+            };
+        },
+
         [Constants.BROWSER_ADD_TO_PLAYLIST]: (state, action) => {
             const item = action.payload;
 
@@ -46,9 +57,13 @@ export default handleActions(
         },
 
         [Constants.PLAYLISTS_LOAD]: (state, action) => {
+            const {
+                payload: { items },
+            } = action;
+
             return {
                 ...state,
-                playlists: [...action.payload.items],
+                playlists: [...(items || [])],
             };
         },
 

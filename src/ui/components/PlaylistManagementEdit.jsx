@@ -10,7 +10,7 @@ export class PlaylistManagementEdit extends Component {
     state = initialState;
 
     static getDerivedStateFromProps(nextProps, state) {
-        if (state.loaded || !nextProps.items.length) {
+        if (state.loaded || !nextProps.items || !nextProps.items.length) {
             return null;
         }
 

@@ -20,6 +20,7 @@ const Constants = {
     BROWSER_REMOVE_MUSICSERVICE: '',
     BROWSER_ADD_TO_PLAYLIST: '',
     BROWSER_EDIT_PLAYLIST: '',
+    BROWSER_DELETE_PLAYLIST: '',
 
     PLAYER_PAUSE: '',
     PLAYER_PLAY: '',
@@ -34,6 +35,7 @@ const Constants = {
     QUEUE_SELECT: '',
     QUEUE_DESELECT: '',
     QUEUE_REORDER: '',
+    QUEUE_SAVE: '',
 
     ZONE_GROUP_SELECT: '',
 
@@ -45,6 +47,7 @@ const Constants = {
     PLAYLISTS_ADD_ITEM: '',
     PLAYLISTS_MOVE_ITEM: '',
     PLAYLISTS_DELETE_ITEM: '',
+    PLAYLISTS_SAVE: '',
 
     GROUP_MANAGEMENT_HIDE: '',
     GROUP_MANAGEMENT_SHOW: '',

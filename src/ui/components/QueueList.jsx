@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import { getClosest } from '../helpers/dom-utility';
@@ -12,7 +12,7 @@ import {
     getUpdateId,
 } from '../selectors/QueueSelectors';
 
-import { changePosition, flush } from '../reduxActions/QueueActions';
+import { changePosition, flush, saveQueue } from '../reduxActions/QueueActions';
 
 const mapStateToProps = (state) => {
     return {
@@ -23,12 +23,10 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        flush: () => dispatch(flush()),
-        changePosition: (oldPos, newPos, updateId) =>
-            dispatch(changePosition(oldPos, newPos, updateId)),
-    };
+const mapDispatchToProps = {
+    flush,
+    saveQueue,
+    changePosition,
 };
 
 export class QueueList extends Component {
@@ -54,9 +52,13 @@ export class QueueList extends Component {
         }
     }
 
-    _onFlushClick() {
+    _onSaveClick = () => {
+        this.props.saveQueue();
+    };
+
+    _onFlushClick = () => {
         this.props.flush();
-    }
+    };
 
     _onDragStart(e) {
         this.setState({
@@ -86,6 +88,8 @@ export class QueueList extends Component {
     }
 
     _onDragOver(e) {
+        const { dragOverMode, dragOverPosition } = this.state;
+
         const li = getClosest(e.target, 'li');
 
         if (li) {
@@ -95,10 +99,7 @@ export class QueueList extends Component {
             const mode = e.clientY > midPoint ? 'after' : 'before';
             const position = Number(li.getAttribute('data-position'));
 
-            if (
-                mode === this.state.dragOverMode &&
-                position === this.state.dragOverPosition
-            ) {
+            if (mode === dragOverMode && position === dragOverPosition) {
                 return;
             }
 
@@ -106,7 +107,7 @@ export class QueueList extends Component {
                 dragOverPosition: position,
                 dragOverMode: mode,
             });
-        } else if (this.state.dragOverMode || this.state.dragOverPosition) {
+        } else if (dragOverMode || dragOverPosition) {
             this.setState({
                 dragOverPosition: null,
                 dragOverMode: null,
@@ -115,57 +116,67 @@ export class QueueList extends Component {
     }
 
     render() {
-        const tracks = this.props.tracks || [];
-        let queueItemNodes;
-        let clearNode;
+        const { expanded, position, tracks = [] } = this.props;
+        const { dragPosition, dragOverPosition } = this.state;
 
-        if (tracks.length) {
-            clearNode = (
-                <a
-                    id="queue-clear-button"
-                    onClick={this._onFlushClick.bind(this)}
-                    title="Clear Queue"
-                >
-                    <i className="material-icons">clear_all</i>
-                </a>
-            );
-
-            queueItemNodes = tracks.map((track, p) => {
-                const position = p + 1;
-                const isCurrent = position === this.props.position;
-                const isDragging = position === this.state.dragPosition;
-                const isDragOver = position === this.state.dragOverPosition;
-
-                return (
-                    <QueueListItem
-                        key={`${track.id || 'position'}-${position}`}
-                        track={track}
-                        position={position}
-                        isCurrent={isCurrent}
-                        isDragging={isDragging}
-                        isDragOver={isDragOver}
-                        dragOverMode={this.state.dragOverMode}
-                    />
-                );
-            });
-        }
-
-        const expandClass = this.props.expanded ? 'expanded' : 'collapsed';
+        const expandClass = expanded ? 'expanded' : 'collapsed';
 
         return (
             <div className={expandClass} id="queue-list-container-wrapper">
                 <h4 id="queue">QUEUE</h4>
 
                 <div id="queue-list-container">
-                    {clearNode}
                     <ul
                         id="queue-container"
                         onDragOver={this._onDragOver.bind(this)}
                         onDragStart={this._onDragStart.bind(this)}
                         onDragEnd={this._onDragEnd.bind(this)}
                     >
-                        <div className="scrollcontainer">{queueItemNodes}</div>
+                        <div className="scrollcontainer">
+                            {tracks.map((track, p) => {
+                                const trackPosition = p + 1;
+                                const isCurrent = trackPosition === position;
+                                const isDragging =
+                                    trackPosition === dragPosition;
+                                const isDragOver =
+                                    trackPosition === dragOverPosition;
+
+                                return (
+                                    <QueueListItem
+                                        key={`${
+                                            track.id || 'position'
+                                        }-${trackPosition}`}
+                                        track={track}
+                                        position={trackPosition}
+                                        isCurrent={isCurrent}
+                                        isDragging={isDragging}
+                                        isDragOver={isDragOver}
+                                        dragOverMode={this.state.dragOverMode}
+                                    />
+                                );
+                            })}
+                        </div>
                     </ul>
+                    {tracks.length ? (
+                        <Fragment>
+                            <a
+                                id="queue-save-button"
+                                className="icon-button"
+                                onClick={this._onSaveClick.bind(this)}
+                                title="Save Queue as Playlist"
+                            >
+                                <i className="material-icons">save</i>
+                            </a>
+                            <a
+                                id="queue-clear-button"
+                                className="icon-button"
+                                onClick={this._onFlushClick.bind(this)}
+                                title="Clear Queue"
+                            >
+                                <i className="material-icons">clear_all</i>
+                            </a>
+                        </Fragment>
+                    ) : null}
                 </div>
             </div>
         );

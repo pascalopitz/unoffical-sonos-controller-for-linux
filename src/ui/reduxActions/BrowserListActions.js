@@ -596,3 +596,14 @@ export const editPlaylist = createAction(
         return item;
     }
 );
+
+export const deletePlaylist = createAction(
+    Constants.BROWSER_DELETE_PLAYLIST,
+    async (item) => {
+        const sonos = SonosService._currentDevice; // TODO: fix this
+
+        await sonos.deletePlaylist(item.id);
+
+        return item;
+    }
+);

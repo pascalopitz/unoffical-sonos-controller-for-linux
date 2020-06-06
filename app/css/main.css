@@ -825,14 +825,25 @@ input[type=range]:focus {
     overflow-y: auto;
 }
 
-#queue-clear-button {
+.icon-button {
     position: absolute;
     top: -35px;
-    right: 5px;
     display: block;
     text-align: right;
     color: #979797;
     cursor: pointer;
+}
+
+#queue-save-button {
+    right: 55px;
+}
+
+#queue-clear-button {
+    right: 5px;
+}
+
+#queue-save-button .material-icons {
+    font-size: 30px;
 }
 
 #queue-clear-button .material-icons {

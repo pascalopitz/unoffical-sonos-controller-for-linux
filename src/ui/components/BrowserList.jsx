@@ -122,7 +122,7 @@ export class BrowserList extends Component {
         let headlineNodes;
 
         const displayItems =
-            source === 'start' ? items.concat(serviceItems) : items;
+            (source === 'start' ? items.concat(serviceItems) : items) || [];
 
         if (searching) {
             const links = searchModes

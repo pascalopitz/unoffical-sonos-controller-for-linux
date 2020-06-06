@@ -5,9 +5,36 @@ import SonosService from '../services/SonosService';
 
 import store from '../reducers';
 
+import { home } from './BrowserListActions';
+
 export const hide = createAction(Constants.PLAYLISTS_HIDE);
 
 export const toggle = createAction(Constants.PLAYLISTS_TOGGLE);
+
+export const saveQueue = createAction(
+    Constants.PLAYLISTS_SAVE,
+    async ({ Title = '', ObjectID = '' }) => {
+        const sonos = SonosService._currentDevice;
+
+        const list = await sonos.avTransportService().SaveQueue({
+            InstanceID: 0,
+            Title,
+            ObjectID,
+        });
+
+        store.dispatch(hide());
+
+        const historyIds = store
+            .getState()
+            .browserList.history.map((i) => i.id);
+
+        if (historyIds.indexOf('SQ:') > -1) {
+            store.dispatch(home());
+        }
+
+        return list;
+    }
+);
 
 export const loadPlaylists = createAction(
     Constants.PLAYLISTS_LOAD,

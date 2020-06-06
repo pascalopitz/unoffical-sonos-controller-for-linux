@@ -125,6 +125,29 @@ export default handleActions(
                 history: _.take(history, history.length - 1),
             };
         },
+
+        [Constants.BROWSER_DELETE_PLAYLIST]: (state, action) => {
+            const { history } = state;
+            const item = action.payload;
+
+            const ids = history.map((h) => h.id);
+
+            if (ids.indexOf('SQ:') === -1) {
+                return state;
+            }
+
+            return {
+                ...state,
+                history: history.map((h) => {
+                    return {
+                        ...h,
+                        items: (h.items || []).filter(
+                            (i) => !i._raw || i._raw.id !== item._raw.id
+                        ),
+                    };
+                }),
+            };
+        },
     },
     initialState
 );

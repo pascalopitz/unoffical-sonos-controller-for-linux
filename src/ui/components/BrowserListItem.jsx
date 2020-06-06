@@ -19,6 +19,7 @@ import {
     addService,
     addToPlaylist,
     editPlaylist,
+    deletePlaylist,
 } from '../reduxActions/BrowserListActions';
 
 const mapDispatchToProps = {
@@ -31,6 +32,7 @@ const mapDispatchToProps = {
     addService,
     addToPlaylist,
     editPlaylist,
+    deletePlaylist,
 };
 
 class InlineMenu extends PureComponent {
@@ -80,6 +82,13 @@ class InlineMenu extends PureComponent {
         e.preventDefault();
         const item = _.get(this, 'props.model.parent') || this.props.model;
         this.props.editPlaylist(item);
+        this.props.toggle(e);
+    };
+
+    _deletePlaylist = (e) => {
+        e.preventDefault();
+        const item = _.get(this, 'props.model.parent') || this.props.model;
+        this.props.deletePlaylist(item);
         this.props.toggle(e);
     };
 
@@ -158,6 +167,11 @@ class InlineMenu extends PureComponent {
                         )}
                         {isSonosPlaylist && (
                             <li onClick={this._editPlaylist}>Edit playlist</li>
+                        )}
+                        {isSonosPlaylist && (
+                            <li onClick={this._deletePlaylist}>
+                                Delete playlist
+                            </li>
                         )}
                     </Fragment>
                 )}

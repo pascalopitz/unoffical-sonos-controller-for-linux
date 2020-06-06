@@ -6,8 +6,14 @@ import SonosService from '../services/SonosService';
 import store from '../reducers';
 import getSelectionSeries from '../helpers/getSelectionSeries';
 
+import { loadPlaylists } from './PlaylistActions';
+
 export const select = createAction(Constants.QUEUE_SELECT);
 export const deselect = createAction(Constants.QUEUE_DESELECT);
+
+export const saveQueue = createAction(Constants.QUEUE_SAVE, async () => {
+    await store.dispatch(loadPlaylists());
+});
 
 export const flush = createAction(Constants.QUEUE_FLUSH, async () => {
     const sonos = SonosService._currentDevice; // TODO: fix this

@@ -13,16 +13,6 @@ exports[`QueueList renders and matches snapshot 1`] = `
   <div
     id="queue-list-container"
   >
-    <a
-      id="queue-clear-button"
-      title="Clear Queue"
-    >
-      <i
-        class="material-icons"
-      >
-        clear_all
-      </i>
-    </a>
     <ul
       id="queue-container"
     >
@@ -34,6 +24,28 @@ exports[`QueueList renders and matches snapshot 1`] = `
         />
       </div>
     </ul>
+    <a
+      class="icon-button"
+      id="queue-save-button"
+      title="Save Queue as Playlist"
+    >
+      <i
+        class="material-icons"
+      >
+        save
+      </i>
+    </a>
+    <a
+      class="icon-button"
+      id="queue-clear-button"
+      title="Clear Queue"
+    >
+      <i
+        class="material-icons"
+      >
+        clear_all
+      </i>
+    </a>
   </div>
 </div>
 `;

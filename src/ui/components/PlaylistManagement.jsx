@@ -7,12 +7,14 @@ import {
     addItem,
     moveItem,
     deleteItem,
+    saveQueue,
 } from '../reduxActions/PlaylistActions';
 
 import classnames from 'classnames';
 
 import PlaylistManagementAddTrack from './PlaylistManagementAddTrack';
 import PlaylistManagementEdit from './PlaylistManagementEdit';
+import PlaylistManagementSave from './PlaylistManagementSave';
 
 const mapStateToProps = (state) => {
     return {
@@ -26,6 +28,7 @@ const mapDispatchToProps = {
     addItem,
     moveItem,
     deleteItem,
+    saveQueue,
 };
 
 export class PlaylistManagementControl extends Component {
@@ -50,6 +53,9 @@ export class PlaylistManagementControl extends Component {
                     )}
                     {mode === 'edit' && (
                         <PlaylistManagementEdit {...this.props} />
+                    )}
+                    {mode === 'save' && (
+                        <PlaylistManagementSave {...this.props} />
                     )}
                 </div>
             </div>
