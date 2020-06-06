@@ -61,6 +61,12 @@ You will need to whitelist these if you run Ubuntu firewall for example:
 - UDP 1900 outgoing
 - UDP 1905 incoming
 
+## Contributions
+
+Feel free to fork and create pull requests. Any help with the variety of music services would be most welcome.
+For any issues, please submit them on the [issues page](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/issues). To provide more context please take the time and attach a copy of your current app state. You can do this by using the "Save app state to file" option in the Developer menu.
+
+
 ## Thanks to other projects
 
 - Because this started out as chrome app, I originally ported nearly all of https://github.com/bencevans/node-sonos/
