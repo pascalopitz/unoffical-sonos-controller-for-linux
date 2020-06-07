@@ -36,6 +36,11 @@ class ContentDirectoryEnhanced extends Services.ContentDirectory {
 }
 
 class SonosEnhanced extends Sonos {
+    constructor(host, model) {
+        super(host);
+        this.model = model;
+    }
+
     musicServices() {
         return new Services.MusicServices(this.host, this.port);
     }
@@ -60,8 +65,6 @@ class SonosEnhanced extends Sonos {
         const servicesObj = await Helpers.ParseXml(
             data.AvailableServiceDescriptorList
         );
-
-        console.log(servicesObj);
 
         const serviceDescriptors = servicesObj.Services.Service.map((obj) => {
             const stringsUri = _.get(obj, 'Presentation.Strings.Uri');
@@ -154,11 +157,7 @@ export async function discoverMultiple(options = { timeout: 5000 }) {
         const discovery = DeviceDiscovery(options);
         const devices = [];
         discovery.on('DeviceAvailable', (device, model) => {
-            if (model.match(/^BR/)) {
-                return;
-            }
-
-            devices.push(new SonosEnhanced(device.host));
+            devices.push(new SonosEnhanced(device.host, model));
         });
 
         discovery.once('timeout', () => {

@@ -119,7 +119,9 @@ const SonosService = {
         }
 
         const groupAttributes = await getGroupAttributes([...devices]);
-        store.dispatch(serviceActions.topologyUpdate(groups, groupAttributes));
+        store.dispatch(
+            serviceActions.topologyUpdate(groups, groupAttributes, devices)
+        );
 
         const storedZone = window.localStorage.zone;
         const filteredGroups = storedZone
@@ -355,7 +357,9 @@ const SonosService = {
         const groups = await sonos.getAllGroups();
         const devices = getAllDevices();
         const groupAttributes = await getGroupAttributes(devices);
-        store.dispatch(serviceActions.topologyEvent(groups, groupAttributes));
+        store.dispatch(
+            serviceActions.topologyUpdate(groups, groupAttributes, devices)
+        );
     },
 
     onQueueEvent(sonos, ...args) {

@@ -7,16 +7,10 @@ export const deviceSearchResult = createAction(
 
 export const topologyUpdate = createAction(
     Constants.SONOS_SERVICE_TOPOLOGY_UPDATE,
-    (groups, attributes) => ({
+    (groups, attributes, devices) => ({
         groups,
         attributes,
-    })
-);
-export const topologyEvent = createAction(
-    Constants.SONOS_SERVICE_TOPOLOGY_EVENT,
-    (groups, attributes) => ({
-        groups,
-        attributes,
+        devices,
     })
 );
 

@@ -16,38 +16,53 @@ const initialState = {
 
 export const REG = /^http:\/\/([\d\.]+)/;
 
+const ACCESSORY_MODELS = {
+    CR100: 'CR100', // Released Jan 2005
+    CR200: 'CONTROL', // Released Jul 2009
+    WD100: 'DOCK', //
+    ZB100: 'BRIDGE', // Released Oct 2007
+    BR200: 'BOOST', //
+};
+
 function topologyReducer(state, action) {
-    const { groups, attributes } = action.payload;
+    const { groups, attributes, devices } = action.payload;
 
-    const zones = groups.map((g) => {
-        const { CurrentZonePlayerUUIDsInGroup } = attributes[g.host] || {};
+    const zones = groups
+        .filter((g) => {
+            const groupDevice = devices.find((d) => d.host === g.host);
+            const isAccessory =
+                Object.keys(ACCESSORY_MODELS).indexOf(groupDevice.model) > -1;
+            return isAccessory === false;
+        })
+        .map((g) => {
+            const { CurrentZonePlayerUUIDsInGroup } = attributes[g.host] || {};
 
-        const ZoneGroupMember = g.ZoneGroupMember.filter(
-            (m) =>
-                !CurrentZonePlayerUUIDsInGroup ||
-                CurrentZonePlayerUUIDsInGroup.indexOf(m.UUID) !== -1
-        ).map((m) => {
-            const matches = g.ZoneGroupMember.filter(
-                (n) => n.ZoneName === m.ZoneName
-            );
+            const ZoneGroupMember = g.ZoneGroupMember.filter(
+                (m) =>
+                    !CurrentZonePlayerUUIDsInGroup ||
+                    CurrentZonePlayerUUIDsInGroup.indexOf(m.UUID) !== -1
+            ).map((m) => {
+                const matches = g.ZoneGroupMember.filter(
+                    (n) => n.ZoneName === m.ZoneName
+                );
 
-            const namePresentTwice = matches.length === 2;
+                const namePresentTwice = matches.length === 2;
+
+                return {
+                    ...m,
+                    ZoneName: namePresentTwice
+                        ? `${m.ZoneName} (L + R)`
+                        : m.ZoneName,
+                };
+            });
 
             return {
-                ...m,
-                ZoneName: namePresentTwice
-                    ? `${m.ZoneName} (L + R)`
-                    : m.ZoneName,
+                ...g,
+                ZoneGroupAttributes: attributes[g.host],
+                _ZoneGroupMember: g.ZoneGroupMember,
+                ZoneGroupMember,
             };
         });
-
-        return {
-            ...g,
-            ZoneGroupAttributes: attributes[g.host],
-            _ZoneGroupMember: g.ZoneGroupMember,
-            ZoneGroupMember,
-        };
-    });
 
     return {
         ...state,
@@ -90,7 +105,6 @@ function crossFadeModeReducer(state, action) {
 export default handleActions(
     {
         [Constants.SONOS_SERVICE_TOPOLOGY_EVENT]: topologyReducer,
-        [Constants.SONOS_SERVICE_TOPOLOGY_UPDATE]: topologyReducer,
 
         [Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT]: zoneGroupSelectReducer,
         [Constants.ZONE_GROUP_SELECT]: zoneGroupSelectReducer,
