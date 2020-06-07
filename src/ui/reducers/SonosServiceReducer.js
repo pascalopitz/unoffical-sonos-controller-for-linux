@@ -104,7 +104,7 @@ function crossFadeModeReducer(state, action) {
 
 export default handleActions(
     {
-        [Constants.SONOS_SERVICE_TOPOLOGY_EVENT]: topologyReducer,
+        [Constants.SONOS_SERVICE_TOPOLOGY_UPDATE]: topologyReducer,
 
         [Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT]: zoneGroupSelectReducer,
         [Constants.ZONE_GROUP_SELECT]: zoneGroupSelectReducer,
