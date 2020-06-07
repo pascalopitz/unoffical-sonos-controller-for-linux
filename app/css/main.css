@@ -46,7 +46,7 @@ body {
     right: 5px;
     z-index: 20000;
 
-    background: rgba(0, 0, 0, .7);
+    background: rgba(0, 0, 0, 0.7);
 
     display: flex;
     align-items: center;
@@ -57,7 +57,7 @@ body {
 
 #loader p {
     border-radius: 10px;
-    background: rgba(200, 200, 200, .5);
+    background: rgba(200, 200, 200, 0.5);
     padding: 20px;
 }
 
@@ -209,9 +209,8 @@ h4 {
     border-radius: 8px;
 }
 
-
 #search .mdc-simple-menu {
-    background:  #2c2c2c;
+    background: #2c2c2c;
 }
 
 #search .mdc-select__selected-text,
@@ -519,7 +518,7 @@ h4 {
     height: 21px;
 }
 
-input[type=range] {
+input[type="range"] {
     -webkit-appearance: none;
     width: 100%;
     height: 100%;
@@ -527,7 +526,7 @@ input[type=range] {
     color: transparent;
 }
 
-input[type=range]::-webkit-slider-runnable-track {
+input[type="range"]::-webkit-slider-runnable-track {
     height: 21px;
     border-radius: 15px;
     border-top: 1px solid #303030;
@@ -541,7 +540,7 @@ input[type=range]::-webkit-slider-runnable-track {
     background-color: transparent;
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: none;
     height: 23px;
@@ -552,7 +551,7 @@ input[type=range]::-webkit-slider-thumb {
     cursor: pointer;
 }
 
-input[type=range]:focus {
+input[type="range"]:focus {
     outline: none;
 }
 
@@ -873,22 +872,22 @@ input[type=range]:focus {
 .playlist-tracks li:focus,
 #browser-container li:focus,
 #queue-container li:focus,
-body #queue-container li[data-is-current=true] {
-    background: rgba(255, 255, 255, 0.10);
+body #queue-container li[data-is-current="true"] {
+    background: rgba(255, 255, 255, 0.1);
     outline: none;
 }
 
-#queue-container li[data-is-selected=true] {
+#queue-container li[data-is-selected="true"] {
     background: rgba(255, 255, 255, 0.02);
     outline: none;
 }
 
-#queue-container li[data-dragover=before]:before,
-#queue-container li[data-dragover=after]:after {
-    content: '';
+#queue-container li[data-dragover="before"]:before,
+#queue-container li[data-dragover="after"]:after {
+    content: "";
     display: block;
     height: 53px;
-    background: rgba(255, 255, 255, .2);
+    background: rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -976,7 +975,7 @@ body #queue-container li[data-is-current=true] {
     vertical-align: top;
     margin-top: 10px;
     opacity: 0;
-    transition: all .3s;
+    transition: all 0.3s;
 }
 
 #queue-container i.material-icons.checkbox {
@@ -984,15 +983,15 @@ body #queue-container li[data-is-current=true] {
     width: 20px;
     vertical-align: top;
     margin-top: 10px;
-    opacity: .3;
-    transition: all .3s;
+    opacity: 0.3;
+    transition: all 0.3s;
     margin-right: 20px;
 }
 
 #browser-container li:hover i.material-icons.arrow,
 #queue-container li:hover i.material-icons.arrow,
 #queue-container li:hover i.material-icons.checkbox {
-    opacity: .8;
+    opacity: 0.8;
 }
 
 .inline-menu {
@@ -1033,7 +1032,7 @@ body #queue-container li[data-is-current=true] {
     right: 5px;
     z-index: 20000;
 
-    background: rgba(0, 0, 0, .7);
+    background: rgba(0, 0, 0, 0.7);
 
     display: flex;
     align-items: center;
@@ -1075,7 +1074,6 @@ body #queue-container li[data-is-current=true] {
     background: rgba(160, 160, 160);
 }
 
-
 .modal-inner ul {
     margin: 0;
     padding: 0;
@@ -1088,17 +1086,16 @@ body #queue-container li[data-is-current=true] {
     margin: 0;
 }
 
-.modal-inner li[data-dragover=before]:before,
-.modal-inner li[data-dragover=after]:after {
-    content: '';
+.modal-inner li[data-dragover="before"]:before,
+.modal-inner li[data-dragover="after"]:after {
+    content: "";
     display: block;
     height: 53px;
-    background: rgba(255, 255, 255, .2);
+    background: rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 
 .modal-inner li span {
     width: calc(100% - 40px);
@@ -1111,8 +1108,8 @@ body #queue-container li[data-is-current=true] {
     width: 20px;
     vertical-align: top;
     margin-top: 10px;
-    opacity: .3;
-    transition: all .3s;
+    opacity: 0.3;
+    transition: all 0.3s;
     margin-right: 20px;
 }
 
