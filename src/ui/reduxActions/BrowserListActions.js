@@ -374,6 +374,9 @@ const selectSonosPlaylist = async (item) => {
 
     const state = _.cloneDeep(item);
     state.items = result.items || [];
+    state.total = result.total;
+    state.updateID = result.updateID;
+    state.id = id;
     return state;
 };
 

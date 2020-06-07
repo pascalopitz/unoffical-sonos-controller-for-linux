@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.2.0-beta6",
+  "version": "0.2.0-beta7",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "homepage": "http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/",
@@ -44,6 +44,10 @@
     {
       "name": "pjetherton",
       "url": "https://github.com/pjetherton"
+    },
+    {
+      "name": "stan-qaz",
+      "url": "https://github.com/stan-qaz"
     }
   ],
   "build": {
