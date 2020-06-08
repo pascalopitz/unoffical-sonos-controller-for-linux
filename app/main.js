@@ -93,7 +93,10 @@ function createWindow() {
 
                             clipboard.writeText(
                                 JSON.stringify(
-                                    maskJson(JSON.parse(result)),
+                                    {
+                                        appState: maskJson(JSON.parse(result)),
+                                        packageJson: require('./package.json'),
+                                    },
                                     1,
                                     4
                                 )
@@ -124,7 +127,10 @@ function createWindow() {
                             await writeFileAsync(
                                 choice.filePath,
                                 JSON.stringify(
-                                    maskJson(JSON.parse(result)),
+                                    {
+                                        appState: maskJson(JSON.parse(result)),
+                                        packageJson: require('./package.json'),
+                                    },
                                     1,
                                     4
                                 ),
