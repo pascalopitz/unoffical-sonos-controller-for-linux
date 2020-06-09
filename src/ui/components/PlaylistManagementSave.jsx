@@ -34,7 +34,6 @@ export class PlaylistManagementSave extends Component {
     };
 
     _toggle = (list) => {
-        console.log(list);
         this.props.toggle(list);
     };
 

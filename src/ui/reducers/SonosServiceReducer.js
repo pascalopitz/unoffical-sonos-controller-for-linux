@@ -6,6 +6,7 @@ const initialState = {
     currentHost: null,
     zones: [],
     deviceSearches: {},
+    albumArtCache: {},
     currentTracks: {},
     nextTracks: {},
     positionInfos: {},
@@ -138,8 +139,18 @@ export default handleActions(
         [Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE]: (state, action) => {
             const { host, track } = action.payload;
 
+            const albumArtCache = {};
+
+            if (track.uri && track.albumArtURI) {
+                albumArtCache[track.uri] = track.albumArtURI;
+            }
+
             return {
                 ...state,
+                albumArtCache: {
+                    ...state.albumArtCache,
+                    ...albumArtCache,
+                },
                 currentTracks: {
                     ...state.currentTracks,
                     [host]: track,

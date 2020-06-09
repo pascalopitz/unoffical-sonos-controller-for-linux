@@ -304,7 +304,9 @@ export class BrowserListItem extends Component {
             item.creator || item.artist || _.get(item, 'trackMetadata.artist');
 
         const albumArtURI =
-            item.albumArtURI || _.get(item, 'trackMetadata.albumArtURI');
+            item.albumArtURI ||
+            _.get(item, 'trackMetadata.albumArtURI') ||
+            _.get(item, 'streamMetadata.logo');
 
         const serviceId =
             _.get(this, 'props.model.service.service.Id') ||

@@ -13,9 +13,26 @@ import {
 } from '../helpers/dom-utility';
 
 import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
-import makeCancelable from '../helpers/makeCancelable';
 
 const MIN_RATIO = 0.5;
+
+const loadCache = new Map();
+
+async function chachedOrfetch(src) {
+    if (loadCache.has(src)) {
+        return loadCache.get(src);
+    }
+
+    return await fetch(src)
+        .then((response) => {
+            if (!response.ok) {
+                throw Error(response.status);
+            }
+            return response;
+        })
+        .then((response) => response.blob())
+        .then((blob) => URL.createObjectURL(blob));
+}
 
 export class AlbumArt extends Component {
     state = {
@@ -37,13 +54,16 @@ export class AlbumArt extends Component {
             return;
         }
 
-        if (this.loadPromise) {
-            this.loadPromise.cancel();
-        }
+        chachedOrfetch(src)
+            .then((blobSrc) => {
+                if (propsSrc) {
+                    loadCache.set(propsSrc, blobSrc);
+                }
 
-        this.loadPromise = this.makeLoadPromise(src);
-        this.loadPromise.promise
-            .then(() => {
+                if (src) {
+                    loadCache.set(src, blobSrc);
+                }
+
                 this.setState({
                     failed: false,
                     loading: false,
@@ -51,11 +71,11 @@ export class AlbumArt extends Component {
                 });
             })
             .catch(async (err) => {
-                if (err && err.isCancelled) {
-                    return;
-                }
-
-                if (!this.ref.current || !this.state.visible) {
+                if (
+                    !this.ref.current ||
+                    !this.state.visible ||
+                    err.message !== '404'
+                ) {
                     return;
                 }
 
@@ -114,17 +134,6 @@ export class AlbumArt extends Component {
             });
     }
 
-    makeLoadPromise = () => {
-        return makeCancelable(
-            new Promise((resolve, reject) => {
-                const img = new Image();
-                img.src = this.state.src;
-                img.onload = resolve;
-                img.onerror = reject;
-            })
-        );
-    };
-
     componentDidMount() {
         const node = this.ref.current;
 
@@ -148,10 +157,6 @@ export class AlbumArt extends Component {
 
         if (this.timeout) {
             window.clearTimeout(this.timeout);
-        }
-
-        if (this.loadPromise) {
-            this.loadPromise.cancel();
         }
 
         this.setState({
@@ -245,7 +250,17 @@ export class AlbumArt extends Component {
     }
 
     render() {
-        const { visible, loaded, loading, src } = this.state;
+        const {
+            visible,
+            loaded,
+            loading,
+            propsSrc,
+            src: stateSrc,
+        } = this.state;
+
+        const src = propsSrc
+            ? loadCache.get(propsSrc)
+            : loadCache.get(stateSrc);
 
         const srcUrl =
             src && loaded && !loading

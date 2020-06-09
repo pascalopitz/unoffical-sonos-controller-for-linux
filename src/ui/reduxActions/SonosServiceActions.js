@@ -37,8 +37,11 @@ export const zoneGroupTrackUpdate = createAction(
                 mediaInfo.CurrentURIMetaData
             ).then(Helpers.ParseDIDL);
 
+            const currentTrack = await sonos.currentTrack();
+
             track = {
                 ...track,
+                ..._.omitBy(currentTrack, _.isEmpty),
                 ..._.omitBy(trackMeta, _.isEmpty),
                 isStreaming: true,
             };
