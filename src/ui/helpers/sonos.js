@@ -175,7 +175,7 @@ const STREAM_URL_PREFIXES = [
     `x-sonosapi-radio:`,
     `x-rincon-mp3radio:`,
     `hls-radio:`,
-    `aac:`
+    `aac:`,
 ];
 
 export function isStreamUrl(url) {

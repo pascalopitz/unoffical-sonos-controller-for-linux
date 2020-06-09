@@ -640,9 +640,9 @@ input[type="range"]:focus {
     cursor: not-allowed !important;
 }
 
-#controls img.disabled ,
+#controls img.disabled,
 #position-info .content .disabled i {
-    opacity: .2;
+    opacity: 0.2;
     cursor: not-allowed !important;
     color: black;
 }

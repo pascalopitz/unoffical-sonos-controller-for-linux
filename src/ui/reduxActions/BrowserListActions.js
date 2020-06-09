@@ -17,8 +17,6 @@ import {
 
 import { loadPlaylists, loadPlaylistItems } from './PlaylistActions';
 
-const TUNEIN_ID = 65031;
-
 async function _fetchLineIns() {
     const { deviceSearches } = store.getState().sonosService;
 
