@@ -14,7 +14,7 @@ import {
     getHistory,
     getSearchMode,
     getServiceItems,
-    getAVailableSearchModes,
+    getAvailableSearchModes,
 } from '../selectors/BrowserListSelectors';
 
 import {
@@ -34,7 +34,7 @@ const mapStateToProps = (state) => {
         searching: getSearching(state),
         history: getHistory(state),
         currentSearchMode: getSearchMode(state),
-        searchModes: getAVailableSearchModes(state),
+        searchModes: getAvailableSearchModes(state),
     };
 };
 

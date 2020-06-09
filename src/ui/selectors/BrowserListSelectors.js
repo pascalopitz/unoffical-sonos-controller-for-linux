@@ -24,10 +24,12 @@ export function getSearching(state) {
 }
 
 export function getSearchMode(state) {
-    return getCurrentState(state).mode || DEFAULT_SEARCH_MODE;
+    const { mode, searchTermMap } = getCurrentState(state) || {};
+
+    return mode || _.get(searchTermMap, '0.id') || DEFAULT_SEARCH_MODE;
 }
 
-export function getAVailableSearchModes(state) {
+export function getAvailableSearchModes(state) {
     return getCurrentState(state).searchTermMap || LIBRARY_SEARCH_MODES;
 }
 

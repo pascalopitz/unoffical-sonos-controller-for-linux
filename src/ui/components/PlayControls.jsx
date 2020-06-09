@@ -1,12 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 
 import { play, pause, playNext, playPrev } from '../reduxActions/PlayerActions';
 
-import { getPlaying } from '../selectors/PlayerSelectors';
+import { getPlaying, isStreaming } from '../selectors/PlayerSelectors';
 
 const mapStateToProps = (state) => {
     return {
+        isStreaming: isStreaming(state),
         playing: getPlaying(state),
     };
 };
@@ -21,23 +23,46 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export function PlayControls(props) {
-    const src = props.playing ? 'svg/pause.svg' : 'svg/play.svg';
+    const { isStreaming, playing, pause, play } = props;
+    const src = playing ? 'svg/pause.svg' : 'svg/play.svg';
 
     const _toggle = () => {
-        if (props.playing) {
-            props.pause();
+        if (playing) {
+            pause();
         } else {
-            props.play();
+            play();
         }
     };
 
+    const css = classnames({
+        disabled: isStreaming,
+    });
+
     return (
         <div id="controls">
-            <img id="prev" src="svg/prev.svg" onClick={props.prev} />
+            <img
+                id="prev"
+                src="svg/prev.svg"
+                onClick={() => {
+                    if (!isStreaming) {
+                        props.prev();
+                    }
+                }}
+                className={css}
+            />
             <div id="play-pause" className="play" onClick={_toggle}>
                 <img id="play" src={src} />
             </div>
-            <img id="next" src="svg/next.svg" onClick={props.next} />
+            <img
+                id="next"
+                src="svg/next.svg"
+                onClick={() => {
+                    if (!isStreaming) {
+                        props.next();
+                    }
+                }}
+                className={css}
+            />
         </div>
     );
 }

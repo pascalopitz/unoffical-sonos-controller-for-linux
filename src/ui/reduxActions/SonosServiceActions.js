@@ -1,5 +1,12 @@
+import _ from 'lodash';
+
 import { createAction } from 'redux-actions';
 import Constants from '../constants';
+
+import { Helpers } from 'sonos';
+import { isStreamUrl } from '../helpers/sonos';
+
+import SonosService from '../services/SonosService';
 
 export const deviceSearchResult = createAction(
     Constants.SONOS_SERVICE_DEVICE_SEARCH_RESULT
@@ -19,7 +26,26 @@ export const selectCurrentZone = createAction(
 );
 
 export const zoneGroupTrackUpdate = createAction(
-    Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE
+    Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE,
+    async ({ track, host }) => {
+        if (isStreamUrl(track.uri)) {
+            const sonos = SonosService.getDeviceByHost(host);
+            const avTransport = sonos.avTransportService();
+            const mediaInfo = await avTransport.GetMediaInfo();
+
+            const trackMeta = await Helpers.ParseXml(
+                mediaInfo.CurrentURIMetaData
+            ).then(Helpers.ParseDIDL);
+
+            track = {
+                ...track,
+                ..._.omitBy(trackMeta, _.isEmpty),
+                isStreaming: true,
+            };
+        }
+
+        return { track, host };
+    }
 );
 
 export const queueUpdate = createAction(Constants.SONOS_SERVICE_QUEUE_UPDATE);
@@ -27,10 +53,6 @@ export const queueUpdate = createAction(Constants.SONOS_SERVICE_QUEUE_UPDATE);
 export const volumeUpdate = createAction(Constants.SONOS_SERVICE_VOLUME_UPDATE);
 
 export const mutedUpdate = createAction(Constants.SONOS_SERVICE_MUTED_UPDATE);
-
-export const currentTrackUpdate = createAction(
-    Constants.SONOS_SERVICE_CURRENT_TRACK_UPDATE
-);
 
 export const nextTrackUpdate = createAction(
     Constants.SONOS_SERVICE_NEXT_TRACK_UPDATE

@@ -636,6 +636,17 @@ input[type="range"]:focus {
     line-height: 2;
 }
 
+#position-info .content .disabled {
+    cursor: not-allowed !important;
+}
+
+#controls img.disabled ,
+#position-info .content .disabled i {
+    opacity: .2;
+    cursor: not-allowed !important;
+    color: black;
+}
+
 #position-info .content i,
 #position-info .content span,
 #position-info .content img,

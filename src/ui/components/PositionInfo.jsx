@@ -3,6 +3,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 
 import {
     setPlayMode,
@@ -16,10 +17,12 @@ import {
     getCrossfadeMode,
     getPlayMode,
     getPositionInfo,
+    isStreaming,
 } from '../selectors/PlayerSelectors';
 
 const mapStateToProps = (state) => {
     return {
+        isStreaming: isStreaming(state),
         isPlaying: getPlaying(state),
         info: getPositionInfo(state),
         playMode: getPlayMode(state),
@@ -84,6 +87,10 @@ export class PositionInfo extends Component {
     }
 
     _toggleRepeat() {
+        if (this.props.isStreaming) {
+            return;
+        }
+
         if (this.props.playMode === 'NORMAL') {
             this.props.setPlayMode('REPEAT_ALL');
         }
@@ -110,6 +117,10 @@ export class PositionInfo extends Component {
     }
 
     _toggleShuffle() {
+        if (this.props.isStreaming) {
+            return;
+        }
+
         if (this.props.playMode === 'NORMAL') {
             this.props.setPlayMode('SHUFFLE_NOREPEAT');
         }
@@ -136,6 +147,9 @@ export class PositionInfo extends Component {
     }
 
     _toggleCrossfade() {
+        if (this.props.isStreaming) {
+            return;
+        }
         this.props.setCrossfade(!this.props.isCrossfade);
     }
 
@@ -169,12 +183,16 @@ export class PositionInfo extends Component {
     }
 
     render() {
-        const { info } = this.props;
+        const { info, isStreaming } = this.props;
         const { offset } = this.state;
 
         let percent = 0;
         let fromStr = '00:00';
         let toStr = '-00:00';
+
+        const css = classnames({
+            disabled: isStreaming,
+        });
 
         if (info) {
             let now = moment.duration(info.RelTime).add(offset, 's');
@@ -252,9 +270,16 @@ export class PositionInfo extends Component {
                     src="images/tc_progress_container_right.png"
                 />
                 <div className="content">
-                    <a onClick={this._toggleRepeat.bind(this)}>{repeat}</a>
-                    <a onClick={this._toggleShuffle.bind(this)}>{shuffle}</a>
-                    <a onClick={this._toggleCrossfade.bind(this)}>
+                    <a onClick={this._toggleRepeat.bind(this)} className={css}>
+                        {repeat}
+                    </a>
+                    <a onClick={this._toggleShuffle.bind(this)} className={css}>
+                        {shuffle}
+                    </a>
+                    <a
+                        onClick={this._toggleCrossfade.bind(this)}
+                        className={css}
+                    >
                         {crossfade}
                     </a>
 

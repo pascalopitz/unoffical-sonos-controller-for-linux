@@ -80,8 +80,7 @@ export async function _getItem(item) {
 
     if (serviceType) {
         const uri = client.getTrackURI(item, client._serviceDefinition.Id);
-        const token = client.getServiceString(serviceType);
-        const meta = client.encodeItemMetadata(uri, item, token);
+        const meta = client.encodeItemMetadata(uri, item);
 
         return {
             uri,
@@ -381,7 +380,7 @@ const selectSonosPlaylist = async (item) => {
 };
 
 const selectServiceMediaCollectionItem = async (item) => {
-    const { searchTermMap, term } = _.last(
+    const { searchTermMap, term, mode } = _.last(
         store.getState().browserList.history
     );
 
@@ -416,6 +415,7 @@ const selectServiceMediaCollectionItem = async (item) => {
         title: item.title,
         parent: item,
         term: term,
+        mode: mode,
         searchTermMap: searchTermMap,
         serviceClient: client,
         total: res.total,
@@ -502,14 +502,6 @@ export const playNow = createAction(
         const item = await _getItem(eventTarget);
 
         if (
-            _.get(
-                eventTarget,
-                'serviceClient._serviceDefinition.ServiceIDEncoded'
-            ) === TUNEIN_ID
-        ) {
-            await sonos.playTuneinRadio(eventTarget.id, eventTarget.title);
-            await sonos.play();
-        } else if (
             item.metadata &&
             item.class === 'object.item.audioItem.audioBroadcast'
         ) {
@@ -517,16 +509,7 @@ export const playNow = createAction(
         } else if (item.class && item.class === 'object.item.audioItem') {
             await sonos.play(item.uri);
         } else {
-            const res = await sonos.getQueue().catch(() => null);
-
-            let pos = 1;
-            if (res.total) {
-                pos = Number(res.total) + 1;
-            }
-
-            await sonos.queue(item);
-            await sonos.selectTrack(pos);
-            await sonos.play();
+            await sonos.play(item);
         }
 
         SonosService.queryState(sonos);

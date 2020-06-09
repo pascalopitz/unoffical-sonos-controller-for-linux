@@ -89,7 +89,7 @@ export class AlbumArt extends Component {
                         'mediaMetadata.trackMetadata.albumArtURI'
                     );
 
-                    if (newSrc) {
+                    if (newSrc && propsSrc === this.state.propsSrc) {
                         this.setState(
                             {
                                 src: newSrc,

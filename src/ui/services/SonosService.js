@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Helpers, Listener } from 'sonos';
+import { Listener } from 'sonos';
 
 import { initialise as intialiseServiceLogos } from '../helpers/getServiceLogoUrl';
 
@@ -186,17 +186,7 @@ const SonosService = {
                 return;
             }
 
-            let track = await sonos.currentTrack();
-
-            if (track.class === 'object.item') {
-                const mediaInfo = await sonos.getMediaInfo();
-
-                const trackMeta = await Helpers.ParseXml(
-                    mediaInfo.CurrentURIMetaData
-                ).then(Helpers.ParseDIDL);
-
-                track = Object.assign(track, trackMeta);
-            }
+            const track = await sonos.currentTrack();
 
             store.dispatch(
                 serviceActions.zoneGroupTrackUpdate({

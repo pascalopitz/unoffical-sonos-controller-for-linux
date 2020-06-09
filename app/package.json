@@ -12,6 +12,7 @@
     "deep-equal": "^2.0.3",
     "dotenv": "^8.2.0",
     "electron-react-devtools": "^0.5.3",
+    "file-type": "^14.6.1",
     "ip": "^1.1.5",
     "lodash": "^4.17.11",
     "mask-json": "^1.0.3",

@@ -19,3 +19,8 @@ export function getPlayMode(state) {
     const { currentHost, playModes } = state.sonosService;
     return playModes[currentHost];
 }
+
+export function isStreaming(state) {
+    const { currentHost, currentTracks } = state.sonosService;
+    return currentTracks[currentHost] && currentTracks[currentHost].isStreaming;
+}

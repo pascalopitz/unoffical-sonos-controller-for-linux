@@ -138,7 +138,7 @@ class MusicServiceClient {
         if (itemType === 'stream') {
             return `x-sonosapi-stream:${escape(
                 trackId
-            )}&sid=${serviceId}&flags=8224&sn=0`;
+            )}?sid=${serviceId}&flags=8224&sn=14`;
         }
 
         // TODO: figure out why this doesn't work for Soundcloud
@@ -148,53 +148,60 @@ class MusicServiceClient {
 
         return `${protocol}:${escape(
             trackId
-        )}${suffix}?sid=${serviceId}&sn=1&flags=8224`;
-    }
-
-    getServiceString(serviceType) {
-        return `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`;
+        )}${suffix}?sid=${serviceId}&flags=8224&sn=1`;
     }
 
     // TODO: maybe we can use node-sonos Helpers.GenerateMetadata etc???
-    encodeItemMetadata(uri, item, serviceString) {
+    encodeItemMetadata(uri, item) {
+        const serviceType = this._serviceDefinition.ServiceIDEncoded;
+
         const TYPE_MAPPINGS = {
             track: {
                 type: 'object.item.audioItem.musicTrack',
                 token: '00032020',
+                serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
             album: {
                 type: 'object.container.album.musicAlbum',
                 token: '0004206c',
+                serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
             trackList: {
                 type: 'object.container.playlistContainer',
                 token: '000e206c',
+                serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
             albumList: {
                 type: 'object.container.playlistContainer',
                 token: '0006206c',
+                serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
             playlist: {
                 type: 'object.container.playlistContainer',
                 token: '0006206c',
+                serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
             playList: {
                 type: 'object.container.playlistContainer',
                 token: '0006206c',
+                serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
             artistTrackList: {
                 type: 'object.container.playlistContainer',
                 token: '0006206c',
+                serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
             stream: {
                 type: 'object.item.audioItem.audioBroadcast',
-                token: 'F00092020',
-                parentId: 'parentID="L"',
+                token: '10092020',
+                parentId: 'parentID="-1"',
+                serviceString: `SA_RINCON${serviceType}_`,
             },
             program: {
                 type:
                     'object.item.audioItem.audioBroadcast.#' + item.displayType,
                 token: '000c206c',
+                serviceString: `SA_RINCON${serviceType}_`,
             },
         };
 
@@ -202,6 +209,8 @@ class MusicServiceClient {
             id,
             trackData,
             parentId = '';
+
+        const serviceString = TYPE_MAPPINGS[item.itemType].serviceString;
 
         if (serviceString) {
             const prefix = TYPE_MAPPINGS[item.itemType].token;
