@@ -15,6 +15,7 @@ import ZoneGroupList from './ZoneGroupList';
 import GroupManagement from './GroupManagement';
 import MusicServiceManagement from './MusicServiceManagement';
 import PlaylistManagement from './PlaylistManagement';
+import EqSettings from './EqSettings';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
 
@@ -53,6 +54,7 @@ export class Application extends Component {
                     <GroupManagement />
                     <MusicServiceManagement />
                     <PlaylistManagement />
+                    <EqSettings />
                     <Loader />
                 </div>
             </Provider>

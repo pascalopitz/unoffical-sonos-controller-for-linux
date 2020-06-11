@@ -4,6 +4,46 @@ import _ from 'lodash';
 
 const TUNEIN_ID = 65031;
 
+class RenderingControlEnhanced extends Services.RenderingControl {
+    GetLoudness = async (Channel = 'Master') => {
+        return this._request('GetLoudness', { InstanceID: 0, Channel });
+    };
+
+    SetLoudness = async (DesiredLoudness, Channel = 'Master') => {
+        return this._request('SetLoudness', {
+            InstanceID: 0,
+            Channel,
+            DesiredLoudness,
+        });
+    };
+
+    GetBass = async () => {
+        return this._request('GetBass', { InstanceID: 0 }).then((r) =>
+            parseInt(r.CurrentBass)
+        );
+    };
+
+    SetBass = async (bass) => {
+        return this._request('SetBass', {
+            InstanceID: 0,
+            DesiredBass: bass,
+        });
+    };
+
+    GetTreble = async () => {
+        return this._request('GetTreble', { InstanceID: 0 }).then((r) =>
+            parseInt(r.CurrentTreble)
+        );
+    };
+
+    SetTreble = async (treble) => {
+        return this._request('SetTreble', {
+            InstanceID: 0,
+            DesiredTreble: treble,
+        });
+    };
+}
+
 class ContentDirectoryEnhanced extends Services.ContentDirectory {
     _enumItems(resultcontainer) {
         if (resultcontainer === undefined) {
@@ -45,8 +85,16 @@ class SonosEnhanced extends Sonos {
         return new Services.MusicServices(this.host, this.port);
     }
 
+    renderingControlService() {
+        return new RenderingControlEnhanced(this.host, this.port);
+    }
+
     contentDirectoryService() {
         return new ContentDirectoryEnhanced(this.host, this.port);
+    }
+
+    groupRenderingControlService() {
+        return new Services.GroupRenderingControl(this.host, this.port);
     }
 
     async getZPInfo() {

@@ -39,6 +39,12 @@ const Constants = {
 
     ZONE_GROUP_SELECT: '',
 
+    EQ_SHOW: '',
+    EQ_HIDE: '',
+    EQ_LOAD: '',
+    EQ_SET_VALUE: '',
+    EQ_SELECT: '',
+
     PLAYLISTS_SHOW: '',
     PLAYLISTS_HIDE: '',
     PLAYLISTS_LOAD: '',

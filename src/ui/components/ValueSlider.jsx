@@ -11,56 +11,60 @@ class VolumeSlider extends Component {
     _onStart(e) {
         this.setState({
             dragging: true,
-            volume: Number(e.target.value),
+            value: Number(e.target.value),
         });
 
-        this.props.startHandler();
+        if (this.props.startHandler) {
+            this.props.startHandler();
+        }
     }
 
     _onStop() {
         this.setState({
             dragging: false,
-            volume: null,
+            value: null,
         });
 
-        this.props.stopHandler();
+        if (this.props.stopHandler) {
+            this.props.stopHandler();
+        }
     }
 
     _onChange(e) {
-        const volume = e.target.value;
+        const value = e.target.value;
 
         this.setState({
             dragging: true,
-            volume: Number(e.target.value),
+            value: Number(e.target.value),
         });
 
-        this._setVolume(volume);
+        this._setValue(value);
     }
 
-    _setVolume(volume) {
-        this.props.dragHandler(volume);
+    _setValue(value) {
+        this.props.dragHandler(value);
     }
 
     _onWheel(e) {
-        this._setVolume(this._getVolume() + (e.deltaY > 0 ? -1 : 1));
+        this._setValue(this._getValue() + (e.deltaY > 0 ? -1 : 1));
     }
 
-    _getVolume() {
+    _getValue() {
         return this.state.dragging
-            ? this.state.volume
-            : Number(this.props.volume);
+            ? this.state.value
+            : Number(this.props.value);
     }
 
     render() {
-        const volume = this._getVolume();
+        const value = this._getValue();
 
         return (
-            <div className="volume-bar">
+            <div className="value-bar">
                 <input
                     type="range"
                     min="0"
                     max="100"
-                    value={Number(volume)}
+                    value={Number(value)}
                     onChange={() => {}}
                     onMouseDown={this._onStart.bind(this)}
                     onMouseUp={this._onStop.bind(this)}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import MuteButton from './MuteButton';
-import VolumeSlider from './VolumeSlider';
+import ValueSlider from './ValueSlider';
 
 import {
     setDragging,
@@ -10,6 +10,8 @@ import {
     setPlayerMuted,
     setPlayerVolume,
 } from '../reduxActions/VolumeControlActions';
+
+import { show } from '../reduxActions/EqActions';
 
 import {
     getPlayers,
@@ -29,14 +31,12 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setPlayerVolume: (host, volume) =>
-            dispatch(setPlayerVolume(host, volume)),
-        setPlayerMuted: (host, muted) => dispatch(setPlayerMuted(host, muted)),
-        setDragging: (value) => dispatch(setDragging(value)),
-        setExpanded: (value) => dispatch(setExpanded(value)),
-    };
+const mapDispatchToProps = {
+    setPlayerVolume,
+    setPlayerMuted,
+    setDragging,
+    setExpanded,
+    show,
 };
 
 class VolumeControls extends Component {
@@ -120,6 +120,10 @@ class VolumeControls extends Component {
         window.clearTimeout(this._hideTimer);
     }
 
+    _openSettings() {
+        this.props.show();
+    }
+
     render() {
         let groupMuted = false;
         let groupVolume = 0;
@@ -165,8 +169,8 @@ class VolumeControls extends Component {
 
                         <MuteButton muted={muted} clickHandler={toggleMute} />
 
-                        <VolumeSlider
-                            volume={volume}
+                        <ValueSlider
+                            value={volume}
                             stopHandler={endVolume}
                             startHandler={startVolume}
                             dragHandler={changeVolume}
@@ -193,14 +197,21 @@ class VolumeControls extends Component {
                     clickHandler={this._toggleGoupMute.bind(this)}
                 />
 
-                <VolumeSlider
-                    volume={groupVolume}
+                <ValueSlider
+                    value={groupVolume}
                     stopHandler={this._endGroupVolume.bind(this)}
                     startHandler={this._startGroupVolume.bind(this)}
                     dragHandler={this._changeGroupVolume.bind(this)}
                 />
 
                 {playerPopover}
+
+                <a
+                    className="settings-button"
+                    onClick={this._openSettings.bind(this)}
+                >
+                    <i className="material-icons settings">equalizer</i>
+                </a>
             </div>
         );
     }
