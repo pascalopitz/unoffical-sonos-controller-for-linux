@@ -57,6 +57,10 @@ export const volumeUpdate = createAction(Constants.SONOS_SERVICE_VOLUME_UPDATE);
 
 export const mutedUpdate = createAction(Constants.SONOS_SERVICE_MUTED_UPDATE);
 
+export const renderingControlUpdate = createAction(
+    Constants.SONOS_SERVICE_RENDERING_CONTROL_UPDATE
+);
+
 export const nextTrackUpdate = createAction(
     Constants.SONOS_SERVICE_NEXT_TRACK_UPDATE
 );

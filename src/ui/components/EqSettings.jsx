@@ -49,7 +49,7 @@ export class EqSettings extends Component {
             return null;
         }
 
-        const { bass = 0, treble = 0 } = eqState[host] || {};
+        const { bass = 0, treble = 0, loudness = 0 } = eqState[host] || {};
         const player = players.find((p) => p.host === host);
 
         return (
@@ -97,6 +97,21 @@ export class EqSettings extends Component {
                                     fromPercentage(percentage, -10, +10)
                                 )
                             }
+                        />
+                    </div>
+
+                    <div className="row">
+                        <span className="label">Loudness</span>
+                        <input
+                            type="checkbox"
+                            checked={loudness}
+                            value={loudness}
+                            onChange={(e) => {
+                                this._changeValue(
+                                    'loudness',
+                                    e.target.value == 1 ? 0 : 1
+                                );
+                            }}
                         />
                     </div>
 

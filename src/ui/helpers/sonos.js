@@ -6,7 +6,10 @@ const TUNEIN_ID = 65031;
 
 class RenderingControlEnhanced extends Services.RenderingControl {
     GetLoudness = async (Channel = 'Master') => {
-        return this._request('GetLoudness', { InstanceID: 0, Channel });
+        return this._request('GetLoudness', {
+            InstanceID: 0,
+            Channel,
+        }).then((r) => parseInt(r.CurrentLoudness));
     };
 
     SetLoudness = async (DesiredLoudness, Channel = 'Master') => {

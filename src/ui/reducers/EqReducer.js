@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { handleActions } from 'redux-actions';
 import Constants from '../constants';
 
@@ -9,6 +11,34 @@ const initialState = {
 
 export default handleActions(
     {
+        [Constants.SONOS_SERVICE_RENDERING_CONTROL_UPDATE]: (state, action) => {
+            const { host, update } = action.payload;
+
+            const bass = parseInt(
+                _.get(update, 'Bass.val') || state.eqState[host].bass
+            );
+            const treble = parseInt(
+                _.get(update, 'Treble.val') || state.eqState[host].treble
+            );
+
+            const loudness = parseInt(
+                _.get(update, 'Loudness.val') || state.eqState[host].loudness
+            );
+
+            return {
+                ...state,
+                eqState: {
+                    ...state.eqState,
+                    [host]: {
+                        ...state.eqState[host],
+                        treble,
+                        bass,
+                        loudness,
+                    },
+                },
+            };
+        },
+
         [Constants.EQ_SELECT]: (state, action) => {
             return {
                 ...state,

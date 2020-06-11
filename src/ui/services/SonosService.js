@@ -95,6 +95,10 @@ const SonosService = {
                 this.onGroupRenderingControlEvent(sonos, ...args)
             );
 
+            sonos.on('RenderingControl', (...args) =>
+                this.onRenderingControlEvent(sonos, ...args)
+            );
+
             sonos.on('ContentDirectory', (...args) =>
                 this.onContentDirectoryEvent(sonos, ...args)
             );
@@ -355,6 +359,16 @@ const SonosService = {
     onQueueEvent(sonos, ...args) {
         console.log('onQueueEvent', sonos.host, ...args);
         this.queryState(sonos);
+    },
+
+    onRenderingControlEvent({ host }, update) {
+        console.log('onRenderingControlEvent', host, update);
+        store.dispatch(
+            serviceActions.renderingControlUpdate({
+                host,
+                update,
+            })
+        );
     },
 
     onGroupRenderingControlEvent(sonos, ...args) {

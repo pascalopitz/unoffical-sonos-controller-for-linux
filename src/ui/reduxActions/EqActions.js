@@ -10,7 +10,6 @@ import { getPlayers } from '../selectors/GroupManagementSelectors';
 export const setValue = createAction(
     Constants.EQ_SET_VALUE,
     async ({ host, name, value }) => {
-        console.log({ host, name, value });
         const sonos = SonosService.getDeviceByHost(host);
         const renderingControl = sonos.renderingControlService();
 
@@ -20,6 +19,10 @@ export const setValue = createAction(
 
         if (name === 'treble') {
             await renderingControl.SetTreble(value);
+        }
+
+        if (name === 'loudness') {
+            await renderingControl.SetLoudness(value);
         }
 
         return { host, name, value };
@@ -35,11 +38,13 @@ export const loadPlayer = createAction(Constants.EQ_LOAD, async (host) => {
 
     const bass = await renderingControl.GetBass();
     const treble = await renderingControl.GetTreble();
+    const loudness = await renderingControl.GetLoudness();
 
     return {
         host,
         bass,
         treble,
+        loudness,
     };
 });
 
