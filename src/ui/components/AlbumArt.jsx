@@ -23,15 +23,14 @@ async function chachedOrfetch(src) {
         return loadCache.get(src);
     }
 
-    return await fetch(src)
-        .then((response) => {
-            if (!response.ok) {
-                throw Error(response.status);
-            }
-            return response;
-        })
-        .then((response) => response.blob())
-        .then((blob) => URL.createObjectURL(blob));
+    return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.src = src;
+        image.onload = resolve;
+        image.onerror = reject;
+    }).then(() => {
+        return src;
+    });
 }
 
 export class AlbumArt extends Component {

@@ -3,7 +3,14 @@ import { connect } from 'react-redux';
 
 import classnames from 'classnames';
 
-import { hide, setValue, select } from '../reduxActions/EqActions';
+import {
+    hide,
+    setValue,
+    select,
+    breakPair,
+    createPair,
+} from '../reduxActions/EqActions';
+
 import { getPlayers } from '../selectors/GroupManagementSelectors';
 
 import ValueSlider from './ValueSlider';
@@ -19,6 +26,8 @@ const mapDispatchToProps = {
     hide,
     setValue,
     select,
+    breakPair,
+    createPair,
 };
 
 const toPercentage = (input, min, max) =>
@@ -28,6 +37,34 @@ const fromPercentage = (percentage, min, max) =>
     Math.round((percentage * (max - min)) / 100 + min);
 
 export class EqSettings extends Component {
+    state = {
+        pairOn: 'LF',
+    };
+
+    static getDerivedStateFromProps(nextProps, ownState) {
+        const { players, host, visible } = nextProps;
+
+        if (!host || !visible) {
+            return null;
+        }
+
+        const player = players.find((p) => p.host === host) || players[0];
+        const pairablePlayers = players.filter(
+            (p) =>
+                p.model === player.model &&
+                p.UUID !== player.UUID &&
+                !p.isPaired
+        );
+
+        const pairWith = ownState.pairWith || (pairablePlayers[0] || {}).UUID;
+
+        return {
+            pairablePlayers,
+            player,
+            pairWith,
+        };
+    }
+
     _changeValue = (name, value) => {
         const { host, setValue } = this.props;
 
@@ -42,6 +79,27 @@ export class EqSettings extends Component {
         this.props.hide();
     };
 
+    _breakPair = (player) => {
+        this.props.breakPair(player);
+    };
+
+    _createPair = () => {
+        const { players } = this.props;
+        const { pairOn, pairWith, player } = this.state;
+
+        const { UUID } = player;
+
+        const left = pairOn === 'RF' ? UUID : pairWith;
+        const right = pairOn === 'LF' ? UUID : pairWith;
+
+        const target =
+            pairOn === 'RF' ? player : players.find((p) => p.UUID === pairWith);
+
+        const channelMap = `${left}:LF,LF;${right}:RF,RF`;
+
+        this.props.createPair(target, channelMap);
+    };
+
     render() {
         const { visible, players, host, eqState } = this.props;
 
@@ -49,8 +107,11 @@ export class EqSettings extends Component {
             return null;
         }
 
-        const { bass = 0, treble = 0, loudness = 0 } = eqState[host] || {};
-        const player = players.find((p) => p.host === host);
+        const { bass = 0, treble = 0, loudness = 0, balance = 0 } =
+            eqState[host] || {};
+
+        const { pairOn, pairWith, pairablePlayers, player } = this.state;
+        const { isStereo, isPaired } = player;
 
         return (
             <div
@@ -100,6 +161,25 @@ export class EqSettings extends Component {
                         />
                     </div>
 
+                    {isStereo ? (
+                        <div className="row">
+                            <span className="label">
+                                Balance (
+                                {100 - Math.abs(Math.abs(balance) - 100)}
+                                {balance === 0 ? '' : balance > 0 ? 'L' : 'R'})
+                            </span>
+                            <ValueSlider
+                                value={toPercentage(balance, +100, -100)}
+                                dragHandler={(percentage) =>
+                                    this._changeValue(
+                                        'balance',
+                                        fromPercentage(percentage, +100, -100)
+                                    )
+                                }
+                            />
+                        </div>
+                    ) : null}
+
                     <div className="row">
                         <span className="label">Loudness</span>
                         <input
@@ -114,6 +194,55 @@ export class EqSettings extends Component {
                             }}
                         />
                     </div>
+
+                    {isPaired ? (
+                        <button
+                            onClick={() => this._breakPair(player)}
+                            className="cancel-button"
+                        >
+                            Break stereo pair
+                        </button>
+                    ) : null}
+
+                    {!isPaired && pairablePlayers.length ? (
+                        <div className="row pairing">
+                            <button
+                                onClick={() => this._createPair()}
+                                className="button"
+                            >
+                                Create stereo pair
+                            </button>
+                            with
+                            <select
+                                className="pairing-player-selector"
+                                onChange={(e) =>
+                                    this.setState({
+                                        pairWith: e.target.value,
+                                    })
+                                }
+                                value={pairWith}
+                            >
+                                {pairablePlayers.map((p) => (
+                                    <option key={p.UUID} value={p.UUID}>
+                                        {p.ZoneName}
+                                    </option>
+                                ))}
+                            </select>
+                            to the
+                            <select
+                                className="pairing-player-position-selector"
+                                onChange={(e) =>
+                                    this.setState({
+                                        pairOn: e.target.value,
+                                    })
+                                }
+                                value={pairOn}
+                            >
+                                <option value="LF">Left</option>
+                                <option value="RF">Right</option>
+                            </select>
+                        </div>
+                    ) : null}
 
                     <button onClick={this._hide} className="save-button">
                         Done

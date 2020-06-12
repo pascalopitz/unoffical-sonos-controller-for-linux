@@ -17,12 +17,35 @@ const initialState = {
 
 export const REG = /^http:\/\/([\d\.]+)/;
 
+// SEE: https://github.com/gotwalt/sonos/issues/50#issuecomment-216881231
 const ACCESSORY_MODELS = {
     CR100: 'CR100', // Released Jan 2005
     CR200: 'CONTROL', // Released Jul 2009
     WD100: 'DOCK', //
     ZB100: 'BRIDGE', // Released Oct 2007
     BR200: 'BOOST', //
+};
+
+const MONO_MODELS = {
+    ZPS1: 'Play:1',
+};
+
+const CHANNEL_MAPPING = {
+    'LF,LF': 'LF',
+    'RF,RF': 'RF',
+    'SW,SW': 'Sub',
+};
+
+const getChannels = (ChannelMapSet) => {
+    return ChannelMapSet.split(';').reduce((prev, entry) => {
+        const [id, channelRaw] = entry.split(':');
+        const channel = CHANNEL_MAPPING[channelRaw];
+
+        return {
+            ...prev,
+            [channel]: id,
+        };
+    }, {});
 };
 
 function topologyReducer(state, action) {
@@ -43,17 +66,23 @@ function topologyReducer(state, action) {
                     !CurrentZonePlayerUUIDsInGroup ||
                     CurrentZonePlayerUUIDsInGroup.indexOf(m.UUID) !== -1
             ).map((m) => {
-                const matches = g.ZoneGroupMember.filter(
-                    (n) => n.ZoneName === m.ZoneName
-                );
+                const device = devices.find((d) => d.host === g.host);
+                const model = device.model;
+                const isPaired = !!m.ChannelMapSet;
+                const isStereo = isPaired || !MONO_MODELS[model];
+                const ZoneName = isPaired
+                    ? `${m.ZoneName} (L + R)`
+                    : m.ZoneName;
 
-                const namePresentTwice = matches.length === 2;
+                const Channels = isPaired ? getChannels(m.ChannelMapSet) : null;
 
                 return {
                     ...m,
-                    ZoneName: namePresentTwice
-                        ? `${m.ZoneName} (L + R)`
-                        : m.ZoneName,
+                    model,
+                    isPaired,
+                    isStereo,
+                    ZoneName,
+                    Channels,
                 };
             });
 

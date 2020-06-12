@@ -3,7 +3,7 @@ import { Listener } from 'sonos';
 
 import { initialise as intialiseServiceLogos } from '../helpers/getServiceLogoUrl';
 
-import { discoverMultiple } from '../helpers/sonos';
+import { discoverMultiple } from './enhanced/Discovery';
 
 import * as serviceActions from '../reduxActions/SonosServiceActions';
 
@@ -74,10 +74,8 @@ const SonosService = {
         const [first] = devices;
         const groups = await first.getAllGroups();
 
-        const zpInfo = await first.getZPInfo().catch(() => {});
-
-        this.householdId = zpInfo.HouseholdControlID;
-        this.deviceId = zpInfo.SerialNumber;
+        this.householdId = first.householdId;
+        this.deviceId = first.deviceId;
 
         Listener.on('ZonesChanged', (...args) =>
             this.onZoneGroupTopologyEvent(first, ...args)

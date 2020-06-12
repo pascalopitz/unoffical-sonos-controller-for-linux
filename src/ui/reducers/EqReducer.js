@@ -14,16 +14,35 @@ export default handleActions(
         [Constants.SONOS_SERVICE_RENDERING_CONTROL_UPDATE]: (state, action) => {
             const { host, update } = action.payload;
 
-            const bass = parseInt(
-                _.get(update, 'Bass.val') || state.eqState[host].bass
-            );
+            const hostState = state.eqState[host] || {
+                bass: 0,
+                treble: 0,
+                loudness: 0,
+                balance: 0,
+            };
+
+            const bass = parseInt(_.get(update, 'Bass.val') || hostState.bass);
             const treble = parseInt(
-                _.get(update, 'Treble.val') || state.eqState[host].treble
+                _.get(update, 'Treble.val') || hostState.treble
             );
 
             const loudness = parseInt(
-                _.get(update, 'Loudness.val') || state.eqState[host].loudness
+                _.get(update, 'Loudness.val') || hostState.loudness
             );
+
+            let balance = hostState.balance;
+            const volumeUpdate = _.get(update, 'Volume');
+
+            if (volumeUpdate) {
+                const LF = parseInt(
+                    volumeUpdate.find((u) => u.channel === 'LF').val
+                );
+                const RF = parseInt(
+                    volumeUpdate.find((u) => u.channel === 'RF').val
+                );
+
+                balance = LF - RF;
+            }
 
             return {
                 ...state,
@@ -34,6 +53,7 @@ export default handleActions(
                         treble,
                         bass,
                         loudness,
+                        balance,
                     },
                 },
             };

@@ -25,6 +25,10 @@ export const setValue = createAction(
             await renderingControl.SetLoudness(value);
         }
 
+        if (name === 'balance') {
+            await sonos.setBalance(value);
+        }
+
         return { host, name, value };
     }
 );
@@ -36,12 +40,14 @@ export const loadPlayer = createAction(Constants.EQ_LOAD, async (host) => {
     const sonos = SonosService.getDeviceByHost(host);
     const renderingControl = sonos.renderingControlService();
 
+    const balance = await sonos.getBalance();
     const bass = await renderingControl.GetBass();
     const treble = await renderingControl.GetTreble();
     const loudness = await renderingControl.GetLoudness();
 
     return {
         host,
+        balance,
         bass,
         treble,
         loudness,
@@ -59,3 +65,29 @@ export const show = createAction(Constants.EQ_SHOW, async () => {
         await store.dispatch(loadPlayer(p.host));
     }
 });
+
+export const breakPair = createAction(
+    Constants.EQ_BREAK_PAIR,
+    async (player) => {
+        const sonos = SonosService.getDeviceByHost(player.host);
+        const deviceProperties = sonos.devicePropertiesService();
+
+        await deviceProperties.RemoveBondedZones();
+
+        store.dispatch(show());
+    }
+);
+
+export const createPair = createAction(
+    Constants.EQ_CREATE_PAIR,
+    async (player, channelMap) => {
+        const sonos = SonosService.getDeviceByHost(player.host);
+        const deviceProperties = sonos.devicePropertiesService();
+
+        await sonos.becomeCoordinatorOfStandaloneGroup();
+        await deviceProperties.AddBondedZones(channelMap);
+        await deviceProperties.SetZoneAttributes(sonos.name, sonos.icon);
+
+        store.dispatch(show());
+    }
+);
