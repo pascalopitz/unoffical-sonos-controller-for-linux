@@ -8,6 +8,8 @@ import { isStreamUrl } from '../helpers/sonos';
 
 import SonosService from '../services/SonosService';
 
+export const wakeup = createAction(Constants.SONOS_SERVICE_WAKEUP);
+
 export const deviceSearchResult = createAction(
     Constants.SONOS_SERVICE_DEVICE_SEARCH_RESULT
 );

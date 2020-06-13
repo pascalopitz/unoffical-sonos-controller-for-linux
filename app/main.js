@@ -254,7 +254,7 @@ function createWindow() {
 
     wakeEvent(() => {
         if (win) {
-            win.reload();
+            win.webContents.executeJavaScript('SonosService.wakeup()', true);
         }
     });
 

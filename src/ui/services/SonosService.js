@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Listener } from 'sonos';
 
-import { initialise as intialiseServiceLogos } from '../helpers/getServiceLogoUrl';
+import { initialise as initialiseServiceLogos } from '../helpers/getServiceLogoUrl';
 
 import { discoverMultiple } from './enhanced/Discovery';
 
@@ -59,17 +59,22 @@ const SonosService = {
     getDeviceByHost,
 
     async mount() {
-        await intialiseServiceLogos();
+        await initialiseServiceLogos();
         this.searchForDevices();
         this.restoreMusicServices();
+    },
+
+    async wakeup() {
+        store.dispatch(serviceActions.wakeup());
+        setTimeout(() => this.searchForDevices(), 2000);
     },
 
     get _currentDevice() {
         return getSonosDeviceOrCurrentOrFirst();
     },
 
-    async searchForDevices() {
-        const devices = await discoverMultiple({ timeout: 2000 });
+    async searchForDevices(timeout = 1000) {
+        const devices = await discoverMultiple({ timeout });
 
         const [first] = devices;
         const groups = await first.getAllGroups();
