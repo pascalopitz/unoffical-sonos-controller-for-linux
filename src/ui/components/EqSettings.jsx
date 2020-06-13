@@ -53,7 +53,8 @@ export class EqSettings extends Component {
             (p) =>
                 p.model === player.model &&
                 p.UUID !== player.UUID &&
-                !p.isPaired
+                !p.isPaired &&
+                !p.isSurround
         );
 
         const pairWith = ownState.pairWith || (pairablePlayers[0] || {}).UUID;
@@ -84,20 +85,11 @@ export class EqSettings extends Component {
     };
 
     _createPair = () => {
-        const { players } = this.props;
-        const { pairOn, pairWith, player } = this.state;
+        const { pairOn, pairWith, player, pairablePlayers } = this.state;
 
-        const { UUID } = player;
+        const pairedPlayer = pairablePlayers.find((p) => p.UUID === pairWith);
 
-        const left = pairOn === 'RF' ? UUID : pairWith;
-        const right = pairOn === 'LF' ? UUID : pairWith;
-
-        const target =
-            pairOn === 'RF' ? player : players.find((p) => p.UUID === pairWith);
-
-        const channelMap = `${left}:LF,LF;${right}:RF,RF`;
-
-        this.props.createPair(target, channelMap);
+        this.props.createPair(player, pairedPlayer, pairOn);
     };
 
     render() {
@@ -196,23 +188,20 @@ export class EqSettings extends Component {
                     </div>
 
                     {isPaired ? (
-                        <button
-                            onClick={() => this._breakPair(player)}
-                            className="cancel-button"
-                        >
-                            Break stereo pair
-                        </button>
+                        <div className="row pairing">
+                            <span>Linked to other zones</span>
+                            <button
+                                onClick={() => this._breakPair(player)}
+                                className="button"
+                            >
+                                Unlink
+                            </button>
+                        </div>
                     ) : null}
 
                     {!isPaired && pairablePlayers.length ? (
                         <div className="row pairing">
-                            <button
-                                onClick={() => this._createPair()}
-                                className="button"
-                            >
-                                Create stereo pair
-                            </button>
-                            with
+                            <span>Link to</span>
                             <select
                                 className="pairing-player-selector"
                                 onChange={(e) =>
@@ -228,7 +217,7 @@ export class EqSettings extends Component {
                                     </option>
                                 ))}
                             </select>
-                            to the
+                            <span>to the</span>
                             <select
                                 className="pairing-player-position-selector"
                                 onChange={(e) =>
@@ -241,6 +230,12 @@ export class EqSettings extends Component {
                                 <option value="LF">Left</option>
                                 <option value="RF">Right</option>
                             </select>
+                            <button
+                                onClick={() => this._createPair()}
+                                className="button"
+                            >
+                                Link
+                            </button>
                         </div>
                     ) : null}
 

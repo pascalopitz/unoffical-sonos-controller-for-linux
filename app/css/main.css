@@ -1063,6 +1063,9 @@ body #queue-container li[data-is-current="true"] {
     background: rgba(200, 200, 200);
     padding: 20px;
     position: relative;
+
+    color: black;
+    text-shadow: none;
 }
 
 #playlist-management.modal.edit .modal-inner {
@@ -1133,18 +1136,19 @@ body #queue-container li[data-is-current="true"] {
     border: 1px solid black;
     padding: 10px 10px 10px 10px;
     border-radius: 5px;
-    position: absolute;
     bottom: 10px;
     color: #ffffff;
     font-size: 15px;
 }
 
 .modal-inner button.cancel-button {
+    position: absolute;
     left: 10px;
 }
 
 body .modal-inner button.next-button,
 body .modal-inner button.save-button {
+    position: absolute;
     right: 10px;
 }
 
@@ -1183,12 +1187,35 @@ body .modal-inner h3 {
     font-size: 20px;
 }
 
+body .modal-inner select {
+    padding: 5px;
+    background: transparent;
+    border-radius: 5px;
+}
+
 body .modal-inner .player-selector {
     position: absolute;
     top: 30px;
     right: 30px;
-    padding: 5px;
     min-width: 200px;
-    background: transparent;
-    border-radius: 5px;
+}
+
+body .modal-inner .row.pairing {
+    margin-top: 10px;
+}
+
+body .modal-inner .row.pairing > * {
+    display: inline-block;
+    margin: 15px 5px;
+}
+
+body .modal-inner .row.pairing .button {
+    padding: 4px;
+}
+
+body .modal-inner .row.pairing .button i.material-icons {
+    margin: 0;
+    padding: 0;
+    font-size: 17px;
+    vertical-align: middle;
 }

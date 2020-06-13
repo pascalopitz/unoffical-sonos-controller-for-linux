@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { handleActions } from 'redux-actions';
 import Constants from '../constants';
 
@@ -30,20 +31,21 @@ const MONO_MODELS = {
     ZPS1: 'Play:1',
 };
 
-const CHANNEL_MAPPING = {
-    'LF,LF': 'LF',
-    'RF,RF': 'RF',
-    'SW,SW': 'Sub',
-};
-
 const getChannels = (ChannelMapSet) => {
+    if (!ChannelMapSet) {
+        return null;
+    }
+
     return ChannelMapSet.split(';').reduce((prev, entry) => {
         const [id, channelRaw] = entry.split(':');
-        const channel = CHANNEL_MAPPING[channelRaw];
+        const channels = _.uniq(channelRaw.split(',')).reduce(
+            (p, channel) => ({ ...p, [channel]: id }),
+            {}
+        );
 
         return {
             ...prev,
-            [channel]: id,
+            ...channels,
         };
     }, {});
 };
@@ -68,19 +70,29 @@ function topologyReducer(state, action) {
             ).map((m) => {
                 const device = devices.find((d) => d.host === g.host);
                 const model = device.model;
-                const isPaired = !!m.ChannelMapSet;
-                const isStereo = isPaired || !MONO_MODELS[model];
-                const ZoneName = isPaired
-                    ? `${m.ZoneName} (L + R)`
-                    : m.ZoneName;
 
-                const Channels = isPaired ? getChannels(m.ChannelMapSet) : null;
+                const isPaired = !!m.ChannelMapSet;
+                const isSurround = !!m.HTSatChanMapSet;
+
+                // TODO: this is pretty vague. WHat if we have a play1 paired with a subwoofer? Is that possible?
+                const isStereo = isPaired || isSurround || !MONO_MODELS[model];
+
+                const Channels = getChannels(
+                    m.ChannelMapSet || m.HTSatChanMapSet
+                );
+
+                const ZoneName = isPaired
+                    ? `${m.ZoneName} (${Object.keys(Channels)
+                          .map((s) => s.substr(0, 1))
+                          .join(' + ')})`
+                    : m.ZoneName;
 
                 return {
                     ...m,
                     model,
                     isPaired,
                     isStereo,
+                    isSurround,
                     ZoneName,
                     Channels,
                 };

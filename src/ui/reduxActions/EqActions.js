@@ -54,12 +54,12 @@ export const loadPlayer = createAction(Constants.EQ_LOAD, async (host) => {
     };
 });
 
-export const show = createAction(Constants.EQ_SHOW, async () => {
+export const show = createAction(Constants.EQ_SHOW, async (host) => {
     const state = store.getState();
     const { currentHost } = state.sonosService;
     const players = getPlayers(state);
 
-    await store.dispatch(select(currentHost || players[0].host));
+    await store.dispatch(select(host || currentHost || players[0].host));
 
     for (const p of players) {
         await store.dispatch(loadPlayer(p.host));
@@ -80,14 +80,22 @@ export const breakPair = createAction(
 
 export const createPair = createAction(
     Constants.EQ_CREATE_PAIR,
-    async (player, channelMap) => {
-        const sonos = SonosService.getDeviceByHost(player.host);
-        const deviceProperties = sonos.devicePropertiesService();
+    async (player, pairedPlayer, pairOn) => {
+        const right = pairOn === 'RF' ? player : pairedPlayer;
+        const left = pairOn === 'LF' ? player : pairedPlayer;
 
-        await sonos.becomeCoordinatorOfStandaloneGroup();
+        const channelMap = `${left.UUID}:LF,LF;${right.UUID}:RF,RF`;
+
+        // GOTCHA: the player needs to be the one on the left, otherwise UPNP call fails
+        const leftSonos = SonosService.getDeviceByHost(left.host);
+        const rightSonos = SonosService.getDeviceByHost(right.host);
+        const deviceProperties = leftSonos.devicePropertiesService();
+
+        await leftSonos.becomeCoordinatorOfStandaloneGroup();
+        await rightSonos.becomeCoordinatorOfStandaloneGroup();
         await deviceProperties.AddBondedZones(channelMap);
-        await deviceProperties.SetZoneAttributes(sonos.name, sonos.icon);
+        await deviceProperties.SetZoneAttributes(player.ZoneName, player.Icon);
 
-        store.dispatch(show());
+        store.dispatch(show(leftSonos.host));
     }
 );
