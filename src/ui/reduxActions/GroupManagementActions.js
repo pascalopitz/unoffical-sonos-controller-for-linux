@@ -23,6 +23,10 @@ export const saveGroups = createAction(
             (z) => z.inGroup === currentGroup
         );
 
+        const currentCoordinator = _.find(currentGroupMembers, {
+            isCoordinator: true,
+        });
+
         const targetGroupMembers = allPlayers.filter((z) =>
             _.includes(selected, z.UUID)
         );
@@ -32,25 +36,15 @@ export const saveGroups = createAction(
             targetGroupMembers
         );
 
-        const coordinator =
-            _.find(targetGroupMembers, {
-                isCoordinator: true,
-                group: currentGroup,
-            }) ||
-            _.find(targetGroupMembers, {
-                isCoordinator: true,
-            }) ||
-            _.head(targetGroupMembers);
-
         const addingGroupMembers = targetGroupMembers.filter(
-            (z) => z !== coordinator
+            (z) => z !== currentCoordinator
         );
 
         try {
             for (const z of addingGroupMembers) {
                 const sonos = SonosService.getDeviceByHost(z.host);
                 await sonos.setAVTransportURI({
-                    uri: `x-rincon:${coordinator.UUID}`,
+                    uri: `x-rincon:${currentCoordinator.UUID}`,
                     onlySetUri: true,
                 });
             }

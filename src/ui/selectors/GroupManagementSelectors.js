@@ -15,7 +15,7 @@ export function getPlayers(state) {
                 port,
                 model,
                 inGroup: z.ID,
-                isCoordinator: z.Coordinator === m.ID,
+                isCoordinator: z.Coordinator === m.UUID,
             };
         });
 
