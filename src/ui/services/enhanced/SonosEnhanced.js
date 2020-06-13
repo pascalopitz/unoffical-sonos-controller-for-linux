@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import request from 'axios';
 
 import { Sonos, Services, Helpers } from 'sonos';
