@@ -74,7 +74,13 @@ For any issues, please submit them on the [issues page](https://github.com/pasca
   Also made it into an ES6 code base where it was easy to do.
   Then, for version 0.2.0 I have removed the ported/modified code and am now using node-sonos vanilla.
 
-- The web interface markup and css is poached from https://github.com/jishi/node-sonos-web-controller/
+- The web interface markup and css is adapted from https://github.com/jishi/node-sonos-web-controller/
+
+- SoCo is a great codebase that helped a lot with special cases and references: https://github.com/SoCo
+
+- Some comments on the ruby sonos project really helped: https://github.com/gotwalt/sonos
+
+- Node-sonos-ts has an interesting approach of auto-generating code from the Sonos XML service definitions: https://github.com/svrooij/node-sonos-ts
 
 Please refer to the above projects' licenses (MIT), where they apply.
 

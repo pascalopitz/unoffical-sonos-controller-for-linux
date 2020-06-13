@@ -630,7 +630,7 @@ class MusicServiceClient {
                 this.searchTermMap = _.get(searchCategories, 'Category');
             }
 
-            // See: https://github.com/SoCo/SoCo/blob/daba00b93b939fb4079778b4ed5a9abe07922c85/soco/music_services/music_service.py#L528
+            // INFO: https://github.com/SoCo/SoCo/blob/daba00b93b939fb4079778b4ed5a9abe07922c85/soco/music_services/music_service.py#L528
             if (res.status === 404 && this.name === 'TuneIn') {
                 this.searchTermMap = [
                     { id: 'stations', mappedId: 'search:station' },

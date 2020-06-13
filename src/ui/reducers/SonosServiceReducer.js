@@ -18,7 +18,7 @@ const initialState = {
 
 export const REG = /^http:\/\/([\d\.]+)/;
 
-// SEE: https://github.com/gotwalt/sonos/issues/50#issuecomment-216881231
+// INFO: https://github.com/gotwalt/sonos/issues/50#issuecomment-216881231
 const ACCESSORY_MODELS = {
     CR100: 'CR100', // Released Jan 2005
     CR200: 'CONTROL', // Released Jul 2009
