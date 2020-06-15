@@ -57,6 +57,7 @@ function topologyReducer(state, action) {
         .filter((g) => {
             const groupDevice = devices.find((d) => d.host === g.host);
             const isAccessory =
+                groupDevice &&
                 Object.keys(ACCESSORY_MODELS).indexOf(groupDevice.model) > -1;
             return isAccessory === false;
         })
