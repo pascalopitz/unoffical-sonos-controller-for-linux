@@ -41,4 +41,17 @@ export default class RenderingControlEnhanced extends Services.RenderingControl 
             DesiredTreble: treble,
         });
     };
+
+    GetRoomCalibrationStatus = async () => {
+        return this._request('GetRoomCalibrationStatus', {
+            InstanceID: 0,
+        });
+    };
+
+    SetRoomCalibrationStatus = async (RoomCalibrationEnabled = 0) => {
+        return this._request('SetRoomCalibrationStatus', {
+            InstanceID: 0,
+            RoomCalibrationEnabled,
+        });
+    };
 }

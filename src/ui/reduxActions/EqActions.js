@@ -44,6 +44,7 @@ export const loadPlayer = createAction(Constants.EQ_LOAD, async (host) => {
     const bass = await renderingControl.GetBass();
     const treble = await renderingControl.GetTreble();
     const loudness = await renderingControl.GetLoudness();
+    const calibration = await renderingControl.GetRoomCalibrationStatus();
 
     return {
         host,
@@ -51,6 +52,7 @@ export const loadPlayer = createAction(Constants.EQ_LOAD, async (host) => {
         bass,
         treble,
         loudness,
+        calibration,
     };
 });
 
@@ -97,5 +99,24 @@ export const createPair = createAction(
         await deviceProperties.SetZoneAttributes(player.ZoneName, player.Icon);
 
         store.dispatch(show(leftSonos.host));
+    }
+);
+
+export const setTruePlay = createAction(
+    Constants.EQ_TRUEPLAY,
+    async ({ host, value }) => {
+        const sonos = SonosService.getDeviceByHost(host);
+        const renderingControl = sonos.renderingControlService();
+
+        const calibration = await renderingControl.SetRoomCalibrationStatus(
+            value
+        );
+
+        store.dispatch(loadPlayer(host));
+
+        return {
+            host,
+            calibration,
+        };
     }
 );

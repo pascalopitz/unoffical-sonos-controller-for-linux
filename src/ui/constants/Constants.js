@@ -46,6 +46,7 @@ const Constants = {
     EQ_SELECT: '',
     EQ_BREAK_PAIR: '',
     EQ_CREATE_PAIR: '',
+    EQ_TRUEPLAY: '',
 
     PLAYLISTS_SHOW: '',
     PLAYLISTS_HIDE: '',

@@ -9,6 +9,7 @@ import {
     select,
     breakPair,
     createPair,
+    setTruePlay,
 } from '../reduxActions/EqActions';
 
 import { getPlayers } from '../selectors/GroupManagementSelectors';
@@ -28,6 +29,7 @@ const mapDispatchToProps = {
     select,
     breakPair,
     createPair,
+    setTruePlay,
 };
 
 const toPercentage = (input, min, max) =>
@@ -84,6 +86,11 @@ export class EqSettings extends Component {
         this.props.breakPair(player);
     };
 
+    _setTruePlay = (value) => {
+        const { host, setTruePlay } = this.props;
+        setTruePlay({ host, value });
+    };
+
     _createPair = () => {
         const { pairOn, pairWith, player, pairablePlayers } = this.state;
 
@@ -99,11 +106,18 @@ export class EqSettings extends Component {
             return null;
         }
 
-        const { bass = 0, treble = 0, loudness = 0, balance = 0 } =
-            eqState[host] || {};
+        const {
+            bass = 0,
+            treble = 0,
+            loudness = 0,
+            balance = 0,
+            calibration = {},
+        } = eqState[host] || {};
 
         const { pairOn, pairWith, pairablePlayers, player } = this.state;
         const { isStereo, isPaired } = player;
+        const isTruePlay = calibration.RoomCalibrationEnabled === '1';
+        const truePlayAvailable = calibration.RoomCalibrationAvailable === '1';
 
         return (
             <div
@@ -153,7 +167,7 @@ export class EqSettings extends Component {
                         />
                     </div>
 
-                    {isStereo ? (
+                    {isStereo && !isTruePlay ? (
                         <div className="row">
                             <span className="label">
                                 Balance (
@@ -177,15 +191,29 @@ export class EqSettings extends Component {
                         <input
                             type="checkbox"
                             checked={loudness}
-                            value={loudness}
+                            value={1}
                             onChange={(e) => {
                                 this._changeValue(
                                     'loudness',
-                                    e.target.value == 1 ? 0 : 1
+                                    e.target.checked ? 1 : 0
                                 );
                             }}
                         />
                     </div>
+
+                    {truePlayAvailable ? (
+                        <div className="row">
+                            <span className="label">Enable TruePlay</span>
+                            <input
+                                type="checkbox"
+                                checked={isTruePlay}
+                                value={1}
+                                onChange={(e) => {
+                                    this._setTruePlay(e.target.checked ? 1 : 0);
+                                }}
+                            />
+                        </div>
+                    ) : null}
 
                     {isPaired ? (
                         <div className="row pairing">

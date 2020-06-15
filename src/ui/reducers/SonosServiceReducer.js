@@ -18,15 +18,6 @@ const initialState = {
 
 export const REG = /^http:\/\/([\d\.]+)/;
 
-// INFO: https://github.com/gotwalt/sonos/issues/50#issuecomment-216881231
-const ACCESSORY_MODELS = {
-    CR100: 'CR100', // Released Jan 2005
-    CR200: 'CONTROL', // Released Jul 2009
-    WD100: 'DOCK', //
-    ZB100: 'BRIDGE', // Released Oct 2007
-    BR200: 'BOOST', //
-};
-
 const MONO_MODELS = {
     ZPS1: 'Play:1',
 };
@@ -55,11 +46,7 @@ function topologyReducer(state, action) {
 
     const zones = groups
         .filter((g) => {
-            const groupDevice = devices.find((d) => d.host === g.host);
-            const isAccessory =
-                groupDevice &&
-                Object.keys(ACCESSORY_MODELS).indexOf(groupDevice.model) > -1;
-            return isAccessory === false;
+            return _.get(g, 'IsZoneBridge') !== '1';
         })
         .map((g) => {
             const { CurrentZonePlayerUUIDsInGroup } = attributes[g.host] || {};
