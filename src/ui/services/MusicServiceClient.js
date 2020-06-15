@@ -362,7 +362,7 @@ class MusicServiceClient {
                 return obj;
             })
             .catch((err) => {
-                if (err.message.indefOf('NOT_LINKED_RETRY') > -1) {
+                if (err.message.indexOf('NOT_LINKED_RETRY') > -1) {
                     // noop
                 }
 
