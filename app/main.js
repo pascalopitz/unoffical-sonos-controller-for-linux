@@ -23,6 +23,7 @@ function createWindow() {
     win = new BrowserWindow({
         width: 800,
         height: 600,
+        icon: path.join(__dirname, '/sonos-512.png'),
         webPreferences: {
             nodeIntegration: true,
         },
