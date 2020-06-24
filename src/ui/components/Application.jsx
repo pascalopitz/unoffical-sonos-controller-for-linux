@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import store from '../reducers';
 
 import SonosService from '../services/SonosService';
+import IpcService from '../services/IpcService';
 
 import CurrentTrack from './CurrentTrack';
 import QueueList from './QueueList';
@@ -24,6 +25,7 @@ window.store = store; // TODO: remove this
 export class Application extends Component {
     componentDidMount() {
         SonosService.mount();
+        IpcService.mount();
     }
 
     render() {

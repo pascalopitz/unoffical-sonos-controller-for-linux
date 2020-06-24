@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.2.0-beta12",
+  "version": "0.2.0-beta13",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "homepage": "http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/",
@@ -17,7 +17,8 @@
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-and-fix": "eslint --fix --ext .jsx --ext .js src",
     "prettier-css": "prettier --tab-width 4 --write app/css/*.css",
-    "test": "jest src"
+    "test": "jest src",
+    "rebuild": "npx electron-rebuild --version `npx electron --version`"
   },
   "author": {
     "name": "Pascal Opitz",

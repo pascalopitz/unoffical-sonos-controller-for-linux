@@ -1,34 +1,16 @@
 const electron = require('electron');
-require('dotenv').config();
+const { Menu, clipboard, dialog } = electron;
 
-const { app, Menu, BrowserWindow, clipboard, dialog } = electron;
-const path = require('path');
-const url = require('url');
 const fs = require('fs');
 const util = require('util');
 
 const blacklist = ['authToken', 'password', 'secret', 'CurrentMuseHouseholdId'];
 const maskJson = require('mask-json')(blacklist);
 
-const wakeEvent = require('wake-event');
-
-const deviceProviderName = 'unofficial-sonos-controller-for-linux';
-
-let win;
-
 const writeFileAsync = util.promisify(fs.writeFile).bind(fs);
 const readFileAsync = util.promisify(fs.readFile).bind(fs);
 
-function createWindow() {
-    win = new BrowserWindow({
-        width: 800,
-        height: 600,
-        icon: path.join(__dirname, '/sonos-512.png'),
-        webPreferences: {
-            nodeIntegration: true,
-        },
-    });
-
+const register = () => {
     const menu = Menu.buildFromTemplate([
         {
             label: 'View',
@@ -56,6 +38,71 @@ function createWindow() {
                 },
                 {
                     role: 'togglefullscreen',
+                },
+            ],
+        },
+        {
+            label: 'Player',
+            submenu: [
+                {
+                    label: 'Volume Up',
+                    accelerator: 'CmdOrCtrl+up',
+                    click(item, win) {
+                        win &&
+                            win.webContents.send('command', {
+                                type: 'VOLUME_UP',
+                            });
+                    },
+                },
+                {
+                    label: 'Volume Down',
+                    accelerator: 'CmdOrCtrl+down',
+                    click(item, win) {
+                        win &&
+                            win.webContents.send('command', {
+                                type: 'VOLUME_DOWN',
+                            });
+                    },
+                },
+                {
+                    label: 'Mute/Unmute',
+                    accelerator: 'CmdOrCtrl+m',
+                    click(item, win) {
+                        win &&
+                            win.webContents.send('command', {
+                                type: 'TOGGLE_MUTE',
+                            });
+                    },
+                },
+                {
+                    label: 'Play/Pause',
+                    accelerator: 'CmdOrCtrl+space',
+                    click(item, win) {
+                        win &&
+                            win.webContents.send('command', {
+                                type: 'TOGGLE_PLAY',
+                            });
+                    },
+                },
+                {
+                    label: 'Prev',
+                    accelerator: 'CmdOrCtrl+left',
+                    click(item, win) {
+                        win &&
+                            win.webContents.send('command', {
+                                type: 'PREV',
+                            });
+                    },
+                },
+                {
+                    label: 'Next',
+                    accelerator: 'CmdOrCtrl+right',
+                    click(item, win) {
+                        win &&
+                            win.webContents.send('command', {
+                                type: 'NEXT',
+                            });
+                    },
                 },
             ],
         },
@@ -236,58 +283,6 @@ function createWindow() {
     ]);
 
     Menu.setApplicationMenu(menu);
+};
 
-    win.webContents.setUserAgent(
-        // Thanks SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
-        `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`
-    );
-    win.loadURL(
-        url.format({
-            pathname: path.join(__dirname, 'window.html'),
-            protocol: 'file:',
-            slashes: true,
-        })
-    );
-
-    win.on('closed', () => {
-        win = null;
-    });
-
-    wakeEvent(() => {
-        if (win) {
-            win.webContents.executeJavaScript('SonosService.wakeup()', true);
-        }
-    });
-
-    if (process.env.NODE_ENV === 'development') {
-        win.webContents.toggleDevTools();
-        win.maximize();
-    }
-}
-
-const gotTheLock = app.requestSingleInstanceLock();
-
-if (!gotTheLock) {
-    app.quit();
-} else {
-    app.on('second-instance', (event, commandLine, workingDirectory) => {
-        if (win) {
-            if (win.isMinimized()) {
-                win.restore();
-            }
-            win.focus();
-        }
-    });
-
-    app.on('ready', createWindow);
-
-    app.on('window-all-closed', () => {
-        app.quit();
-    });
-
-    app.on('activate', () => {
-        if (win === null) {
-            createWindow();
-        }
-    });
-}
+export default register;

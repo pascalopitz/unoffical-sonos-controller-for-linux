@@ -7,6 +7,7 @@ import { Sonos, Services, Helpers } from 'sonos';
 import DevicePropertiesEnhanced from './DevicePropertiesEnhanced';
 import RenderingControlEnhanced from './RenderingControlEnhanced';
 import ContentDirectoryEnhanced from './ContentDirectoryEnhanced';
+import GroupRenderingControlEnhanced from './GroupRenderingControlEnhanced';
 
 const TUNEIN_ID = 65031;
 
@@ -57,7 +58,7 @@ export default class SonosEnhanced extends Sonos {
     }
 
     groupRenderingControlService() {
-        return new Services.GroupRenderingControl(this.host, this.port);
+        return new GroupRenderingControlEnhanced(this.host, this.port);
     }
 
     async getBalance() {
