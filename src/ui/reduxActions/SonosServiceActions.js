@@ -1,12 +1,24 @@
 import _ from 'lodash';
 
+import { Helpers } from 'sonos';
+import { ipcRenderer } from 'electron';
 import { createAction } from 'redux-actions';
+
 import Constants from '../constants';
 
-import { Helpers } from 'sonos';
 import { isStreamUrl } from '../helpers/sonos';
 
 import SonosService from '../services/SonosService';
+
+import store from '../reducers';
+
+export const libraryIndexingUpdate = createAction(
+    Constants.SONOS_SERVICE_LIBRARY_INDEX_UPDATE,
+    async ({ host, status }) => {
+        ipcRenderer.send('library-indexing', status);
+        return { host, status };
+    }
+);
 
 export const wakeup = createAction(Constants.SONOS_SERVICE_WAKEUP);
 
@@ -24,7 +36,15 @@ export const topologyUpdate = createAction(
 );
 
 export const selectCurrentZone = createAction(
-    Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT
+    Constants.SONOS_SERVICE_ZONEGROUPS_DEFAULT,
+    async (zone) => {
+        const state = store.getState();
+        const playState = state.sonosService.playStates[zone.host];
+
+        ipcRenderer.send('playstate-update', playState);
+
+        return zone;
+    }
 );
 
 export const zoneGroupTrackUpdate = createAction(
@@ -68,7 +88,17 @@ export const nextTrackUpdate = createAction(
 );
 
 export const playStateUpdate = createAction(
-    Constants.SONOS_SERVICE_PLAYSTATE_UPDATE
+    Constants.SONOS_SERVICE_PLAYSTATE_UPDATE,
+    async ({ host, playState }) => {
+        const state = store.getState();
+        const { currentHost } = state.sonosService;
+
+        if (host === currentHost) {
+            ipcRenderer.send('playstate-update', playState);
+        }
+
+        return { host, playState };
+    }
 );
 
 export const positionInfoUpdate = createAction(

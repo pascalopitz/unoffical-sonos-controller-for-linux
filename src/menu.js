@@ -1,5 +1,5 @@
 const electron = require('electron');
-const { Menu, clipboard, dialog } = electron;
+const { Menu, clipboard, dialog, ipcMain } = electron;
 
 const fs = require('fs');
 const util = require('util');
@@ -11,7 +11,7 @@ const writeFileAsync = util.promisify(fs.writeFile).bind(fs);
 const readFileAsync = util.promisify(fs.readFile).bind(fs);
 
 const register = () => {
-    const menu = Menu.buildFromTemplate([
+    const menuTemplate = [
         {
             label: 'View',
             submenu: [
@@ -101,6 +101,20 @@ const register = () => {
                         win &&
                             win.webContents.send('command', {
                                 type: 'NEXT',
+                            });
+                    },
+                },
+            ],
+        },
+        {
+            label: 'Library',
+            submenu: [
+                {
+                    label: 'Start Indexing',
+                    click(item, win) {
+                        win &&
+                            win.webContents.send('command', {
+                                type: 'LIBRARY_INDEX',
                             });
                     },
                 },
@@ -280,9 +294,27 @@ const register = () => {
                 },
             ],
         },
-    ]);
+    ];
 
+    const menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
+
+    ipcMain.on('library-indexing', (event, status) => {
+        menuTemplate[2].submenu[0].label = status
+            ? 'Index in progress ...'
+            : 'Start Indexing';
+        menuTemplate[2].submenu[0].enabled = !status;
+        const menu = Menu.buildFromTemplate(menuTemplate);
+        Menu.setApplicationMenu(menu);
+    });
+
+    ipcMain.on('playstate-update', (event, status) => {
+        menuTemplate[1].submenu[3].label =
+            status === 'playing' ? 'Pause' : 'Play';
+
+        const menu = Menu.buildFromTemplate(menuTemplate);
+        Menu.setApplicationMenu(menu);
+    });
 };
 
 export default register;

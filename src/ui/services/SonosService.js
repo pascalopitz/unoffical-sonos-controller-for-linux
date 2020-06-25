@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import { Listener } from 'sonos';
 
 import { initialise as initialiseServiceLogos } from '../helpers/getServiceLogoUrl';
@@ -27,7 +28,7 @@ function getAllDevices() {
     );
 }
 
-function getDeviceByHost(host) {
+export function getDeviceByHost(host) {
     const deviceSearches = _.get(
         store.getState(),
         'sonosService.deviceSearches'
@@ -260,6 +261,13 @@ const SonosService = {
         );
     },
 
+    async queryLibraryIndexing(sonos) {
+        sonos = getSonosDeviceOrCurrentOrFirst(sonos);
+        const contentDirectoryService = sonos.contentDirectoryService();
+        const status = await contentDirectoryService.GetShareIndexInProgress();
+        this.processLibraryIndexingUpdate(sonos, status);
+    },
+
     async queryState(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
 
@@ -274,6 +282,16 @@ const SonosService = {
         this.queryTransportSettings(sonos);
         this.queryCurrentTrackAndPlaystate(sonos);
         this.queryCrossfadeMode(sonos);
+        this.queryLibraryIndexing(sonos);
+    },
+
+    processLibraryIndexingUpdate(sonos, status) {
+        store.dispatch(
+            serviceActions.libraryIndexingUpdate({
+                status: status,
+                host: sonos.host,
+            })
+        );
     },
 
     processPlaystateUpdate(sonos, state) {
@@ -379,10 +397,6 @@ const SonosService = {
         this.queryQueue(sonos);
     },
 
-    onContentDirectoryEvent(sonos, ...args) {
-        console.log('onContentDirectoryEvent', sonos.host, args);
-    },
-
     onMutedEvent({ host }, muted) {
         console.log('onMutedEvent', host, muted);
         store.dispatch(
@@ -428,9 +442,16 @@ const SonosService = {
         );
     },
 
-    onContentDirectoryEvent(sonos, ...args) {
-        console.log('onContentDirectoryEvent', sonos, ...args);
+    onContentDirectoryEvent(sonos, event) {
+        console.log('onContentDirectoryEvent', sonos, event);
         this.queryQueue(sonos);
+
+        if (event.ShareIndexInProgress) {
+            this.processLibraryIndexingUpdate(
+                sonos,
+                event.ShareIndexInProgress !== '0'
+            );
+        }
     },
 };
 

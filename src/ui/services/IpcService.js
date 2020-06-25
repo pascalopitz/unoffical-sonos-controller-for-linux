@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { ipcRenderer } from 'electron';
 
 import SonosService from './SonosService';
-import store from '../reducers';
 
 const VOLUME_STEP = 2;
 
@@ -11,49 +10,57 @@ const query = _.debounce((sonos) => {
 }, 2000);
 
 const handleMessage = async (source, message) => {
-    const state = store.getState();
-
     const sonos = SonosService._currentDevice;
-    const groupRenderingService = sonos.groupRenderingControlService();
-
-    console.log(message, state, sonos);
 
     switch (message.type) {
+        case 'LIBRARY_INDEX': {
+            const contentDirectoryService = sonos.contentDirectoryService();
+            await contentDirectoryService.RefreshShareIndex();
+            break;
+        }
+
         case 'VOLUME_UP': {
+            const groupRenderingService = sonos.groupRenderingControlService();
             await groupRenderingService.SetRelativeGroupVolume(VOLUME_STEP);
+            query(sonos);
             break;
         }
 
         case 'VOLUME_DOWN': {
+            const groupRenderingService = sonos.groupRenderingControlService();
             await groupRenderingService.SetRelativeGroupVolume(
                 VOLUME_STEP * -1
             );
+            query(sonos);
             break;
         }
 
         case 'TOGGLE_MUTE':
+            const groupRenderingService = sonos.groupRenderingControlService();
             const muted = await groupRenderingService.GetGroupMute();
             await groupRenderingService.SetGroupMute(!muted);
+            query(sonos);
             break;
 
         case 'PREV':
             await sonos.previous();
+            query(sonos);
             break;
 
         case 'NEXT':
             await sonos.next();
+            query(sonos);
             break;
 
         case 'TOGGLE_PLAY':
             await sonos.togglePlayback();
+            query(sonos);
             break;
 
         default:
             // noop
             break;
     }
-
-    query(sonos);
 };
 
 export default {
