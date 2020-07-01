@@ -132,7 +132,9 @@ class MusicServiceClient {
         }
 
         if (itemType === 'program') {
-            return 'x-rincon-cpcontainer:000c206c' + escape(trackId);
+            return `x-sonosapi-radio:${escape(
+                trackId
+            )}?sid=${serviceId}&flags=8296&sn=1`;
         }
 
         if (itemType === 'stream') {
@@ -140,11 +142,6 @@ class MusicServiceClient {
                 trackId
             )}?sid=${serviceId}&flags=8224&sn=14`;
         }
-
-        // TODO: figure out why this doesn't work for Soundcloud
-        // if (itemType === 'track') {
-        //     return 'x-rincon-cpcontainer:00032020' + escape(trackId);
-        // }
 
         return `${protocol}:${escape(
             trackId
