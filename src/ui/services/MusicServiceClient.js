@@ -197,8 +197,9 @@ class MusicServiceClient {
             program: {
                 type:
                     'object.item.audioItem.audioBroadcast.#' + item.displayType,
-                token: '000c206c',
-                serviceString: `SA_RINCON${serviceType}_`,
+                token: '100c2068',
+                parentId: 'parentID="0"',
+                serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
         };
 
