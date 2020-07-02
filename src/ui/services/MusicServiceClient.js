@@ -134,7 +134,7 @@ class MusicServiceClient {
         if (itemType === 'program') {
             return `x-sonosapi-radio:${escape(
                 trackId
-            )}?sid=${serviceId}&flags=8296&sn=1`;
+            )}?sid=${serviceId}&flags=8296&sn=17`;
         }
 
         if (itemType === 'stream') {
@@ -238,6 +238,11 @@ class MusicServiceClient {
             <upnp:album>${_.escape(
                 item.trackMetadata.album || ''
             )}</upnp:album>`;
+        } else if (item.albumArtURI) {
+            trackData = `<upnp:albumArtURI>${
+                item.albumArtURI || ''
+            }</upnp:albumArtURI>
+`;
         }
 
         const didl = `<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
