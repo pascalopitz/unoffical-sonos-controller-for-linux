@@ -7,6 +7,7 @@ import { createAction } from 'redux-actions';
 import Constants from '../constants';
 
 import { isStreamUrl } from '../helpers/sonos';
+import { isFwdOnlyUrl } from '../helpers/sonos';
 
 import SonosService from '../services/SonosService';
 
@@ -50,7 +51,7 @@ export const selectCurrentZone = createAction(
 export const zoneGroupTrackUpdate = createAction(
     Constants.SONOS_SERVICE_ZONEGROUP_TRACK_UPDATE,
     async ({ track, host }) => {
-        if (isStreamUrl(track.uri)) {
+        if (isStreamUrl(track.uri) || isFwdOnlyUrl(track.uri)) {
             const sonos = SonosService.getDeviceByHost(host);
             const avTransport = sonos.avTransportService();
             const mediaInfo = await avTransport.GetMediaInfo();
@@ -66,6 +67,7 @@ export const zoneGroupTrackUpdate = createAction(
                 ..._.omitBy(currentTrack, _.isEmpty),
                 ..._.omitBy(trackMeta, _.isEmpty),
                 isStreaming: true,
+                disableNextButton: isStreamUrl(track.uri),
             };
         }
 

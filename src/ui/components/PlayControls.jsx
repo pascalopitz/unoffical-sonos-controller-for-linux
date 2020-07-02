@@ -4,11 +4,16 @@ import classnames from 'classnames';
 
 import { play, pause, playNext, playPrev } from '../reduxActions/PlayerActions';
 
-import { getPlaying, isStreaming } from '../selectors/PlayerSelectors';
+import {
+    getPlaying,
+    isStreaming,
+    disableNextButton,
+} from '../selectors/PlayerSelectors';
 
 const mapStateToProps = (state) => {
     return {
         isStreaming: isStreaming(state),
+        disableNextButton: disableNextButton(state),
         playing: getPlaying(state),
     };
 };
@@ -23,7 +28,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export function PlayControls(props) {
-    const { isStreaming, playing, pause, play } = props;
+    const { isStreaming, disableNextButton, playing, pause, play } = props;
     const src = playing ? 'svg/pause.svg' : 'svg/play.svg';
 
     const _toggle = () => {
@@ -34,8 +39,12 @@ export function PlayControls(props) {
         }
     };
 
-    const css = classnames({
+    const cssprev = classnames({
         disabled: isStreaming,
+    });
+
+    const cssnext = classnames({
+        disabled: disableNextButton,
     });
 
     return (
@@ -48,7 +57,7 @@ export function PlayControls(props) {
                         props.prev();
                     }
                 }}
-                className={css}
+                className={cssprev}
             />
             <div id="play-pause" className="play" onClick={_toggle}>
                 <img id="play" src={src} />
@@ -57,11 +66,11 @@ export function PlayControls(props) {
                 id="next"
                 src="svg/next.svg"
                 onClick={() => {
-                    if (!isStreaming) {
+                    if (!disableNextButton) {
                         props.next();
                     }
                 }}
-                className={css}
+                className={cssnext}
             />
         </div>
     );

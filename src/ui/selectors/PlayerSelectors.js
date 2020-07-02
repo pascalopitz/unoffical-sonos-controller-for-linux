@@ -24,3 +24,11 @@ export function isStreaming(state) {
     const { currentHost, currentTracks } = state.sonosService;
     return currentTracks[currentHost] && currentTracks[currentHost].isStreaming;
 }
+
+export function disableNextButton(state) {
+    const { currentHost, currentTracks } = state.sonosService;
+    return (
+        currentTracks[currentHost] &&
+        currentTracks[currentHost].disableNextButton
+    );
+}
