@@ -501,7 +501,7 @@ export const playNow = createAction(
 
         if (
             item.metadata &&
-            item.class === 'object.item.audioItem.audioBroadcast'
+            item.class.indexOf('object.item.audioItem.audioBroadcast') !== -1
         ) {
             await sonos.setAVTransportURI(item);
         } else if (item.class && item.class === 'object.item.audioItem') {

@@ -132,7 +132,9 @@ class MusicServiceClient {
         }
 
         if (itemType === 'program') {
-            return 'x-rincon-cpcontainer:000c206c' + escape(trackId);
+            return `x-sonosapi-radio:${escape(
+                trackId
+            )}?sid=${serviceId}&flags=8296&sn=17`;
         }
 
         if (itemType === 'stream') {
@@ -140,11 +142,6 @@ class MusicServiceClient {
                 trackId
             )}?sid=${serviceId}&flags=8224&sn=14`;
         }
-
-        // TODO: figure out why this doesn't work for Soundcloud
-        // if (itemType === 'track') {
-        //     return 'x-rincon-cpcontainer:00032020' + escape(trackId);
-        // }
 
         return `${protocol}:${escape(
             trackId
@@ -200,8 +197,9 @@ class MusicServiceClient {
             program: {
                 type:
                     'object.item.audioItem.audioBroadcast.#' + item.displayType,
-                token: '000c206c',
-                serviceString: `SA_RINCON${serviceType}_`,
+                token: '100c2068',
+                parentId: 'parentID="0"',
+                serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
         };
 
@@ -240,6 +238,11 @@ class MusicServiceClient {
             <upnp:album>${_.escape(
                 item.trackMetadata.album || ''
             )}</upnp:album>`;
+        } else if (item.albumArtURI) {
+            trackData = `<upnp:albumArtURI>${
+                item.albumArtURI || ''
+            }</upnp:albumArtURI>
+`;
         }
 
         const didl = `<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
