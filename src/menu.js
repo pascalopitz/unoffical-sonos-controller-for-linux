@@ -2,6 +2,7 @@ const electron = require('electron');
 const { Menu, clipboard, dialog, ipcMain } = electron;
 
 const fs = require('fs');
+const path = require('path');
 const util = require('util');
 
 const blacklist = ['authToken', 'password', 'secret', 'CurrentMuseHouseholdId'];
