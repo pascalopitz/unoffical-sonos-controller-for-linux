@@ -16,6 +16,7 @@ import {
 import store from '../reducers';
 
 const SECOND_QUERY_INTERVAL = 60;
+const SONOS_DISCOVERY_PORT = 1905;
 
 function getSonosDeviceOrCurrentOrFirst(sonos) {
     const state = store.getState();
@@ -75,7 +76,10 @@ const SonosService = {
     },
 
     async searchForDevices(timeout = 1000) {
-        const devices = await discoverMultiple({ timeout });
+        const devices = await discoverMultiple({
+            timeout,
+            port: SONOS_DISCOVERY_PORT,
+        });
 
         const [first] = devices;
         const groups = await first.getAllGroups();
