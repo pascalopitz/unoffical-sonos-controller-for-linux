@@ -57,9 +57,8 @@ This might require some additional binaries, like `graphicsMagick` and
 You will need to whitelist these if you run Ubuntu firewall for example:
 
 - TCP 1400 outgoing
-- TCP 3400 incoming
+- TCP 4000 incoming
 - UDP 1900 outgoing
-- UDP 1905 incoming
 
 ## Contributions
 
