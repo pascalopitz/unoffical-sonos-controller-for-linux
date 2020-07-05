@@ -18,13 +18,38 @@ can run on Linux also, installed via deb file. Maybe it won't have all
 the functions of the real sonos player, but if I can browse the library, Spotify
 and manage the queue, I'll be pretty damn happy.
 
-## Install via .deb file
+## Install via .AppImage file
 
-You can find the latest .deb on the [release page](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/releases).
-You can doubleclick it on Ubuntu to install it via the Software Center, alternatively run
+Find the latest .AppImage on the [release page](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/releases).
+You can right click it on Ubuntu, then under "Permissions" mark is as executable. ALternatively run:
 
 ```bash
-sudo dpkg -i sonos-controller-unofficial-amd64.deb
+chmod +x sonos-controller-unofficial-amd64-0.2.0-beta16.AppImage
+```
+
+After that it can be launched by double click or via invoking it through the terminal.
+
+To create a `.desktop` entry in Ubuntu, add it under something like `~/.local/share/applications/unoffical-sonos-controller-for-linux.desktop`
+with the following content, of course referencing the right file)= location and version:
+
+```
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Terminal=false
+Type=Application
+Categories=Audio;
+Name=sonos-controller-unofficial
+Icon=appimagekit-sonos-controller-unofficial
+Exec="/home/username/Downloads/sonos-controller-unofficial-0.2.0-beta16.AppImage" %U
+```
+
+## Install via .deb file
+
+Find the latest .deb on the [release page](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/releases).
+On Ubuntu, you can double click the downloaded file to install it via the Software Center. Alternatively run
+
+```bash
+sudo dpkg -i sonos-controller-unofficial-amd64-0.2.0-beta16.AppImage
 ```
 
 ##  and Run locally
@@ -43,7 +68,7 @@ Second, start the electron app in develop mode:
 npm run develop
 ```
 
-Building a deb:
+Building a deb and AppImage binaries:
 
 ```bash
 npm run dist
