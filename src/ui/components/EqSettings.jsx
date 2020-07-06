@@ -172,14 +172,14 @@ export class EqSettings extends Component {
                             <span className="label">
                                 Balance (
                                 {100 - Math.abs(Math.abs(balance) - 100)}
-                                {balance === 0 ? '' : balance > 0 ? 'L' : 'R'})
+                                {balance === 0 ? '' : balance > 0 ? 'R' : 'L'})
                             </span>
                             <ValueSlider
-                                value={toPercentage(balance, +100, -100)}
+                                value={toPercentage(balance, -100, +100)}
                                 dragHandler={(percentage) =>
                                     this._changeValue(
                                         'balance',
-                                        fromPercentage(percentage, +100, -100)
+                                        fromPercentage(percentage, -100, +100)
                                     )
                                 }
                             />

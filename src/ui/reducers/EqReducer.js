@@ -41,7 +41,7 @@ export default handleActions(
                     volumeUpdate.find((u) => u.channel === 'RF').val
                 );
 
-                balance = LF - RF;
+                balance = RF - LF;
             }
 
             return {

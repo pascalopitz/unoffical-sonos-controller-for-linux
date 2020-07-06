@@ -4,10 +4,8 @@ import request from 'axios';
 
 import { Sonos, Services, Helpers } from 'sonos';
 
-import DevicePropertiesEnhanced from './DevicePropertiesEnhanced';
 import RenderingControlEnhanced from './RenderingControlEnhanced';
 import ContentDirectoryEnhanced from './ContentDirectoryEnhanced';
-import GroupRenderingControlEnhanced from './GroupRenderingControlEnhanced';
 
 import Listener from './ListenerEnhanced';
 
@@ -67,10 +65,6 @@ export default class SonosEnhanced extends Sonos {
         return new Services.MusicServices(this.host, this.port);
     }
 
-    devicePropertiesService() {
-        return new DevicePropertiesEnhanced(this.host, this.port);
-    }
-
     renderingControlService() {
         return new RenderingControlEnhanced(this.host, this.port);
     }
@@ -80,28 +74,7 @@ export default class SonosEnhanced extends Sonos {
     }
 
     groupRenderingControlService() {
-        return new GroupRenderingControlEnhanced(this.host, this.port);
-    }
-
-    async getBalance() {
-        return (
-            (await this.renderingControlService().GetVolume('LF')) -
-            (await this.renderingControlService().GetVolume('RF'))
-        );
-    }
-
-    async setBalance(balance) {
-        let rightVolume = 100,
-            leftVolume = 100;
-
-        if (balance > 0) {
-            rightVolume = 100 - balance;
-        } else if (balance < 0) {
-            leftVolume = 100 - balance * -1;
-        }
-
-        await this.renderingControlService().SetVolume(leftVolume, 'LF');
-        await this.renderingControlService().SetVolume(rightVolume, 'RF');
+        return new Services.GroupRenderingControl(this.host, this.port);
     }
 
     async getZPInfo() {

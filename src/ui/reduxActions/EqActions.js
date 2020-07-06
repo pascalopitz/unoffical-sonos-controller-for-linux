@@ -74,7 +74,10 @@ export const breakPair = createAction(
         const sonos = SonosService.getDeviceByHost(player.host);
         const deviceProperties = sonos.devicePropertiesService();
 
-        await deviceProperties.RemoveBondedZones();
+        await deviceProperties.RemoveBondedZones({
+            ChannelMapSet: '',
+            KeepGrouped: 0,
+        });
 
         store.dispatch(show());
     }
@@ -95,8 +98,14 @@ export const createPair = createAction(
 
         await leftSonos.becomeCoordinatorOfStandaloneGroup();
         await rightSonos.becomeCoordinatorOfStandaloneGroup();
-        await deviceProperties.AddBondedZones(channelMap);
-        await deviceProperties.SetZoneAttributes(player.ZoneName, player.Icon);
+        await deviceProperties.AddBondedZones({
+            ChannelMapSet: channelMap,
+        });
+        await deviceProperties.SetZoneAttributes({
+            DesiredZoneName: player.ZoneName,
+            DesiredIcon: player.Icon,
+            DesiredConfiguration: '',
+        });
 
         store.dispatch(show(leftSonos.host));
     }

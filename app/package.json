@@ -29,7 +29,7 @@
     "redux-promise": "^0.6.0",
     "reselect": "^4.0.0",
     "shallow-compare": "^1.2.2",
-    "sonos": "^1.13.0",
+    "sonos": "^1.13.2",
     "uuid": "^8.2.0",
     "wake-event": "^0.0.1"
   }
