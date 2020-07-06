@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pascalopitz/unoffical-sonos-controller-for-linux.svg?branch=master)](https://travis-ci.org/pascalopitz/unoffical-sonos-controller-for-linux) [![dependencies Status](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux/status.svg?path=app)](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux?path=app) [![devDependencies Status](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux/dev-status.svg)](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux?type=dev)
+[![Build Status](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/workflows/Build/release/badge.svg)](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/actions?query=workflow%3ABuild%2Frelease) [![dependencies Status](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux/status.svg?path=app)](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux?path=app) [![devDependencies Status](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux/dev-status.svg)](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux?type=dev)
 
 # Unofficial Sonos Controller for Linux
 
@@ -17,6 +17,14 @@ So I am aiming to at some point provide a usable sonos controller that
 can run on Linux also, installed via deb file. Maybe it won't have all
 the functions of the real sonos player, but if I can browse the library, Spotify
 and manage the queue, I'll be pretty damn happy.
+
+## Install via snap
+
+Since v0.2.0-alpha1 the app gets published to snapcraft.
+
+```
+snap install --edge sonos-controller-unofficial
+```
 
 ## Install via .AppImage file
 
