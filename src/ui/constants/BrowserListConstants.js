@@ -1,3 +1,5 @@
+import { IP_ADDRESS, LOCAL_PORT } from '../../common/helpers';
+
 export const START_STATE_ITEMS = [
     {
         title: 'Sonos Favourites',
@@ -19,12 +21,41 @@ export const START_STATE_ITEMS = [
         action: 'linein',
         albumArtURI: './svg/ic_input_48px.svg',
     },
-    {
-        title: 'Add New Music Services',
-        action: 'browseServices',
-        albumArtURI: './svg/ic_add_48px.svg',
-    },
 ];
+
+export const ON_DEVICE_SERVICE = {
+    title: 'On this device',
+    action: 'service',
+    albumArtURI: './svg/computer-white-24dp.svg',
+    service: {
+        service: {
+            Id: null,
+            Name: 'Local Music',
+            Version: '1.1',
+            Uri: `http://${IP_ADDRESS}:${LOCAL_PORT}/smapi`,
+            SecureUri: `http://${IP_ADDRESS}:${LOCAL_PORT}/smapi`,
+            ContainerType: 'MService',
+            Capabilities: '4161',
+            Policy: {
+                Auth: 'Anonymous',
+                PollInterval: '0',
+            },
+            Auth: 'Anonymous',
+            PollInterval: '0',
+            ServiceIDEncoded: 0,
+            presentation: {
+                mapUri: `http://${IP_ADDRESS}:${LOCAL_PORT}/presentation-map`,
+            },
+        },
+        authToken: null,
+    },
+};
+
+export const BROWSE_AVAILABLE_SERVICES = {
+    title: 'Add New Music Services',
+    action: 'browseServices',
+    albumArtURI: './svg/ic_add_48px.svg',
+};
 
 export const START_STATE = {
     source: 'start',

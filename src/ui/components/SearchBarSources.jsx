@@ -21,4 +21,6 @@ export default function SearchBarSources({ sources, currentState }) {
             </div>
         );
     }
+
+    return null;
 }

@@ -1,5 +1,5 @@
 app/ui/*
-app/*.js
+app/**/*.js
 app/fonts
 dist/*
 .git

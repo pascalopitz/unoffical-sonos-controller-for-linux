@@ -347,14 +347,35 @@ const selectService = async (item) => {
     const res = await client.getMetadata('root', 0, 100);
     const searchTermMap = await client.getSearchTermMap();
 
+    const items = [];
+
+    if (res.mediaMetadata) {
+        if (!_.isArray(res.mediaMetadata)) {
+            res.mediaMetadata = [res.mediaMetadata];
+        }
+
+        res.mediaMetadata.forEach((i, idx) => {
+            i.serviceClient = client;
+            items[idx] = i;
+        });
+    }
+
+    if (res.mediaCollection) {
+        if (!_.isArray(res.mediaCollection)) {
+            res.mediaCollection = [res.mediaCollection];
+        }
+
+        res.mediaCollection.forEach((i, idx) => {
+            i.serviceClient = client;
+            items[idx] = i;
+        });
+    }
+
     const state = {
         title: client.name,
         serviceClient: client,
         searchTermMap: searchTermMap,
-        items: _.map(res.mediaCollection, (i) => {
-            i.serviceClient = client;
-            return i;
-        }),
+        items,
     };
 
     return state;

@@ -13,9 +13,15 @@
     "dotenv": "^8.2.0",
     "file-type": "^14.6.1",
     "ip": "^1.1.5",
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-logger": "^3.2.1",
+    "koa-router": "^9.1.0",
     "lodash": "^4.17.11",
     "mask-json": "^1.0.3",
+    "mime": "^2.4.6",
     "moment": "^2.27.0",
+    "music-metadata": "^6.4.0",
     "omit-keys": "^0.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -31,6 +37,7 @@
     "shallow-compare": "^1.2.2",
     "sonos": "^1.13.2",
     "uuid": "^8.2.0",
-    "wake-event": "^0.0.1"
+    "wake-event": "^0.0.1",
+    "walkdir": "^0.4.1"
   }
 }

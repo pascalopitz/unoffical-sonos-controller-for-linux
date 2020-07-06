@@ -1,15 +1,28 @@
-const electron = require('electron');
-const { Menu, clipboard, dialog, ipcMain } = electron;
+import { Menu, clipboard, dialog, ipcMain, shell } from 'electron';
 
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
+import fs from 'fs';
+import path from 'path';
+import { promisify } from 'util';
+import MaskJson from 'mask-json';
+
+import LocalMusic from './localMusic';
+
+import {
+    LOCAL_MUSIC_SET_FOLDER,
+    LOCAL_MUSIC_TOGGLE,
+    LIBRARY_INDEX,
+    VOLUME_UP,
+    VOLUME_DOWN,
+    TOGGLE_MUTE,
+    PREV,
+    NEXT,
+    TOGGLE_PLAY,
+} from './common/ipcCommands';
 
 const blacklist = ['authToken', 'password', 'secret', 'CurrentMuseHouseholdId'];
-const maskJson = require('mask-json')(blacklist);
-
-const writeFileAsync = util.promisify(fs.writeFile).bind(fs);
-const readFileAsync = util.promisify(fs.readFile).bind(fs);
+const maskJson = MaskJson(blacklist);
+const writeFileAsync = promisify(fs.writeFile).bind(fs);
+const readFileAsync = promisify(fs.readFile).bind(fs);
 
 const register = () => {
     const menuTemplate = [
@@ -51,7 +64,7 @@ const register = () => {
                     click(item, win) {
                         win &&
                             win.webContents.send('command', {
-                                type: 'VOLUME_UP',
+                                type: VOLUME_UP,
                             });
                     },
                 },
@@ -61,7 +74,7 @@ const register = () => {
                     click(item, win) {
                         win &&
                             win.webContents.send('command', {
-                                type: 'VOLUME_DOWN',
+                                type: VOLUME_DOWN,
                             });
                     },
                 },
@@ -71,7 +84,7 @@ const register = () => {
                     click(item, win) {
                         win &&
                             win.webContents.send('command', {
-                                type: 'TOGGLE_MUTE',
+                                type: TOGGLE_MUTE,
                             });
                     },
                 },
@@ -81,7 +94,7 @@ const register = () => {
                     click(item, win) {
                         win &&
                             win.webContents.send('command', {
-                                type: 'TOGGLE_PLAY',
+                                type: TOGGLE_PLAY,
                             });
                     },
                 },
@@ -91,7 +104,7 @@ const register = () => {
                     click(item, win) {
                         win &&
                             win.webContents.send('command', {
-                                type: 'PREV',
+                                type: PREV,
                             });
                     },
                 },
@@ -101,7 +114,7 @@ const register = () => {
                     click(item, win) {
                         win &&
                             win.webContents.send('command', {
-                                type: 'NEXT',
+                                type: NEXT,
                             });
                     },
                 },
@@ -115,7 +128,7 @@ const register = () => {
                     click(item, win) {
                         win &&
                             win.webContents.send('command', {
-                                type: 'LIBRARY_INDEX',
+                                type: LIBRARY_INDEX,
                             });
                     },
                 },
@@ -267,12 +280,42 @@ const register = () => {
             ],
         },
         {
+            label: 'On this Device',
+            submenu: [
+                {
+                    label: 'Enable local files',
+                    enabled: false,
+                },
+                {
+                    label: 'Set local music folder',
+                    async click(item, win) {
+                        const choice = await dialog.showOpenDialog({
+                            properties: ['openDirectory'],
+                        });
+
+                        if (choice.cancelled) {
+                            return;
+                        }
+
+                        const [dir] = choice.filePaths;
+                        LocalMusic.handlePath(dir);
+
+                        win &&
+                            win.webContents.send('command', {
+                                type: LOCAL_MUSIC_SET_FOLDER,
+                                path: dir,
+                            });
+                    },
+                },
+            ],
+        },
+        {
             role: 'help',
             submenu: [
                 {
                     label: 'Project page',
                     click() {
-                        electron.shell.openExternal(
+                        shell.openExternal(
                             'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux'
                         );
                     },
@@ -280,7 +323,7 @@ const register = () => {
                 {
                     label: 'Report an Issue',
                     click() {
-                        electron.shell.openExternal(
+                        shell.openExternal(
                             'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/issues'
                         );
                     },
@@ -288,7 +331,7 @@ const register = () => {
                 {
                     label: 'Latest Releases',
                     click() {
-                        electron.shell.openExternal(
+                        shell.openExternal(
                             'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/releases'
                         );
                     },
@@ -316,6 +359,51 @@ const register = () => {
         const menu = Menu.buildFromTemplate(menuTemplate);
         Menu.setApplicationMenu(menu);
     });
+
+    ipcMain.on(
+        'local-files',
+        (event, { localMusicEnabled, localMusicFolder }) => {
+            menuTemplate[4].submenu[0].enabled = !!localMusicFolder;
+
+            const isEnabled = !!localMusicFolder && localMusicEnabled;
+
+            LocalMusic.handlePath(localMusicFolder);
+
+            if (isEnabled) {
+                LocalMusic.startServer();
+            } else {
+                LocalMusic.stopServer();
+            }
+
+            menuTemplate[4].submenu[0].label = !isEnabled
+                ? 'Enable local files'
+                : 'Disable local files';
+
+            menuTemplate[4].submenu[0].click = async function (item, win) {
+                isEnabled ? LocalMusic.stopServer() : LocalMusic.startServer();
+
+                win.webContents.send('command', {
+                    type: LOCAL_MUSIC_TOGGLE,
+                });
+            };
+
+            if (localMusicFolder) {
+                menuTemplate[4].submenu[2] = {
+                    label: `Currently: ${localMusicFolder}`,
+                    enabled: false,
+                };
+            } else {
+                try {
+                    delete menuTemplate[4].submenu[2];
+                } catch (e) {
+                    // noop
+                }
+            }
+
+            const menu = Menu.buildFromTemplate(menuTemplate);
+            Menu.setApplicationMenu(menu);
+        }
+    );
 };
 
 export default register;

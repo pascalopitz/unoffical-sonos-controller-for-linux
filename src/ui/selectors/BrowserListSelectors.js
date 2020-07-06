@@ -4,6 +4,8 @@ import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
 import {
     DEFAULT_SEARCH_MODE,
     LIBRARY_SEARCH_MODES,
+    ON_DEVICE_SERVICE,
+    BROWSE_AVAILABLE_SERVICES,
 } from '../constants/BrowserListConstants';
 
 export function getCurrentState(state) {
@@ -11,11 +13,19 @@ export function getCurrentState(state) {
 }
 
 export function getServiceItems(state) {
-    return state.musicServices.active.map((ser) => ({
+    const activeServices = state.musicServices.active.map((ser) => ({
         title: ser.service.Name,
         action: 'service',
         service: ser,
     }));
+
+    const additional = JSON.parse(
+        window.localStorage.localMusicEnabled || 'false'
+    )
+        ? [ON_DEVICE_SERVICE, BROWSE_AVAILABLE_SERVICES]
+        : [BROWSE_AVAILABLE_SERVICES];
+
+    return [...additional, ...activeServices];
 }
 
 export function getSearching(state) {
@@ -44,6 +54,15 @@ export function getSearchSources(state) {
                 label: 'Music Library',
                 client: null,
                 logo: './svg/ic_audiotrack_48px.svg',
+            },
+            {
+                label: 'On this device',
+                client: {
+                    service: {
+                        Id: null,
+                    },
+                },
+                logo: './svg/computer-white-24dp.svg',
             },
         ].concat(
             _.map(state.musicServices.active, (s) => {

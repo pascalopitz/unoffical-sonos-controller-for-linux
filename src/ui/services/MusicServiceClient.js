@@ -7,24 +7,9 @@ import SonosService from '../services/SonosService';
 
 import store from '../reducers';
 
-const NS = 'http://www.sonos.com/Services/1.1';
+import { withinEnvelope, stripNamespaces, NS } from '../../common/helpers';
+
 const deviceProviderName = 'Sonos';
-
-function withinEnvelope(body, headers = '') {
-    return [
-        '<?xml version="1.0" encoding="utf-8"?>',
-        '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="' +
-            NS +
-            '">',
-        '<s:Header>' + headers + '</s:Header>',
-        '<s:Body>' + body + '</s:Body>',
-        '</s:Envelope>',
-    ].join('');
-}
-
-function stripNamespaces(xml) {
-    return xml.replace(/\<\/[\w\d-]+:/gi, '</').replace(/\<[\w\d-]+:/gi, '<');
-}
 
 class MusicServiceClient {
     constructor(serviceDefinition, { authToken, privateKey } = {}) {
@@ -200,6 +185,11 @@ class MusicServiceClient {
                 token: '100c2068',
                 parentId: 'parentID="0"',
                 serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
+            },
+            localFile: {
+                type: 'object.item.audioItem.musicTrack',
+                parentId: 'parentID="-1"',
+                token: '00032020',
             },
         };
 

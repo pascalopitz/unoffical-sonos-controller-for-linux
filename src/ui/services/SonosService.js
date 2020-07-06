@@ -64,10 +64,12 @@ const SonosService = {
         await initialiseServiceLogos();
         this.searchForDevices();
         this.restoreMusicServices();
+        store.dispatch(serviceActions.localFilesUpdate());
     },
 
     async wakeup() {
         store.dispatch(serviceActions.wakeup());
+        store.dispatch(serviceActions.localFilesUpdate());
         setTimeout(() => this.searchForDevices(), 2000);
     },
 

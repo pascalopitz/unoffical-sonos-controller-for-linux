@@ -1,0 +1,9 @@
+export const LOCAL_MUSIC_SET_FOLDER = 'LOCAL_MUSIC_SET_FOLDER';
+export const LOCAL_MUSIC_TOGGLE = 'LOCAL_MUSIC_TOGGLE';
+export const LIBRARY_INDEX = 'LIBRARY_INDEX';
+export const VOLUME_UP = 'VOLUME_UP';
+export const VOLUME_DOWN = 'VOLUME_DOWN';
+export const TOGGLE_MUTE = 'TOGGLE_MUTE';
+export const PREV = 'PREV';
+export const NEXT = 'NEXT';
+export const TOGGLE_PLAY = 'TOGGLE_PLAY';
