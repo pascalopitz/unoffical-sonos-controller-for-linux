@@ -32,7 +32,7 @@ Find the latest .AppImage on the [release page](https://github.com/pascalopitz/u
 You can right click it on Ubuntu, then under "Permissions" mark is as executable. ALternatively run:
 
 ```bash
-chmod +x sonos-controller-unofficial-amd64-0.2.1-alpha1.AppImage
+chmod +x sonos-controller-unofficial-amd64-0.2.1-alpha2.AppImage
 ```
 
 After that it can be launched by double click or via invoking it through the terminal.
@@ -48,7 +48,7 @@ Type=Application
 Categories=Audio;
 Name=sonos-controller-unofficial
 Icon=appimagekit-sonos-controller-unofficial
-Exec="/home/username/Downloads/sonos-controller-unofficial-0.2.1-alpha1.AppImage" %U
+Exec="/home/username/Downloads/sonos-controller-unofficial-0.2.1-alpha2.AppImage" %U
 ```
 
 ## Install via .deb file
@@ -57,7 +57,7 @@ Find the latest .deb on the [release page](https://github.com/pascalopitz/unoffi
 On Ubuntu, you can double click the downloaded file to install it via the Software Center. Alternatively run
 
 ```bash
-sudo dpkg -i sonos-controller-unofficial-amd64-0.2.1-alpha1.AppImage
+sudo dpkg -i sonos-controller-unofficial-amd64-0.2.1-alpha2.AppImage
 ```
 
 ##  and Run locally
@@ -105,7 +105,7 @@ For any issues, please submit them on the [issues page](https://github.com/pasca
 - Because this started out as chrome app, I originally ported nearly all of https://github.com/bencevans/node-sonos/
   so that it worked in chrome, and made minor modifications.
   Also made it into an ES6 code base where it was easy to do.
-  Then, for version 0.2.1-alpha1 I have removed the ported/modified code and am now using node-sonos vanilla.
+  Then, for version 0.2.1-alpha2 I have removed the ported/modified code and am now using node-sonos vanilla.
 
 - The web interface markup and css is adapted from https://github.com/jishi/node-sonos-web-controller/
 
