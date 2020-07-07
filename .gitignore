@@ -1,3 +1,4 @@
+app/*.sqlite
 app/ui/*
 app/**/*.js
 app/fonts

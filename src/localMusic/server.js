@@ -2,7 +2,8 @@ import walk from 'walkdir';
 
 import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
+
+import initSqlJs from 'sql.js';
 
 import { parseFile } from 'music-metadata';
 import { getType } from 'mime';
@@ -21,34 +22,17 @@ import {
     IP_ADDRESS,
 } from '../common/helpers';
 
-const ALLOWED_TYPES = [
-    'audio/wma',
-    'audio/x-ms-wma',
-    'application/ogg',
-    'audio/mp3',
-    'audio/mpeg3',
-    'audio/mpeg',
-    'audio/flac',
-    'audio/mp4',
-    'audio/aac',
-    'application/x-mpegURL',
-    'application/vnd.apple.mpegURL',
-    'audio/x-mpegurl',
-];
+import { ALLOWED_TYPES } from './common';
+import {
+    SERVER_SET_PATH,
+    SERVER_START,
+    SERVER_STOP,
+    SERVER_UNLOAD_DB,
+} from './commands';
 
-let ROOT, server;
+let ROOT, server, smapiInstance;
 
-const statAsync = promisify(fs.stat).bind(fs);
-
-const isDirectoryAsync = async (p) => {
-    const stat = await statAsync(p);
-    return stat.isDirectory();
-};
-
-const isFileAsync = async (p) => {
-    const stat = await statAsync(p);
-    return stat.isFile();
-};
+import { isDirectoryAsync, isFileAsync, readFileAsync } from './helpers';
 
 const isContained = (p) => {
     const relative = path.relative(ROOT, p);
@@ -65,8 +49,31 @@ const isAllowedDirectory = async (p) => {
 
 class SoapError extends Error {}
 
-const SmapiServer = {
-    getMediaURI: async ({ id }) => {
+const ID_REG = /^container\-(\w+)\-(.*)/;
+
+class SmapiServer {
+    async _getDB() {
+        if (this._db) {
+            return this._db;
+        }
+        const buffer = await readFileAsync(
+            path.resolve(__dirname, '../localMusic.sqlite')
+        );
+        const SQL = await initSqlJs();
+        const db = new SQL.Database(buffer);
+        this._db = db;
+
+        console.log('Loaded DB');
+
+        return db;
+    }
+
+    async unloadDb() {
+        console.log('Unloaded DB');
+        this._db = null;
+    }
+
+    async getMediaURI({ id }) {
         const pathEncoded = encodeURIComponent(id);
         const isFile = await isAllowedFile(path.resolve(ROOT, id));
 
@@ -79,9 +86,130 @@ const SmapiServer = {
                 <getMediaURIResult>http://${IP_ADDRESS}:${LOCAL_PORT}/track/${pathEncoded}</getMediaURIResult>
             </getMediaURIResponse>`
         );
-    },
+    }
 
-    getMetadata: async ({ id, index = 0, count = 100 }) => {
+    async _getArtistMetaData({ value, count, index }) {
+        const db = await this._getDB();
+        const query = db.exec(
+            `SELECT album, artist, path FROM tracks
+             WHERE artist LIKE :value
+             GROUP BY album
+             LIMIT :count OFFSET :index;`,
+            {
+                ':count': count,
+                ':index': index,
+                ':value': value,
+            }
+        );
+
+        const resultXml = [];
+
+        if (query.length > null) {
+            const [{ values }] = query;
+
+            for (const value of values) {
+                const [album, artist, pathRelative] = value;
+
+                const pathEncoded = encodeURIComponent(pathRelative);
+
+                resultXml.push(`
+                    <mediaCollection>
+                        <id>container-album-${album}</id>
+                        <itemType>local-album</itemType>
+                        <canPlay>false</canPlay>
+                        <canEnumerate>true</canEnumerate>
+                        <authRequired>false</authRequired>
+                        <artist>${artist}</artist>
+                        <albumArtURI>http://${IP_ADDRESS}:${LOCAL_PORT}/albumArt/${pathEncoded}</albumArtURI>
+                        <title>${album}</title>
+                    </mediaCollection>
+                `);
+            }
+        }
+
+        return withinEnvelope(`
+            <getMetadataResponse>
+                <getMetadataResult>
+                    <index>${index}</index>
+                    <count>${resultXml.length}</count>
+                    <total>${resultXml.length}</total>
+                    ${resultXml.join('')}
+                </getMetadataResult>
+            </getMetadataResponse>
+        `);
+    }
+
+    async _getAlbumMetaData({ value, count, index }) {
+        const db = await this._getDB();
+
+        const query = db.exec(
+            `SELECT * FROM tracks
+             WHERE album LIKE :value
+             LIMIT :count OFFSET :index;`,
+            {
+                ':count': count,
+                ':index': index,
+                ':value': value,
+            }
+        );
+
+        const resultXml = [];
+
+        if (query.length > null) {
+            const [{ values }] = query;
+
+            for (const value of values) {
+                const [
+                    pathRelative,
+                    folderPathRelative,
+                    artist,
+                    title,
+                    album,
+                    mimeType,
+                    duration,
+                    lastIndexed,
+                ] = value;
+
+                const pathEncoded = encodeURIComponent(pathRelative);
+
+                resultXml.push(`
+                    <mediaMetadata>
+                        <parentID>${folderPathRelative}</parentID>
+                        <id>${pathRelative}</id>
+                        <itemType>local-file</itemType>
+                        <canPlay>true</canPlay>
+                        <canEnumerate>false</canEnumerate>
+                        <authRequired>false</authRequired>
+                        <title>${title}</title>
+                        <trackMetadata>
+                            <artist>${artist}</artist>
+                            <album>${album || ''}</album>
+                            <duration>${parseInt(
+                                (duration || 0) * 1000,
+                                10
+                            )}</duration>
+                            <albumArtURI>http://${IP_ADDRESS}:${LOCAL_PORT}/albumArt/${pathEncoded}</albumArtURI>
+                        </trackMetadata>
+                        <mimeType>${mimeType}</mimeType>
+                        <uri>http://${IP_ADDRESS}:${LOCAL_PORT}/track/${pathEncoded}</uri>
+                    </mediaMetadata>
+                `);
+            }
+
+            return withinEnvelope(`
+                <getMetadataResponse>
+                    <getMetadataResult>
+                        <index>${index}</index>
+                        <count>${resultXml.length}</count>
+                        <total>${resultXml.length}</total>
+                        ${resultXml.join('')}
+                    </getMetadataResult>
+                </getMetadataResponse>
+            `);
+        }
+    }
+
+    async _getPathMetaData({ id, count, index }) {
         let target;
 
         if (id === 'root') {
@@ -115,45 +243,49 @@ const SmapiServer = {
                 if (isDir) {
                     const title = path.basename(p);
 
-                    resultXml.push(`<mediaCollection>
-                    <id>${path.relative(ROOT, p)}</id>
-                    <itemType>container</itemType>
-                    <canPlay>false</canPlay>
-                    <canEnumerate>true</canEnumerate>
-                    <authRequired>false</authRequired>
-                    <title>${title}</title>
-                </mediaCollection>`);
+                    resultXml.push(`
+                        <mediaCollection>
+                            <id>${path.relative(ROOT, p)}</id>
+                            <itemType>container</itemType>
+                            <canPlay>false</canPlay>
+                            <canEnumerate>true</canEnumerate>
+                            <authRequired>false</authRequired>
+                            <title>${title}</title>
+                        </mediaCollection>
+                    `);
                 }
 
                 const isFile = await isAllowedFile(p);
                 const type = await getType(p);
 
                 if (isFile && ALLOWED_TYPES.indexOf(type) !== -1) {
-                    const info = await parseFile(p, { duration: true }).catch(
-                        () => null
-                    );
+                    const info = await parseFile(p, {
+                        duration: true,
+                    }).catch(() => null);
 
                     if (info) {
-                        resultXml.push(`<mediaMetadata>
-                            <parentID>${id}</parentID>
-                            <id>${path.relative(ROOT, p)}</id>
-                            <itemType>localFile</itemType>
-                            <canPlay>true</canPlay>
-                            <canEnumerate>false</canEnumerate>
-                            <authRequired>false</authRequired>
-                            <title>${info.common.title}</title>
-                            <trackMetadata>
-                                <artist>${info.common.artist}</artist>
-                                <album>${info.common.album || ''}</album>
-                                <duration>${parseInt(
-                                    (info.format.duration || 0) * 1000,
-                                    10
-                                )}</duration>
-                                <albumArtURI>http://${IP_ADDRESS}:${LOCAL_PORT}/albumArt/${pathEncoded}</albumArtURI>
-                            </trackMetadata>
-                            <mimeType>${type}</mimeType>
-                            <uri>http://${IP_ADDRESS}:${LOCAL_PORT}/track/${pathEncoded}</uri>
-                        </mediaMetadata>`);
+                        resultXml.push(`
+                            <mediaMetadata>
+                                <parentID>${id}</parentID>
+                                <id>${path.relative(ROOT, p)}</id>
+                                <itemType>local-file</itemType>
+                                <canPlay>true</canPlay>
+                                <canEnumerate>false</canEnumerate>
+                                <authRequired>false</authRequired>
+                                <title>${info.common.title}</title>
+                                <trackMetadata>
+                                    <artist>${info.common.artist}</artist>
+                                    <album>${info.common.album || ''}</album>
+                                    <duration>${parseInt(
+                                        (info.format.duration || 0) * 1000,
+                                        10
+                                    )}</duration>
+                                    <albumArtURI>http://${IP_ADDRESS}:${LOCAL_PORT}/albumArt/${pathEncoded}</albumArtURI>
+                                </trackMetadata>
+                                <mimeType>${type}</mimeType>
+                                <uri>http://${IP_ADDRESS}:${LOCAL_PORT}/track/${pathEncoded}</uri>
+                            </mediaMetadata>
+                        `);
                     }
                 }
             } catch (e) {
@@ -172,63 +304,76 @@ const SmapiServer = {
                 </getMetadataResult>
             </getMetadataResponse>`
         );
-    },
+    }
 
-    search: async ({ id, term, index = 0, count = 100 }) => {
-        const allPaths = await walk.async(ROOT);
+    async getMetadata({ id, index = 0, count = 100 }) {
+        const [, type, value] = ID_REG.exec(id) || [];
 
+        if (type && value && type === 'artist') {
+            return this._getArtistMetaData({ value, count, index });
+        }
+
+        if (type && value && type === 'album') {
+            return this._getAlbumMetaData({ value, count, index });
+        }
+
+        return this._getPathMetaData({ id, index, count });
+    }
+
+    async _searchTracks({ id, term, index = 0, count = 100 }) {
+        const db = await this._getDB();
         const resultXml = [];
 
-        for (const p of allPaths) {
-            try {
-                const isFile = await isAllowedFile(p);
-                const type = await getType(p);
+        const query = db.exec(
+            `SELECT * FROM tracks
+             WHERE title LIKE :term
+             LIMIT :count OFFSET :index;`,
+            {
+                ':count': count,
+                ':index': index,
+                ':term': `%${term}%`,
+            }
+        );
 
-                if (isFile && ALLOWED_TYPES.indexOf(type) !== -1) {
-                    const infoShallow = await parseFile(p, {
-                        duration: false,
-                    }).catch(() => null);
+        if (query.length > null) {
+            const [{ values }] = query;
 
-                    const match =
-                        infoShallow &&
-                        infoShallow.common[id] &&
-                        infoShallow.common[id]
-                            .toLowerCase()
-                            .indexOf(term.toLowerCase()) !== -1;
+            for (const value of values) {
+                const [
+                    pathRelative,
+                    folderPathRelative,
+                    artist,
+                    title,
+                    album,
+                    mimeType,
+                    duration,
+                    lastIndexed,
+                ] = value;
 
-                    if (match) {
-                        const pathEncoded = encodeURIComponent(
-                            path.relative(ROOT, p)
-                        );
-                        const info = await parseFile(p, {
-                            duration: true,
-                        }).catch(() => null);
+                const pathEncoded = encodeURIComponent(pathRelative);
 
-                        resultXml.push(`<mediaMetadata>
-                            <parentID></parentID>
-                            <id>${path.relative(ROOT, p)}</id>
-                            <itemType>localFile</itemType>
-                            <canPlay>true</canPlay>
-                            <canEnumerate>false</canEnumerate>
-                            <authRequired>false</authRequired>
-                            <title>${info.common.title}</title>
-                            <trackMetadata>
-                                <artist>${info.common.artist}</artist>
-                                <album>${info.common.album || ''}</album>
-                                <duration>${parseInt(
-                                    (info.format.duration || 0) * 1000,
-                                    10
-                                )}</duration>
-                                <albumArtURI>http://${IP_ADDRESS}:${LOCAL_PORT}/albumArt/${pathEncoded}</albumArtURI>
-                            </trackMetadata>
-                            <mimeType>${type}</mimeType>
-                            <uri>http://${IP_ADDRESS}:${LOCAL_PORT}/track/${pathEncoded}</uri>
-                        </mediaMetadata>`);
-                    }
-                }
-            } catch (e) {
-                console.error(e);
-                // noop;
+                resultXml.push(`
+                    <mediaMetadata>
+                        <parentID>${folderPathRelative}</parentID>
+                        <id>${pathRelative}</id>
+                        <itemType>local-file</itemType>
+                        <canPlay>true</canPlay>
+                        <canEnumerate>false</canEnumerate>
+                        <authRequired>false</authRequired>
+                        <title>${title}</title>
+                        <trackMetadata>
+                            <artist>${artist}</artist>
+                            <album>${album || ''}</album>
+                            <duration>${parseInt(
+                                (duration || 0) * 1000,
+                                10
+                            )}</duration>
+                            <albumArtURI>http://${IP_ADDRESS}:${LOCAL_PORT}/albumArt/${pathEncoded}</albumArtURI>
+                        </trackMetadata>
+                        <mimeType>${mimeType}</mimeType>
+                        <uri>http://${IP_ADDRESS}:${LOCAL_PORT}/track/${pathEncoded}</uri>
+                    </mediaMetadata>
+                `);
             }
         }
 
@@ -242,14 +387,133 @@ const SmapiServer = {
                 </searchResult>
             </searchResponse>`
         );
-    },
-};
+    }
 
-export const startServer = () => {
+    async _searchArtists({ term, index = 0, count = 100 }) {
+        const db = await this._getDB();
+        const resultXml = [];
+
+        const query = db.exec(
+            `SELECT artist FROM tracks
+             WHERE artist LIKE :term
+             GROUP BY artist
+             LIMIT :count OFFSET :index;`,
+            {
+                ':count': count,
+                ':index': index,
+                ':term': `%${term}%`,
+            }
+        );
+
+        if (query.length > null) {
+            const [{ values }] = query;
+
+            for (const value of values) {
+                const [artist] = value;
+
+                resultXml.push(`
+                    <mediaCollection>
+                        <id>container-artist-${artist}</id>
+                        <itemType>local-artist</itemType>
+                        <canPlay>false</canPlay>
+                        <canEnumerate>true</canEnumerate>
+                        <authRequired>false</authRequired>
+                        <title>${artist}</title>
+                    </mediaCollection>
+                `);
+            }
+        }
+
+        return withinEnvelope(
+            `<searchResponse>
+                <searchResult>
+                    <index>${index}</index>
+                    <count>${resultXml.length}</count>
+                    <total>${resultXml.length}</total>
+                    ${resultXml.join('')}
+                </searchResult>
+            </searchResponse>`
+        );
+    }
+
+    async _searchAlbums({ term, index = 0, count = 100 }) {
+        const db = await this._getDB();
+        const resultXml = [];
+
+        const query = db.exec(
+            `SELECT album, artist, path FROM tracks
+             WHERE album LIKE :term
+             GROUP BY album
+             LIMIT :count OFFSET :index;`,
+            {
+                ':count': count,
+                ':index': index,
+                ':term': `%${term}%`,
+            }
+        );
+
+        if (query.length > null) {
+            const [{ values }] = query;
+
+            for (const value of values) {
+                const [album, artist, pathRelative] = value;
+
+                const pathEncoded = encodeURIComponent(pathRelative);
+
+                resultXml.push(`
+                    <mediaCollection>
+                        <id>container-album-${album}</id>
+                        <itemType>local-album</itemType>
+                        <canPlay>false</canPlay>
+                        <canEnumerate>true</canEnumerate>
+                        <authRequired>false</authRequired>
+                        <artist>${artist}</artist>
+                        <album>${album || ''}</album>
+                        <albumArtURI>http://${IP_ADDRESS}:${LOCAL_PORT}/albumArt/${pathEncoded}</albumArtURI>
+                        <title>${album}</title>
+                    </mediaCollection>
+                `);
+            }
+        }
+
+        return withinEnvelope(
+            `<searchResponse>
+                <searchResult>
+                    <index>${index}</index>
+                    <count>${resultXml.length}</count>
+                    <total>${resultXml.length}</total>
+                    ${resultXml.join('')}
+                </searchResult>
+            </searchResponse>`
+        );
+    }
+
+    async search({ id, term, index = 0, count = 100 }) {
+        if (id === 'artist') {
+            return this._searchArtists({ id, term, index, count });
+        }
+
+        if (id === 'album') {
+            return this._searchAlbums({ id, term, index, count });
+        }
+
+        if (id === 'title') {
+            return this._searchTracks({ id, term, index, count });
+        }
+
+        throw new Error('Invalid ID');
+    }
+}
+
+const startServer = () => {
     if (server) {
         console.warn('Server already running');
         return;
     }
+
+    console.log('Server starting');
+
+    smapiInstance = new SmapiServer();
 
     const app = new Koa();
     const router = new Router();
@@ -291,9 +555,9 @@ export const startServer = () => {
             <PresentationMap type="Search">
                 <Match>
                     <SearchCategories>
-                        <Category id="title" mappedId="title" />
-                        <Category id="by artist" mappedId="artist" />
-                        <Category id="on album" mappedId="album" />
+                        <Category id="Tracks" mappedId="title" />
+                        <Category id="Artists" mappedId="artist" />
+                        <Category id="Albums" mappedId="album" />
                     </SearchCategories>
                 </Match>
             </PresentationMap>
@@ -309,7 +573,7 @@ export const startServer = () => {
             const [, action] = JSON.parse(headers.soapaction).split('#');
 
             try {
-                const xml = await SmapiServer[action](
+                const xml = await smapiInstance[action](
                     _.get(parsed, `Envelope.Body.${action}`)
                 );
 
@@ -339,26 +603,49 @@ export const startServer = () => {
     app.use(router.routes());
     app.use(router.allowedMethods());
 
+    app.on('error', (err, ctx) => {
+        console.error('server error', err, ctx);
+    });
+
     server = app.listen(LOCAL_PORT);
 };
 
-export const handlePath = async (path) => {
+const handlePath = async (path) => {
+    console.log('Handle new path', path);
+
     ROOT = path;
 };
 
-export const stopServer = async () => {
-    if (!server) {
-        console.warn('Server already stopped');
-        return;
-    }
+const stopServer = async () => {
+    console.log('Server stopping');
 
-    server.close();
+    try {
+        server.close();
+    } catch (e) {
+        console.warn(e);
+    }
     server = null;
+    smapiInstance = null;
 };
 
-const isSpawned = !!process.send;
-
-if (!isSpawned) {
-    ROOT = process.env.HOME + '/Music';
-    startServer();
-}
+process.on('message', ({ type, payload }) => {
+    switch (type) {
+        case SERVER_SET_PATH:
+            const [DIR] = payload;
+            handlePath(DIR);
+            break;
+        case SERVER_START:
+            startServer();
+            break;
+        case SERVER_STOP:
+            stopServer();
+            break;
+        case SERVER_UNLOAD_DB:
+            if (smapiInstance) {
+                smapiInstance.unloadDb();
+            }
+            break;
+        default:
+            console.log('ignored', { type, payload });
+    }
+});

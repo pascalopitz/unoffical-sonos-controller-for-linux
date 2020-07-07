@@ -298,6 +298,7 @@ const register = () => {
                         }
 
                         const [dir] = choice.filePaths;
+                        LocalMusic.indexPath(dir);
                         LocalMusic.handlePath(dir);
 
                         win &&

@@ -1,24 +1,44 @@
 import path from 'path';
 import { fork } from 'child_process';
 
-const indexer = fork(path.resolve(__dirname, './bridge.js'));
+import {
+    SERVER_SET_PATH,
+    SERVER_START,
+    SERVER_STOP,
+    SERVER_UNLOAD_DB,
+    INDEXER_FINISHED,
+} from './commands';
 
-indexer.on('error', console.error);
+const server = fork(path.resolve(__dirname, './server.js'));
 
-indexer.on('message', (m) => {
-    console.log('PARENT got message:', m);
+server.on('error', console.error);
+
+server.on('message', (m) => {
+    console.log('Server sent message:', m);
 });
 
 export default {
+    indexPath(DIR) {
+        const indexer = fork(path.resolve(__dirname, './db.js'), [DIR]);
+
+        indexer.on('error', console.error);
+
+        indexer.on('message', (m) => {
+            if (m.type === INDEXER_FINISHED) {
+                server.send({ type: SERVER_UNLOAD_DB });
+            }
+        });
+    },
+
     handlePath(DIR) {
-        indexer.send({ type: 'path', payload: [DIR] });
+        server.send({ type: SERVER_SET_PATH, payload: [DIR] });
     },
 
     startServer() {
-        indexer.send({ type: 'start' });
+        server.send({ type: SERVER_START });
     },
 
     stopServer() {
-        indexer.send({ type: 'stop' });
+        server.send({ type: SERVER_STOP });
     },
 };
