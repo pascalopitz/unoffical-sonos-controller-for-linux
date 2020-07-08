@@ -235,8 +235,6 @@ class SmapiServer {
 
         const resultXml = [];
 
-        console.log(allPaths);
-
         for (const p of allPaths) {
             try {
                 const isDir = await isAllowedDirectory(p);

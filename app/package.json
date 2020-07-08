@@ -1,7 +1,7 @@
 {
   "name": "sonos-controller-unofficial",
   "description": "Unoffical sonos controller for linux.",
-  "version": "0.2.1-alpha2",
+  "version": "0.2.1-alpha3",
   "author": "Pascal Opitz <contact@pascalopitz.com>",
   "main": "main.js",
   "dependencies": {
@@ -17,11 +17,11 @@
     "koa-bodyparser": "^4.3.0",
     "koa-logger": "^3.2.1",
     "koa-router": "^9.1.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.16",
     "mask-json": "^1.0.3",
     "mime": "^2.4.6",
     "moment": "^2.27.0",
-    "music-metadata": "^6.4.0",
+    "music-metadata": "^7.0.0",
     "omit-keys": "^0.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
