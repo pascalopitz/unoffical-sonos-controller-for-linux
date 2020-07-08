@@ -186,7 +186,7 @@ class MusicServiceClient {
                 parentId: 'parentID="0"',
                 serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
-            localFile: {
+            'local-file': {
                 type: 'object.item.audioItem.musicTrack',
                 parentId: 'parentID="-1"',
                 token: '00032020',

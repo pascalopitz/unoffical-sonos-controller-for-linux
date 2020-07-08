@@ -235,6 +235,8 @@ class SmapiServer {
 
         const resultXml = [];
 
+        console.log(allPaths);
+
         for (const p of allPaths) {
             try {
                 const isDir = await isAllowedDirectory(p);
@@ -263,7 +265,7 @@ class SmapiServer {
                         duration: true,
                     }).catch(() => null);
 
-                    if (info) {
+                    if (_.get(info, 'format.tagTypes', []).length) {
                         resultXml.push(`
                             <mediaMetadata>
                                 <parentID>${id}</parentID>

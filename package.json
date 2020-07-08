@@ -78,6 +78,10 @@
         },
         {
           "target": "snap",
+          "plugs": [
+            "default",
+            "network-interface"
+          ],
           "arch": [
             "x64",
             "armv7l"

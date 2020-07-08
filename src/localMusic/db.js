@@ -1,8 +1,7 @@
 import path from 'path';
-
 import initSqlJs from 'sql.js';
-
 import walk from 'walkdir';
+import _ from 'lodash';
 
 import { parseFile } from 'music-metadata';
 import { getType } from 'mime';
@@ -60,7 +59,7 @@ const createIndex = async (rootFolder) => {
                 duration: true,
             }).catch(() => null);
 
-            if (!info) {
+            if (!_.get(info, 'format.tagTypes', []).length) {
                 continue;
             }
 
