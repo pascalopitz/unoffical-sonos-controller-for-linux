@@ -28,6 +28,10 @@ export function getServiceItems(state) {
     return [...additional, ...activeServices];
 }
 
+export function getHasSearchTerm(state) {
+    return !!state.browserList.searchTerm;
+}
+
 export function getSearching(state) {
     const lastItem = _.last(state.browserList.history) || {};
     return !!state.browserList.searchTerm && !!lastItem.mode;

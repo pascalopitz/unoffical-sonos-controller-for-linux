@@ -399,7 +399,7 @@ const selectSonosPlaylist = async (item) => {
 };
 
 const selectServiceMediaCollectionItem = async (item) => {
-    const { searchTermMap, term, mode } = _.last(
+    const { searchTermMap, term } = _.last(
         store.getState().browserList.history
     );
 
@@ -434,7 +434,6 @@ const selectServiceMediaCollectionItem = async (item) => {
         title: item.title,
         parent: item,
         term: term,
-        mode: mode,
         searchTermMap: searchTermMap,
         serviceClient: client,
         total: res.total,

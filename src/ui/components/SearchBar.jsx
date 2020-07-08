@@ -9,7 +9,7 @@ import { search, exitSearch } from '../reduxActions/BrowserListActions';
 
 import {
     getCurrentState,
-    getSearching,
+    getHasSearchTerm,
     getSearchMode,
     getSearchSources,
 } from '../selectors/BrowserListSelectors';
@@ -18,7 +18,7 @@ function mapStateToProps(state) {
     return {
         term: state.browserList.searchTerm,
         currentState: getCurrentState(state),
-        searching: getSearching(state),
+        searching: getHasSearchTerm(state),
         searchMode: getSearchMode(state),
         sources: getSearchSources(state),
     };
