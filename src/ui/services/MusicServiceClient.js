@@ -108,6 +108,12 @@ class MusicServiceClient {
             return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
         }
 
+        if (itemType === 'container') {
+            return `x-rincon-cpcontainer:10fe206c${escape(
+                trackId
+            )}?sid=${serviceId}&flags=8300&sn=1`;
+        }
+
         if (itemType === 'trackList') {
             return 'x-rincon-cpcontainer:000e206c' + escape(trackId);
         }
@@ -184,6 +190,12 @@ class MusicServiceClient {
                     'object.item.audioItem.audioBroadcast.#' + item.displayType,
                 token: '100c2068',
                 parentId: 'parentID="0"',
+                serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
+            },
+            container: {
+                type: 'object.container.#DEFAULT',
+                parentId: 'parentID="-1"',
+                token: '10fe206c',
                 serviceString: `SA_RINCON${serviceType}_X_#Svc${serviceType}-0-Token`,
             },
             'local-file': {
