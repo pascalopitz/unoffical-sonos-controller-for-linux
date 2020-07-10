@@ -649,3 +649,8 @@ process.on('message', ({ type, payload }) => {
             console.log('ignored', { type, payload });
     }
 });
+
+process.on('SIGTERM', () => {
+    console.log('Terminated server');
+    process.exit();
+});

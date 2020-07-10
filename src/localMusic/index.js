@@ -41,4 +41,11 @@ export default {
     stopServer() {
         server.send({ type: SERVER_STOP });
     },
+
+    kill() {
+        if (server && server.pid) {
+            console.log('killing server');
+            process.kill(server.pid);
+        }
+    },
 };

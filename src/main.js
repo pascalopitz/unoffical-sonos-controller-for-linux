@@ -6,6 +6,7 @@ import url from 'url';
 import wakeEvent from 'wake-event';
 
 import registerMenu from './menu';
+import LocalMusic from './localMusic';
 
 const deviceProviderName = 'unofficial-sonos-controller-for-linux';
 
@@ -68,6 +69,7 @@ if (!gotTheLock) {
     app.on('ready', createWindow);
 
     app.on('window-all-closed', () => {
+        LocalMusic.kill();
         app.quit();
     });
 
