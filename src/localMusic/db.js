@@ -31,75 +31,90 @@ const createIndex = async (rootFolder) => {
         );`
     );
 
-    const fileNames = await walk.async(rootFolder, {
+    const end = async () => {
+        const data = db.export();
+        await writeFileAsync(
+            path.resolve(__dirname, '../localMusic.sqlite'),
+            Buffer.from(data)
+        );
+
+        console.log(`Done indexing ${rootFolder}`);
+        process.send({ type: INDEXER_FINISHED });
+    };
+
+    let ended = false;
+    let currentlyReadingCount = 0;
+
+    const emitter = walk(rootFolder, {
         no_recurse: false,
     });
 
-    for (const filename of fileNames) {
+    emitter.on('file', async (filename) => {
+        currentlyReadingCount++;
+
         try {
             const isFile = await isFileAsync(filename);
 
-            if (!isFile) {
-                continue;
+            if (isFile) {
+                const mimeType = getType(filename);
+
+                if (ALLOWED_TYPES.indexOf(mimeType) !== -1) {
+                    const pathRelative = path.relative(rootFolder, filename);
+                    const folderPathRelative = path.relative(
+                        rootFolder,
+                        path.dirname(filename)
+                    );
+
+                    const info = await parseFile(filename, {
+                        duration: true,
+                    }).catch(() => null);
+
+                    if (!!_.get(info, 'format.tagTypes', []).length) {
+                        db.run(
+                            `INSERT INTO tracks (
+                            mimeType,
+                            path,
+                            folder,
+                            artist,
+                            title,
+                            album,
+                            duration,
+                            lastIndexed
+                        ) VALUES (
+                            ?,?,?,?,?,?,?,?
+                        );`,
+                            [
+                                mimeType,
+                                pathRelative,
+                                folderPathRelative,
+                                info.common.artist || '',
+                                info.common.title || '',
+                                info.common.album || '',
+                                Number(info.format.duration) || 0,
+                                Date.now(),
+                            ]
+                        );
+                    }
+                }
             }
-
-            const mimeType = getType(filename);
-
-            if (ALLOWED_TYPES.indexOf(mimeType) === -1) {
-                continue;
-            }
-
-            const pathRelative = path.relative(rootFolder, filename);
-            const folderPathRelative = path.relative(
-                rootFolder,
-                path.dirname(filename)
-            );
-
-            const info = await parseFile(filename, {
-                duration: true,
-            }).catch(() => null);
-
-            if (!_.get(info, 'format.tagTypes', []).length) {
-                continue;
-            }
-
-            db.run(
-                `INSERT INTO tracks (
-                    mimeType,
-                    path,
-                    folder,
-                    artist,
-                    title,
-                    album,
-                    duration,
-                    lastIndexed
-                ) VALUES (
-                    ?,?,?,?,?,?,?,?
-                );`,
-                [
-                    mimeType,
-                    pathRelative,
-                    folderPathRelative,
-                    info.common.artist || '',
-                    info.common.title || '',
-                    info.common.album || '',
-                    Number(info.format.duration) || 0,
-                    Date.now(),
-                ]
-            );
         } catch (err) {
             console.error(err);
         }
-    }
 
-    const data = db.export();
-    await writeFileAsync(
-        path.resolve(__dirname, '../localMusic.sqlite'),
-        Buffer.from(data)
-    );
+        currentlyReadingCount--;
 
-    console.log(`Done indexing ${rootFolder}`);
-    process.send({ type: INDEXER_FINISHED });
+        if (!currentlyReadingCount && ended) {
+            await end();
+        }
+    });
+
+    emitter.on('end', async () => {
+        ended = true;
+
+        if (!currentlyReadingCount) {
+            await end();
+        }
+    });
 };
 
 const [DIR] = process.argv.reverse();
