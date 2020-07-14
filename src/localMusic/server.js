@@ -231,6 +231,7 @@ class SmapiServer {
 
         const allPaths = await walk.async(target, {
             no_recurse: true,
+            follow_symlinks: true,
         });
 
         const resultXml = [];
@@ -282,6 +283,20 @@ class SmapiServer {
                                     )}</duration>
                                     <albumArtURI>http://${IP_ADDRESS}:${LOCAL_PORT}/albumArt/${pathEncoded}</albumArtURI>
                                 </trackMetadata>
+                                <mimeType>${type}</mimeType>
+                                <uri>http://${IP_ADDRESS}:${LOCAL_PORT}/track/${pathEncoded}</uri>
+                            </mediaMetadata>
+                        `);
+                    } else {
+                        resultXml.push(`
+                            <mediaMetadata>
+                                <parentID>${id}</parentID>
+                                <id>${path.relative(ROOT, p)}</id>
+                                <itemType>local-file</itemType>
+                                <canPlay>true</canPlay>
+                                <canEnumerate>false</canEnumerate>
+                                <authRequired>false</authRequired>
+                                <title>${id}</title>
                                 <mimeType>${type}</mimeType>
                                 <uri>http://${IP_ADDRESS}:${LOCAL_PORT}/track/${pathEncoded}</uri>
                             </mediaMetadata>

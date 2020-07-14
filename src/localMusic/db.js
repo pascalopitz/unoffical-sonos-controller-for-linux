@@ -47,6 +47,7 @@ const createIndex = async (rootFolder) => {
 
     const emitter = walk(rootFolder, {
         no_recurse: false,
+        follow_symlinks: true,
     });
 
     emitter.on('file', async (filename) => {
