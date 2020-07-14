@@ -138,9 +138,9 @@ function _transformSMAPI(res, client) {
             res.mediaMetadata = [res.mediaMetadata];
         }
 
-        res.mediaMetadata.forEach((i, idx) => {
+        res.mediaMetadata.forEach((i) => {
             i.serviceClient = client;
-            items[idx] = i;
+            items.push(i);
         });
     }
 
@@ -149,9 +149,9 @@ function _transformSMAPI(res, client) {
             res.mediaCollection = [res.mediaCollection];
         }
 
-        res.mediaCollection.forEach((i, idx) => {
+        res.mediaCollection.forEach((i) => {
             i.serviceClient = client;
-            items[idx] = i;
+            items.push(i);
         });
     }
 
@@ -354,9 +354,9 @@ const selectService = async (item) => {
             res.mediaMetadata = [res.mediaMetadata];
         }
 
-        res.mediaMetadata.forEach((i, idx) => {
+        res.mediaMetadata.forEach((i) => {
             i.serviceClient = client;
-            items[idx] = i;
+            items.push(i);
         });
     }
 
@@ -365,9 +365,9 @@ const selectService = async (item) => {
             res.mediaCollection = [res.mediaCollection];
         }
 
-        res.mediaCollection.forEach((i, idx) => {
+        res.mediaCollection.forEach((i) => {
             i.serviceClient = client;
-            items[idx] = i;
+            items.push(i);
         });
     }
 
@@ -413,9 +413,9 @@ const selectServiceMediaCollectionItem = async (item) => {
             res.mediaMetadata = [res.mediaMetadata];
         }
 
-        res.mediaMetadata.forEach((i, idx) => {
+        res.mediaMetadata.forEach((i) => {
             i.serviceClient = client;
-            items[idx] = i;
+            items.push(i);
         });
     }
 
@@ -424,9 +424,9 @@ const selectServiceMediaCollectionItem = async (item) => {
             res.mediaCollection = [res.mediaCollection];
         }
 
-        res.mediaCollection.forEach((i, idx) => {
+        res.mediaCollection.forEach((i) => {
             i.serviceClient = client;
-            items[idx] = i;
+            items.push(i);
         });
     }
 

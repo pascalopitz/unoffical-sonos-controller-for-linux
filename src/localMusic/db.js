@@ -48,6 +48,7 @@ const createIndex = async (rootFolder) => {
     const emitter = walk(rootFolder, {
         no_recurse: false,
         follow_symlinks: true,
+        no_return: true,
     });
 
     emitter.on('file', async (filename) => {
@@ -60,6 +61,8 @@ const createIndex = async (rootFolder) => {
                 const mimeType = getType(filename);
 
                 if (ALLOWED_TYPES.indexOf(mimeType) !== -1) {
+                    console.log(`Indexing`, filename);
+
                     const pathRelative = path.relative(rootFolder, filename);
                     const folderPathRelative = path.relative(
                         rootFolder,
@@ -92,6 +95,33 @@ const createIndex = async (rootFolder) => {
                                 info.common.title || '',
                                 info.common.album || '',
                                 Number(info.format.duration) || 0,
+                                Date.now(),
+                            ]
+                        );
+                    } else {
+                        const title = path.basename(filename);
+
+                        db.run(
+                            `INSERT INTO tracks (
+                            mimeType,
+                            path,
+                            folder,
+                            artist,
+                            title,
+                            album,
+                            duration,
+                            lastIndexed
+                        ) VALUES (
+                            ?,?,?,?,?,?,?,?
+                        );`,
+                            [
+                                mimeType,
+                                pathRelative,
+                                folderPathRelative,
+                                '',
+                                title,
+                                '',
+                                0,
                                 Date.now(),
                             ]
                         );

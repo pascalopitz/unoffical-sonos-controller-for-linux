@@ -217,7 +217,7 @@ class MusicServiceClient {
             id = prefix + escape(item.id);
             parentId = TYPE_MAPPINGS[item.itemType].parentId || '';
             resourceString = `<desc id="cdudn" nameSpace="urn:schemas-rinconnetworks-com:metadata-1-0/">${serviceString}</desc>`;
-        } else {
+        } else if (_.get(item, 'trackMetadata.duration')) {
             id = '-1';
             const d = moment.duration(item.trackMetadata.duration || 0);
             resourceString = `<res protocolInfo="${uri.match(/^[\w\-]+:/)[0]}*${

@@ -32,20 +32,31 @@ import {
 
 let ROOT, server, smapiInstance;
 
-import { isDirectoryAsync, isFileAsync, readFileAsync } from './helpers';
+import {
+    isDirectoryAsync,
+    isFileAsync,
+    readFileAsync,
+    realpathAsync,
+} from './helpers';
 
-const isContained = (p) => {
-    const relative = path.relative(ROOT, p);
-    return relative.indexOf(`..${path.delimiter}`) === -1;
-};
+// NOTE: this doesn't work for symlinks
+// find a better way
+// const isContained = (p) => {
+//     const relative = path.relative(ROOT, p);
+//     return relative.indexOf(`..`) === -1;
+// };
 
 const isAllowedFile = async (p) => {
-    return isContained(p) && (await isFileAsync(p));
+    const type = await getType(p);
+    const isFile = await isFileAsync(p);
+    return isFile && ALLOWED_TYPES.indexOf(type) !== -1;
 };
 
 const isAllowedDirectory = async (p) => {
-    return isContained(p) && (await isDirectoryAsync(p));
+    return await isDirectoryAsync(p);
 };
+
+const __escape = (str) => _.escape(str);
 
 class SoapError extends Error {}
 
@@ -114,14 +125,14 @@ class SmapiServer {
 
                 resultXml.push(`
                     <mediaCollection>
-                        <id>container-album-${album}</id>
+                        <id>container-album-${__escape(album)}</id>
                         <itemType>local-album</itemType>
                         <canPlay>false</canPlay>
                         <canEnumerate>true</canEnumerate>
                         <authRequired>false</authRequired>
-                        <artist>${artist}</artist>
+                        <artist>${__escape(artist)}</artist>
                         <albumArtURI>http://${IP_ADDRESS}:${LOCAL_PORT}/albumArt/${pathEncoded}</albumArtURI>
-                        <title>${album}</title>
+                        <title>${__escape(album)}</title>
                     </mediaCollection>
                 `);
             }
@@ -180,10 +191,10 @@ class SmapiServer {
                         <canPlay>true</canPlay>
                         <canEnumerate>false</canEnumerate>
                         <authRequired>false</authRequired>
-                        <title>${title}</title>
+                        <title>${__escape(title)}</title>
                         <trackMetadata>
-                            <artist>${artist}</artist>
-                            <album>${album || ''}</album>
+                            <artist>${__escape(artist)}</artist>
+                            <album>${__escape(album || '')}</album>
                             <duration>${parseInt(
                                 (duration || 0) * 1000,
                                 10
@@ -229,9 +240,12 @@ class SmapiServer {
             throw new Error('Invalid target');
         }
 
-        const allPaths = await walk.async(target, {
+        const realTarget = await realpathAsync(target);
+
+        const allPaths = await walk.async(realTarget, {
             no_recurse: true,
-            follow_symlinks: true,
+            follow_symlinks: false,
+            return_object: false,
         });
 
         const resultXml = [];
@@ -239,27 +253,25 @@ class SmapiServer {
         for (const p of allPaths) {
             try {
                 const isDir = await isAllowedDirectory(p);
-                const pathEncoded = encodeURIComponent(path.relative(ROOT, p));
-
+                const isFile = await isAllowedFile(p);
+                const pathID = path.relative(ROOT, p);
+                const pathEncoded = encodeURIComponent(pathID);
                 if (isDir) {
                     const title = path.basename(p);
 
                     resultXml.push(`
                         <mediaCollection>
-                            <id>${path.relative(ROOT, p)}</id>
+                            <id>${pathID}</id>
                             <itemType>container</itemType>
                             <canPlay>false</canPlay>
                             <canEnumerate>true</canEnumerate>
                             <authRequired>false</authRequired>
-                            <title>${title}</title>
+                            <title>${__escape(title)}</title>
                         </mediaCollection>
                     `);
-                }
+                } else if (isFile) {
+                    const type = await getType(p);
 
-                const isFile = await isAllowedFile(p);
-                const type = await getType(p);
-
-                if (isFile && ALLOWED_TYPES.indexOf(type) !== -1) {
                     const info = await parseFile(p, {
                         duration: true,
                     }).catch(() => null);
@@ -268,15 +280,19 @@ class SmapiServer {
                         resultXml.push(`
                             <mediaMetadata>
                                 <parentID>${id}</parentID>
-                                <id>${path.relative(ROOT, p)}</id>
+                                <id>${pathID}</id>
                                 <itemType>local-file</itemType>
                                 <canPlay>true</canPlay>
                                 <canEnumerate>false</canEnumerate>
                                 <authRequired>false</authRequired>
-                                <title>${info.common.title}</title>
+                                <title>${__escape(info.common.title)}</title>
                                 <trackMetadata>
-                                    <artist>${info.common.artist}</artist>
-                                    <album>${info.common.album || ''}</album>
+                                    <artist>${__escape(
+                                        info.common.artist
+                                    )}</artist>
+                                    <album>${__escape(
+                                        info.common.album || ''
+                                    )}</album>
                                     <duration>${parseInt(
                                         (info.format.duration || 0) * 1000,
                                         10
@@ -288,19 +304,27 @@ class SmapiServer {
                             </mediaMetadata>
                         `);
                     } else {
-                        resultXml.push(`
+                        const title = path.basename(p);
+
+                        if (!title.match(/^\./)) {
+                            resultXml.push(`
                             <mediaMetadata>
                                 <parentID>${id}</parentID>
-                                <id>${path.relative(ROOT, p)}</id>
+                                <id>${pathID}</id>
                                 <itemType>local-file</itemType>
                                 <canPlay>true</canPlay>
                                 <canEnumerate>false</canEnumerate>
                                 <authRequired>false</authRequired>
-                                <title>${id}</title>
+                                <title>${__escape(title)}</title>
+                                <trackMetadata>
+                                    <artist></artist>
+                                    <album></album>
+                                </trackMetadata>
                                 <mimeType>${type}</mimeType>
                                 <uri>http://${IP_ADDRESS}:${LOCAL_PORT}/track/${pathEncoded}</uri>
                             </mediaMetadata>
                         `);
+                        }
                     }
                 }
             } catch (e) {
@@ -375,10 +399,10 @@ class SmapiServer {
                         <canPlay>true</canPlay>
                         <canEnumerate>false</canEnumerate>
                         <authRequired>false</authRequired>
-                        <title>${title}</title>
+                        <title>${__escape(title)}</title>
                         <trackMetadata>
-                            <artist>${artist}</artist>
-                            <album>${album || ''}</album>
+                            <artist>${__escape(artist)}</artist>
+                            <album>${__escape(album || '')}</album>
                             <duration>${parseInt(
                                 (duration || 0) * 1000,
                                 10
@@ -428,12 +452,12 @@ class SmapiServer {
 
                 resultXml.push(`
                     <mediaCollection>
-                        <id>container-artist-${artist}</id>
+                        <id>container-artist-${__escape(artist)}</id>
                         <itemType>local-artist</itemType>
                         <canPlay>false</canPlay>
                         <canEnumerate>true</canEnumerate>
                         <authRequired>false</authRequired>
-                        <title>${artist}</title>
+                        <title>${__escape(artist)}</title>
                     </mediaCollection>
                 `);
             }
@@ -477,15 +501,15 @@ class SmapiServer {
 
                 resultXml.push(`
                     <mediaCollection>
-                        <id>container-album-${album}</id>
+                        <id>container-album-${__escape(album)}</id>
                         <itemType>local-album</itemType>
                         <canPlay>false</canPlay>
                         <canEnumerate>true</canEnumerate>
                         <authRequired>false</authRequired>
-                        <artist>${artist}</artist>
-                        <album>${album || ''}</album>
+                        <artist>${__escape(artist)}</artist>
+                        <album>${__escape(album || '')}</album>
                         <albumArtURI>http://${IP_ADDRESS}:${LOCAL_PORT}/albumArt/${pathEncoded}</albumArtURI>
-                        <title>${album}</title>
+                        <title>${__escape(album)}</title>
                     </mediaCollection>
                 `);
             }
@@ -628,6 +652,12 @@ const startServer = () => {
 const handlePath = async (path) => {
     console.log('Handle new path', path);
 
+    const isDir = await isDirectoryAsync(path);
+
+    if (!isDir) {
+        throw new Error('invalid target dir');
+    }
+
     ROOT = path;
 };
 
@@ -639,6 +669,7 @@ const stopServer = async () => {
     } catch (e) {
         console.warn(e);
     }
+
     server = null;
     smapiInstance = null;
 };
