@@ -178,7 +178,6 @@ class SmapiServer {
                     album,
                     mimeType,
                     duration,
-                    lastIndexed,
                 ] = value;
 
                 const pathEncoded = encodeURIComponent(pathRelative);
@@ -220,7 +219,7 @@ class SmapiServer {
         }
     }
 
-    async _getPathMetaData({ id, count, index }) {
+    async _getPathMetaData({ id, index }) {
         let target;
 
         if (id === 'root') {
@@ -359,7 +358,7 @@ class SmapiServer {
         return this._getPathMetaData({ id, index, count });
     }
 
-    async _searchTracks({ id, term, index = 0, count = 100 }) {
+    async _searchTracks({ term, index = 0, count = 100 }) {
         const db = await this._getDB();
         const resultXml = [];
 
@@ -386,7 +385,6 @@ class SmapiServer {
                     album,
                     mimeType,
                     duration,
-                    lastIndexed,
                 ] = value;
 
                 const pathEncoded = encodeURIComponent(pathRelative);

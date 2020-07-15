@@ -27,6 +27,10 @@ jobs:
           # Log in to Snap Store
           snapcraft_token: ${{ secrets.snapcraft_token }}
 
+      - name: Install RPM
+        run: sudo apt install -y rpm
+        if: startsWith(matrix.os, 'ubuntu')
+
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:

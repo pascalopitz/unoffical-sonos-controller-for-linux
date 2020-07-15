@@ -70,6 +70,13 @@
           ]
         },
         {
+          "target": "rpm",
+          "arch": [
+            "x64",
+            "armv7l"
+          ]
+        },
+        {
           "target": "appImage",
           "arch": [
             "x64",
