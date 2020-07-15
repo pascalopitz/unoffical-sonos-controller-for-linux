@@ -32,6 +32,8 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
 
       - name: Build/release Electron app
+        env:
+          EP_PRE_RELEASE: true
         uses: samuelmeuli/action-electron-builder@v1
         with:
           # GitHub token, automatically provided to the action
@@ -41,15 +43,3 @@ jobs:
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-          args:
-            releaseType: prerelease
-
-      - name: Save artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          path: |
-            dist/*.AppImage
-            dist/*.deb
-            dist/*.snap
-            dist/*.rpm
