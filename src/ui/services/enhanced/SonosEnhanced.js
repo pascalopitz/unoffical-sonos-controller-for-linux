@@ -4,10 +4,7 @@ import request from 'axios';
 
 import { Sonos, Services, Helpers } from 'sonos';
 
-import RenderingControlEnhanced from './RenderingControlEnhanced';
 import ContentDirectoryEnhanced from './ContentDirectoryEnhanced';
-
-import Listener from './ListenerEnhanced';
 
 const TUNEIN_ID = 65031;
 
@@ -15,26 +12,6 @@ export default class SonosEnhanced extends Sonos {
     constructor(host, model) {
         super(host);
         this.model = model;
-
-        const self = this;
-
-        /*
-         * Sorry, not sorry!
-         *
-         * This is one hacky way to inject my enhanced listener
-         */
-        const implicitListen = async function (event) {
-            if (event === 'newListener') {
-                return;
-            }
-            self.removeListener('newListener', implicitListen);
-            return Listener.subscribeTo(self).catch((err) => {
-                console.error('Error subscribing to listener %j', err);
-            });
-        };
-
-        this.removeAllListeners('newListener');
-        this.on('newListener', implicitListen);
     }
 
     async initialise() {
@@ -63,10 +40,6 @@ export default class SonosEnhanced extends Sonos {
 
     musicServices() {
         return new Services.MusicServices(this.host, this.port);
-    }
-
-    renderingControlService() {
-        return new RenderingControlEnhanced(this.host, this.port);
     }
 
     contentDirectoryService() {
