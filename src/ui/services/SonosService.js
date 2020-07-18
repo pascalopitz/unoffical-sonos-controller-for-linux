@@ -90,15 +90,16 @@ const SonosService = {
         this.deviceId = first.deviceId;
 
         Listener.on('ZonesChanged', (...args) =>
-            this.onZoneGroupTopologyEvent(first, ...args)
+            this.onZoneGroupTopologyEvent(...args)
         );
+        Listener.on('ContentDirectory', (...args) =>
+            this.onContentDirectoryEvent(...args)
+        );
+        Listener.on('AlarmClock', (...args) => this.onAlarmClockEvent(...args));
 
         for (const sonos of devices) {
             store.dispatch(serviceActions.deviceSearchResult(sonos));
 
-            sonos.on('AlarmClock', (...args) =>
-                this.onAlarmClockEvent(sonos, ...args)
-            );
             sonos.on('Queue', (...args) => this.onQueueEvent(sonos, ...args));
 
             sonos.on('GroupRenderingControl', (...args) =>
@@ -107,10 +108,6 @@ const SonosService = {
 
             sonos.on('RenderingControl', (...args) =>
                 this.onRenderingControlEvent(sonos, ...args)
-            );
-
-            sonos.on('ContentDirectory', (...args) =>
-                this.onContentDirectoryEvent(sonos, ...args)
             );
 
             sonos.on('Muted', (...args) => this.onMutedEvent(sonos, ...args));
@@ -369,11 +366,13 @@ const SonosService = {
         store.dispatch(serviceActions.updateMusicServices(this._musicServices));
     },
 
-    onAlarmClockEvent(sonos, ...args) {
-        console.log('onAlarmClockEvent', sonos.host, ...args);
+    onAlarmClockEvent(...args) {
+        console.log('onAlarmClockEvent', ...args);
     },
 
-    async onZoneGroupTopologyEvent(sonos, ...args) {
+    async onZoneGroupTopologyEvent(...args) {
+        const sonos = getSonosDeviceOrCurrentOrFirst();
+
         console.log('onZoneGroupTopologyEvent', sonos.host, ...args);
         const groups = await sonos.getAllGroups();
         const devices = getAllDevices();
@@ -448,8 +447,13 @@ const SonosService = {
         );
     },
 
-    onContentDirectoryEvent(sonos, event) {
-        console.log('onContentDirectoryEvent', sonos, event);
+    onContentDirectoryEvent({ eventBody }) {
+        const sonos = getSonosDeviceOrCurrentOrFirst();
+
+        const event = _.isArray(eventBody)
+            ? eventBody.reduce((prev, i) => ({ ...prev, ...i }), {})
+            : eventBody;
+
         this.queryQueue(sonos);
 
         if (event.ShareIndexInProgress) {
