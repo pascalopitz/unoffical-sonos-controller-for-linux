@@ -211,7 +211,7 @@ export const more = createAction(
                     );
                 } else {
                     res = await client.getMetadata(
-                        state.parent.id,
+                        _.get(state, 'parent.id'),
                         state.items.length,
                         state.items.length + 100
                     );

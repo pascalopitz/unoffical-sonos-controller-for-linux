@@ -58,9 +58,13 @@ const createIndex = async (rootFolder) => {
             const isFile = await isFileAsync(filename);
 
             if (isFile) {
+                const title = path.basename(filename);
                 const mimeType = getType(filename);
 
-                if (ALLOWED_TYPES.indexOf(mimeType) !== -1) {
+                if (
+                    !title.match(/^\./) &&
+                    ALLOWED_TYPES.indexOf(mimeType) !== -1
+                ) {
                     console.log(`Indexing`, filename);
 
                     const pathRelative = path.relative(rootFolder, filename);

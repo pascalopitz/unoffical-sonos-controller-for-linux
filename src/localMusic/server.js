@@ -101,6 +101,17 @@ class SmapiServer {
 
     async _getArtistMetaData({ value, count, index }) {
         const db = await this._getDB();
+
+        const countQuery = db.exec(
+            `SELECT COUNT(*) FROM (
+                SELECT album, artist, path FROM tracks
+                WHERE artist LIKE :value
+                GROUP BY album
+            );`,
+            {
+                ':value': value,
+            }
+        );
         const query = db.exec(
             `SELECT album, artist, path FROM tracks
              WHERE artist LIKE :value
@@ -113,6 +124,7 @@ class SmapiServer {
             }
         );
 
+        const total = _.get(countQuery, '0.values.0.0', 0);
         const resultXml = [];
 
         if (query.length > null) {
@@ -143,7 +155,7 @@ class SmapiServer {
                 <getMetadataResult>
                     <index>${index}</index>
                     <count>${resultXml.length}</count>
-                    <total>${resultXml.length}</total>
+                    <total>${total}</total>
                     ${resultXml.join('')}
                 </getMetadataResult>
             </getMetadataResponse>
@@ -153,6 +165,15 @@ class SmapiServer {
     async _getAlbumMetaData({ value, count, index }) {
         const db = await this._getDB();
 
+        const countQuery = db.exec(
+            `SELECT COUNT(*) FROM (
+                SELECT * FROM tracks
+                WHERE album LIKE :value
+            );`,
+            {
+                ':value': value,
+            }
+        );
         const query = db.exec(
             `SELECT * FROM tracks
              WHERE album LIKE :value
@@ -164,6 +185,7 @@ class SmapiServer {
             }
         );
 
+        const total = _.get(countQuery, '0.values.0.0', 0);
         const resultXml = [];
 
         if (query.length > null) {
@@ -211,7 +233,7 @@ class SmapiServer {
                     <getMetadataResult>
                         <index>${index}</index>
                         <count>${resultXml.length}</count>
-                        <total>${resultXml.length}</total>
+                        <total>${total}</total>
                         ${resultXml.join('')}
                     </getMetadataResult>
                 </getMetadataResponse>
@@ -332,6 +354,18 @@ class SmapiServer {
             }
         }
 
+        if (resultXml.length <= index) {
+            return withinEnvelope(
+                `<getMetadataResponse>
+                    <getMetadataResult>
+                        <index>${index}</index>
+                        <count>0</count>
+                        <total>${resultXml.length}</total>
+                    </getMetadataResult>
+                </getMetadataResponse>`
+            );
+        }
+
         return withinEnvelope(
             `<getMetadataResponse>
                 <getMetadataResult>
@@ -362,6 +396,15 @@ class SmapiServer {
         const db = await this._getDB();
         const resultXml = [];
 
+        const countQuery = db.exec(
+            `SELECT COUNT(*) FROM (
+                SELECT * FROM tracks
+                WHERE title LIKE :term
+            );`,
+            {
+                ':term': `%${term}%`,
+            }
+        );
         const query = db.exec(
             `SELECT * FROM tracks
              WHERE title LIKE :term
@@ -372,6 +415,8 @@ class SmapiServer {
                 ':term': `%${term}%`,
             }
         );
+
+        const total = _.get(countQuery, '0.values.0.0', 0);
 
         if (query.length > null) {
             const [{ values }] = query;
@@ -419,7 +464,7 @@ class SmapiServer {
                 <searchResult>
                     <index>${index}</index>
                     <count>${resultXml.length}</count>
-                    <total>${resultXml.length}</total>
+                    <total>${total}</total>
                     ${resultXml.join('')}
                 </searchResult>
             </searchResponse>`
@@ -430,6 +475,16 @@ class SmapiServer {
         const db = await this._getDB();
         const resultXml = [];
 
+        const countQuery = db.exec(
+            `SELECT COUNT(*) FROM (
+                SELECT artist FROM tracks
+                WHERE artist LIKE :term
+                GROUP BY artist
+            );`,
+            {
+                ':term': `%${term}%`,
+            }
+        );
         const query = db.exec(
             `SELECT artist FROM tracks
              WHERE artist LIKE :term
@@ -441,6 +496,8 @@ class SmapiServer {
                 ':term': `%${term}%`,
             }
         );
+
+        const total = _.get(countQuery, '0.values.0.0', 0);
 
         if (query.length > null) {
             const [{ values }] = query;
@@ -466,7 +523,7 @@ class SmapiServer {
                 <searchResult>
                     <index>${index}</index>
                     <count>${resultXml.length}</count>
-                    <total>${resultXml.length}</total>
+                    <total>${total}</total>
                     ${resultXml.join('')}
                 </searchResult>
             </searchResponse>`
@@ -477,6 +534,16 @@ class SmapiServer {
         const db = await this._getDB();
         const resultXml = [];
 
+        const countQuery = db.exec(
+            `SELECT COUNT(*) FROM (
+                SELECT album, artist, path FROM tracks
+                WHERE album LIKE :term
+                GROUP BY album
+            );`,
+            {
+                ':term': `%${term}%`,
+            }
+        );
         const query = db.exec(
             `SELECT album, artist, path FROM tracks
              WHERE album LIKE :term
@@ -488,6 +555,8 @@ class SmapiServer {
                 ':term': `%${term}%`,
             }
         );
+
+        const total = _.get(countQuery, '0.values.0.0', 0);
 
         if (query.length > null) {
             const [{ values }] = query;
@@ -518,7 +587,7 @@ class SmapiServer {
                 <searchResult>
                     <index>${index}</index>
                     <count>${resultXml.length}</count>
-                    <total>${resultXml.length}</total>
+                    <total>${total}</total>
                     ${resultXml.join('')}
                 </searchResult>
             </searchResponse>`
