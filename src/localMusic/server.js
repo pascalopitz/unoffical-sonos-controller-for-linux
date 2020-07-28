@@ -379,7 +379,7 @@ class SmapiServer {
     }
 
     async getMetadata({ id, index = 0, count = 100 }) {
-        const [, type, value] = ID_REG.exec(id) || [];
+        const [, type, value = ''] = ID_REG.exec(id) || [];
 
         if (type && value && type === 'artist') {
             return this._getArtistMetaData({ value, count, index });
@@ -717,6 +717,10 @@ const startServer = () => {
 };
 
 const handlePath = async (path) => {
+    if (!path) {
+        return;
+    }
+
     console.log('Handle new path', path);
 
     const isDir = await isDirectoryAsync(path);
@@ -729,10 +733,11 @@ const handlePath = async (path) => {
 };
 
 const stopServer = async () => {
-    console.log('Server stopping');
-
     try {
-        server.close();
+        if (server) {
+            console.log('Server stopping');
+            server.close();
+        }
     } catch (e) {
         console.warn(e);
     }
