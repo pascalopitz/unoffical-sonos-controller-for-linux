@@ -6,6 +6,8 @@ import { initialise as initialiseServiceLogos } from '../helpers/getServiceLogoU
 
 import { discoverMultiple } from './enhanced/Discovery';
 
+import { connectStatic } from './enhanced/ConnectStatic';
+
 import * as serviceActions from '../reduxActions/SonosServiceActions';
 
 import {
@@ -77,12 +79,17 @@ const SonosService = {
         return getSonosDeviceOrCurrentOrFirst();
     },
 
-    async searchForDevices(timeout = 1000) {
-        const devices = await discoverMultiple({
-            timeout,
-            port: SONOS_DISCOVERY_PORT,
-        });
-
+    async searchForDevices(timeout = 1000, staticIp = '') {
+        let devices = [];
+        if (staticIp) {
+            const sonos = await connectStatic(staticIp);
+            devices.push(sonos);
+        } else {
+            devices = await discoverMultiple({
+                timeout,
+                port: SONOS_DISCOVERY_PORT,
+            });
+        }
         const [first] = devices;
         const groups = await first.getAllGroups();
 
