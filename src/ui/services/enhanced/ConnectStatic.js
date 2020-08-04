@@ -1,10 +1,12 @@
-import SonosEnhanced from "./SonosEnhanced";
+import SonosEnhanced from './SonosEnhanced';
 
-export async function connectStatic(host, port = 1400) {
-    if(host) {
+export async function connectStatic(hosts, port = 1400) {
+    const players = [];
+    for (const host of hosts) {
         //model is not really used anywhere, let's ignore it for now
         let sonosEnhanced = new SonosEnhanced(host, null);
         await sonosEnhanced.initialise();
-        return sonosEnhanced;
+        players.push(sonosEnhanced);
     }
+    return players;
 }

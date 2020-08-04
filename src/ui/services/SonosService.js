@@ -79,11 +79,11 @@ const SonosService = {
         return getSonosDeviceOrCurrentOrFirst();
     },
 
-    async searchForDevices(timeout = 1000, staticIp = '') {
+    async searchForDevices(timeout = 1000, staticIps = []) {
         let devices = [];
-        if (staticIp) {
-            const sonos = await connectStatic(staticIp);
-            devices.push(sonos);
+        if (staticIps.length > 0) {
+            let players = await connectStatic(staticIps);
+            devices = devices.concat(players);
         } else {
             devices = await discoverMultiple({
                 timeout,
