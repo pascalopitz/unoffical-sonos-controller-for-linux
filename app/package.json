@@ -11,6 +11,7 @@
     "classnames": "^2.2.6",
     "deep-equal": "^2.0.3",
     "dotenv": "^8.2.0",
+    "electron-prompt": "^1.6.0",
     "file-type": "^14.7.1",
     "ip": "^1.1.5",
     "koa": "^2.13.0",

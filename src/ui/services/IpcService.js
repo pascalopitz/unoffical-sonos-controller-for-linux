@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { ipcRenderer } from 'electron';
 
+import SonosEnhanced from './enhanced/SonosEnhanced';
 import SonosService from './SonosService';
 import store from '../reducers';
 import { localFilesUpdate } from '../reduxActions/SonosServiceActions';
@@ -16,6 +17,7 @@ import {
     PREV,
     NEXT,
     TOGGLE_PLAY,
+    ADD_PLAYER_IP,
 } from '../../common/ipcCommands';
 
 const VOLUME_STEP = 2;
@@ -88,6 +90,13 @@ const handleMessage = async (source, message) => {
             await sonos.togglePlayback();
             query(sonos);
             break;
+
+        case ADD_PLAYER_IP: {
+            const device = new SonosEnhanced(message.ip);
+            await SonosService.connectDevice(device);
+            query(sonos);
+            break;
+        }
 
         default:
             // noop

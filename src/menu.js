@@ -1,4 +1,5 @@
 import { Menu, clipboard, dialog, ipcMain, shell } from 'electron';
+import prompt from 'electron-prompt';
 
 import fs from 'fs';
 import path from 'path';
@@ -17,6 +18,7 @@ import {
     PREV,
     NEXT,
     TOGGLE_PLAY,
+    ADD_PLAYER_IP,
 } from './common/ipcCommands';
 
 const blacklist = ['authToken', 'password', 'secret', 'CurrentMuseHouseholdId'];
@@ -274,6 +276,39 @@ const register = () => {
                                 `,
                                 true
                             );
+                        }
+                    },
+                },
+                {
+                    type: 'separator',
+                },
+                {
+                    label: 'Add IP manually',
+                    async click(item, focusedWindow) {
+                        if (focusedWindow) {
+                            try {
+                                const value = await prompt({
+                                    title: 'Add IP manually',
+                                    label: 'IP Address:',
+                                    value: '',
+                                    customStylesheet: './app/css/prompt.css',
+                                    inputAttrs: {
+                                        type: 'text',
+                                        required: true,
+                                        pattern: `^([0-9]{1,3}\.){3}[0-9]{1,3}$`,
+                                    },
+                                    type: 'input',
+                                });
+
+                                value &&
+                                    focusedWindow &&
+                                    focusedWindow.webContents.send('command', {
+                                        type: ADD_PLAYER_IP,
+                                        ip: value,
+                                    });
+                            } catch (e) {
+                                //noop
+                            }
                         }
                     },
                 },

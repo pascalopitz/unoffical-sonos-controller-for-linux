@@ -7,3 +7,4 @@ export const TOGGLE_MUTE = 'TOGGLE_MUTE';
 export const PREV = 'PREV';
 export const NEXT = 'NEXT';
 export const TOGGLE_PLAY = 'TOGGLE_PLAY';
+export const ADD_PLAYER_IP = 'ADD_PLAYER_IP';
