@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserList } from '../BrowserList';
 import { render } from 'enzyme';
 
-jest.mock('../BrowserListItem', () => () => <p />);
+jest.mock('../BrowserListItem', () => () => <p />); // eslint-disable-line
 
 describe('BrowserList', () => {
     it('renders and matches snapshot', () => {

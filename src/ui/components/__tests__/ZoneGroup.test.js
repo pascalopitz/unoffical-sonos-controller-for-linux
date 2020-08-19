@@ -3,7 +3,7 @@ import { ZoneGroup } from '../ZoneGroup';
 import ZoneGroupPlayState from '../ZoneGroupPlayState';
 import { mount } from 'enzyme';
 
-jest.mock('../ZoneGroupMember', () => () => <p className="member" />);
+jest.mock('../ZoneGroupMember', () => () => <p className="member" />); // eslint-disable-line
 
 jest.mock('../ZoneGroupPlayState');
 ZoneGroupPlayState.mockReturnValue(<p className="play-state" />);

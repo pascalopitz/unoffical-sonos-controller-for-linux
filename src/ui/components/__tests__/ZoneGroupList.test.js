@@ -2,7 +2,7 @@ import React from 'react';
 import { ZoneGroupList } from '../ZoneGroupList';
 import { render, mount } from 'enzyme';
 
-jest.mock('../ZoneGroup', () => () => <p />);
+jest.mock('../ZoneGroup', () => () => <p />); // eslint-disable-line
 
 describe('ZoneGroupList', () => {
     let props;

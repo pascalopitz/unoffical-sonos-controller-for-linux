@@ -2,7 +2,7 @@ import React from 'react';
 import { QueueList } from '../QueueList';
 import { render, mount } from 'enzyme';
 
-jest.mock('../QueueListItem', () => () => <p className="queue-list-item" />);
+jest.mock('../QueueListItem', () => () => <p className="queue-list-item" />); // eslint-disable-line
 
 describe('QueueList', () => {
     it('renders and matches snapshot', () => {
