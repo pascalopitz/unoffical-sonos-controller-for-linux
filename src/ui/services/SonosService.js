@@ -1,12 +1,9 @@
 import _ from 'lodash';
 
-import { Listener } from 'sonos';
+import { Listener, AsyncDeviceDiscovery } from 'sonos';
 
 import { initialise as initialiseServiceLogos } from '../helpers/getServiceLogoUrl';
-
-import { discoverMultiple } from './enhanced/Discovery';
-
-import { connectStatic } from './enhanced/ConnectStatic';
+import SonosEnhanced from './enhanced/SonosEnhanced';
 
 import * as serviceActions from '../reduxActions/SonosServiceActions';
 
@@ -79,19 +76,33 @@ const SonosService = {
         return getSonosDeviceOrCurrentOrFirst();
     },
 
-    async searchForDevices(timeout = 1000, staticIps = []) {
-        let devices = [];
-        if (staticIps.length > 0) {
-            let players = await connectStatic(staticIps);
-            devices = devices.concat(players);
-        } else {
-            devices = await discoverMultiple({
-                timeout,
-                port: SONOS_DISCOVERY_PORT,
-            });
-        }
+    async searchForDevices(timeout = 1000) {
+        const device = await new AsyncDeviceDiscovery().discover({
+            timeout,
+            port: SONOS_DISCOVERY_PORT,
+        });
+        await this.connectDevice(device);
+    },
+
+    async connectDevice(device) {
+        const groups = await device.getAllGroups();
+        const devices = await Promise.all(
+            groups.reduce(
+                (p, z) => [
+                    ...p,
+                    ...z.ZoneGroupMember.map(async (m) => {
+                        const uri = new URL(m.Location);
+                        const host = uri.hostname;
+                        const device = new SonosEnhanced(host);
+                        await device.initialise();
+                        return device;
+                    }),
+                ],
+                []
+            )
+        );
+
         const [first] = devices;
-        const groups = await first.getAllGroups();
 
         this.householdId = first.householdId;
         this.deviceId = first.deviceId;
@@ -99,9 +110,11 @@ const SonosService = {
         Listener.on('ZonesChanged', (...args) =>
             this.onZoneGroupTopologyEvent(...args)
         );
+
         Listener.on('ContentDirectory', (...args) =>
             this.onContentDirectoryEvent(...args)
         );
+
         Listener.on('AlarmClock', (...args) => this.onAlarmClockEvent(...args));
 
         for (const sonos of devices) {

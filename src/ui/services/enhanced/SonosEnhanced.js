@@ -9,13 +9,9 @@ import ContentDirectoryEnhanced from './ContentDirectoryEnhanced';
 const TUNEIN_ID = 65031;
 
 export default class SonosEnhanced extends Sonos {
-    constructor(host, model) {
-        super(host);
-        this.model = model;
-    }
-
     async initialise() {
         this._zpInfo = await this.getZPInfo();
+        this._deviceDescription = await this.deviceDescription();
     }
 
     get UUID() {
@@ -36,6 +32,10 @@ export default class SonosEnhanced extends Sonos {
 
     get name() {
         return this._zpInfo.ZoneName;
+    }
+
+    get model() {
+        return this._deviceDescription.modelNumber;
     }
 
     musicServices() {
