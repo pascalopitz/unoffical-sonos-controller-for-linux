@@ -415,14 +415,14 @@ h4 {
     width: 100%;
     white-space: nowrap;
     text-overflow: ellipsis;
-	overflow: hidden;
+    overflow: hidden;
 }
 
 #status-container #next-track {
     width: 100%;
     overflow: hidden;
     white-space: nowrap;
-	text-overflow: ellipsis;
+    text-overflow: ellipsis;
 }
 
 #status-container h6 {
