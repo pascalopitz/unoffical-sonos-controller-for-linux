@@ -414,7 +414,8 @@ h4 {
     height: 36px;
     width: 100%;
     white-space: nowrap;
-    overflow: ellipsis;
+    text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 #status-container #next-track {
