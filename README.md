@@ -94,10 +94,28 @@ You will need to whitelist these if you run Ubuntu firewall for example:
 - UDP 1900 outgoing
 - UDP 1905 incoming
 
+## Troubleshooting
+
+### Q: The app keeps searching for my Sonos system
+
+[Device discovery](https://github.com/bencevans/node-sonos/blob/master/lib/deviceDiscovery.js#L25) utilizes the [Simple Service Discovery Protocol](https://en.wikipedia.org/wiki/Simple_Service_Discovery_Protocol) over IPv4 and relies on multicast IP addresses and UDP messages.
+
+Make sure you check the Firewall settings above are applied correctly.
+
+If all ports are open and search still doesn not work, but you know the IP address of one of the devices, you can add an IP manually by using the developer menu option.
+
+
 ## Contributions
 
 Feel free to fork and create pull requests. Any help with the variety of music services would be most welcome.
-For any issues, please submit them on the [issues page](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/issues). To provide more context please take the time and attach a copy of your current app state. You can do this by using the "Save app state to file" option in the Developer menu.
+
+## Issues
+
+For any issues, please submit them on the [issues page](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/issues).
+
+Before you do, make sure you check the Firewall settings above are applied correctly.
+
+To provide more context please take the time and attach a copy of your current app state. You can do this by using the "Save app state to file" option in the Developer menu.
 
 
 ## Thanks to other projects
