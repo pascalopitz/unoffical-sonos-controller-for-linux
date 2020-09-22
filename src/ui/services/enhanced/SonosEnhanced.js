@@ -1,8 +1,5 @@
 import _ from 'lodash';
-
-import request from 'axios';
-
-import { Sonos, Services, Helpers } from 'sonos';
+import { Sonos, Helpers } from 'sonos';
 
 import ContentDirectoryEnhanced from './ContentDirectoryEnhanced';
 
@@ -38,29 +35,8 @@ export default class SonosEnhanced extends Sonos {
         return this._deviceDescription.modelNumber;
     }
 
-    musicServices() {
-        return new Services.MusicServices(this.host, this.port);
-    }
-
     contentDirectoryService() {
         return new ContentDirectoryEnhanced(this.host, this.port);
-    }
-
-    groupRenderingControlService() {
-        return new Services.GroupRenderingControl(this.host, this.port);
-    }
-
-    async getZPInfo() {
-        try {
-            const uri = `http://${this.host}:${this.port}/status/zp`;
-            const response = await request(uri);
-            const data = await Helpers.ParseXml(response.data);
-            console.log(data);
-            return data.ZPSupportInfo.ZPInfo;
-        } catch (e) {
-            console.log(e);
-            return {};
-        }
     }
 
     async getAvailableServices() {
