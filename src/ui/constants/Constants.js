@@ -21,6 +21,7 @@ const Constants = {
     BROWSER_ADD_TO_PLAYLIST: '',
     BROWSER_EDIT_PLAYLIST: '',
     BROWSER_DELETE_PLAYLIST: '',
+    BROWSER_DELETE_FAVOURITE: '',
 
     PLAYER_PAUSE: '',
     PLAYER_PLAY: '',

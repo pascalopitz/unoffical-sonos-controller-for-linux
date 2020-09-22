@@ -20,6 +20,7 @@ import {
     addToPlaylist,
     editPlaylist,
     deletePlaylist,
+    deleteFavourite,
 } from '../reduxActions/BrowserListActions';
 
 const mapDispatchToProps = {
@@ -33,6 +34,7 @@ const mapDispatchToProps = {
     addToPlaylist,
     editPlaylist,
     deletePlaylist,
+    deleteFavourite,
 };
 
 class InlineMenu extends PureComponent {
@@ -92,6 +94,13 @@ class InlineMenu extends PureComponent {
         this.props.toggle(e);
     };
 
+    _deleteFavourite = (e) => {
+        e.preventDefault();
+        const item = _.get(this, 'props.model.parent') || this.props.model;
+        this.props.deleteFavourite(item);
+        this.props.toggle(e);
+    };
+
     render() {
         const {
             model: item,
@@ -113,6 +122,7 @@ class InlineMenu extends PureComponent {
 
         const isService = item.action === 'service';
         const isSonosPlaylist = item._raw && item._raw.parentID === 'SQ:';
+        const isSonosFavourite = item._raw && item._raw.parentID === 'FV:2';
 
         const scrollContainerNode = getClosest(
             containerRef.current,
@@ -172,6 +182,11 @@ class InlineMenu extends PureComponent {
                         {isSonosPlaylist && (
                             <li onClick={this._deletePlaylist}>
                                 Delete playlist
+                            </li>
+                        )}
+                        {isSonosFavourite && (
+                            <li onClick={this._deleteFavourite}>
+                                Remove from Sonos Favourites
                             </li>
                         )}
                     </Fragment>

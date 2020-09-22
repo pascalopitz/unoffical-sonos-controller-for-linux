@@ -611,3 +611,15 @@ export const deletePlaylist = createAction(
         return item;
     }
 );
+
+export const deleteFavourite = createAction(
+    Constants.BROWSER_DELETE_FAVOURITE,
+    async (item) => {
+        const sonos = SonosService._currentDevice; // TODO: fix this
+
+        const contentDirectoryService = sonos.contentDirectoryService();
+        await contentDirectoryService.DestroyObject({ ObjectID: item._raw.id });
+
+        return item;
+    }
+);
