@@ -240,17 +240,10 @@ export class BrowserListItem extends Component {
         e.preventDefault();
         e.stopPropagation();
 
-        if (!this._delayedClick) {
-            this._delayedClick = _.debounce(this._onClick, 200);
-        }
-        if (this.clickedOnce) {
-            this._delayedClick.cancel();
-            this.clickedOnce = false;
-            console.log('double click');
-        } else {
-            this._delayedClick(e);
-            this.clickedOnce = true;
-        }
+       if (!this._delayedClick) {
+          this._delayedClick = _.debounce(this._onClick, 200, { leading: true, trailing: false});
+       }
+       this._delayedClick(e);
     };
 
     _toggle = (e) => {
