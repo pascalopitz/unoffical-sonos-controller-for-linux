@@ -8,6 +8,8 @@ import MusicServiceClient from '../services/MusicServiceClient';
 
 import store from '../reducers';
 
+import { isStreamUrl } from '../helpers/sonos';
+
 import { getCurrentTrack } from '../selectors/CurrentTrackSelectors';
 
 import {
@@ -69,6 +71,13 @@ async function _fetchMusicServices() {
 }
 
 export async function _getItem(item) {
+    if (item._raw['r:resMD']) {
+        return {
+            ...item,
+            metadata: item._raw['r:resMD'],
+        };
+    }
+
     if (!item.serviceClient) {
         return item;
     }
@@ -520,8 +529,10 @@ export const playNow = createAction(
         const item = await _getItem(eventTarget);
 
         if (
-            item.metadata &&
-            item.class.indexOf('object.item.audioItem.audioBroadcast') !== -1
+            (item.metadata &&
+                item.class.indexOf('object.item.audioItem.audioBroadcast') !==
+                    -1) ||
+            isStreamUrl(item.uri)
         ) {
             await sonos.setAVTransportURI(item);
         } else if (item.class && item.class === 'object.item.audioItem') {

@@ -9,6 +9,8 @@ import classnames from 'classnames';
 
 import AlbumArt from './AlbumArt';
 
+import { isStreamUrl } from '../helpers/sonos';
+
 import {
     select,
     playNow,
@@ -220,6 +222,7 @@ export class BrowserListItem extends Component {
         const item = this.props.model;
 
         if (
+            isStreamUrl(item.uri) ||
             item.class === 'object.item.audioItem.musicTrack' ||
             item.class === 'object.item.audioItem' ||
             item.streamMetadata ||

@@ -6,8 +6,7 @@ import { createAction } from 'redux-actions';
 
 import Constants from '../constants';
 
-import { isStreamUrl } from '../helpers/sonos';
-import { isFwdOnlyUrl } from '../helpers/sonos';
+import { isStreamUrl, isFwdOnlyUrl } from '../helpers/sonos';
 
 import SonosService from '../services/SonosService';
 
