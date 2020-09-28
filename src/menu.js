@@ -21,6 +21,8 @@ import {
     ADD_PLAYER_IP,
 } from './common/ipcCommands';
 
+const packageJson = require('./package.json');
+
 const blacklist = ['authToken', 'password', 'secret', 'CurrentMuseHouseholdId'];
 const maskJson = MaskJson(blacklist);
 const writeFileAsync = promisify(fs.writeFile).bind(fs);
@@ -173,7 +175,7 @@ const register = () => {
                                 JSON.stringify(
                                     {
                                         appState: maskJson(JSON.parse(result)),
-                                        packageJson: require('./package.json'),
+                                        packageJson,
                                     },
                                     1,
                                     4
@@ -207,7 +209,7 @@ const register = () => {
                                 JSON.stringify(
                                     {
                                         appState: maskJson(JSON.parse(result)),
-                                        packageJson: require('./package.json'),
+                                        packageJson,
                                     },
                                     1,
                                     4
@@ -348,6 +350,10 @@ const register = () => {
         {
             role: 'help',
             submenu: [
+                {
+                    label: `Version: ${packageJson.version}`,
+                    enabled: false,
+                },
                 {
                     label: 'Project page',
                     click() {
