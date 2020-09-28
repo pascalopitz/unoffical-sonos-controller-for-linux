@@ -32,7 +32,7 @@ Find the latest .AppImage on the [release page](https://github.com/pascalopitz/u
 You can right click it on Ubuntu, then under "Permissions" mark is as executable. ALternatively run:
 
 ```bash
-chmod +x sonos-controller-unofficial-amd64-0.2.1-alpha8.AppImage
+chmod +x sonos-controller-unofficial-amd64-0.2.1.AppImage
 ```
 
 After that it can be launched by double click or via invoking it through the terminal.
@@ -48,7 +48,7 @@ Type=Application
 Categories=Audio;
 Name=sonos-controller-unofficial
 Icon=appimagekit-sonos-controller-unofficial
-Exec="/home/username/Downloads/sonos-controller-unofficial-0.2.1-alpha8.AppImage" %U
+Exec="/home/username/Downloads/sonos-controller-unofficial-0.2.1.AppImage" %U
 ```
 
 ## Install via .deb file
@@ -57,7 +57,7 @@ Find the latest .deb on the [release page](https://github.com/pascalopitz/unoffi
 On Ubuntu, you can double click the downloaded file to install it via the Software Center. Alternatively run
 
 ```bash
-sudo dpkg -i sonos-controller-unofficial-amd64-0.2.1-alpha8.AppImage
+sudo dpkg -i sonos-controller-unofficial-amd64-0.2.1.AppImage
 ```
 
 ##  and Run locally

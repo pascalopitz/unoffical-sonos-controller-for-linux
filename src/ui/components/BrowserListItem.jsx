@@ -243,10 +243,13 @@ export class BrowserListItem extends Component {
         e.preventDefault();
         e.stopPropagation();
 
-       if (!this._delayedClick) {
-          this._delayedClick = _.debounce(this._onClick, 200, { leading: true, trailing: false});
-       }
-       this._delayedClick(e);
+        if (!this._delayedClick) {
+            this._delayedClick = _.debounce(this._onClick, 200, {
+                leading: true,
+                trailing: false,
+            });
+        }
+        this._delayedClick(e);
     };
 
     _toggle = (e) => {
