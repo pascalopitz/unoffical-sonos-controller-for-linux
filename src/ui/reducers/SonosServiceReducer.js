@@ -45,46 +45,48 @@ function topologyReducer(state, action) {
     const { groups, attributes, devices } = action.payload;
 
     const zones = groups
-        .filter((g) => {
-            return _.get(g, 'IsZoneBridge') !== '1';
-        })
         .map((g) => {
             const { CurrentZonePlayerUUIDsInGroup } = attributes[g.host] || {};
 
-            const ZoneGroupMember = g.ZoneGroupMember.filter(
-                (m) =>
-                    !CurrentZonePlayerUUIDsInGroup ||
-                    CurrentZonePlayerUUIDsInGroup.indexOf(m.UUID) !== -1
-            ).map((m) => {
-                const device = devices.find((d) => d.host === g.host);
-                const model = device.model;
+            const ZoneGroupMember = g.ZoneGroupMember.filter((m) => {
+                return _.get(m, 'IsZoneBridge') !== '1';
+            })
+                .filter(
+                    (m) =>
+                        !CurrentZonePlayerUUIDsInGroup ||
+                        CurrentZonePlayerUUIDsInGroup.indexOf(m.UUID) !== -1
+                )
+                .map((m) => {
+                    const device = devices.find((d) => d.host === g.host);
+                    const model = device.model;
 
-                const isPaired = !!m.ChannelMapSet;
-                const isSurround = !!m.HTSatChanMapSet;
+                    const isPaired = !!m.ChannelMapSet;
+                    const isSurround = !!m.HTSatChanMapSet;
 
-                // TODO: this is pretty vague. WHat if we have a play1 paired with a subwoofer? Is that possible?
-                const isStereo = isPaired || isSurround || !MONO_MODELS[model];
+                    // TODO: this is pretty vague. WHat if we have a play1 paired with a subwoofer? Is that possible?
+                    const isStereo =
+                        isPaired || isSurround || !MONO_MODELS[model];
 
-                const Channels = getChannels(
-                    m.ChannelMapSet || m.HTSatChanMapSet
-                );
+                    const Channels = getChannels(
+                        m.ChannelMapSet || m.HTSatChanMapSet
+                    );
 
-                const ZoneName = isPaired
-                    ? `${m.ZoneName} (${Object.keys(Channels)
-                          .map((s) => s.substr(0, 1))
-                          .join(' + ')})`
-                    : m.ZoneName;
+                    const ZoneName = isPaired
+                        ? `${m.ZoneName} (${Object.keys(Channels)
+                              .map((s) => s.substr(0, 1))
+                              .join(' + ')})`
+                        : m.ZoneName;
 
-                return {
-                    ...m,
-                    model,
-                    isPaired,
-                    isStereo,
-                    isSurround,
-                    ZoneName,
-                    Channels,
-                };
-            });
+                    return {
+                        ...m,
+                        model,
+                        isPaired,
+                        isStereo,
+                        isSurround,
+                        ZoneName,
+                        Channels,
+                    };
+                });
 
             return {
                 ...g,
@@ -92,7 +94,8 @@ function topologyReducer(state, action) {
                 _ZoneGroupMember: g.ZoneGroupMember,
                 ZoneGroupMember,
             };
-        });
+        })
+        .filter((g) => g.ZoneGroupMember.length > 0);
 
     return {
         ...state,
