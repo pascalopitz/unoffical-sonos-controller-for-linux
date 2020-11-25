@@ -71,7 +71,7 @@ async function _fetchMusicServices() {
 }
 
 export async function _getItem(item) {
-    if (item._raw['r:resMD']) {
+    if (item._raw && item._raw['r:resMD']) {
         return {
             ...item,
             metadata: item._raw['r:resMD'],
