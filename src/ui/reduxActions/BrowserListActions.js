@@ -106,7 +106,6 @@ export async function _getItem(item) {
 
 async function _createLibrarySearchPromise(type, term, options = {}) {
     const sonos = SonosService._currentDevice;
-    term = escape(term);
 
     try {
         const result = await sonos.queryMusicLibrary(type, term, options);
