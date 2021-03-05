@@ -62,28 +62,29 @@ sudo dpkg -i sonos-controller-unofficial-amd64-0.2.2.AppImage
 
 ##  and Run locally
 
-You will need node.js for this.
+You will need an installed and fairly recent version (>=13) of [nodejs](https://nodejs.org/) for this.
+Generating artefacts might require some additional binaries, like `graphicsMagick` and
+`icnsutils`, which you can install via `apt`.
 
-First, initialize the project:
+
+Clone the git repository and `cd` into the project folder.
+Then initialize the project by running:
 
 ```bash
 npm install
 ```
 
-Second, start the electron app in develop mode:
+Start the electron app in develop mode:
 
 ```bash
 npm run develop
 ```
 
-Building a deb and AppImage binaries:
+Building the packaged artefacts:
 
 ```bash
 npm run dist
 ```
-
-This might require some additional binaries, like `graphicsMagick` and
-`icnsutils`, which you can install via apt
 
 ## Firewall settings
 
