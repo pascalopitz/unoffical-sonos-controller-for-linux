@@ -1,5 +1,4 @@
 import { Menu, clipboard, dialog, ipcMain, shell } from 'electron';
-import prompt from 'electron-prompt';
 
 import fs from 'fs';
 import path from 'path';
@@ -289,18 +288,10 @@ const register = () => {
                     async click(item, focusedWindow) {
                         if (focusedWindow) {
                             try {
-                                const value = await prompt({
-                                    title: 'Add IP manually',
-                                    label: 'IP Address:',
-                                    value: '',
-                                    customStylesheet: './app/css/prompt.css',
-                                    inputAttrs: {
-                                        type: 'text',
-                                        required: true,
-                                        pattern: `^([0-9]{1,3}\.){3}[0-9]{1,3}$`,
-                                    },
-                                    type: 'input',
-                                });
+                                const value = await focusedWindow.webContents.executeJavaScript(
+                                    'ipPrompt()',
+                                    true
+                                );
 
                                 value &&
                                     focusedWindow &&

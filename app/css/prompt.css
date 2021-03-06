@@ -1,10 +1,10 @@
-body {
+body .swal2-popup {
     background: #1b1b1b;
     font-family: Arial, sans-serif;
     text-shadow: #111 0px -1px;
 }
 
-button {
+body .swal2-popup button.swal2-styled {
     background-image: -webkit-linear-gradient(top, #404040 0px, #303030 24px);
     border: 1px solid black;
     padding: 10px 10px 10px 10px;
@@ -14,23 +14,23 @@ button {
     font-size: 15px;
 }
 
-#form {
+body .swal2-popup #form {
     padding: none;
     margin: none;
 }
 
-#label {
+body .swal2-popup label {
     color: #fff;
 }
 
-#data {
+body .swal2-popup input {
     color: #fff;
     margin: none;
     border: none;
     background: #404040;
 }
 
-#data:focus {
+body .swal2-popup input:focus {
     outline: none;
 }
 
