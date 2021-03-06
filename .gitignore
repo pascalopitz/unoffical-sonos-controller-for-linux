@@ -9,8 +9,6 @@ npm-debug.log
 node_modules
 bower_components
 package.zip
-package-lock.json
-app/package-lock.json
 *.map
 js/*
 .idea
