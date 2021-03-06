@@ -5,6 +5,7 @@
   "author": "Pascal Opitz <contact@pascalopitz.com>",
   "main": "main.js",
   "dependencies": {
+    "@ilikecode/sonos": "^1.0.0",
     "array-union": "^3.0.1",
     "bluebird": "^3.5.4",
     "classnames": "^2.2.6",
@@ -23,9 +24,11 @@
     "moment": "^2.29.1",
     "music-metadata": "^7.8.1",
     "omit-keys": "^0.1.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",
     "react-tiny-virtual-list": "^2.2.0",
-    "react-viewport-list": "^3.0.2",
+    "react-viewport-list": "^5.0.0",
     "react-virtual-list": "^2.3.0",
     "react-virtualized-auto-sizer": "^1.0.4",
     "redux": "^4.0.1",
@@ -33,14 +36,9 @@
     "redux-promise": "^0.6.0",
     "reselect": "^4.0.0",
     "shallow-compare": "^1.2.2",
-    "sonos": "^1.15.0-alpha.1",
     "sql.js": "^1.4.0",
     "uuid": "^8.3.2",
     "wake-event": "^0.0.1",
     "walkdir": "^0.4.1"
-  },
-  "devDependencies": {
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
   }
 }

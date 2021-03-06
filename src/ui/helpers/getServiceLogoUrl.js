@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Helpers } from 'sonos';
+import { Helpers } from '@ilikecode/sonos';
 
 const SERVICE_LOGOS_URI =
     'http://update-services.sonos.com/services/mslogo.xml';

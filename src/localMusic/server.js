@@ -7,7 +7,7 @@ import initSqlJs from 'sql.js';
 
 import { parseFile } from 'music-metadata';
 import { getType } from 'mime';
-import { Helpers } from 'sonos';
+import { Helpers } from '@ilikecode/sonos';
 
 import _ from 'lodash';
 import Koa from 'koa';

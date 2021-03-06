@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import moment from 'moment';
-import { Helpers } from 'sonos';
+import { Helpers } from '@ilikecode/sonos';
 
 import SonosService from '../services/SonosService';
 

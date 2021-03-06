@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { Helpers } from 'sonos';
+import { Helpers } from '@ilikecode/sonos';
 import { ipcRenderer } from 'electron';
 import { createAction } from 'redux-actions';
 
