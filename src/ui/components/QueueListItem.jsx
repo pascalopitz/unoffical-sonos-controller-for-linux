@@ -189,7 +189,10 @@ export class QueueListItem extends Component {
                 draggable="true"
                 title={htmlTitle}
             >
-                <AlbumArt src={track.albumArtURI} />
+                <AlbumArt
+                    src={track.albumArtURI}
+                    viewportRef={this.props.viewportRef}
+                />
                 <div className="trackinfo">
                     <p className="title">{track.title}</p>
                     <p className="artist">{track.artist}</p>

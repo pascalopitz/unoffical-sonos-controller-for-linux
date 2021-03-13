@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -53,7 +53,8 @@ export class BrowserList extends Component {
     constructor(props) {
         super(props);
 
-        this.scrollRef = React.createRef();
+        this.scrollRef = createRef();
+        this.viewportRef = createRef();
 
         this.moreHandler = _.throttle(() => {
             this.props.more(this.props.currentState);
@@ -171,7 +172,7 @@ export class BrowserList extends Component {
         return (
             <div id="music-sources-container">
                 {headlineNodes}
-                <ul id="browser-container">
+                <ul id="browser-container" ref={this.viewportRef}>
                     <AutoSizer>
                         {({ height, width }) => (
                             <VirtualList
@@ -187,6 +188,7 @@ export class BrowserList extends Component {
                                     const item = displayItems[index];
                                     return (
                                         <BrowserListItem
+                                            viewportRef={this.viewportRef}
                                             style={style}
                                             key={`${
                                                 item.id || 'position'

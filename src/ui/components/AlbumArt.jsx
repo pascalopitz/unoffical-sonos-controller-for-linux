@@ -1,20 +1,13 @@
 import _ from 'lodash';
 
-import React, { Component } from 'react';
-import shallowCompare from 'shallow-compare';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import SonosService from '../services/SonosService';
 import { getByServiceId } from '../services/MusicServiceClient';
 
-import {
-    getClosest,
-    createIntersectionObserver,
-    purgeIntersectionObserver,
-} from '../helpers/dom-utility';
+import useIsInViewport from 'use-is-in-viewport';
 
 import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
-
-const MIN_RATIO = 0.5;
 
 const loadCache = new Map();
 
@@ -33,168 +26,149 @@ async function chachedOrfetch(src) {
     });
 }
 
-export class AlbumArt extends Component {
-    state = {
-        src: null,
-        visible: false,
-        loading: false,
-        loaded: false,
-    };
+const AlbumArt = (props) => {
+    const { src: propsSrc, viewportRef: viewport, serviceId } = props;
 
-    constructor() {
-        super();
-        this.ref = React.createRef();
-    }
+    const targetRef = useRef();
+    const [visible, setViewportChildRef] = useIsInViewport({
+        viewport,
+        modTop: '60px',
+        modBottom: '60px',
+    });
 
-    async _loadImage() {
-        const { visible, failed, src, propsSrc } = this.state;
-        // here we make sure it's still visible, a URL and hasn't failed previously
-        if (!visible || failed) {
+    const [src, setSrc] = useState(null);
+    const [loadedSrc, setLoadedSrc] = useState(null);
+    const [failed, setFailed] = useState(false);
+    const [loaded, setLoaded] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const loadError = useCallback(() => {
+        if (!visible) {
             return;
         }
 
-        chachedOrfetch(src)
-            .then((blobSrc) => {
-                if (propsSrc) {
-                    loadCache.set(propsSrc, blobSrc);
+        (async () => {
+            try {
+                const urlToParse = propsSrc.match(/^\//)
+                    ? `http://localhost${propsSrc}`
+                    : propsSrc;
+
+                const parsed = new URL(
+                    new URL(urlToParse).searchParams.get('u')
+                );
+
+                const sid = parsed.searchParams.get('sid');
+
+                if (!sid) {
+                    throw new Error(`No service id`);
                 }
 
-                if (src) {
-                    loadCache.set(src, blobSrc);
+                const client = getByServiceId(sid);
+
+                if (!client) {
+                    throw new Error(`No service client`);
                 }
 
-                this.setState({
-                    failed: false,
-                    loading: false,
-                    loaded: true,
-                });
-            })
-            .catch(async (err) => {
+                const response = await client.getExtendedMetadata(
+                    decodeURIComponent(parsed.pathname).replace('.mp3', '')
+                );
+
+                const newSrc = _.get(
+                    response,
+                    'mediaMetadata.trackMetadata.albumArtURI'
+                );
+
                 if (
-                    !this.ref.current ||
-                    !this.state.visible ||
-                    err.message !== '404'
+                    targetRef.current &&
+                    targetRef.current.getAttribute('data-src-computed') === src
                 ) {
-                    return;
+                    setSrc(newSrc);
                 }
+            } catch (e) {
+                setFailed(true);
+                setLoaded(false);
+                setLoading(false);
+            }
+        })();
+    }, [
+        src,
+        propsSrc,
+        visible,
+        loading,
+        failed,
+        setSrc,
+        setLoading,
+        setLoaded,
+        setFailed,
+    ]);
 
-                try {
-                    const urlToParse = propsSrc.match(/^\//)
-                        ? `http://localhost${propsSrc}`
-                        : propsSrc;
+    const loadSuccess = useCallback(
+        (imageSrc, blobSrc) => {
+            if (
+                targetRef &&
+                src &&
+                visible &&
+                targetRef.current.getAttribute('data-src-computed') === src
+            ) {
+                loadCache.set(imageSrc, blobSrc);
+                loadCache.set(propsSrc, blobSrc);
+                loadCache.set(src, blobSrc);
 
-                    const parsed = new URL(
-                        new URL(urlToParse).searchParams.get('u')
-                    );
+                setLoadedSrc(blobSrc);
+                setLoading(false);
+                setLoaded(true);
+            }
+        },
+        [
+            src,
+            propsSrc,
+            visible,
+            setLoadedSrc,
+            setLoading,
+            setLoaded,
+            targetRef.current,
+        ]
+    );
 
-                    const sid = parsed.searchParams.get('sid');
+    const loadImage = useCallback(
+        (imageSrc) => {
+            setLoading(true);
+            chachedOrfetch(imageSrc)
+                .then((blobSrc) => {
+                    loadSuccess(imageSrc, blobSrc);
+                })
+                .catch(loadError);
+        },
+        [propsSrc, visible, src]
+    );
 
-                    if (!sid) {
-                        return;
-                    }
-
-                    const client = getByServiceId(sid);
-
-                    if (!client) {
-                        return null;
-                    }
-
-                    const response = await client.getExtendedMetadata(
-                        decodeURIComponent(parsed.pathname).replace('.mp3', '')
-                    );
-
-                    const newSrc = _.get(
-                        response,
-                        'mediaMetadata.trackMetadata.albumArtURI'
-                    );
-
-                    if (newSrc && propsSrc === this.state.propsSrc) {
-                        this.setState(
-                            {
-                                src: newSrc,
-                                loading: false,
-                            },
-                            () => {
-                                this._loadImage();
-                            }
-                        );
-
-                        return;
-                    }
-                } catch (e) {
-                    // noop
-                }
-
-                this.setState({
-                    failed: true,
-                    loading: false,
-                    loaded: false,
-                });
-            });
-    }
-
-    componentDidMount() {
-        const node = this.ref.current;
-
-        const options = {
-            root: getClosest(node, this.props.parentType || 'ul'),
-            rootMargin: '0px',
-            threshold: MIN_RATIO,
-        };
-
-        const callback = ([entry]) => {
-            this.setState({
-                visible: entry.intersectionRatio >= MIN_RATIO,
-            });
-        };
-
-        this.observer = createIntersectionObserver(node, options, callback);
-    }
-
-    componentWillUnmount() {
-        this.observer = purgeIntersectionObserver(this.observer);
-
-        if (this.timeout) {
-            window.clearTimeout(this.timeout);
+    useEffect(() => {
+        if (!src || failed) {
+            setLoadedSrc(null);
+            return;
         }
 
-        this.setState({
-            src: null,
-            loaded: false,
-            loading: false,
-            visible: false,
-        });
-    }
+        loadImage(src);
+    }, [src, failed]);
 
-    static getDerivedStateFromProps(nextProps, ownState) {
-        const { visible, loading, propsSrc, propsServiceId } = ownState;
-        const { serviceId, src } = nextProps;
-
-        if (
-            !visible ||
-            (propsSrc && src === propsSrc) ||
-            (propsServiceId && serviceId === propsServiceId)
-        ) {
-            return null;
-        }
-
-        const needsRecompute =
-            src ||
-            serviceId ||
-            (propsSrc && !src) ||
-            (!serviceId && propsServiceId);
-
-        if (visible && needsRecompute) {
-            const sonos = SonosService._currentDevice;
-
+    useEffect(() => {
+        if (!visible) {
+            setFailed(false);
+            setLoading(false);
+            setLoaded(false);
+            setSrc(null);
+            setLoadedSrc(null);
+        } else {
             const url =
-                src && typeof src === 'object' && src._
-                    ? src._
+                propsSrc && typeof propsSrc === 'object' && propsSrc._
+                    ? propsSrc._
                     : serviceId
                     ? getServiceLogoUrl(serviceId)
-                    : src;
+                    : propsSrc;
 
             if (url && typeof url === 'string') {
+                const sonos = SonosService._currentDevice;
+
                 const srcUrl =
                     url.indexOf('https://') === 0 ||
                     url.indexOf('http://') === 0 ||
@@ -206,82 +180,54 @@ export class AlbumArt extends Component {
                           sonos.port +
                           decodeURIComponent(url);
 
-                return {
-                    failed: false,
-                    loaded: false,
-                    loading: true,
-                    src: srcUrl,
-                    propsSrc: src,
-                    propsServiceId: serviceId,
-                };
+                setFailed(false);
+                setLoading(false);
+                setLoaded(false);
+                setSrc(srcUrl);
+                setLoadedSrc(null);
             } else {
-                return {
-                    failed: false,
-                    loaded: true,
-                    loading: false,
-                    src: null,
-                    propsSrc: src,
-                    propsServiceId: serviceId,
-                };
+                setFailed(false);
+                setLoading(false);
+                setLoaded(true);
+                setSrc(null);
+                setLoadedSrc(null);
             }
         }
+    }, [
+        propsSrc,
+        serviceId,
+        visible,
+        setLoading,
+        setLoaded,
+        setFailed,
+        setSrc,
+    ]);
 
-        if (!visible && loading) {
-            return {
-                failed: false,
-                loaded: false,
-                loading: false,
-                src: null,
-            };
-        }
+    const srcUrl = loadedSrc
+        ? loadedSrc
+        : 'images/browse_missing_album_art.png';
 
-        return null;
-    }
+    const css = {
+        backgroundImage: `url("${srcUrl}")`,
+        backgroundSize: 'contain',
+    };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.loading && !prevState.loading) {
-            this._loadImage();
-        }
-    }
-
-    render() {
-        const {
-            visible,
-            loaded,
-            loading,
-            propsSrc,
-            src: stateSrc,
-        } = this.state;
-
-        const src = propsSrc
-            ? loadCache.get(propsSrc)
-            : loadCache.get(stateSrc);
-
-        const srcUrl =
-            src && loaded && !loading
-                ? src
-                : 'images/browse_missing_album_art.png';
-
-        const css = {
-            backgroundImage: `url("${srcUrl}")`,
-            backgroundSize: 'contain',
-        };
-
-        return (
-            <div
-                ref={this.ref}
-                className="img"
-                data-visible={visible}
-                style={css}
-                data-src-computed={src}
-                data-src-prop={this.props.src}
-            />
-        );
-    }
-}
+    return (
+        <div
+            ref={(r) => {
+                targetRef.current = r;
+                setViewportChildRef(r);
+            }}
+            className="img"
+            style={css}
+            data-visible={visible}
+            data-loading={loading}
+            data-loaded={loaded}
+            data-failed={failed}
+            data-src-computed={src}
+            data-src-prop={propsSrc}
+        />
+    );
+};
 
 export default AlbumArt;

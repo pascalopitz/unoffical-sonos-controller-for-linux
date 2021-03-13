@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, createRef } from 'react';
 import { connect } from 'react-redux';
 
 import { getClosest } from '../helpers/dom-utility';
@@ -32,6 +32,9 @@ const mapDispatchToProps = {
 export class QueueList extends Component {
     constructor(props) {
         super(props);
+
+        this.viewportRef = createRef();
+
         this.state = {
             dragging: false,
         };
@@ -131,6 +134,7 @@ export class QueueList extends Component {
                         onDragOver={this._onDragOver.bind(this)}
                         onDragStart={this._onDragStart.bind(this)}
                         onDragEnd={this._onDragEnd.bind(this)}
+                        ref={this.viewportRef}
                     >
                         <div className="scrollcontainer">
                             {tracks.map((track, p) => {
@@ -146,6 +150,7 @@ export class QueueList extends Component {
                                         key={`${
                                             track.id || 'position'
                                         }-${trackPosition}`}
+                                        viewportRef={this.viewportRef}
                                         track={track}
                                         position={trackPosition}
                                         isCurrent={isCurrent}

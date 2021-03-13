@@ -39,6 +39,7 @@
     "sql.js": "^1.4.0",
     "sweetalert2": "^10.15.5",
     "sweetalert2-react-content": "^3.3.1",
+    "use-is-in-viewport": "^1.0.9",
     "uuid": "^8.3.2",
     "wake-event": "^0.0.1",
     "walkdir": "^0.4.1"

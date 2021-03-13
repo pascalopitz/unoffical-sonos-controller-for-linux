@@ -343,7 +343,11 @@ export class BrowserListItem extends Component {
                 data-position={this.props.position}
                 style={this.props.style}
             >
-                <AlbumArt src={albumArtURI} serviceId={serviceId} />
+                <AlbumArt
+                    src={albumArtURI}
+                    serviceId={serviceId}
+                    viewportRef={this.props.viewportRef}
+                />
 
                 <div className={className}>
                     <p className="title">{item.title}</p>
