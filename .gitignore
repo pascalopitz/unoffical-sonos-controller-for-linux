@@ -14,3 +14,4 @@ js/*
 .idea
 yarn.lock
 coverage
+*.sqlite
