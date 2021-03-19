@@ -4,6 +4,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import url from 'url';
 import wakeEvent from 'wake-event';
+import windowStateKeeper from 'electron-window-state';
 
 import registerMenu from './menu';
 import LocalMusic from './localMusic';
@@ -13,14 +14,27 @@ const deviceProviderName = 'unofficial-sonos-controller-for-linux';
 let win;
 
 function createWindow() {
+    const mainWindowState = windowStateKeeper({
+        defaultWidth: 800,
+        defaultHeight: 600,
+        maximize: true,
+        fullScreen: true,
+    });
+
     win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        x: mainWindowState.x,
+        y: mainWindowState.y,
+        width: mainWindowState.width,
+        height: mainWindowState.height,
+        fullscreen: mainWindowState.isFullScreen,
+        maximize: mainWindowState.isMaximized,
         icon: path.join(__dirname, '/sonos-512.png'),
         webPreferences: {
             nodeIntegration: true,
         },
     });
+
+    mainWindowState.manage(win);
 
     registerMenu();
 
@@ -28,6 +42,7 @@ function createWindow() {
         // Thanks SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
         `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`
     );
+
     win.loadURL(
         url.format({
             pathname: path.join(__dirname, 'window.html'),
@@ -48,7 +63,6 @@ function createWindow() {
 
     if (process.env.NODE_ENV === 'development') {
         win.webContents.toggleDevTools();
-        win.maximize();
     }
 }
 
