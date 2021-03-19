@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Sonos, Helpers } from '@ilikecode/sonos';
+import { Sonos, Helpers } from 'sonos';
 
 import ContentDirectoryEnhanced from './ContentDirectoryEnhanced';
 

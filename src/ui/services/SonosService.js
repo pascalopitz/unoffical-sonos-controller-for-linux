@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { Listener, AsyncDeviceDiscovery } from '@ilikecode/sonos';
+import { Listener, AsyncDeviceDiscovery } from 'sonos';
 
 import { initialise as initialiseServiceLogos } from '../helpers/getServiceLogoUrl';
 import SonosEnhanced from './enhanced/SonosEnhanced';

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Helpers, Services } from '@ilikecode/sonos';
+import { Helpers, Services } from 'sonos';
 
 export default class ContentDirectoryEnhanced extends Services.ContentDirectory {
     _enumItems(resultcontainer) {
