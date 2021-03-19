@@ -26,7 +26,7 @@ async function chachedOrfetch(src) {
     });
 }
 
-const AlbumArt = (props) => {
+export const AlbumArt = (props) => {
     const { src: propsSrc, viewportRef: viewport, serviceId } = props;
 
     const targetRef = useRef();
