@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
-import shallowCompare from 'shallow-compare';
 
 import SearchBarSources from './SearchBarSources';
 
@@ -31,65 +30,52 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export class SearchBar extends Component {
-    constructor() {
-        super();
+export const SearchBar = (props) => {
+    const ref = useRef();
 
-        this.ref = React.createRef();
-
-        this.inputHandler = _.debounce(this._onChange.bind(this), 800, {
-            trailing: true,
-            leading: false,
-        });
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
-
-    UNSAFE_componentWillReceiveProps(props) {
-        if (!props.term || props.term === '') {
-            this.ref.current.value = '';
+    useEffect(() => {
+        if (ref.current && (!props.term || props.term === '')) {
+            ref.current.value = '';
         }
-    }
+    }, [props.term, ref.current]);
 
-    render() {
-        let cancelButton;
-
-        if (this.props.searching) {
-            cancelButton = (
-                <i
-                    className="material-icons"
-                    onClick={this._onClick.bind(this)}
-                >
-                    cancel
-                </i>
-            );
+    const _onClick = useCallback(() => {
+        props.exitSearch();
+        if (ref.current) {
+            ref.current.value = '';
         }
+    }, [props.exitSearch, ref.current]);
 
-        return (
-            <div id="search">
-                <SearchBarSources {...this.props} />
-                <input
-                    ref={this.ref}
-                    type="text"
-                    id="searchfield"
-                    onChange={this.inputHandler}
-                />
-                {cancelButton}
-            </div>
-        );
-    }
+    const _onChange = useCallback(() => {
+        if (ref.current) {
+            const term = ref.current.value;
+            props.search(term, props.searchMode);
+        }
+    }, [props.searchMode, ref.current]);
 
-    _onClick() {
-        this.props.exitSearch();
-        this.ref.current.value = '';
-    }
+    const inputHandler = _.debounce(_onChange, 800, {
+        trailing: true,
+        leading: false,
+    });
 
-    _onChange() {
-        const term = this.ref.current.value;
-        this.props.search(term, this.props.searchMode);
-    }
-}
+    const cancelButton = props.searching ? (
+        <i className="material-icons" onClick={_onClick.bind(this)}>
+            cancel
+        </i>
+    ) : null;
+
+    return (
+        <div id="search">
+            <SearchBarSources {...props} />
+            <input
+                ref={ref}
+                type="text"
+                id="searchfield"
+                onChange={inputHandler}
+            />
+            {cancelButton}
+        </div>
+    );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

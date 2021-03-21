@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function SearchBarSources({ sources, currentState }) {
+export default function SearchBarSources({ sources, currentState = {} }) {
     let source = sources.find((s) => !s.client);
 
     if (currentState.serviceClient) {

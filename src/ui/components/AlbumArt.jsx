@@ -42,6 +42,14 @@ export const AlbumArt = (props) => {
     const [loaded, setLoaded] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const catchError = useCallback(() => {
+        if (targetRef.current) {
+            setFailed(true);
+            setLoaded(false);
+            setLoading(false);
+        }
+    }, [targetRef]);
+
     const loadError = useCallback(() => {
         if (!visible) {
             return;
@@ -85,9 +93,7 @@ export const AlbumArt = (props) => {
                     setSrc(newSrc);
                 }
             } catch (e) {
-                setFailed(true);
-                setLoaded(false);
-                setLoading(false);
+                catchError();
             }
         })();
     }, [

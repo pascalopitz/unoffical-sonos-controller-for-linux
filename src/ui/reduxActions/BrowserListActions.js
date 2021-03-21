@@ -239,7 +239,7 @@ export const more = createAction(
                 );
 
                 if (!result || !result.items) {
-                    return;
+                    return state;
                 }
 
                 state.items = _.compact(

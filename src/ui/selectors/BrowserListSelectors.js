@@ -44,7 +44,8 @@ export function getSearchMode(state) {
 }
 
 export function getAvailableSearchModes(state) {
-    return getCurrentState(state).searchTermMap || LIBRARY_SEARCH_MODES;
+    const { searchTermMap } = getCurrentState(state) || {};
+    return searchTermMap || LIBRARY_SEARCH_MODES;
 }
 
 export function getHistory(state) {

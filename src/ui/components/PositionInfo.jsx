@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import moment from 'moment';
-import React, { Component } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 
@@ -47,256 +47,240 @@ function formatTime(d) {
     return `${hrs}:${mins}:${secs}`;
 }
 
-export class PositionInfo extends Component {
-    constructor() {
-        super();
-
-        this.state = {
-            offset: 0,
-        };
-
-        this._interval = null;
-    }
-
-    UNSAFE_componentWillReceiveProps(props) {
-        if (!_.isMatch(props.info, this.props.info)) {
-            this.setState({
-                offset: 0,
-            });
-        }
-    }
-
-    componentDidMount() {
-        this.startInterval();
-    }
-
-    componentWillUnmount() {
-        this.cleanInterval();
-    }
-
-    startInterval() {
-        this.cleanInterval();
-        this._interval = window.setInterval(this._onInterval.bind(this), 1000);
-    }
-
-    cleanInterval() {
-        if (this._interval) {
-            window.clearInterval(this._interval);
-        }
-        this._interval = null;
-    }
-
-    _toggleRepeat() {
-        if (this.props.isStreaming) {
+const ShuffleIcon = (props) => {
+    const _toggleShuffle = useCallback(() => {
+        if (props.isStreaming) {
             return;
         }
 
-        if (this.props.playMode === 'NORMAL') {
-            this.props.setPlayMode('REPEAT_ALL');
+        if (props.playMode === 'NORMAL') {
+            props.setPlayMode('SHUFFLE_NOREPEAT');
         }
 
-        if (this.props.playMode === 'REPEAT_ALL') {
-            this.props.setPlayMode('REPEAT_ONE');
+        if (props.playMode === 'REPEAT_ALL') {
+            props.setPlayMode('SHUFFLE');
         }
 
-        if (this.props.playMode === 'REPEAT_ONE') {
-            this.props.setPlayMode('NORMAL');
+        if (props.playMode === 'REPEAT_ONE') {
+            props.setPlayMode('SHUFFLE_REPEAT_ONE');
         }
 
-        if (this.props.playMode === 'SHUFFLE') {
-            this.props.setPlayMode('SHUFFLE_REPEAT_ONE');
+        if (props.playMode === 'SHUFFLE') {
+            props.setPlayMode('REPEAT_ALL');
         }
 
-        if (this.props.playMode === 'SHUFFLE_REPEAT_ONE') {
-            this.props.setPlayMode('SHUFFLE_NOREPEAT');
+        if (props.playMode === 'SHUFFLE_REPEAT_ONE') {
+            props.setPlayMode('REPEAT_ONE');
         }
 
-        if (this.props.playMode === 'SHUFFLE_NOREPEAT') {
-            this.props.setPlayMode('SHUFFLE');
+        if (props.playMode === 'SHUFFLE_NOREPEAT') {
+            props.setPlayMode('NORMAL');
         }
+    }, [props]);
+
+    const css = classnames({
+        disabled: props.isStreaming,
+    });
+
+    let shuffle = <i className="material-icons shuffle">shuffle</i>;
+    switch (props.playMode) {
+        case 'SHUFFLE':
+        case 'SHUFFLE_NOREPEAT':
+        case 'SHUFFLE_REPEAT_ONE':
+            shuffle = <i className="material-icons shuffle active">shuffle</i>;
+            break;
     }
 
-    _toggleShuffle() {
-        if (this.props.isStreaming) {
+    return (
+        <a onClick={_toggleShuffle} className={css}>
+            {shuffle}
+        </a>
+    );
+};
+
+const RepeatIcon = (props) => {
+    const _toggleRepeat = useCallback(() => {
+        if (props.isStreaming) {
             return;
         }
 
-        if (this.props.playMode === 'NORMAL') {
-            this.props.setPlayMode('SHUFFLE_NOREPEAT');
+        if (props.playMode === 'NORMAL') {
+            props.setPlayMode('REPEAT_ALL');
         }
 
-        if (this.props.playMode === 'REPEAT_ALL') {
-            this.props.setPlayMode('SHUFFLE');
+        if (props.playMode === 'REPEAT_ALL') {
+            props.setPlayMode('REPEAT_ONE');
         }
 
-        if (this.props.playMode === 'REPEAT_ONE') {
-            this.props.setPlayMode('SHUFFLE_REPEAT_ONE');
+        if (props.playMode === 'REPEAT_ONE') {
+            props.setPlayMode('NORMAL');
         }
 
-        if (this.props.playMode === 'SHUFFLE') {
-            this.props.setPlayMode('REPEAT_ALL');
+        if (props.playMode === 'SHUFFLE') {
+            props.setPlayMode('SHUFFLE_REPEAT_ONE');
         }
 
-        if (this.props.playMode === 'SHUFFLE_REPEAT_ONE') {
-            this.props.setPlayMode('REPEAT_ONE');
+        if (props.playMode === 'SHUFFLE_REPEAT_ONE') {
+            props.setPlayMode('SHUFFLE_NOREPEAT');
         }
 
-        if (this.props.playMode === 'SHUFFLE_NOREPEAT') {
-            this.props.setPlayMode('NORMAL');
+        if (props.playMode === 'SHUFFLE_NOREPEAT') {
+            props.setPlayMode('SHUFFLE');
         }
+    }, [props]);
+
+    const css = classnames({
+        disabled: props.isStreaming,
+    });
+
+    let repeat = <i className="material-icons repeat">repeat</i>;
+
+    switch (props.playMode) {
+        case 'NORMAL':
+            break;
+
+        case 'SHUFFLE':
+        case 'REPEAT_ALL':
+            repeat = <i className="material-icons repeat active">repeat</i>;
+            break;
+
+        case 'REPEAT_ONE':
+        case 'SHUFFLE_REPEAT_ONE':
+            repeat = <i className="material-icons repeat active">repeat_one</i>;
+            break;
     }
 
-    _toggleCrossfade() {
-        if (this.props.isStreaming) {
+    return (
+        <a onClick={_toggleRepeat} className={css}>
+            {repeat}
+        </a>
+    );
+};
+
+const CrossfadeIcon = (props) => {
+    const _toggleCrossfade = useCallback(() => {
+        if (props.isStreaming) {
             return;
         }
-        this.props.setCrossfade(!this.props.isCrossfade);
+        props.setCrossfade(!props.isCrossfade);
+    }, [props]);
+
+    const css = classnames({
+        disabled: props.isStreaming,
+    });
+
+    let crossfade = <i className="material-icons crossfade">import_export</i>;
+    if (props.isCrossfade) {
+        crossfade = (
+            <i className="material-icons crossfade active">import_export</i>
+        );
     }
 
-    _onInterval() {
-        if (this.props.isPlaying) {
-            this.setState({
-                offset: this.state.offset + 1,
-            });
+    return (
+        <a onClick={_toggleCrossfade} className={css}>
+            {crossfade}
+        </a>
+    );
+};
+
+export const PositionInfo = (props) => {
+    const [offset, setOffset] = useState(0);
+
+    const _onInterval = useCallback(() => {
+        if (props.isPlaying) {
+            setOffset(offset + 1);
         }
-    }
+    }, [props, offset, setOffset]);
 
-    _onClick(e) {
-        const { info } = this.props;
+    const _onClick = useCallback(
+        (e) => {
+            const { info } = props;
 
-        if (!info || !info.TrackDuration) {
-            return;
-        }
-
-        const element = e.target;
-        const rect = element.getBoundingClientRect();
-        const left = e.clientX - Math.floor(rect.left);
-
-        const d = info.TrackDuration.split(':');
-        const totalSeconds =
-            Number(d[0]) * 60 * 60 + Number(d[1]) * 60 + Number(d[2]);
-
-        // const percent = 100 / rect.width * left;
-        const time = Math.floor((totalSeconds / rect.width) * left);
-
-        this.props.seek(time);
-    }
-
-    render() {
-        const { info, isStreaming } = this.props;
-        const { offset } = this.state;
-
-        let percent = 0;
-        let fromStr = '00:00';
-        let toStr = '-00:00';
-
-        const css = classnames({
-            disabled: isStreaming,
-        });
-
-        if (info) {
-            let now = moment.duration(info.RelTime).add(offset, 's');
-            const end = moment.duration(info.TrackDuration);
-
-            if (end.asSeconds() > 0) {
-                if (now > end) {
-                    now = moment.duration(info.TrackDuration);
-                    this.props.refreshPosition();
-                }
-
-                const to = moment
-                    .duration(end.asSeconds(), 'seconds')
-                    .subtract(now.asSeconds(), 's');
-
-                toStr = `-${formatTime(to)}`;
-                percent = (100 / end.asSeconds()) * now.asSeconds();
+            if (!info || !info.TrackDuration) {
+                return;
             }
 
-            fromStr = `${formatTime(now)}`;
-        }
+            const element = e.target;
+            const rect = element.getBoundingClientRect();
+            const left = e.clientX - Math.floor(rect.left);
 
-        const styles = {
-            left: String(Math.round(percent)) + '%',
+            const d = info.TrackDuration.split(':');
+            const totalSeconds =
+                Number(d[0]) * 60 * 60 + Number(d[1]) * 60 + Number(d[2]);
+
+            // const percent = 100 / rect.width * left;
+            const time = Math.floor((totalSeconds / rect.width) * left);
+
+            props.seek(time);
+        },
+        [props.info, props.seek]
+    );
+
+    useEffect(() => {
+        setOffset(0);
+    }, [props.info, setOffset]);
+
+    useEffect(() => {
+        const interval = window.setInterval(_onInterval, 1000);
+
+        return () => {
+            window.clearInterval(interval);
         };
+    }, [_onInterval]);
 
-        let repeat = <i className="material-icons repeat">repeat</i>;
-        let shuffle = <i className="material-icons shuffle">shuffle</i>;
+    const { info } = props;
 
-        switch (this.props.playMode) {
-            case 'NORMAL':
-                break;
+    let percent = 0;
+    let fromStr = '00:00';
+    let toStr = '-00:00';
 
-            case 'SHUFFLE':
-            case 'REPEAT_ALL':
-                repeat = <i className="material-icons repeat active">repeat</i>;
-                break;
+    if (info) {
+        let now = moment.duration(info.RelTime).add(offset, 's');
+        const end = moment.duration(info.TrackDuration);
 
-            case 'REPEAT_ONE':
-            case 'SHUFFLE_REPEAT_ONE':
-                repeat = (
-                    <i className="material-icons repeat active">repeat_one</i>
-                );
-                break;
+        if (end.asSeconds() > 0) {
+            if (now > end) {
+                now = moment.duration(info.TrackDuration);
+                props.refreshPosition();
+            }
+
+            const to = moment
+                .duration(end.asSeconds(), 'seconds')
+                .subtract(now.asSeconds(), 's');
+
+            toStr = `-${formatTime(to)}`;
+            percent = (100 / end.asSeconds()) * now.asSeconds();
         }
 
-        switch (this.props.playMode) {
-            case 'SHUFFLE':
-            case 'SHUFFLE_NOREPEAT':
-            case 'SHUFFLE_REPEAT_ONE':
-                shuffle = (
-                    <i className="material-icons shuffle active">shuffle</i>
-                );
-                break;
-        }
-
-        let crossfade = (
-            <i className="material-icons crossfade">import_export</i>
-        );
-
-        if (this.props.isCrossfade) {
-            crossfade = (
-                <i className="material-icons crossfade active">import_export</i>
-            );
-        }
-
-        return (
-            <div id="position-info">
-                <img
-                    className="left"
-                    src="images/tc_progress_container_left.png"
-                />
-                <img
-                    className="right"
-                    src="images/tc_progress_container_right.png"
-                />
-                <div className="content">
-                    <a onClick={this._toggleRepeat.bind(this)} className={css}>
-                        {repeat}
-                    </a>
-                    <a onClick={this._toggleShuffle.bind(this)} className={css}>
-                        {shuffle}
-                    </a>
-                    <a
-                        onClick={this._toggleCrossfade.bind(this)}
-                        className={css}
-                    >
-                        {crossfade}
-                    </a>
-
-                    <span id="countup">{fromStr}</span>
-                    <div id="position-info-control">
-                        <div
-                            id="position-bar"
-                            onClick={this._onClick.bind(this)}
-                        >
-                            <div id="position-bar-scrubber" style={styles} />
-                        </div>
-                    </div>
-                    <span id="countdown">{toStr}</span>
-                </div>
-            </div>
-        );
+        fromStr = `${formatTime(now)}`;
     }
-}
+
+    const styles = {
+        left: String(Math.round(percent)) + '%',
+    };
+
+    return (
+        <div id="position-info">
+            <img className="left" src="images/tc_progress_container_left.png" />
+            <img
+                className="right"
+                src="images/tc_progress_container_right.png"
+            />
+            <div className="content">
+                <RepeatIcon {...props} />
+                <ShuffleIcon {...props} />
+                <CrossfadeIcon {...props} />
+
+                <span id="countup">{fromStr}</span>
+                <div id="position-info-control">
+                    <div id="position-bar" onClick={_onClick}>
+                        <div id="position-bar-scrubber" style={styles} />
+                    </div>
+                </div>
+                <span id="countdown">{toStr}</span>
+            </div>
+        </div>
+    );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(PositionInfo);

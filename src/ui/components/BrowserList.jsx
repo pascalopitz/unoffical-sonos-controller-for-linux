@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import React, { Component, createRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -23,7 +23,6 @@ import {
     more,
     search,
     scroll,
-    playCurrentAlbum,
 } from '../reduxActions/BrowserListActions';
 
 const mapStateToProps = (state) => {
@@ -45,166 +44,179 @@ const mapDispatchToProps = (dispatch) => {
         back: () => dispatch(back()),
         more: (currentState) => dispatch(more(currentState)),
         search: (term, mode) => dispatch(search(term, mode)),
-        playCurrentAlbum: () => dispatch(playCurrentAlbum()),
     };
 };
 
-export class BrowserList extends Component {
-    constructor(props) {
-        super(props);
+export const BrowserList = (props) => {
+    const [prevHistory, setPrevHistory] = useState(0);
+    const scrollRef = useRef();
+    const viewportRef = useRef();
 
-        this.scrollRef = createRef();
-        this.viewportRef = createRef();
+    const {
+        searching,
+        currentSearchMode,
+        currentState,
+        history,
+        serviceItems,
+        searchModes,
+    } = props;
 
-        this.moreHandler = _.throttle(() => {
-            this.props.more(this.props.currentState);
-        }, 1000);
-    }
+    const _more = useCallback(() => {
+        props.more(currentState);
+    }, [props.more, currentState]);
 
-    _back() {
-        this.props.back();
-    }
+    const _back = useCallback(() => {
+        props.back();
+    }, [props.back]);
 
-    _home() {
-        this.props.home();
-    }
+    const _home = useCallback(() => {
+        props.home();
+    }, [props.home]);
 
-    UNSAFE_componentWillReceiveProps({ history, currentState }) {
-        const elem = this.scrollRef.current.rootNode;
+    const moreThrottled = _.debounce(_more, 2000, {
+        trailing: false,
+        leading: true,
+    });
 
-        if (
-            history.length === this.props.history.length - 1 &&
-            currentState.scrollPosition
-        ) {
-            window.setTimeout(() => {
-                elem.scrollTop = currentState.scrollPosition;
-            }, 10);
-        } else if (history.length !== this.props.history.length) {
-            elem.scrollTop = 0;
-        }
-    }
+    const _onScroll = useCallback(
+        (e) => {
+            const node = e.target;
+            const height = node.scrollHeight - node.offsetHeight;
 
-    _onScroll(e) {
-        const node = e.target;
-        const height = node.scrollHeight - node.offsetHeight;
+            // HACK: this happens when we press the back button for some reason
+            if (height === -1 || node.scrollTop === 0) {
+                return;
+            }
 
-        // HACK: this happens when we press the back button for some reason
-        if (height === -1 || node.scrollTop === 0) {
-            return;
-        }
+            props.scroll(node.scrollTop);
 
-        this.props.scroll(node.scrollTop);
+            if (node.scrollTop + 50 > height) {
+                moreThrottled();
+            }
+        },
+        [props.scroll, currentState]
+    );
 
-        if (node.scrollTop + 50 > height) {
-            this.moreHandler();
-        }
-    }
+    const _searchModeChange = useCallback(
+        (e) => {
+            const mode = e.target.getAttribute('data-mode');
+            props.search(props.term, mode);
+        },
+        [props.term, props.search]
+    );
 
-    _playAlbum() {
-        this.playCurrentAlbum();
-    }
+    useEffect(() => {
+        let timer;
 
-    _searchModeChange(e) {
-        const mode = e.target.getAttribute('data-mode');
-        this.props.search(this.props.term, mode);
-    }
+        if (scrollRef.current) {
+            const elem = scrollRef.current.rootNode;
 
-    render() {
-        const {
-            searching,
-            currentSearchMode,
-            currentState,
-            history,
-            serviceItems,
-            searchModes,
-        } = this.props;
-        const { items, title, source } = currentState;
-
-        let headlineNodes;
-
-        const displayItems =
-            (source === 'start' ? [...items, ...serviceItems] : items) || [];
-
-        if (searching) {
-            const links = searchModes
-                .map((m) => m.id)
-                .map((mode) => {
-                    const className =
-                        mode === currentSearchMode ? 'active' : 'not-active';
-
-                    return (
-                        <li
-                            key={mode}
-                            className={className}
-                            onClick={this._searchModeChange.bind(this)}
-                            data-mode={mode}
-                        >
-                            {mode}
-                        </li>
-                    );
-                });
-
-            headlineNodes = <ul className="with-search">{links}</ul>;
-        } else if (history.length && source !== 'start') {
-            headlineNodes = (
-                <h4 className="with-history">
-                    <a
-                        onClick={this._back.bind(this)}
-                        className="back-arrow"
-                        title="back"
-                    >
-                        <i className="material-icons">keyboard_arrow_left</i>
-                    </a>
-                    <a
-                        onClick={this._home.bind(this)}
-                        className="home-button"
-                        title="home"
-                    >
-                        <i className="material-icons">library_music</i>
-                    </a>
-                    <span>{title}</span>
-                </h4>
-            );
-        } else {
-            headlineNodes = <h4>{title}</h4>;
+            if (
+                history.length === prevHistory.length - 1 &&
+                currentState.scrollPosition
+            ) {
+                timer = window.setTimeout(() => {
+                    elem.scrollTop = currentState.scrollPosition;
+                }, 10);
+            } else if (history.length !== prevHistory.length) {
+                elem.scrollTop = 0;
+            }
         }
 
-        return (
-            <div id="music-sources-container">
-                {headlineNodes}
-                <ul id="browser-container" ref={this.viewportRef}>
-                    <AutoSizer>
-                        {({ height, width }) => (
-                            <VirtualList
-                                className="scrollcontainer"
-                                height={height}
-                                width={width}
-                                itemSize={53}
-                                itemCount={displayItems.length}
-                                onScrollCapture={this._onScroll.bind(this)}
-                                ref={this.scrollRef}
-                                renderItem={({ index, style }) => {
-                                    const position = index + 1;
-                                    const item = displayItems[index];
-                                    return (
-                                        <BrowserListItem
-                                            viewportRef={this.viewportRef}
-                                            style={style}
-                                            key={`${
-                                                item.id || 'position'
-                                            }-${position}`}
-                                            model={item}
-                                            position={position}
-                                        />
-                                    );
-                                }}
-                            />
-                        )}
-                    </AutoSizer>
-                </ul>
-            </div>
+        const updateTimer = window.setTimeout(
+            () => setPrevHistory(history),
+            10
         );
+
+        return () => {
+            if (updateTimer) {
+                window.clearTimeout(updateTimer);
+            }
+
+            if (timer) {
+                window.clearTimeout(timer);
+            }
+        };
+    }, [scrollRef.current, history, prevHistory, setPrevHistory]);
+
+    const { items, title, source } = currentState || {};
+
+    let headlineNodes;
+
+    const displayItems =
+        (source === 'start' ? [...items, ...serviceItems] : items) || [];
+
+    if (searching) {
+        const links = searchModes
+            .map((m) => m.id)
+            .map((mode) => {
+                const className =
+                    mode === currentSearchMode ? 'active' : 'not-active';
+
+                return (
+                    <li
+                        key={mode}
+                        className={className}
+                        onClick={_searchModeChange}
+                        data-mode={mode}
+                    >
+                        {mode}
+                    </li>
+                );
+            });
+
+        headlineNodes = <ul className="with-search">{links}</ul>;
+    } else if (history.length && source !== 'start') {
+        headlineNodes = (
+            <h4 className="with-history">
+                <a onClick={_back} className="back-arrow" title="back">
+                    <i className="material-icons">keyboard_arrow_left</i>
+                </a>
+                <a onClick={_home} className="home-button" title="home">
+                    <i className="material-icons">library_music</i>
+                </a>
+                <span>{title}</span>
+            </h4>
+        );
+    } else {
+        headlineNodes = <h4>{title}</h4>;
     }
-}
+
+    return (
+        <div id="music-sources-container">
+            {headlineNodes}
+            <ul id="browser-container" ref={viewportRef}>
+                <AutoSizer>
+                    {({ height, width }) => (
+                        <VirtualList
+                            className="scrollcontainer"
+                            height={height}
+                            width={width}
+                            itemSize={53}
+                            itemCount={displayItems.length}
+                            onScrollCapture={_onScroll}
+                            ref={scrollRef}
+                            renderItem={({ index, style }) => {
+                                const position = index + 1;
+                                const item = displayItems[index];
+                                return (
+                                    <BrowserListItem
+                                        viewportRef={viewportRef}
+                                        style={style}
+                                        key={`${
+                                            item.id || 'position'
+                                        }-${position}`}
+                                        model={item}
+                                        position={position}
+                                    />
+                                );
+                            }}
+                        />
+                    )}
+                </AutoSizer>
+            </ul>
+        </div>
+    );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BrowserList);

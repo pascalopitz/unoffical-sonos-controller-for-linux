@@ -204,7 +204,7 @@ h4 {
 #search input {
     width: 100px;
     height: 16px;
-    padding: 2px 8px;
+    padding: 2px 28px 2px 8px;
     border: none;
     border-radius: 8px;
 }
@@ -574,6 +574,8 @@ input[type="range"]:focus {
 #player-volumes > div {
     padding: 10px;
     border-top: 1px solid #333;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 #player-volumes > div:first-child {
@@ -587,14 +589,11 @@ input[type="range"]:focus {
     text-shadow: none;
     margin-bottom: 5px;
     font-size: 12px;
+    width: 100%;
 }
 
 #player-volumes .mute-button {
     margin-right: 10px;
-}
-
-#player-volumes .volume-bar,
-#player-volumes .mute-button {
     display: inline-block;
     vertical-align: middle;
 }
