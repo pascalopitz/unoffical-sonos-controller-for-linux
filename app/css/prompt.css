@@ -37,3 +37,7 @@ body .swal2-popup input:focus {
 #cancel {
     color: #eee;
 }
+
+body .swal2-container {
+    z-index: 210000;
+}
