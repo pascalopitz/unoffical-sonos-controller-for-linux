@@ -136,9 +136,8 @@ class InlineMenu extends PureComponent {
         const { top, height: listItemHeight } = getComputedStyle(
             containerRef.current
         );
-        const { height: scrollContainerHeight } = getComputedStyle(
-            scrollContainerNode
-        );
+        const { height: scrollContainerHeight } =
+            getComputedStyle(scrollContainerNode);
 
         const openUpwards =
             parseInt(scrollContainerHeight) - parseInt(top) < inlineMenutOffset;

@@ -50,12 +50,8 @@ export class PlaylistManagementEdit extends Component {
 
     _onDragEnd() {
         const { item, updateID, moveItem } = this.props;
-        const {
-            tracks,
-            dragOverMode,
-            dragOverPosition,
-            dragPosition,
-        } = this.state;
+        const { tracks, dragOverMode, dragOverPosition, dragPosition } =
+            this.state;
 
         const newPos =
             dragOverMode === 'after' ? dragOverPosition + 1 : dragOverPosition;
@@ -113,12 +109,8 @@ export class PlaylistManagementEdit extends Component {
 
     render() {
         const { item } = this.props;
-        const {
-            tracks,
-            dragOverPosition,
-            dragPosition,
-            dragOverMode,
-        } = this.state;
+        const { tracks, dragOverPosition, dragPosition, dragOverMode } =
+            this.state;
 
         const playlistNodes = tracks.map((track, p) => {
             const position = p + 1;

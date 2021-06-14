@@ -44,13 +44,8 @@ export class MusicServiceManagement extends Component {
     }
 
     _next() {
-        const {
-            link,
-            client,
-            addAnonymousService,
-            getLink,
-            getSession,
-        } = this.props;
+        const { link, client, addAnonymousService, getLink, getSession } =
+            this.props;
         const { auth } = client;
 
         if (!link && auth === 'UserId') {

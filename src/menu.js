@@ -165,10 +165,11 @@ const register = () => {
                     label: 'Copy app state to clipboard',
                     async click(item, focusedWindow) {
                         if (focusedWindow) {
-                            const result = await focusedWindow.webContents.executeJavaScript(
-                                'JSON.stringify(store.getState())',
-                                true
-                            );
+                            const result =
+                                await focusedWindow.webContents.executeJavaScript(
+                                    'JSON.stringify(store.getState())',
+                                    true
+                                );
 
                             clipboard.writeText(
                                 JSON.stringify(
@@ -198,10 +199,11 @@ const register = () => {
                                 return;
                             }
 
-                            const result = await focusedWindow.webContents.executeJavaScript(
-                                'JSON.stringify(store.getState())',
-                                true
-                            );
+                            const result =
+                                await focusedWindow.webContents.executeJavaScript(
+                                    'JSON.stringify(store.getState())',
+                                    true
+                                );
 
                             await writeFileAsync(
                                 choice.filePath,
@@ -236,10 +238,11 @@ const register = () => {
                                 return;
                             }
 
-                            const result = await focusedWindow.webContents.executeJavaScript(
-                                'JSON.stringify(window.localStorage, 1, 4)',
-                                true
-                            );
+                            const result =
+                                await focusedWindow.webContents.executeJavaScript(
+                                    'JSON.stringify(window.localStorage, 1, 4)',
+                                    true
+                                );
 
                             await writeFileAsync(
                                 choice.filePath,
@@ -288,10 +291,11 @@ const register = () => {
                     async click(item, focusedWindow) {
                         if (focusedWindow) {
                             try {
-                                const value = await focusedWindow.webContents.executeJavaScript(
-                                    'ipPrompt()',
-                                    true
-                                );
+                                const value =
+                                    await focusedWindow.webContents.executeJavaScript(
+                                        'ipPrompt()',
+                                        true
+                                    );
 
                                 value &&
                                     focusedWindow &&
