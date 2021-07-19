@@ -262,7 +262,7 @@ export const more = createAction(
             return state;
         } catch (err) {
             console.error(err);
-            return {};
+            return prevState;
         }
     }
 );
