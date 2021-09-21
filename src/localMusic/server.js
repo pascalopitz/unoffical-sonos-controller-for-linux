@@ -635,7 +635,12 @@ const startServer = () => {
 
         const info = await parseFile(p);
         const picture = _.get(info, `common.picture[0]`);
-        ctx.body = picture.data;
+
+        if (picture) {
+            ctx.body = picture.data;
+        } else {
+            ctx.status = 404;
+        }
     });
 
     router.get('/track/:p', async (ctx) => {
