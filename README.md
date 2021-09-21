@@ -57,7 +57,7 @@ Find the latest .deb on the [release page](https://github.com/pascalopitz/unoffi
 On Ubuntu, you can double click the downloaded file to install it via the Software Center. Alternatively run
 
 ```bash
-sudo dpkg -i sonos-controller-unofficial-amd64-0.2.7.AppImage
+sudo dpkg -i sonos-controller-unofficial_0.2.7_amd64.deb
 ```
 
 ##  and Run locally
