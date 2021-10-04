@@ -77,7 +77,7 @@ const SonosService = {
     },
 
     async searchForDevices(timeout = 1000) {
-        const device = await new AsyncDeviceDiscovery().discover({
+        const { device } = await new AsyncDeviceDiscovery().discover({
             timeout,
             port: SONOS_DISCOVERY_PORT,
         });
