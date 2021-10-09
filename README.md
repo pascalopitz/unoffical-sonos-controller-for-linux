@@ -3,7 +3,7 @@
 # Unofficial Sonos Controller for Linux
 
 First I was tinkering with Chrome apps and sonos. I released this as a
-Chrome app, which had a good 70k users on the Chrome store.
+Chrome app.
 Subsequently Chrome apps turned out to be
 a dying platform, so I've moved over to Electron. The project is written
 in mostly ES6 and utilizes React and Redux to manage the UI
