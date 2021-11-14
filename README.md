@@ -94,6 +94,7 @@ You will need to whitelist these if you run Ubuntu firewall for example:
 - TCP 4000 incoming
 - UDP 1900 outgoing
 - UDP 1905 incoming
+- TCP 13453 outgoing (for local file server)
 
 ## Troubleshooting
 
