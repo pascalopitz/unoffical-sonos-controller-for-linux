@@ -3,7 +3,7 @@ import * as crypto from 'crypto';
 
 import { play, pause, playNext, playPrev } from '../reduxActions/PlayerActions';
 import store from '../reducers';
-import { getPlaying } from '../selectors/PlayerSelectors';
+import { disableNextButton, getPlaying, isStreaming } from '../selectors/PlayerSelectors';
 
 const player = Player({
     name: 'sonos',
@@ -47,6 +47,8 @@ function handleStateChange() {
         return;
     }
 
+    updatePlayerCapabilities(state);
+
     const currentTrack = state.sonosService.currentTracks[currentDevice];
     updateTrack(currentTrack);
 
@@ -89,6 +91,12 @@ function updatePlayState(state) {
             player.playbackStatus = Player.PLAYBACK_STATUS_STOPPED;
             break;
     }
+}
+
+function updatePlayerCapabilities(state) {
+    player.canGoNext = !disableNextButton(state);
+    player.canGoPrevious = !isStreaming(state);
+    player.canPlay = lastTrackState.hasOwnProperty('title');
 }
 
 function shallowEqual(object1, object2) {
