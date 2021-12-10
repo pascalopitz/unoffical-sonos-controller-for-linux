@@ -9,6 +9,10 @@ const player = Player({
     name: 'sonos',
     identity: 'Sonos',
     supportedInterfaces: ['player'],
+    canRaise: false,
+    canQuit: false,
+    canSetFullscreen: false,
+    canSeek: false,
 });
 
 let lastTrackState = {};
