@@ -19,6 +19,7 @@ import PlaylistManagement from './PlaylistManagement';
 import EqSettings from './EqSettings';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
+import MprisService from '../services/MprisService';
 
 window.store = store; // TODO: remove this
 
@@ -26,6 +27,7 @@ export class Application extends Component {
     componentDidMount() {
         SonosService.mount();
         IpcService.mount();
+        MprisService.mount();
     }
 
     render() {
