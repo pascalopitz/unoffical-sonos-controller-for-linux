@@ -5,31 +5,34 @@ import { play, pause, playNext, playPrev } from '../reduxActions/PlayerActions';
 import store from '../reducers';
 import { disableNextButton, getPlaying, isStreaming } from '../selectors/PlayerSelectors';
 
-const player = Player({
-    name: 'sonos',
-    identity: 'Sonos',
-    supportedInterfaces: ['player'],
-    canRaise: false,
-    canQuit: false,
-    canSetFullscreen: false,
-    canSeek: false,
-});
-
+let player;
 let lastTrackState = {};
 let lastPlayState = Player.PLAYBACK_STATUS_STOPPED;
 
 export default {
     mount() {
-        player.on('play', play);
-        player.on('pause', pause);
-        player.on('playpause', togglePlayPause);
-        player.on('stop', pause);
-        player.on('next', playNext);
-        player.on('previous', playPrev);
-
         store.subscribe(handleStateChange);
     },
 };
+
+function init() {
+    player = window.Player = Player({
+        name: 'sonos',
+        identity: 'Sonos',
+        supportedInterfaces: ['player'],
+        canRaise: false,
+        canQuit: false,
+        canSetFullscreen: false,
+        canSeek: false,
+    });
+
+    player.on('play', play);
+    player.on('pause', pause);
+    player.on('playpause', togglePlayPause);
+    player.on('stop', pause);
+    player.on('next', playNext);
+    player.on('previous', playPrev);
+}
 
 function togglePlayPause() {
     if (getPlaying(store.getState())) {
@@ -45,6 +48,10 @@ function handleStateChange() {
     const currentDevice = state.sonosService.currentHost;
     if (!currentDevice) {
         return;
+    }
+
+    if (!player) {
+        init();
     }
 
     updatePlayerCapabilities(state);
