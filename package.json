@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "homepage": "http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/",
@@ -55,6 +55,10 @@
     {
       "name": "FlorentChabaud",
       "url": "https://github.com/FlorentChabaud"
+    },
+    {
+      "name": "wapacro",
+      "url": "https://github.com/wapacro"
     }
   ],
   "build": {
