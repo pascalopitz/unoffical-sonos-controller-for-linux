@@ -3,7 +3,11 @@ import * as crypto from 'crypto';
 
 import { play, pause, playNext, playPrev } from '../reduxActions/PlayerActions';
 import store from '../reducers';
-import { disableNextButton, getPlaying, isStreaming } from '../selectors/PlayerSelectors';
+import {
+    disableNextButton,
+    getPlaying,
+    isStreaming,
+} from '../selectors/PlayerSelectors';
 
 let player;
 let lastTrackState = {};

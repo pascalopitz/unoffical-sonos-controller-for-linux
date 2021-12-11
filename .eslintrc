@@ -1,5 +1,9 @@
 {
-    "parser": "babel-eslint",
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "requireConfigFile": false,
+        "ecmaVersion": 8
+    },
     "plugins": [
         "react",
         "prettier"
