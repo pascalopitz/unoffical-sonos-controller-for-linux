@@ -83,6 +83,8 @@ export default handleActions(
                 dragging: action.payload,
             };
         },
+
+        [Constants.STORE_RESET]: () => initialState,
     },
     initialState
 );

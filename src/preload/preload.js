@@ -11,16 +11,17 @@ import * as MusicServicesActions from '../common/reduxActions/MusicServicesActio
 import * as PlayerActions from '../common/reduxActions/PlayerActions';
 import * as PlaylistActions from '../common/reduxActions/PlaylistActions';
 import * as QueueActions from '../common/reduxActions/QueueActions';
+import * as StoreActions from '../common/reduxActions/StoreActions';
 import * as VolumeControlActions from '../common/reduxActions/VolumeControlActions';
 import * as ZoneGroupActions from '../common/reduxActions/ZoneGroupActions';
-
 import * as BrowserListSelectors from '../common/selectors/BrowserListSelectors';
 import * as VolumeControlSelectors from '../common/selectors/VolumeControlSelectors';
-
 import IpcService from '../common/services/IpcService';
 import MprisService from '../common/services/MprisService';
-import SonosService from '../common/services/SonosService';
 import { getByServiceId } from '../common/services/MusicServiceClient';
+import SonosService from '../common/services/SonosService';
+
+
 
 contextBridge.exposeInMainWorld('ipHelper', { IP_ADDRESS, LOCAL_PORT });
 contextBridge.exposeInMainWorld('store', store);
@@ -50,17 +51,17 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld('getServiceLogoUrl', getServiceLogoUrl);
 contextBridge.exposeInMainWorld('isStreamUrl', isStreamUrl);
 
-contextBridge.exposeInMainWorld('SonosService', SonosService);
+contextBridge.exposeInMainWorld('getCurrentDevice', () => {
+    const { host, port } = SonosService._currentDevice || {};
+    return { host, port };
+});
 contextBridge.exposeInMainWorld('getByServiceId', getByServiceId);
 
 contextBridge.exposeInMainWorld('openExternal', shell.openExternal);
 
-console.log({
-    store,
-    IP_ADDRESS,
-    LOCAL_PORT,
+contextBridge.exposeInMainWorld('initialise', async () => {
+    await StoreActions.reset();
+    SonosService.mount();
+    IpcService.mount();
+    MprisService.mount();    
 });
-
-SonosService.mount();
-IpcService.mount();
-MprisService.mount();

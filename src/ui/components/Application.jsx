@@ -15,7 +15,13 @@ import EqSettings from './EqSettings';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
 
+const { initialise } = window;
+
 export class Application extends Component {
+    componentDidMount() {
+        initialise();
+    }
+
     render() {
         return (
             <Provider store={window.store}>

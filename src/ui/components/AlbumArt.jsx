@@ -4,6 +4,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import useIsInViewport from 'use-is-in-viewport';
 
+const { getCurrentDevice } = window; 
+
 const loadCache = new Map();
 
 async function chachedOrfetch(src) {
@@ -168,7 +170,7 @@ export const AlbumArt = (props) => {
                     : propsSrc;
 
             if (url && typeof url === 'string') {
-                const sonos = SonosService._currentDevice;
+                const { host, port } = getCurrentDevice();
 
                 const srcUrl =
                     url.indexOf('https://') === 0 ||
@@ -176,9 +178,9 @@ export const AlbumArt = (props) => {
                     url.match(/^\.\/(svg|images)/)
                         ? url
                         : 'http://' +
-                          sonos.host +
+                          host +
                           ':' +
-                          sonos.port +
+                          port +
                           decodeURIComponent(url);
 
                 setFailed(false);

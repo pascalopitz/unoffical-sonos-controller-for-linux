@@ -99,6 +99,8 @@ export default handleActions(
                 updateID: action.payload.NewUpdateID,
             };
         },
+
+        [Constants.STORE_RESET]: () => initialState,
     },
     initialState
 );

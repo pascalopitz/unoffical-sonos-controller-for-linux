@@ -239,6 +239,8 @@ export default handleActions(
 
         [Constants.SONOS_SERVICE_CURRENT_PLAY_MODE_UPDATE]: playModeReducer,
         [Constants.OPTIMISTIC_CURRENT_PLAY_MODE_UPDATE]: playModeReducer,
+
+        [Constants.STORE_RESET]: () => initialState,
     },
     initialState
 );

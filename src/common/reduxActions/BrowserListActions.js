@@ -19,6 +19,17 @@ import {
 
 import { loadPlaylists, loadPlaylistItems } from './PlaylistActions';
 
+const restoreServiceClient = (serviceClient) => {
+    const client = new MusicServiceClient(
+        serviceClient._serviceDefinition,
+    );
+
+    client.setAuthToken(serviceClient.authToken);
+    client.setKey(serviceClient.key);
+
+    return client;
+}
+
 async function _fetchLineIns() {
     const { deviceSearches } = store.getState().sonosService;
 
@@ -82,7 +93,8 @@ export async function _getItem(item) {
         return item;
     }
 
-    const client = item.serviceClient;
+    const client = restoreServiceClient(item.serviceClient);
+
     const serviceType = client._serviceDefinition.ServiceIDEncoded;
 
     if (serviceType) {
@@ -200,9 +212,8 @@ export const more = createAction(
                 return prevState;
             }
 
-            const client = state.serviceClient;
-
-            if (client) {
+            if (state.serviceClient) {
+                const client = restoreServiceClient(state.serviceClient);
                 let res;
 
                 if (state.term && state.term.length) {
@@ -227,6 +238,7 @@ export const more = createAction(
                     res = _transformSMAPI(res, client);
                 }
 
+                state.serviceClient = client;
                 state.items = _.compact(_.uniq([...state.items, ...res.items]));
                 return state;
             }
@@ -273,7 +285,8 @@ export const search = createAction(
     Constants.BROWSER_SEARCH,
     async (term, mode) => {
         const currentState = _.last(store.getState().browserList.history);
-        const { serviceClient, searchTermMap } = currentState;
+        const { searchTermMap } = currentState;
+        let { serviceClient } = currentState;
         let items = [];
         let total = 0;
         let title = 'Search';
@@ -294,8 +307,8 @@ export const search = createAction(
             title = `Search ${term}`;
 
             if (currentState.serviceClient) {
-                const client = currentState.serviceClient;
-                resolver = _getServiceSearchPromise(client);
+                serviceClient = restoreServiceClient(currentState.serviceClient);
+                resolver = _getServiceSearchPromise(serviceClient);
             } else {
                 resolver = _createLibrarySearchPromise;
             }
@@ -411,7 +424,7 @@ const selectServiceMediaCollectionItem = async (item) => {
         store.getState().browserList.history
     );
 
-    const client = item.serviceClient;
+    const client = restoreServiceClient(item.serviceClient);
 
     const res = await client.getMetadata(item.id, 0, 100);
     const items = [];

@@ -107,6 +107,7 @@ export default handleActions(
                 visible: true,
             };
         },
+        [Constants.STORE_RESET]: () => initialState,
     },
     initialState
 );

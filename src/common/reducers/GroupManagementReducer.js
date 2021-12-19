@@ -39,6 +39,7 @@ export default handleActions(
 
         [Constants.GROUP_MANAGEMENT_HIDE]: resetReducer,
         [Constants.GROUP_MANAGEMENT_SAVE]: resetReducer,
+        [Constants.STORE_RESET]: () => initialState,
     },
     initialState
 );

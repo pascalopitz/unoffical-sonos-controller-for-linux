@@ -5,6 +5,7 @@ module.exports = [
     {
         name: 'main',
         mode: 'development',
+        devtool: 'inline-source-map',
 
         output: {
             path: path.resolve(__dirname, 'app/'),
@@ -54,6 +55,7 @@ module.exports = [
     {
         name: 'preload',
         mode: 'development',
+        devtool: 'inline-source-map',
         entry: './src/preload/preload.js',
         output: {
             filename: 'preload.js',
@@ -89,24 +91,19 @@ module.exports = [
     {
         name: 'ui',
         mode: 'development',
+        devtool: 'inline-source-map',
         entry: './src/ui/app.js',
         output: {
-            filename: 'ui.bundle.js',
+            filename: 'ui.js',
             path: path.resolve(__dirname, 'app/'),
-            // libraryTarget: 'commonjs2',
         },
 
-        target: 'web',
+        target: 'electron-renderer',
 
         resolve: {
             extensions: ['.js', '.jsx'],
             modules: [path.resolve(__dirname, 'app/node_modules')],
         },
-
-        // externals: {
-        //     react: 'commonjs react',
-        //     'react-dom': 'commonjs react-dom',
-        // },
 
         module: {
             rules: [

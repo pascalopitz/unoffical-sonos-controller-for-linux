@@ -1,4 +1,6 @@
 const Constants = {
+    STORE_RESET: '',
+
     VOLUME_CONTROLS_MUTE_SET: '',
     VOLUME_CONTROLS_VOLUME_SET: '',
     VOLUME_CONTROLS_DRAGGING: '',

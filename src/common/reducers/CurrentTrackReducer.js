@@ -13,6 +13,7 @@ export default handleActions(
                 expanded: !!action.payload,
             };
         },
+        [Constants.STORE_RESET]: () => initialState,
     },
     initialState
 );
