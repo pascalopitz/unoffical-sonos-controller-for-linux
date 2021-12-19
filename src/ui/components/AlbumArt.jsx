@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import useIsInViewport from 'use-is-in-viewport';
 
-const { getCurrentDevice } = window; 
+const { getCurrentDevice } = window;
 
 const loadCache = new Map();
 

@@ -21,8 +21,6 @@ import MprisService from '../common/services/MprisService';
 import { getByServiceId } from '../common/services/MusicServiceClient';
 import SonosService from '../common/services/SonosService';
 
-
-
 contextBridge.exposeInMainWorld('ipHelper', { IP_ADDRESS, LOCAL_PORT });
 contextBridge.exposeInMainWorld('store', store);
 
@@ -63,5 +61,5 @@ contextBridge.exposeInMainWorld('initialise', async () => {
     await StoreActions.reset();
     SonosService.mount();
     IpcService.mount();
-    MprisService.mount();    
+    MprisService.mount();
 });

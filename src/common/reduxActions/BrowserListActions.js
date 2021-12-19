@@ -20,15 +20,13 @@ import {
 import { loadPlaylists, loadPlaylistItems } from './PlaylistActions';
 
 const restoreServiceClient = (serviceClient) => {
-    const client = new MusicServiceClient(
-        serviceClient._serviceDefinition,
-    );
+    const client = new MusicServiceClient(serviceClient._serviceDefinition);
 
     client.setAuthToken(serviceClient.authToken);
     client.setKey(serviceClient.key);
 
     return client;
-}
+};
 
 async function _fetchLineIns() {
     const { deviceSearches } = store.getState().sonosService;
@@ -307,7 +305,9 @@ export const search = createAction(
             title = `Search ${term}`;
 
             if (currentState.serviceClient) {
-                serviceClient = restoreServiceClient(currentState.serviceClient);
+                serviceClient = restoreServiceClient(
+                    currentState.serviceClient
+                );
                 resolver = _getServiceSearchPromise(serviceClient);
             } else {
                 resolver = _createLibrarySearchPromise;
