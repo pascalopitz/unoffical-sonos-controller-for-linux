@@ -31,6 +31,7 @@ function removalReducer(state, action) {
 function zoneGroupSelectReducer(state, action) {
     return {
         ...state,
+        selected: [],
         currentHost: action.payload.host,
         currentGroup: action.payload.ID,
     };
@@ -98,13 +99,6 @@ export default handleActions(
             return {
                 ...state,
                 selected,
-            };
-        },
-
-        [Constants.ZONE_GROUP_SELECT]: (state) => {
-            return {
-                ...state,
-                selected: [],
             };
         },
 
