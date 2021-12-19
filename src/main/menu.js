@@ -5,7 +5,7 @@ import path from 'path';
 import { promisify } from 'util';
 import MaskJson from 'mask-json';
 
-import LocalMusic from './localMusic';
+import LocalMusic from '../localMusic';
 
 import {
     LOCAL_MUSIC_SET_FOLDER,
@@ -18,9 +18,9 @@ import {
     NEXT,
     TOGGLE_PLAY,
     ADD_PLAYER_IP,
-} from './common/ipcCommands';
+} from '../common/ipcCommands';
 
-const packageJson = require('./package.json');
+const packageJson = require('../../app/package.json');
 
 const blacklist = ['authToken', 'password', 'secret', 'CurrentMuseHouseholdId'];
 const maskJson = MaskJson(blacklist);

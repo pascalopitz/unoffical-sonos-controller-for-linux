@@ -7,7 +7,7 @@ import wakeEvent from 'wake-event';
 import windowStateKeeper from 'electron-window-state';
 
 import registerMenu from './menu';
-import LocalMusic from './localMusic';
+import LocalMusic from '../localMusic';
 
 const deviceProviderName = 'unofficial-sonos-controller-for-linux';
 
@@ -31,6 +31,8 @@ function createWindow() {
         icon: path.join(__dirname, '/sonos-512.png'),
         webPreferences: {
             nodeIntegration: true,
+            contextIsolation: true,
+            preload: path.join(__dirname, '/preload.js'),
         },
     });
 
