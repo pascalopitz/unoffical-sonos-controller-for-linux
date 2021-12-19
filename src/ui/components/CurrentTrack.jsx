@@ -8,9 +8,9 @@ import CurrentTrackNoMusic from './CurrentTrackNoMusic';
 import {
     getCurrentTrack,
     getNextTrack,
-} from '../selectors/CurrentTrackSelectors';
+} from '../../common/selectors/CurrentTrackSelectors';
 
-import { toggleExpanded } from '../reduxActions/CurrentTrackActions';
+const { toggleExpanded } = window.CurrentTrackActions;
 
 const mapStateToProps = (state) => {
     return {

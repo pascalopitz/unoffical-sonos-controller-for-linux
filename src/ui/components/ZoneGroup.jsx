@@ -4,10 +4,7 @@ import { connect } from 'react-redux';
 import ZoneGroupPlayState from './ZoneGroupPlayState';
 import ZoneGroupMember from './ZoneGroupMember';
 
-import {
-    showGroupManagement,
-    selectGroup,
-} from '../reduxActions/ZoneGroupActions';
+const { showGroupManagement, selectGroup } = window.ZoneGroupActions;
 
 const mapDispatchToProps = (dispatch) => {
     return {

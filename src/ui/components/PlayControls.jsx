@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 
-import { play, pause, playNext, playPrev } from '../reduxActions/PlayerActions';
+const { play, pause, playNext, playPrev } = window.PlayerActions;
 
 import {
     getPlaying,
     isStreaming,
     disableNextButton,
-} from '../selectors/PlayerSelectors';
+} from '../../common/selectors/PlayerSelectors';
 
 const mapStateToProps = (state) => {
     return {

@@ -9,9 +9,7 @@ import classnames from 'classnames';
 
 import AlbumArt from './AlbumArt';
 
-import { isStreamUrl } from '../helpers/sonos';
-
-import {
+const {
     select,
     playNow,
     playNext,
@@ -23,7 +21,7 @@ import {
     editPlaylist,
     deletePlaylist,
     deleteFavourite,
-} from '../reduxActions/BrowserListActions';
+} = window.BrowserListActions;
 
 const mapDispatchToProps = {
     select,

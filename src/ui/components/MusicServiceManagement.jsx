@@ -1,13 +1,8 @@
-import { shell } from 'electron';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {
-    hideManagement,
-    getSession,
-    getLink,
-    addAnonymousService,
-} from '../reduxActions/MusicServicesActions';
+const { hideManagement, getSession, getLink, addAnonymousService } =
+    window.MusicServicesActions;
 
 const mapStateToProps = (state) => {
     return {
@@ -35,7 +30,7 @@ export class MusicServiceManagement extends Component {
     }
 
     _openLink() {
-        shell.openExternal(this.props.link.regUrl);
+        openExternal(this.props.link.regUrl);
     }
 
     _cancel() {

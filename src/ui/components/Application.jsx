@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 
-import store from '../reducers';
-
-import SonosService from '../services/SonosService';
-import IpcService from '../services/IpcService';
-
 import CurrentTrack from './CurrentTrack';
 import QueueList from './QueueList';
 import BrowserList from './BrowserList';
@@ -19,20 +14,11 @@ import PlaylistManagement from './PlaylistManagement';
 import EqSettings from './EqSettings';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
-import MprisService from '../services/MprisService';
-
-window.store = store; // TODO: remove this
 
 export class Application extends Component {
-    componentDidMount() {
-        SonosService.mount();
-        IpcService.mount();
-        MprisService.mount();
-    }
-
     render() {
         return (
-            <Provider store={store}>
+            <Provider store={window.store}>
                 <div>
                     <div id="application">
                         <header id="top-control">

@@ -3,13 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import AlbumArt from './AlbumArt';
 
-import {
-    gotoPosition,
-    removeTrack,
-    removeSelectedTracks,
-    select,
-    deselect,
-} from '../reduxActions/QueueActions';
+const { gotoPosition, removeTrack, removeSelectedTracks, select, deselect } =
+    window.QueueActions;
 
 const mapStateToProps = (state) => {
     return {

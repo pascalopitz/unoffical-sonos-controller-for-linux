@@ -6,7 +6,7 @@ import {
     getCurrentHost,
     getCurrentTracks,
     getPlayStates,
-} from '../selectors/ZoneGroupSelectors';
+} from '../../common/selectors/ZoneGroupSelectors';
 
 import ZoneGroup from './ZoneGroup';
 

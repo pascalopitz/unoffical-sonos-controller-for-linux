@@ -8,22 +8,16 @@ import VirtualList from 'react-tiny-virtual-list';
 
 import BrowserListItem from './BrowserListItem';
 
-import {
+const {
     getCurrentState,
     getSearching,
     getHistory,
     getSearchMode,
     getServiceItems,
     getAvailableSearchModes,
-} from '../selectors/BrowserListSelectors';
+} = window.BrowserListSelectors;
 
-import {
-    home,
-    back,
-    more,
-    search,
-    scroll,
-} from '../reduxActions/BrowserListActions';
+const { home, back, more, search, scroll } = window.BrowserListActions;
 
 const mapStateToProps = (state) => {
     return {

@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {
-    hide,
-    toggle,
-    addItem,
-    moveItem,
-    deleteItem,
-    saveQueue,
-} from '../reduxActions/PlaylistActions';
+const { hide, toggle, addItem, moveItem, deleteItem, saveQueue } =
+    window.PlaylistActions;
 
 import classnames from 'classnames';
 

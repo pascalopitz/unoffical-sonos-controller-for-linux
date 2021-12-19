@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { getHasCurrent } from '../selectors/LoaderSelectors';
+import { getHasCurrent } from '../../common/selectors/LoaderSelectors';
 
 const mapStateToProps = (state) => {
     return {

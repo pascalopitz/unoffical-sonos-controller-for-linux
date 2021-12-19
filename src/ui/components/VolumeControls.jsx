@@ -4,21 +4,13 @@ import { connect } from 'react-redux';
 import MuteButton from './MuteButton';
 import ValueSlider from './ValueSlider';
 
-import {
-    setDragging,
-    setExpanded,
-    setPlayerMuted,
-    setPlayerVolume,
-} from '../reduxActions/VolumeControlActions';
+const { setDragging, setExpanded, setPlayerMuted, setPlayerVolume } =
+    window.VolumeControlActions;
 
-import { show } from '../reduxActions/EqActions';
+const { show } = window.EqActions;
 
-import {
-    getPlayers,
-    getCurrentGroupKeys,
-    getGroupVolume,
-    getGroupMuted,
-} from '../selectors/VolumeControlSelectors';
+const { getPlayers, getCurrentGroupKeys, getGroupVolume, getGroupMuted } =
+    window.VolumeControlSelectors;
 
 const mapStateToProps = (state) => {
     return {

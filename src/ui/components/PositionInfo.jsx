@@ -5,12 +5,8 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 
-import {
-    setPlayMode,
-    setCrossfade,
-    seek,
-    refreshPosition,
-} from '../reduxActions/PlayerActions';
+const { setPlayMode, setCrossfade, seek, refreshPosition } =
+    window.PlayerActions;
 
 import {
     getPlaying,
@@ -18,7 +14,7 @@ import {
     getPlayMode,
     getPositionInfo,
     isStreaming,
-} from '../selectors/PlayerSelectors';
+} from '../../common/selectors/PlayerSelectors';
 
 const mapStateToProps = (state) => {
     return {

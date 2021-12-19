@@ -3,13 +3,10 @@ import { connect } from 'react-redux';
 
 import GroupManagementNode from './GroupManagementNode';
 
-import {
-    hideGroupManagement,
-    toggleZoneChecked,
-    saveGroups,
-} from '../reduxActions/GroupManagementActions';
+const { hideGroupManagement, toggleZoneChecked, saveGroups } =
+    window.GroupManagementActions;
 
-import { getPlayers } from '../selectors/GroupManagementSelectors';
+import { getPlayers } from '../../common/selectors/GroupManagementSelectors';
 
 const mapStateToProps = (state) => {
     return {

@@ -2,12 +2,7 @@ import _ from 'lodash';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
-import SonosService from '../services/SonosService';
-import { getByServiceId } from '../services/MusicServiceClient';
-
 import useIsInViewport from 'use-is-in-viewport';
-
-import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
 
 const loadCache = new Map();
 

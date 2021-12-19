@@ -3,16 +3,10 @@ import { connect } from 'react-redux';
 
 import classnames from 'classnames';
 
-import {
-    hide,
-    setValue,
-    select,
-    breakPair,
-    createPair,
-    setTruePlay,
-} from '../reduxActions/EqActions';
+const { hide, setValue, select, breakPair, createPair, setTruePlay } =
+    window.EqActions;
 
-import { getPlayers } from '../selectors/GroupManagementSelectors';
+import { getPlayers } from '../../common/selectors/GroupManagementSelectors';
 
 import ValueSlider from './ValueSlider';
 

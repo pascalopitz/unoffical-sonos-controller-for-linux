@@ -16,9 +16,9 @@ import {
     getTracks,
     getPositionInfo,
     getUpdateId,
-} from '../selectors/QueueSelectors';
+} from '../../common/selectors/QueueSelectors';
 
-import { changePosition, flush, saveQueue } from '../reduxActions/QueueActions';
+const { changePosition, flush, saveQueue } = window.QueueActions;
 
 const mapStateToProps = (state) => {
     return {

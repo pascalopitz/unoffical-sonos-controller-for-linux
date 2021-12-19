@@ -4,14 +4,10 @@ import { connect } from 'react-redux';
 
 import SearchBarSources from './SearchBarSources';
 
-import { search, exitSearch } from '../reduxActions/BrowserListActions';
+const { search, exitSearch } = window.BrowserListActions;
 
-import {
-    getCurrentState,
-    getHasSearchTerm,
-    getSearchMode,
-    getSearchSources,
-} from '../selectors/BrowserListSelectors';
+const { getCurrentState, getHasSearchTerm, getSearchMode, getSearchSources } =
+    window.BrowserListSelectors;
 
 function mapStateToProps(state) {
     return {
