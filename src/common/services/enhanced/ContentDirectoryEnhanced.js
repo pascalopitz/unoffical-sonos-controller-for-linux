@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import get from 'lodash/get';
 import { Helpers, Services } from 'sonos';
 
 export default class ContentDirectoryEnhanced extends Services.ContentDirectory {
@@ -16,7 +16,7 @@ export default class ContentDirectoryEnhanced extends Services.ContentDirectory 
                 item,
                 this.host,
                 this.port,
-                _.get(item, 'res._')
+                get(item, 'res._')
             );
 
             return {

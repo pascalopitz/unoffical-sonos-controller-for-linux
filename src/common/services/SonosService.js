@@ -1,4 +1,6 @@
-import _ from 'lodash';
+import get from 'lodash/get';
+import reject from 'lodash/reject';
+import isArray from 'lodash/isArray';
 
 import { Listener, AsyncDeviceDiscovery } from 'sonos';
 
@@ -24,15 +26,12 @@ function getSonosDeviceOrCurrentOrFirst(sonos) {
 
 function getAllDevices() {
     return Object.values(
-        _.get(store.getState(), 'sonosService.deviceSearches', {})
+        get(store.getState(), 'sonosService.deviceSearches', {})
     );
 }
 
 export function getDeviceByHost(host) {
-    const deviceSearches = _.get(
-        store.getState(),
-        'sonosService.deviceSearches'
-    );
+    const deviceSearches = get(store.getState(), 'sonosService.deviceSearches');
     return deviceSearches[host];
 }
 
@@ -368,7 +367,7 @@ const SonosService = {
     removeMusicService(service) {
         let currentServices = JSON.parse(window.localStorage.musicServices);
 
-        currentServices = _.reject(currentServices, (s) => {
+        currentServices = reject(currentServices, (s) => {
             return s.service.Id == service.Id;
         });
 
@@ -470,7 +469,7 @@ const SonosService = {
     onContentDirectoryEvent({ eventBody }) {
         const sonos = getSonosDeviceOrCurrentOrFirst();
 
-        const event = _.isArray(eventBody)
+        const event = isArray(eventBody)
             ? eventBody.reduce((prev, i) => ({ ...prev, ...i }), {})
             : eventBody;
 

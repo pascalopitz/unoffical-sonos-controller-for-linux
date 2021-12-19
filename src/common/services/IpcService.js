@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
 import { ipcRenderer } from 'electron';
 
 import SonosEnhanced from './enhanced/SonosEnhanced';
@@ -22,7 +22,7 @@ import {
 
 const VOLUME_STEP = 2;
 
-const query = _.debounce((sonos) => {
+const query = debounce((sonos) => {
     SonosService.queryState(sonos);
 }, 2000);
 

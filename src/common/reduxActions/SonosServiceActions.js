@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import omitBy from 'lodash/omitBy';
+import isEmpty from 'lodash/isEmpty';
 
 import { Helpers } from 'sonos';
 import { ipcRenderer } from 'electron';
@@ -75,8 +76,8 @@ export const zoneGroupTrackUpdate = createAction(
 
             track = {
                 ...track,
-                ..._.omitBy(currentTrack, _.isEmpty),
-                ..._.omitBy(trackMeta, _.isEmpty),
+                ...omitBy(currentTrack, isEmpty),
+                ...omitBy(trackMeta, isEmpty),
                 isStreaming: true,
                 disableNextButton: isStreamUrl(track.uri),
             };

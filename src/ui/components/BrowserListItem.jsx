@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import get from 'lodash/get';
+import debounce from 'lodash/debounce';
 
 import React, { Fragment, Component, PureComponent, createRef } from 'react';
 import { connect } from 'react-redux';
@@ -40,28 +41,28 @@ const mapDispatchToProps = {
 class InlineMenu extends PureComponent {
     _playNow = (e) => {
         e.preventDefault();
-        const item = _.get(this, 'props.model.parent') || this.props.model;
+        const item = get(this, 'props.model.parent') || this.props.model;
         this.props.playNow(item);
         this.props.toggle(e);
     };
 
     _playNext = (e) => {
         e.preventDefault();
-        const item = _.get(this, 'props.model.parent') || this.props.model;
+        const item = get(this, 'props.model.parent') || this.props.model;
         this.props.playNext(item);
         this.props.toggle(e);
     };
 
     _addQueue = (e) => {
         e.preventDefault();
-        const item = _.get(this, 'props.model.parent') || this.props.model;
+        const item = get(this, 'props.model.parent') || this.props.model;
         this.props.addQueue(item);
         this.props.toggle(e);
     };
 
     _replaceQueue = (e) => {
         e.preventDefault();
-        const item = _.get(this, 'props.model.parent') || this.props.model;
+        const item = get(this, 'props.model.parent') || this.props.model;
         this.props.replaceQueue(item);
         this.props.toggle(e);
     };
@@ -75,28 +76,28 @@ class InlineMenu extends PureComponent {
 
     _addToPlaylist = (e) => {
         e.preventDefault();
-        const item = _.get(this, 'props.model.parent') || this.props.model;
+        const item = get(this, 'props.model.parent') || this.props.model;
         this.props.addToPlaylist(item);
         this.props.toggle(e);
     };
 
     _editPlaylist = (e) => {
         e.preventDefault();
-        const item = _.get(this, 'props.model.parent') || this.props.model;
+        const item = get(this, 'props.model.parent') || this.props.model;
         this.props.editPlaylist(item);
         this.props.toggle(e);
     };
 
     _deletePlaylist = (e) => {
         e.preventDefault();
-        const item = _.get(this, 'props.model.parent') || this.props.model;
+        const item = get(this, 'props.model.parent') || this.props.model;
         this.props.deletePlaylist(item);
         this.props.toggle(e);
     };
 
     _deleteFavourite = (e) => {
         e.preventDefault();
-        const item = _.get(this, 'props.model.parent') || this.props.model;
+        const item = get(this, 'props.model.parent') || this.props.model;
         this.props.deleteFavourite(item);
         this.props.toggle(e);
     };
@@ -241,7 +242,7 @@ export class BrowserListItem extends Component {
         e.stopPropagation();
 
         if (!this._delayedClick) {
-            this._delayedClick = _.debounce(this._onClick, 200, {
+            this._delayedClick = debounce(this._onClick, 200, {
                 leading: true,
                 trailing: false,
             });
@@ -291,7 +292,7 @@ export class BrowserListItem extends Component {
             item.action === 'service' ||
             item.trackMetadata ||
             JSON.parse(String(item.canPlay || 'false')) ||
-            JSON.parse(String(_.get(item, 'parent.canPlay') || 'false'))
+            JSON.parse(String(get(item, 'parent.canPlay') || 'false'))
         ) {
             className = className + ' playable ';
 
@@ -314,16 +315,16 @@ export class BrowserListItem extends Component {
         }
 
         const creator =
-            item.creator || item.artist || _.get(item, 'trackMetadata.artist');
+            item.creator || item.artist || get(item, 'trackMetadata.artist');
 
         const albumArtURI =
             item.albumArtURI ||
-            _.get(item, 'trackMetadata.albumArtURI') ||
-            _.get(item, 'streamMetadata.logo');
+            get(item, 'trackMetadata.albumArtURI') ||
+            get(item, 'streamMetadata.logo');
 
         const serviceId =
-            _.get(this, 'props.model.service.service.Id') ||
-            _.get(this, 'props.model.data.Id');
+            get(this, 'props.model.service.service.Id') ||
+            get(this, 'props.model.data.Id');
 
         if (creator) {
             className += ' with-creator';

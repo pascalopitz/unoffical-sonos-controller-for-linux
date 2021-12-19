@@ -59,13 +59,9 @@ function createWindow() {
 
     wakeEvent(() => {
         if (win) {
-            win.webContents.executeJavaScript('SonosService.wakeup()', true);
+            win.webContents.executeJavaScript('wakeup()', true);
         }
     });
-
-    if (process.env.NODE_ENV === 'development') {
-        win.webContents.toggleDevTools();
-    }
 }
 
 const gotTheLock = app.requestSingleInstanceLock();

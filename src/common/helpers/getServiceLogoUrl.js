@@ -1,4 +1,6 @@
-import _ from 'lodash';
+import get from 'lodash/get';
+import find from 'lodash/find';
+
 import { Helpers } from 'sonos';
 
 const SERVICE_LOGOS_URI =
@@ -21,10 +23,10 @@ export default function getServiceLogoUrl(id) {
     }
 
     const encodedId = String(7 + Number(id) * 256);
-    const match = _.find(
+    const match = find(
         ServiceImageMap['acr-hdpi'].service,
-        (i) => _.get(i, 'id') === encodedId
+        (i) => get(i, 'id') === encodedId
     );
 
-    return _.get(match, 'image._');
+    return get(match, 'image._');
 }

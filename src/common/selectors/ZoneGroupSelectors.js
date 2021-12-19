@@ -1,8 +1,8 @@
-import _ from 'lodash';
+import sortBy from 'lodash/sortBy';
 
 export function getZoneGroups(state) {
     const zones = state.sonosService.zones;
-    return _(zones).sortBy('Name').value();
+    return sortBy(zones, 'Name');
 }
 
 export function getCurrentHost(state) {

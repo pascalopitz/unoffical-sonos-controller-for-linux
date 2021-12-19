@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import includes from 'lodash/includes';
 
 export default function getSelectionSeries(tracks, selected) {
     const series = [];
@@ -7,7 +7,7 @@ export default function getSelectionSeries(tracks, selected) {
     let newRequired = true;
 
     tracks.forEach((track, i) => {
-        const isSelected = _.includes(selected, track.id);
+        const isSelected = includes(selected, track.id);
 
         if (isSelected) {
             if (newRequired) {

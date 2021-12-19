@@ -9,7 +9,9 @@ import { parseFile } from 'music-metadata';
 import { getType } from 'mime';
 import { Helpers } from 'sonos';
 
-import _ from 'lodash';
+import get from 'lodash/get';
+import escape from 'lodash/escape';
+
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import logger from 'koa-logger';
@@ -56,7 +58,7 @@ const isAllowedDirectory = async (p) => {
     return await isDirectoryAsync(p);
 };
 
-const __escape = (str) => _.escape(str);
+const __escape = (str) => escape(str);
 
 class SoapError extends Error {}
 
@@ -124,7 +126,7 @@ class SmapiServer {
             }
         );
 
-        const total = _.get(countQuery, '0.values.0.0', 0);
+        const total = get(countQuery, '0.values.0.0', 0);
         const resultXml = [];
 
         if (query.length > null) {
@@ -185,7 +187,7 @@ class SmapiServer {
             }
         );
 
-        const total = _.get(countQuery, '0.values.0.0', 0);
+        const total = get(countQuery, '0.values.0.0', 0);
         const resultXml = [];
 
         if (query.length > null) {
@@ -297,7 +299,7 @@ class SmapiServer {
                         duration: true,
                     }).catch(() => null);
 
-                    if (_.get(info, 'format.tagTypes', []).length) {
+                    if (get(info, 'format.tagTypes', []).length) {
                         resultXml.push(`
                             <mediaMetadata>
                                 <parentID>${id}</parentID>
@@ -416,7 +418,7 @@ class SmapiServer {
             }
         );
 
-        const total = _.get(countQuery, '0.values.0.0', 0);
+        const total = get(countQuery, '0.values.0.0', 0);
 
         if (query.length > null) {
             const [{ values }] = query;
@@ -497,7 +499,7 @@ class SmapiServer {
             }
         );
 
-        const total = _.get(countQuery, '0.values.0.0', 0);
+        const total = get(countQuery, '0.values.0.0', 0);
 
         if (query.length > null) {
             const [{ values }] = query;
@@ -556,7 +558,7 @@ class SmapiServer {
             }
         );
 
-        const total = _.get(countQuery, '0.values.0.0', 0);
+        const total = get(countQuery, '0.values.0.0', 0);
 
         if (query.length > null) {
             const [{ values }] = query;
@@ -634,7 +636,7 @@ const startServer = () => {
         }
 
         const info = await parseFile(p);
-        const picture = _.get(info, `common.picture[0]`);
+        const picture = get(info, `common.picture[0]`);
 
         if (picture) {
             ctx.body = picture.data;
@@ -685,7 +687,7 @@ const startServer = () => {
 
             try {
                 const xml = await smapiInstance[action](
-                    _.get(parsed, `Envelope.Body.${action}`)
+                    get(parsed, `Envelope.Body.${action}`)
                 );
 
                 ctx.body = xml;

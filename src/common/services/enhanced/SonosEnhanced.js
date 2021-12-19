@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import get from 'lodash/get';
+import find from 'lodash/find';
 import { Sonos, Helpers } from 'sonos';
 
 import ContentDirectoryEnhanced from './ContentDirectoryEnhanced';
@@ -47,11 +48,11 @@ export default class SonosEnhanced extends Sonos {
         );
 
         const serviceDescriptors = servicesObj.Services.Service.map((obj) => {
-            const stringsUri = _.get(obj, 'Presentation.Strings.Uri');
-            const mapUri = _.get(obj, 'Presentation.PresentationMap.Uri');
-            const manifestUri = _.get(obj, 'Manifest.Uri');
+            const stringsUri = get(obj, 'Presentation.Strings.Uri');
+            const mapUri = get(obj, 'Presentation.PresentationMap.Uri');
+            const manifestUri = get(obj, 'Manifest.Uri');
 
-            return _.assign({}, obj, obj.Policy, {
+            return Object.assign({}, obj, obj.Policy, {
                 manifestUri,
                 presentation: {
                     stringsUri,
@@ -66,7 +67,7 @@ export default class SonosEnhanced extends Sonos {
             async (t) => {
                 const serviceId =
                     Math.floor(Math.abs((t - 7) / 256)) || Number(t);
-                const match = _.find(serviceDescriptors, {
+                const match = find(serviceDescriptors, {
                     Id: String(serviceId),
                 });
 
@@ -125,7 +126,7 @@ export default class SonosEnhanced extends Sonos {
         if (requestOptions && requestOptions.total !== undefined) {
             opts.RequestedCount = requestOptions.total;
         }
-        // opts = _.extend(defaultOptions, opts)
+
         opts = Object.assign({}, defaultOptions, opts);
         const result = await this.contentDirectoryService().GetResult(opts);
         return result;

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import includes from 'lodash/includes';
 import { handleActions } from 'redux-actions';
 import Constants from '../constants';
 
@@ -15,9 +15,9 @@ function removalReducer(state, action) {
 
     const items = []
         .concat(state.playerItems[host].items)
-        .filter((item) => !_.includes(removed, item.id));
+        .filter((item) => !includes(removed, item.id));
 
-    const selected = state.selected.filter((id) => !_.includes(removed, id));
+    const selected = state.selected.filter((id) => !includes(removed, id));
 
     const newState = {
         ...state,

@@ -1,7 +1,7 @@
 import path from 'path';
 import initSqlJs from 'sql.js';
 import walk from 'walkdir';
-import _ from 'lodash';
+import get from 'lodash/get';
 
 import { parseFile } from 'music-metadata';
 import { getType } from 'mime';
@@ -77,7 +77,7 @@ const createIndex = async (rootFolder) => {
                         duration: true,
                     }).catch(() => null);
 
-                    if (!!_.get(info, 'format.tagTypes', []).length) {
+                    if (!!get(info, 'format.tagTypes', []).length) {
                         db.run(
                             `INSERT INTO tracks (
                             mimeType,

@@ -11,7 +11,7 @@
     "dist": "electron-builder",
     "build_help": "electron-builder --help",
     "build": "npm run lint && npm run test && npm run fonts && npm run transpile",
-    "develop": "NODE_ENV=development npm run fonts && npm run transpile && npm run start & npm run watch",
+    "develop": "export NODE_ENV=development npm run fonts && npm run transpile && npm run start & npm run watch",
     "start": "export NODE_ENV=development && electron .",
     "watch": "webpack -w --config=webpack.config.js",
     "transpile": "webpack --config=webpack.config.js",

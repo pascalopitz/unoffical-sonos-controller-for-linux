@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import sortBy from 'lodash/sortBy';
 
 export function getPlayers(state) {
     const players = state.sonosService.zones.reduce((prev, z) => {
@@ -22,5 +22,5 @@ export function getPlayers(state) {
         return [...prev, ...members];
     }, []);
 
-    return _(players).sortBy('ZoneName').value();
+    return sortBy(players, 'ZoneName');
 }

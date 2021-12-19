@@ -1,4 +1,8 @@
-import _ from 'lodash';
+import get from 'lodash/get';
+import last from 'lodash/last';
+import uniq from 'lodash/uniq';
+import map from 'lodash/map';
+
 import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
 
 import {
@@ -9,7 +13,7 @@ import {
 } from '../constants/BrowserListConstants';
 
 export function getCurrentState(state) {
-    return _.last(state.browserList.history);
+    return last(state.browserList.history);
 }
 
 export function getServiceItems(state) {
@@ -33,14 +37,14 @@ export function getHasSearchTerm(state) {
 }
 
 export function getSearching(state) {
-    const lastItem = _.last(state.browserList.history) || {};
+    const lastItem = last(state.browserList.history) || {};
     return !!state.browserList.searchTerm && !!lastItem.mode;
 }
 
 export function getSearchMode(state) {
     const { mode, searchTermMap } = getCurrentState(state) || {};
 
-    return mode || _.get(searchTermMap, '0.id') || DEFAULT_SEARCH_MODE;
+    return mode || get(searchTermMap, '0.id') || DEFAULT_SEARCH_MODE;
 }
 
 export function getAvailableSearchModes(state) {
@@ -53,7 +57,7 @@ export function getHistory(state) {
 }
 
 export function getSearchSources(state) {
-    return _.uniq(
+    return uniq(
         [
             {
                 label: 'Music Library',
@@ -70,7 +74,7 @@ export function getSearchSources(state) {
                 logo: './svg/computer-white-24dp.svg',
             },
         ].concat(
-            _.map(state.musicServices.active, (s) => {
+            map(state.musicServices.active, (s) => {
                 return {
                     logo: getServiceLogoUrl(s.service.Id),
                     label: s.service.Name,

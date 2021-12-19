@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import padStart from 'lodash/padStart';
 
 import moment from 'moment';
 import React, { useCallback, useState, useEffect } from 'react';
@@ -36,9 +36,9 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 function formatTime(d) {
-    const hrs = _.padStart(d.hours(), 2, '0');
-    const mins = _.padStart(d.minutes(), 2, '0');
-    const secs = _.padStart(d.seconds(), 2, '0');
+    const hrs = padStart(d.hours(), 2, '0');
+    const mins = padStart(d.minutes(), 2, '0');
+    const secs = padStart(d.seconds(), 2, '0');
 
     return `${hrs}:${mins}:${secs}`;
 }

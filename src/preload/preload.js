@@ -48,6 +48,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld('getServiceLogoUrl', getServiceLogoUrl);
 contextBridge.exposeInMainWorld('isStreamUrl', isStreamUrl);
+contextBridge.exposeInMainWorld('wakeup', SonosService.wakeup);
 
 contextBridge.exposeInMainWorld('getCurrentDevice', () => {
     const { host, port } = SonosService._currentDevice || {};

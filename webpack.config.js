@@ -4,7 +4,7 @@ const nodeExternals = require('webpack-node-externals');
 module.exports = [
     {
         name: 'main',
-        mode: 'development',
+        mode: 'production',
         devtool: 'inline-source-map',
 
         output: {
@@ -54,7 +54,7 @@ module.exports = [
     },
     {
         name: 'preload',
-        mode: 'development',
+        mode: 'production',
         devtool: 'inline-source-map',
         entry: './src/preload/preload.js',
         output: {
@@ -90,7 +90,7 @@ module.exports = [
     },
     {
         name: 'ui',
-        mode: 'development',
+        mode: 'production',
         devtool: 'inline-source-map',
         entry: './src/ui/app.js',
         output: {

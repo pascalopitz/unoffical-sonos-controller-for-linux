@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import find from 'lodash/find';
+import includes from 'lodash/includes';
+import difference from 'lodash/difference';
+
 import { createAction } from 'redux-actions';
 import Contants from '../constants';
 
@@ -23,15 +26,15 @@ export const saveGroups = createAction(
             (z) => z.inGroup === currentGroup
         );
 
-        const currentCoordinator = _.find(currentGroupMembers, {
+        const currentCoordinator = find(currentGroupMembers, {
             isCoordinator: true,
         });
 
         const targetGroupMembers = allPlayers.filter((z) =>
-            _.includes(selected, z.UUID)
+            includes(selected, z.UUID)
         );
 
-        const removingGroupMembers = _.difference(
+        const removingGroupMembers = difference(
             currentGroupMembers,
             targetGroupMembers
         );

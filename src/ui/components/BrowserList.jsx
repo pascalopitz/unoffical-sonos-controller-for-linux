@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
@@ -67,7 +67,7 @@ export const BrowserList = (props) => {
         props.home();
     }, [props.home]);
 
-    const moreThrottled = _.debounce(_more, 2000, {
+    const moreThrottled = debounce(_more, 2000, {
         trailing: false,
         leading: true,
     });

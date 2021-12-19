@@ -1,4 +1,8 @@
-import _ from 'lodash';
+import map from 'lodash/map';
+import sum from 'lodash/sum';
+import filter from 'lodash/filter';
+import values from 'lodash/values';
+
 import { createSelector } from 'reselect';
 import { URL } from 'url';
 
@@ -37,26 +41,26 @@ export function getPlayers(state) {
 }
 
 export const getCurrentGroupKeys = createSelector(getPlayers, (players) =>
-    _.map(players, (p) => p.host)
+    map(players, (p) => p.host)
 );
 
 export const getGroupMuted = createSelector(
     getPlayers,
     (players) =>
-        _.filter(players, {
+        filter(players, {
             muted: false,
         }).length === 0
 );
 
 export const getGroupVolume = createSelector(getPlayers, (playersMap) => {
-    const players = _.values(playersMap);
+    const players = values(playersMap);
 
     if (!players.length) {
         return 0;
     }
 
     const volume = Math.floor(
-        _.sum(_.map(players, (p) => Number(p.volume))) / players.length
+        sum(map(players, (p) => Number(p.volume))) / players.length
     );
     return volume;
 });

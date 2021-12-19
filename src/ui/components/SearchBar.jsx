@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
 import React, { useRef, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 
@@ -49,7 +49,7 @@ export const SearchBar = (props) => {
         }
     }, [props.searchMode, ref.current]);
 
-    const inputHandler = _.debounce(_onChange, 800, {
+    const inputHandler = debounce(_onChange, 800, {
         trailing: true,
         leading: false,
     });

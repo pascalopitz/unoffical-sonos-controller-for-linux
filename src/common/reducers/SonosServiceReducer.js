@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import get from 'lodash/get';
+import uniq from 'lodash/uniq';
 import { handleActions } from 'redux-actions';
 import Constants from '../constants';
 
@@ -29,7 +30,7 @@ const getChannels = (ChannelMapSet) => {
 
     return ChannelMapSet.split(';').reduce((prev, entry) => {
         const [id, channelRaw] = entry.split(':');
-        const channels = _.uniq(channelRaw.split(',')).reduce(
+        const channels = uniq(channelRaw.split(',')).reduce(
             (p, channel) => ({ ...p, [channel]: id }),
             {}
         );
@@ -49,7 +50,7 @@ function topologyReducer(state, action) {
             const { CurrentZonePlayerUUIDsInGroup } = attributes[g.host] || {};
 
             const ZoneGroupMember = g.ZoneGroupMember.filter((m) => {
-                return _.get(m, 'IsZoneBridge') !== '1';
+                return get(m, 'IsZoneBridge') !== '1';
             })
                 .filter(
                     (m) =>

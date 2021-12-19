@@ -1,4 +1,9 @@
-import _ from 'lodash';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import includes from 'lodash/includes';
+import padStart from 'lodash/padStart';
+import escape from 'lodash/escape';
 
 import moment from 'moment';
 import { Helpers } from 'sonos';
@@ -48,16 +53,16 @@ class MusicServiceClient {
         const body = await response.text();
 
         const e = await Helpers.ParseXml(stripNamespaces(body));
-        const fault = _.get(e, 'Envelope.Body.Fault.faultstring');
+        const fault = get(e, 'Envelope.Body.Fault.faultstring');
 
         if (response.status >= 400 || fault) {
             if (
                 !retry &&
                 fault &&
-                (_.includes(fault, 'TokenRefreshRequired') ||
-                    _.includes(fault, 'tokenRefreshRequired'))
+                (includes(fault, 'TokenRefreshRequired') ||
+                    includes(fault, 'tokenRefreshRequired'))
             ) {
-                const refreshDetails = _.get(
+                const refreshDetails = get(
                     e,
                     'Envelope.Body.Fault.detail.refreshAuthTokenResult'
                 );
@@ -70,7 +75,7 @@ class MusicServiceClient {
             if (
                 !retry &&
                 fault &&
-                _.includes(fault, 'Update your Sonos system')
+                includes(fault, 'Update your Sonos system')
             ) {
                 return this._doRequest(uri, action, requestBody, headers, true);
             }
@@ -100,7 +105,7 @@ class MusicServiceClient {
         }
 
         if (
-            _.includes(
+            includes(
                 ['playlist', 'playList', 'artistTrackList', 'albumList'],
                 itemType
             )
@@ -217,29 +222,27 @@ class MusicServiceClient {
             id = prefix + escape(item.id);
             parentId = TYPE_MAPPINGS[item.itemType].parentId || '';
             resourceString = `<desc id="cdudn" nameSpace="urn:schemas-rinconnetworks-com:metadata-1-0/">${serviceString}</desc>`;
-        } else if (_.get(item, 'trackMetadata.duration')) {
+        } else if (get(item, 'trackMetadata.duration')) {
             id = '-1';
             const d = moment.duration(item.trackMetadata.duration || 0);
             resourceString = `<res protocolInfo="${uri.match(/^[\w\-]+:/)[0]}*${
                 item.mimeType
             }*"
-                duration="${_.padStart(d.hours(), 2, '0')}:${_.padStart(
+                duration="${padStart(d.hours(), 2, '0')}:${padStart(
                 d.minutes(),
                 2,
                 '0'
-            )}:${_.padStart(d.seconds(), 2, '0')}">${_.escape(uri)}</res>`;
+            )}:${padStart(d.seconds(), 2, '0')}">${escape(uri)}</res>`;
         }
 
         if (item.trackMetadata) {
-            trackData = `<dc:creator>${_.escape(
+            trackData = `<dc:creator>${escape(
                 item.trackMetadata.artist
             )}</dc:creator>
             <upnp:albumArtURI>${
                 item.trackMetadata.albumArtURI || ''
             }</upnp:albumArtURI>
-            <upnp:album>${_.escape(
-                item.trackMetadata.album || ''
-            )}</upnp:album>`;
+            <upnp:album>${escape(item.trackMetadata.album || '')}</upnp:album>`;
         } else if (item.albumArtURI) {
             trackData = `<upnp:albumArtURI>${
                 item.albumArtURI || ''
@@ -253,7 +256,7 @@ class MusicServiceClient {
         xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
         <item id="${id}" restricted="true" ${parentId}>
         ${resourceString}
-        <dc:title>${_.escape(item.title)}</dc:title>
+        <dc:title>${escape(item.title)}</dc:title>
         <upnp:class>${TYPE_MAPPINGS[item.itemType].type}</upnp:class>
         ${trackData || ''}
         </item>
@@ -449,7 +452,7 @@ class MusicServiceClient {
             id,
             '</ns:id>',
             '<ns:term>',
-            _.escape(term),
+            escape(term),
             '</ns:term>',
             '<ns:index>',
             index,
@@ -621,18 +624,18 @@ class MusicServiceClient {
                 const body = await res.text();
                 const e = await Helpers.ParseXml(stripNamespaces(body));
 
-                const map = _.find(
+                const map = find(
                     e.Presentation.PresentationMap,
-                    (m) => !!_.get(m, 'Match.SearchCategories')
+                    (m) => !!get(m, 'Match.SearchCategories')
                 );
 
-                let searchCategories = _.get(map, 'Match.SearchCategories');
+                let searchCategories = get(map, 'Match.SearchCategories');
 
-                if (_.isArray(searchCategories)) {
+                if (isArray(searchCategories)) {
                     searchCategories = searchCategories[0];
                 }
 
-                this.searchTermMap = _.get(searchCategories, 'Category');
+                this.searchTermMap = get(searchCategories, 'Category');
             }
 
             // INFO: https://github.com/SoCo/SoCo/blob/daba00b93b939fb4079778b4ed5a9abe07922c85/soco/music_services/music_service.py#L528

@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import take from 'lodash/take';
+import last from 'lodash/last';
 import { handleActions } from 'redux-actions';
 import Constants from '../constants';
 
@@ -81,7 +82,7 @@ export default handleActions(
         [Constants.BROWSER_SCROLL_POSITION]: (state, action) => {
             const { history } = state;
 
-            const lastItem = _.last(history);
+            const lastItem = last(history);
             const scrollPosition = action.payload;
 
             history[history.length - 1] = {
@@ -98,9 +99,7 @@ export default handleActions(
         [Constants.BROWSER_SCROLL_RESULT]: (state, action) => {
             let { history } = state;
 
-            history = _.take(history, history.length - 1).concat(
-                action.payload
-            );
+            history = take(history, history.length - 1).concat(action.payload);
 
             return {
                 ...state,
@@ -122,7 +121,7 @@ export default handleActions(
 
             return {
                 ...state,
-                history: _.take(history, history.length - 1),
+                history: take(history, history.length - 1),
             };
         },
 

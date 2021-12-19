@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import includes from 'lodash/includes';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import AlbumArt from './AlbumArt';
@@ -31,7 +31,7 @@ export class QueueListItem extends Component {
     }
 
     _isSelected() {
-        return _.includes(this.props.selected, this.props.track.id);
+        return includes(this.props.selected, this.props.track.id);
     }
 
     _isInSelectionContext() {

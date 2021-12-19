@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import map from 'lodash/map';
 import { handleActions } from 'redux-actions';
 import Constants from '../constants';
 
@@ -17,7 +17,7 @@ export default handleActions(
         [Constants.GROUP_MANAGEMENT_SHOW]: (state, action) => {
             return {
                 ...state,
-                selected: _.map(action.payload.ZoneGroupMember, (g) => g.UUID),
+                selected: map(action.payload.ZoneGroupMember, (g) => g.UUID),
                 currentGroup: action.payload.ID,
                 visible: true,
             };

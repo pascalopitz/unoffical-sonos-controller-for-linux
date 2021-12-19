@@ -1,4 +1,15 @@
-import _ from 'lodash';
+import compact from 'lodash/compact';
+import get from 'lodash/get';
+import flatten from 'lodash/flatten';
+import find from 'lodash/find';
+import map from 'lodash/map';
+import reject from 'lodash/reject';
+import includes from 'lodash/includes';
+import orderBy from 'lodash/orderBy';
+import uniq from 'lodash/uniq';
+import cloneDeep from 'lodash/cloneDeep';
+import last from 'lodash/last';
+import isArray from 'lodash/isArray';
 
 import { createAction } from 'redux-actions';
 import Constants from '../constants';
@@ -31,7 +42,7 @@ const restoreServiceClient = (serviceClient) => {
 async function _fetchLineIns() {
     const { deviceSearches } = store.getState().sonosService;
 
-    const promises = _.map(deviceSearches, async (sonos) => {
+    const promises = map(deviceSearches, async (sonos) => {
         try {
             const result = await sonos.queryMusicLibrary('AI:', null, {});
             const items = result && result.items ? result.items : [];
@@ -54,7 +65,7 @@ async function _fetchLineIns() {
     });
 
     const arr = await Promise.all(promises);
-    return _.flatten(arr);
+    return flatten(arr);
 }
 
 async function _fetchMusicServices() {
@@ -63,11 +74,11 @@ async function _fetchMusicServices() {
 
     const services = await sonos.getAvailableServices();
 
-    let data = _.reject(services, (item) => {
-        return _.includes(existingIds, item.Id);
+    let data = reject(services, (item) => {
+        return includes(existingIds, item.Id);
     });
 
-    data = _.orderBy(data, 'Name');
+    data = orderBy(data, 'Name');
 
     return data.map((out) => {
         return {
@@ -119,7 +130,7 @@ async function _createLibrarySearchPromise(type, term, options = {}) {
 
     try {
         const result = await sonos.queryMusicLibrary(type, term, options);
-        return _.assign(result, {
+        return Object.assign(result, {
             type,
             term,
             search: true,
@@ -199,7 +210,7 @@ export const more = createAction(
                 return prevState;
             }
 
-            const state = _.cloneDeep(prevState);
+            const state = cloneDeep(prevState);
 
             const sonos = SonosService._currentDevice; // TODO: fix this
             const params = {
@@ -216,7 +227,7 @@ export const more = createAction(
 
                 if (state.term && state.term.length) {
                     const searchTermMap = await client.getSearchTermMap();
-                    const { mappedId } = _.find(searchTermMap, {
+                    const { mappedId } = find(searchTermMap, {
                         id: state.mode,
                     });
 
@@ -228,7 +239,7 @@ export const more = createAction(
                     );
                 } else {
                     res = await client.getMetadata(
-                        _.get(state, 'parent.id'),
+                        get(state, 'parent.id'),
                         state.items.length,
                         state.items.length + 100
                     );
@@ -237,7 +248,7 @@ export const more = createAction(
                 }
 
                 state.serviceClient = client;
-                state.items = _.compact(_.uniq([...state.items, ...res.items]));
+                state.items = compact(uniq([...state.items, ...res.items]));
                 return state;
             }
 
@@ -252,9 +263,7 @@ export const more = createAction(
                     return state;
                 }
 
-                state.items = _.compact(
-                    _.uniq([...state.items, ...result.items])
-                );
+                state.items = compact(uniq([...state.items, ...result.items]));
                 return state;
             }
 
@@ -268,7 +277,7 @@ export const more = createAction(
                 return prevState;
             }
 
-            state.items = _.compact(_.uniq([...state.items, ...result.items]));
+            state.items = compact(uniq([...state.items, ...result.items]));
             return state;
         } catch (err) {
             console.error(err);
@@ -282,7 +291,7 @@ export const exitSearch = createAction(Constants.BROWSER_SEARCH_EXIT);
 export const search = createAction(
     Constants.BROWSER_SEARCH,
     async (term, mode) => {
-        const currentState = _.last(store.getState().browserList.history);
+        const currentState = last(store.getState().browserList.history);
         const { searchTermMap } = currentState;
         let { serviceClient } = currentState;
         let items = [];
@@ -313,13 +322,13 @@ export const search = createAction(
                 resolver = _createLibrarySearchPromise;
             }
 
-            const { mappedId } = _.find(searchTermMap || LIBRARY_SEARCH_MODES, {
+            const { mappedId } = find(searchTermMap || LIBRARY_SEARCH_MODES, {
                 id: mode || LIBRARY_SEARCH_MODES[0].id,
             });
 
             const result = await resolver(mappedId, term);
 
-            items = _.compact(_.uniq([...(result.items || [])]));
+            items = compact(uniq([...(result.items || [])]));
             total = result.total;
             return {
                 items,
@@ -347,14 +356,14 @@ export const playCurrentAlbum = createAction(Constants.BROWSER_PLAY);
 
 const selectLineIns = async (item) => {
     const results = await _fetchLineIns();
-    const state = _.cloneDeep(item);
+    const state = cloneDeep(item);
     state.items = results || [];
     return state;
 };
 
 const selectBrowseServices = async (item) => {
     const results = await _fetchMusicServices();
-    const state = _.cloneDeep(item);
+    const state = cloneDeep(item);
     state.items = results || [];
     return state;
 };
@@ -371,7 +380,7 @@ const selectService = async (item) => {
     const items = [];
 
     if (res.mediaMetadata) {
-        if (!_.isArray(res.mediaMetadata)) {
+        if (!isArray(res.mediaMetadata)) {
             res.mediaMetadata = [res.mediaMetadata];
         }
 
@@ -382,7 +391,7 @@ const selectService = async (item) => {
     }
 
     if (res.mediaCollection) {
-        if (!_.isArray(res.mediaCollection)) {
+        if (!isArray(res.mediaCollection)) {
             res.mediaCollection = [res.mediaCollection];
         }
 
@@ -411,7 +420,7 @@ const selectSonosPlaylist = async (item) => {
 
     const result = await sonos.queryMusicLibrary(id);
 
-    const state = _.cloneDeep(item);
+    const state = cloneDeep(item);
     state.items = result.items || [];
     state.total = result.total;
     state.updateID = result.updateID;
@@ -420,9 +429,7 @@ const selectSonosPlaylist = async (item) => {
 };
 
 const selectServiceMediaCollectionItem = async (item) => {
-    const { searchTermMap, term } = _.last(
-        store.getState().browserList.history
-    );
+    const { searchTermMap, term } = last(store.getState().browserList.history);
 
     const client = restoreServiceClient(item.serviceClient);
 
@@ -430,7 +437,7 @@ const selectServiceMediaCollectionItem = async (item) => {
     const items = [];
 
     if (res.mediaMetadata) {
-        if (!_.isArray(res.mediaMetadata)) {
+        if (!isArray(res.mediaMetadata)) {
             res.mediaMetadata = [res.mediaMetadata];
         }
 
@@ -441,7 +448,7 @@ const selectServiceMediaCollectionItem = async (item) => {
     }
 
     if (res.mediaCollection) {
-        if (!_.isArray(res.mediaCollection)) {
+        if (!isArray(res.mediaCollection)) {
             res.mediaCollection = [res.mediaCollection];
         }
 
@@ -458,7 +465,7 @@ const selectServiceMediaCollectionItem = async (item) => {
         searchTermMap: searchTermMap,
         serviceClient: client,
         total: res.total,
-        items: _.compact(_.uniq(items)),
+        items: compact(uniq(items)),
     };
 };
 
@@ -491,7 +498,7 @@ export const select = createAction(
             return await selectSonosPlaylist(item);
         }
 
-        const { searchTermMap, term } = _.last(
+        const { searchTermMap, term } = last(
             store.getState().browserList.history
         );
 

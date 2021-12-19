@@ -1,5 +1,4 @@
-import _ from 'lodash';
-
+import throttle from 'lodash/throttle';
 import React, { Component } from 'react';
 
 class VolumeSlider extends Component {
@@ -68,8 +67,8 @@ class VolumeSlider extends Component {
                     onChange={() => {}}
                     onMouseDown={this._onStart.bind(this)}
                     onMouseUp={this._onStop.bind(this)}
-                    onInput={_.throttle(this._onChange.bind(this), 100)}
-                    onWheel={_.throttle(this._onWheel.bind(this), 100)}
+                    onInput={throttle(this._onChange.bind(this), 100)}
+                    onWheel={throttle(this._onWheel.bind(this), 100)}
                 />
             </div>
         );

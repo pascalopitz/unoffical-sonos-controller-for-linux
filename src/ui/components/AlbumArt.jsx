@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import get from 'lodash/get';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
@@ -78,7 +78,7 @@ export const AlbumArt = (props) => {
                     decodeURIComponent(parsed.pathname).replace('.mp3', '')
                 );
 
-                const newSrc = _.get(
+                const newSrc = get(
                     response,
                     'mediaMetadata.trackMetadata.albumArtURI'
                 );

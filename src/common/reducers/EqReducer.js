@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import get from 'lodash/get';
 
 import { handleActions } from 'redux-actions';
 import Constants from '../constants';
@@ -21,17 +21,17 @@ export default handleActions(
                 balance: 0,
             };
 
-            const bass = parseInt(_.get(update, 'Bass.val') || hostState.bass);
+            const bass = parseInt(get(update, 'Bass.val') || hostState.bass);
             const treble = parseInt(
-                _.get(update, 'Treble.val') || hostState.treble
+                get(update, 'Treble.val') || hostState.treble
             );
 
             const loudness = parseInt(
-                _.get(update, 'Loudness.val') || hostState.loudness
+                get(update, 'Loudness.val') || hostState.loudness
             );
 
             let balance = hostState.balance;
-            const volumeUpdate = _.get(update, 'Volume');
+            const volumeUpdate = get(update, 'Volume');
 
             if (volumeUpdate) {
                 const LF = parseInt(
