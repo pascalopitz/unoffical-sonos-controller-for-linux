@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.3.0-alpha1",
+  "version": "0.3.0-alpha2",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "homepage": "http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/",
