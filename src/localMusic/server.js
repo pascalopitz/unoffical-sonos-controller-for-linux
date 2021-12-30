@@ -87,6 +87,7 @@ class SmapiServer {
     }
 
     async getMediaURI({ id }) {
+        id = decodeURIComponent(id);
         const pathEncoded = encodeURIComponent(id);
         const isFile = await isAllowedFile(path.resolve(ROOT, id));
 
@@ -249,7 +250,7 @@ class SmapiServer {
         if (id === 'root') {
             target = ROOT;
         } else {
-            const p = path.resolve(ROOT, id);
+            const p = decodeURIComponent(path.resolve(ROOT, id));
             const isDir = await isAllowedDirectory(p);
 
             if (!isDir) {
@@ -277,7 +278,7 @@ class SmapiServer {
             try {
                 const isDir = await isAllowedDirectory(p);
                 const isFile = await isAllowedFile(p);
-                const pathID = path.relative(ROOT, p);
+                const pathID = encodeURIComponent(path.relative(ROOT, p));
                 const pathEncoded = encodeURIComponent(pathID);
                 if (isDir) {
                     const title = path.basename(p);
