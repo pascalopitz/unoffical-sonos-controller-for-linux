@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/workflows/Build/release/badge.svg)](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/actions?query=workflow%3ABuild%2Frelease) [![dependencies Status](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux/status.svg?path=app)](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux?path=app) [![devDependencies Status](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux/dev-status.svg)](https://david-dm.org/pascalopitz/unoffical-sonos-controller-for-linux?type=dev)
+[![Build Status](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/workflows/Build/release/badge.svg)](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/actions?query=workflow%3ABuild%2Frelease)
 
 # Unofficial Sonos Controller for Linux
 
