@@ -89,7 +89,9 @@ const SonosService = {
             groups.reduce(
                 (p, z) => [
                     ...p,
-                    ...z.ZoneGroupMember.map(async (m) => {
+                    ...z.ZoneGroupMember.filter(
+                        (m) => get(m, 'IsZoneBridge') !== '1'
+                    ).map(async (m) => {
                         const uri = new URL(m.Location);
                         const host = uri.hostname;
                         const device = new SonosEnhanced(host);
