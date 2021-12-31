@@ -18,6 +18,7 @@ import {
     NEXT,
     TOGGLE_PLAY,
     ADD_PLAYER_IP,
+    ADD_PLAY_URL,
 } from '../../common/ipcCommands';
 
 const VOLUME_STEP = 2;
@@ -94,6 +95,12 @@ const handleMessage = async (source, message) => {
         case ADD_PLAYER_IP: {
             const device = new SonosEnhanced(message.ip);
             await SonosService.connectDevice(device);
+            query(sonos);
+            break;
+        }
+
+        case ADD_PLAY_URL: {
+            await sonos.play(message.url);
             query(sonos);
             break;
         }

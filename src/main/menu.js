@@ -18,6 +18,7 @@ import {
     NEXT,
     TOGGLE_PLAY,
     ADD_PLAYER_IP,
+    ADD_PLAY_URL,
 } from '../common/ipcCommands';
 
 const packageJson = require('../../app/package.json');
@@ -119,6 +120,32 @@ const register = () => {
                             win.webContents.send('command', {
                                 type: NEXT,
                             });
+                    },
+                },
+                {
+                    type: 'separator',
+                },
+                {
+                    label: 'Play URL',
+                    async click(item, focusedWindow) {
+                        if (focusedWindow) {
+                            try {
+                                const value =
+                                    await focusedWindow.webContents.executeJavaScript(
+                                        'urlPrompt()',
+                                        true
+                                    );
+
+                                value &&
+                                    focusedWindow &&
+                                    focusedWindow.webContents.send('command', {
+                                        type: ADD_PLAY_URL,
+                                        url: value,
+                                    });
+                            } catch (e) {
+                                //noop
+                            }
+                        }
                     },
                 },
             ],

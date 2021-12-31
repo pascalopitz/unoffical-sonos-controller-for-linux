@@ -8,3 +8,4 @@ export const PREV = 'PREV';
 export const NEXT = 'NEXT';
 export const TOGGLE_PLAY = 'TOGGLE_PLAY';
 export const ADD_PLAYER_IP = 'ADD_PLAYER_IP';
+export const ADD_PLAY_URL = 'ADD_PLAY_URL';

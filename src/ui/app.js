@@ -1,4 +1,5 @@
 import ipRegex from 'ip-regex';
+import urlRegexSafe from 'url-regex-safe';
 
 import { createElement } from 'react';
 import { render } from 'react-dom';
@@ -23,6 +24,23 @@ window.ipPrompt = () => {
 
             if (!ipRegex({ exact: true }).test(value)) {
                 return 'Invalid IP address!';
+            }
+        },
+    }).then(({ value }) => value);
+};
+
+window.urlPrompt = () => {
+    return MySwal.fire({
+        input: 'text',
+        inputLabel: 'Radio URL',
+        showCancelButton: true,
+        inputValidator: (value) => {
+            if (!value) {
+                return 'You need to write something!';
+            }
+
+            if (!urlRegexSafe({ exact: true }).test(value)) {
+                return 'Invalid URL!';
             }
         },
     }).then(({ value }) => value);
