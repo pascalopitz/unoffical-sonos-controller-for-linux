@@ -3,11 +3,15 @@
   "compact": "auto",
   "comments": false,
   "presets": [
-    ["env", {
-      "targets": {
-        "electron": ["11"]
+    [
+      "@babel/preset-env", {
+        "useBuiltIns": "usage",
+        "corejs": 3,
+        "targets": {
+          "electron": "17.0"
+        }
       }
-    }]
+    ]
   ],
   "plugins": [
     "@babel/plugin-proposal-object-rest-spread",
