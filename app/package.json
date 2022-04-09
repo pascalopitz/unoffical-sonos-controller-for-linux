@@ -21,7 +21,7 @@
     "lodash": "^4.17.21",
     "mask-json": "^1.0.3",
     "mime": "^3.0.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "mpris-service": "^2.1.2",
     "music-metadata": "^7.11.4",
     "omit-keys": "^0.1.0",
