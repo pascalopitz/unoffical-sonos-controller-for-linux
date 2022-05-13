@@ -10,6 +10,7 @@ import { getType } from 'mime';
 import { Helpers } from 'sonos';
 
 import get from 'lodash/get';
+import escape from 'lodash/escape';
 
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
@@ -57,7 +58,7 @@ const isAllowedDirectory = async (p) => {
     return await isDirectoryAsync(p);
 };
 
-const __escape = (str) => encodeURIComponent(str);
+const __escape = (str) => escape(str);
 
 class SoapError extends Error {}
 

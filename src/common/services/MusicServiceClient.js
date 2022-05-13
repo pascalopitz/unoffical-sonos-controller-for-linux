@@ -3,6 +3,7 @@ import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import includes from 'lodash/includes';
 import padStart from 'lodash/padStart';
+import escape from 'lodash/escape';
 
 import moment from 'moment';
 import { Helpers } from 'sonos';
@@ -15,7 +16,7 @@ import { withinEnvelope, stripNamespaces, NS } from '../../common/helpers';
 
 const deviceProviderName = 'Sonos';
 
-const __escape = (str) => encodeURIComponent(str);
+const __escape = (str) => escape(str);
 
 class MusicServiceClient {
     constructor(serviceDefinition, { authToken, privateKey } = {}) {
@@ -101,7 +102,7 @@ class MusicServiceClient {
                 trackId.startsWith('spotify:track:') ||
                 trackId.startsWith('spotify:artistRadio:')
             ) {
-                return __escape(trackId);
+                return encodeURIComponent(trackId);
             }
         }
 
@@ -111,36 +112,42 @@ class MusicServiceClient {
                 itemType
             )
         ) {
-            return 'x-rincon-cpcontainer:0006206c' + __escape(trackId);
+            return (
+                'x-rincon-cpcontainer:0006206c' + encodeURIComponent(trackId)
+            );
         }
 
         if (itemType === 'container') {
-            return `x-rincon-cpcontainer:10fe206c${__escape(
+            return `x-rincon-cpcontainer:10fe206c${encodeURIComponent(
                 trackId
             )}?sid=${serviceId}&flags=8300&sn=1`;
         }
 
         if (itemType === 'trackList') {
-            return 'x-rincon-cpcontainer:000e206c' + __escape(trackId);
+            return (
+                'x-rincon-cpcontainer:000e206c' + encodeURIComponent(trackId)
+            );
         }
 
         if (itemType === 'album') {
-            return 'x-rincon-cpcontainer:0004206c' + __escape(trackId);
+            return (
+                'x-rincon-cpcontainer:0004206c' + encodeURIComponent(trackId)
+            );
         }
 
         if (itemType === 'program') {
-            return `x-sonosapi-radio:${__escape(
+            return `x-sonosapi-radio:${__esencodeURIComponentcape(
                 trackId
             )}?sid=${serviceId}&flags=8296&sn=17`;
         }
 
         if (itemType === 'stream') {
-            return `x-sonosapi-stream:${__escape(
+            return `x-sonosapi-stream:${encodeURIComponent(
                 trackId
             )}?sid=${serviceId}&flags=8224&sn=14`;
         }
 
-        return `${protocol}:${__escape(
+        return `${protocol}:${encodeURIComponent(
             trackId
         )}${suffix}?sid=${serviceId}&flags=8224&sn=1`;
     }
