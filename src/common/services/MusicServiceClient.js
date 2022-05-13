@@ -3,7 +3,6 @@ import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import includes from 'lodash/includes';
 import padStart from 'lodash/padStart';
-import escape from 'lodash/escape';
 
 import moment from 'moment';
 import { Helpers } from 'sonos';
@@ -15,6 +14,8 @@ import store from '../reducers';
 import { withinEnvelope, stripNamespaces, NS } from '../../common/helpers';
 
 const deviceProviderName = 'Sonos';
+
+const __escape = (str) => encodeURIComponent(str);
 
 class MusicServiceClient {
     constructor(serviceDefinition, { authToken, privateKey } = {}) {
@@ -100,7 +101,7 @@ class MusicServiceClient {
                 trackId.startsWith('spotify:track:') ||
                 trackId.startsWith('spotify:artistRadio:')
             ) {
-                return escape(trackId);
+                return __escape(trackId);
             }
         }
 
@@ -110,36 +111,36 @@ class MusicServiceClient {
                 itemType
             )
         ) {
-            return 'x-rincon-cpcontainer:0006206c' + escape(trackId);
+            return 'x-rincon-cpcontainer:0006206c' + __escape(trackId);
         }
 
         if (itemType === 'container') {
-            return `x-rincon-cpcontainer:10fe206c${escape(
+            return `x-rincon-cpcontainer:10fe206c${__escape(
                 trackId
             )}?sid=${serviceId}&flags=8300&sn=1`;
         }
 
         if (itemType === 'trackList') {
-            return 'x-rincon-cpcontainer:000e206c' + escape(trackId);
+            return 'x-rincon-cpcontainer:000e206c' + __escape(trackId);
         }
 
         if (itemType === 'album') {
-            return 'x-rincon-cpcontainer:0004206c' + escape(trackId);
+            return 'x-rincon-cpcontainer:0004206c' + __escape(trackId);
         }
 
         if (itemType === 'program') {
-            return `x-sonosapi-radio:${escape(
+            return `x-sonosapi-radio:${__escape(
                 trackId
             )}?sid=${serviceId}&flags=8296&sn=17`;
         }
 
         if (itemType === 'stream') {
-            return `x-sonosapi-stream:${escape(
+            return `x-sonosapi-stream:${__escape(
                 trackId
             )}?sid=${serviceId}&flags=8224&sn=14`;
         }
 
-        return `${protocol}:${escape(
+        return `${protocol}:${__escape(
             trackId
         )}${suffix}?sid=${serviceId}&flags=8224&sn=1`;
     }
@@ -219,7 +220,7 @@ class MusicServiceClient {
 
         if (serviceString) {
             const prefix = TYPE_MAPPINGS[item.itemType].token;
-            id = prefix + escape(item.id);
+            id = prefix + __escape(item.id);
             parentId = TYPE_MAPPINGS[item.itemType].parentId || '';
             resourceString = `<desc id="cdudn" nameSpace="urn:schemas-rinconnetworks-com:metadata-1-0/">${serviceString}</desc>`;
         } else if (get(item, 'trackMetadata.duration')) {
@@ -232,17 +233,19 @@ class MusicServiceClient {
                 d.minutes(),
                 2,
                 '0'
-            )}:${padStart(d.seconds(), 2, '0')}">${escape(uri)}</res>`;
+            )}:${padStart(d.seconds(), 2, '0')}">${__escape(uri)}</res>`;
         }
 
         if (item.trackMetadata) {
-            trackData = `<dc:creator>${escape(
+            trackData = `<dc:creator>${__escape(
                 item.trackMetadata.artist
             )}</dc:creator>
             <upnp:albumArtURI>${
                 item.trackMetadata.albumArtURI || ''
             }</upnp:albumArtURI>
-            <upnp:album>${escape(item.trackMetadata.album || '')}</upnp:album>`;
+            <upnp:album>${__escape(
+                item.trackMetadata.album || ''
+            )}</upnp:album>`;
         } else if (item.albumArtURI) {
             trackData = `<upnp:albumArtURI>${
                 item.albumArtURI || ''
@@ -256,7 +259,7 @@ class MusicServiceClient {
         xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
         <item id="${id}" restricted="true" ${parentId}>
         ${resourceString}
-        <dc:title>${escape(item.title)}</dc:title>
+        <dc:title>${__escape(item.title)}</dc:title>
         <upnp:class>${TYPE_MAPPINGS[item.itemType].type}</upnp:class>
         ${trackData || ''}
         </item>
@@ -452,7 +455,7 @@ class MusicServiceClient {
             id,
             '</ns:id>',
             '<ns:term>',
-            escape(term),
+            __escape(term),
             '</ns:term>',
             '<ns:index>',
             index,
