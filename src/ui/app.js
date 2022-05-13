@@ -32,7 +32,7 @@ window.ipPrompt = () => {
 window.urlPrompt = () => {
     return MySwal.fire({
         input: 'text',
-        inputLabel: 'Radio URL',
+        inputLabel: 'Media URL',
         showCancelButton: true,
         inputValidator: (value) => {
             if (!value) {

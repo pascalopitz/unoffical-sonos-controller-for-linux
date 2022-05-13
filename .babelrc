@@ -2,6 +2,7 @@
   "retainLines": true,
   "compact": "auto",
   "comments": false,
+  "sourceType": "unambiguous",
   "presets": [
     [
       "@babel/preset-env", {
@@ -14,6 +15,7 @@
     ]
   ],
   "plugins": [
+    "@babel/plugin-transform-runtime",
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-syntax-class-properties",
     "syntax-jsx",

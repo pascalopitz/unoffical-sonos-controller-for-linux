@@ -2,6 +2,7 @@ import { createAction } from 'redux-actions';
 import Constants from '../constants';
 
 import store from '../reducers';
+import MusicServiceClient from '../services/MusicServiceClient';
 
 let poll;
 
@@ -25,6 +26,11 @@ export const hideManagement = createAction(
 export const getSession = createAction(
     Constants.MUSICSERVICE_SESSION_ID_RECEIVED,
     async (client, username, password) => {
+        client =
+            client instanceof MusicServiceClient
+                ? client
+                : new MusicServiceClient(client._serviceDefinition);
+
         if (client.auth === 'UserId') {
             const sessionId = await client.getSessionId(username, password);
 
@@ -51,6 +57,11 @@ export const getLink = createAction(
     Constants.MUSICSERVICE_ADD_LINK_RECEIVED,
     async (client) => {
         let link;
+
+        client =
+            client instanceof MusicServiceClient
+                ? client
+                : new MusicServiceClient(client._serviceDefinition);
 
         if (client.auth === 'DeviceLink') {
             link = await client.getDeviceLinkCode();
