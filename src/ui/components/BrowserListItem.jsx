@@ -332,6 +332,13 @@ export class BrowserListItem extends Component {
             artistInfo = <p className="creator">{creator}</p>;
         }
 
+        if (
+            item.action === 'service' &&
+            get(item, 'service.service.Name') === 'Local Music'
+        ) {
+            inlineMenuButton = null;
+        }
+
         return (
             <li
                 ref={this.liRef}
