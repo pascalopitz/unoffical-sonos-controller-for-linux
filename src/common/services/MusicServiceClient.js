@@ -227,7 +227,7 @@ class MusicServiceClient {
 
         if (serviceString) {
             const prefix = TYPE_MAPPINGS[item.itemType].token;
-            id = prefix + __escape(item.id);
+            id = prefix + encodeURIComponent(item.id);
             parentId = TYPE_MAPPINGS[item.itemType].parentId || '';
             resourceString = `<desc id="cdudn" nameSpace="urn:schemas-rinconnetworks-com:metadata-1-0/">${serviceString}</desc>`;
         } else if (get(item, 'trackMetadata.duration')) {
