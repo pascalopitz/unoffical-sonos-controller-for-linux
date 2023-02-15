@@ -1,3 +1,7 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+This project is deprecated. I do not intend to do any more work on it.
+
 [![Build Status](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/workflows/Build/release/badge.svg)](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/actions?query=workflow%3ABuild%2Frelease)
 
 # Unofficial Sonos Controller for Linux
