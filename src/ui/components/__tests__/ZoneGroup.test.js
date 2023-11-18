@@ -27,6 +27,9 @@ describe('ZoneGroup', () => {
             playStates: {
                 myhost: 'playing',
             },
+            mediaInfos: {
+                myhost: {},
+            },
             currentTracks: {
                 myhost: {},
             },

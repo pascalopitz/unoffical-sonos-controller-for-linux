@@ -19,7 +19,9 @@
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-syntax-class-properties",
     "syntax-jsx",
-    "transform-react-jsx",
+    ["@babel/plugin-transform-react-jsx", {
+      "runtime": "automatic"
+    }]
   ],
   "sourceMaps": true
 }

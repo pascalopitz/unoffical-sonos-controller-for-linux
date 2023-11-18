@@ -18,6 +18,11 @@ exports[`ZoneGroup matches snapshot 1`] = `
       "host": "myhost",
     }
   }
+  mediaInfos={
+    Object {
+      "myhost": Object {},
+    }
+  }
   playStates={
     Object {
       "myhost": "playing",
@@ -53,6 +58,7 @@ exports[`ZoneGroup matches snapshot 1`] = `
     </div>
     <ZoneGroupPlayState
       currentTrack={Object {}}
+      mediaInfo={Object {}}
       playState="playing"
     >
       <p
@@ -80,6 +86,11 @@ exports[`ZoneGroup matches snapshot when selected 1`] = `
         },
       ],
       "host": "myhost",
+    }
+  }
+  mediaInfos={
+    Object {
+      "myhost": Object {},
     }
   }
   playStates={
@@ -117,6 +128,7 @@ exports[`ZoneGroup matches snapshot when selected 1`] = `
     </div>
     <ZoneGroupPlayState
       currentTrack={Object {}}
+      mediaInfo={Object {}}
       playState="playing"
     >
       <p
