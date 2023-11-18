@@ -1,5 +1,4 @@
 import get from 'lodash/get';
-import find from 'lodash/find';
 
 import { Helpers } from 'sonos';
 
@@ -18,15 +17,20 @@ export function initialise() {
 }
 
 export default function getServiceLogoUrl(id) {
-    if (!id) {
-        return;
+    try {
+        if (!id) {
+            return;
+        }
+
+        const encodedId = String(7 + Number(id) * 256);
+        const match = (ServiceImageMap?.sized?.service || []).find(
+            (i) => get(i, 'id') === encodedId
+        );
+
+        const entry = match.image.find((i) => i.placement === 'square');
+
+        return get(entry, '_');
+    } catch (e) {
+        console.log(e);
     }
-
-    const encodedId = String(7 + Number(id) * 256);
-    const match = find(
-        ServiceImageMap['acr-hdpi'].service,
-        (i) => get(i, 'id') === encodedId
-    );
-
-    return get(match, 'image._');
 }

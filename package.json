@@ -1,6 +1,6 @@
 {
   "name": "sonos-controller-unofficial",
-  "version": "0.3.0-alpha5",
+  "version": "0.3.0",
   "description": "Unoffical sonos controller for linux",
   "main": "app/main.js",
   "homepage": "http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/",
@@ -11,10 +11,12 @@
     "dist": "electron-builder",
     "build_help": "electron-builder --help",
     "build": "npm run lint && npm run test && npm run fonts && npm run transpile",
-    "develop": "export NODE_ENV=development npm run fonts && npm run transpile && npm run start & npm run watch",
+    "develop": "export NODE_ENV=development npm run fonts && npm run transpile:dev && npm run start & npm run watch:dev",
     "start": "export NODE_ENV=development && electron .",
     "watch": "webpack -w --config=webpack.config.js",
-    "transpile": "webpack --config=webpack.config.js",
+    "transpile": "webpack --mode development --config=webpack.config.js",
+    "watch:dev": "webpack --mode development -w --config=webpack.config.js",
+    "transpile:dev": "webpack --config=webpack.config.js",
     "fonts": "mkdir -p ./app/fonts && cp ./node_modules/material-design-icons/iconfont/* ./app/fonts/",
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-and-fix": "eslint --fix --ext .jsx --ext .js src",
@@ -93,20 +95,7 @@
             "armv7l",
             "arm64"
           ]
-        },
-        {
-          "target": "snap",
-          "arch": [
-            "x64",
-            "armv7l"
-          ]
         }
-      ]
-    },
-    "snap": {
-      "plugs": [
-        "default",
-        "network-bind"
       ]
     }
   },
@@ -136,6 +125,7 @@
     "@babel/core": "^7.17.0",
     "@babel/eslint-parser": "^7.16.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.15.6",
+    "@babel/plugin-transform-react-jsx": "^7.22.15",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
