@@ -19,6 +19,7 @@ export function ZoneGroup(props) {
         showManagement,
         selectGroup,
         playStates,
+        mediaInfos,
         currentTracks,
         currentHost,
     } = props;
@@ -34,6 +35,7 @@ export function ZoneGroup(props) {
     };
 
     const playState = playStates[group.host] || 'stopped';
+    const mediaInfo = mediaInfos[group.host] || {};
     const currentTrack = currentTracks[group.host] || {};
 
     const zoneNodes = group.ZoneGroupMember.map((item, index) => (
@@ -55,6 +57,7 @@ export function ZoneGroup(props) {
                 Group
             </div>
             <ZoneGroupPlayState
+                mediaInfo={mediaInfo}
                 playState={playState}
                 currentTrack={currentTrack}
             />

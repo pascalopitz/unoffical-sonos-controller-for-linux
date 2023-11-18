@@ -2,7 +2,7 @@ import get from 'lodash/get';
 import reject from 'lodash/reject';
 import isArray from 'lodash/isArray';
 
-import { Listener, AsyncDeviceDiscovery } from 'sonos';
+import { Helpers, Listener, AsyncDeviceDiscovery } from 'sonos';
 
 import { initialise as initialiseServiceLogos } from '../helpers/getServiceLogoUrl';
 import SonosEnhanced from './enhanced/SonosEnhanced';
@@ -85,6 +85,7 @@ const SonosService = {
 
     async connectDevice(device) {
         const groups = await device.getAllGroups();
+        console.log('groups', { groups });
         const devices = await Promise.all(
             groups.reduce(
                 (p, z) => [
@@ -145,6 +146,10 @@ const SonosService = {
 
             sonos.on('NextTrack', (...args) =>
                 this.onNextTrackEvent(sonos, ...args)
+            );
+
+            sonos.on('AvTransport', (...args) =>
+                this.onAvTransportEvent(sonos, ...args)
             );
 
             this.queryState(sonos);
@@ -234,7 +239,45 @@ const SonosService = {
     async queryPlayState(sonos) {
         sonos = getSonosDeviceOrCurrentOrFirst(sonos);
         const state = await sonos.getCurrentState();
+        console.log('queryPlayState', { sonos, state });
         this.processPlaystateUpdate(sonos, state);
+    },
+
+    async queryMediaInfo(sonos) {
+        sonos = getSonosDeviceOrCurrentOrFirst(sonos);
+        const avTransport = sonos.avTransportService();
+        const mediaInfo = await avTransport.GetMediaInfo();
+
+        console.log('queryMediaInfo', mediaInfo);
+
+        try {
+            const CurrentURIMetaData =
+                mediaInfo.CurrentURIMetaData &&
+                mediaInfo.CurrentURIMetaData !== 'undefined'
+                    ? await Helpers.ParseXml(mediaInfo.CurrentURIMetaData).then(
+                          (o) => o['DIDL-Lite'].item
+                      )
+                    : null;
+
+            const NextURIMetaData =
+                mediaInfo.NextURIMetaData &&
+                mediaInfo.NextURIMetaData !== 'undefined'
+                    ? await Helpers.ParseXml(mediaInfo.NextURIMetaData).then(
+                          (o) => o['DIDL-Lite'].item
+                      )
+                    : null;
+
+            store.dispatch(
+                serviceActions.mediaInfoUpdate({
+                    host: sonos.host,
+                    ...mediaInfo,
+                    CurrentURIMetaData,
+                    NextURIMetaData,
+                })
+            );
+        } catch (err) {
+            console.error(err);
+        }
     },
 
     async queryPositionInfo(sonos) {
@@ -303,6 +346,7 @@ const SonosService = {
         this.queryPositionInfo(sonos);
         this.queryQueue(sonos);
         this.queryPlayState(sonos);
+        this.queryMediaInfo(sonos);
         this.queryTransportSettings(sonos);
         this.queryCurrentTrackAndPlaystate(sonos);
         this.queryCrossfadeMode(sonos);
@@ -403,6 +447,11 @@ const SonosService = {
         );
     },
 
+    onDevicePropertiesEvent(sonos, ...args) {
+        console.log('onDevicePropertiesEvent', sonos.host, ...args);
+        // this.queryState(sonos);
+    },
+
     onQueueEvent(sonos, ...args) {
         console.log('onQueueEvent', sonos.host, ...args);
         this.queryState(sonos);
@@ -483,6 +532,10 @@ const SonosService = {
                 event.ShareIndexInProgress !== '0'
             );
         }
+    },
+
+    onAvTransportEvent({ host }, data) {
+        console.log('onAvTransportEvent', host, data);
     },
 };
 

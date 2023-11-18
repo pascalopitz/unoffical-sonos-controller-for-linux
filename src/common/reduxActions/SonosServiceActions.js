@@ -119,6 +119,10 @@ export const positionInfoUpdate = createAction(
     Constants.SONOS_SERVICE_POSITION_INFO_UPDATE
 );
 
+export const mediaInfoUpdate = createAction(
+    Constants.SONOS_SERVICE_MEDIA_INFO_UPDATE
+);
+
 export const crossfadeModeUpdate = createAction(
     Constants.SONOS_SERVICE_CURRENT_CROSSFADE_MODE_UPDATE
 );

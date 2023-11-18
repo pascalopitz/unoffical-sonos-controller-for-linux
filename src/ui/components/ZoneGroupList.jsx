@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import {
+    getMediaInfos,
     getZoneGroups,
     getCurrentHost,
     getCurrentTracks,
@@ -15,6 +16,7 @@ export const mapStateToProps = (state) => {
         groups: getZoneGroups(state),
         currentTracks: getCurrentTracks(state),
         playStates: getPlayStates(state),
+        mediaInfos: getMediaInfos(state),
         currentHost: getCurrentHost(state),
     };
 };

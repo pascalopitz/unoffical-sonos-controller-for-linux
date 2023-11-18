@@ -1,9 +1,19 @@
 import React from 'react';
 
-export function ZoneGroupMember(props) {
+export function ZoneGroupMember({ member }) {
+    const { isCharging, batteryLevel, ZoneName } = member;
+
     return (
         <li>
-            <span>{props.member.ZoneName}</span>
+            <span>{ZoneName}</span>
+            {batteryLevel ? (
+                <span className="battery">
+                    {batteryLevel}%
+                    <i className="material-icons">
+                        {isCharging ? 'battery_charging_full' : 'battery_full'}
+                    </i>
+                </span>
+            ) : null}
         </li>
     );
 }

@@ -12,6 +12,7 @@ const initialState = {
     currentTracks: {},
     nextTracks: {},
     positionInfos: {},
+    mediaInfos: {},
     playStates: {},
     playModes: {},
     crossFadeModes: {},
@@ -58,11 +59,14 @@ function topologyReducer(state, action) {
                         CurrentZonePlayerUUIDsInGroup.indexOf(m.UUID) !== -1
                 )
                 .map((m) => {
-                    const device = devices.find((d) => d.host === g.host);
+                    const host = REG.exec(m.Location)?.[1];
+                    const device = devices.find((d) => d.host === host);
                     const model = device.model;
 
                     const isPaired = !!m.ChannelMapSet;
                     const isSurround = !!m.HTSatChanMapSet;
+                    const batteryLevel = device.batteryLevel;
+                    const isCharging = device.isCharging;
 
                     // TODO: this is pretty vague. WHat if we have a play1 paired with a subwoofer? Is that possible?
                     const isStereo =
@@ -80,10 +84,13 @@ function topologyReducer(state, action) {
 
                     return {
                         ...m,
+                        host,
                         model,
                         isPaired,
                         isStereo,
                         isSurround,
+                        batteryLevel,
+                        isCharging,
                         ZoneName,
                         Channels,
                     };
@@ -217,6 +224,20 @@ export default handleActions(
                 playStates: {
                     ...state.playStates,
                     [host]: playState,
+                },
+            };
+        },
+
+        [Constants.SONOS_SERVICE_MEDIA_INFO_UPDATE]: (state, action) => {
+            const { host, ...rest } = action.payload;
+
+            return {
+                ...state,
+                mediaInfos: {
+                    ...state.mediaInfos,
+                    [host]: {
+                        ...rest,
+                    },
                 },
             };
         },

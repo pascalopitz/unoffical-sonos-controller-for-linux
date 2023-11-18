@@ -17,6 +17,10 @@ export function getPlayStates(state) {
     return state.sonosService.playStates;
 }
 
+export function getMediaInfos(state) {
+    return state.sonosService.mediaInfos;
+}
+
 export function getCurrentTracks(state) {
     return state.sonosService.currentTracks;
 }

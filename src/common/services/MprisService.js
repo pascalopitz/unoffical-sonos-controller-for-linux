@@ -73,11 +73,12 @@ function updateTrack(track) {
     }
 
     lastTrackState = track;
+
     player.metadata = {
         'mpris:trackid': player.objectPath(
             `track/${track.id != null ? track.id : uniqueTrackId(track)}`
         ),
-        'mpris:length': track.duration * 1000,
+        'mpris:length': track.duration ? track.duration * 1000 : 0,
         'mpris:artUrl': track.albumArtURL,
         'xesam:title': track.title,
         'xesam:album': track.album,

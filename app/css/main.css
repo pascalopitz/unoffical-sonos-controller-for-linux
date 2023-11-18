@@ -803,6 +803,16 @@ input[type="range"]:focus {
     font-size: 14px;
 }
 
+#zone-wrapper ul span.battery i.material-icons {
+    font-size: 14px;
+    vertical-align: sub;
+}
+
+#zone-wrapper ul span.battery  {
+    font-size: 10px;
+    margin-left: 20px;
+}
+
 #queue-list-container {
     border-top: 1px solid #292929;
     height: calc(100% - 40px);

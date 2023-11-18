@@ -8,7 +8,9 @@ const TUNEIN_ID = 65031;
 
 export default class SonosEnhanced extends Sonos {
     async initialise() {
+        this._zoneInfo = await this.getZoneInfo();
         this._zpInfo = await this.getZPInfo();
+        this._zpSupportInfo = await this.getZPSupportInfo();
         this._deviceDescription = await this.deviceDescription();
     }
 
@@ -34,6 +36,39 @@ export default class SonosEnhanced extends Sonos {
 
     get model() {
         return this._deviceDescription.modelNumber;
+    }
+
+    get batteryLevel() {
+        const data = this._zpSupportInfo?.[0]?.LocalBatteryStatus?.Data;
+
+        if (!data) {
+            return null;
+        }
+
+        return data.find((d) => d.name === 'Level')?._ ?? null;
+    }
+
+    get isCharging() {
+        const data = this._zpSupportInfo?.[0]?.LocalBatteryStatus?.Data;
+
+        if (!data) {
+            return null;
+        }
+
+        return data.find((d) => d.name === 'PowerSource')?._ === 'USB_POWER';
+    }
+
+    async getZPSupportInfo() {
+        try {
+            const uri = `http://${this.host}:${this.port}/support/review`;
+            const response = await fetch(uri);
+            const body = await response.text();
+            const data = await Helpers.ParseXml(body);
+            return data.ZPNetworkInfo.ZPSupportInfo;
+        } catch (e) {
+            console.error(e);
+            return {};
+        }
     }
 
     contentDirectoryService() {
