@@ -22,21 +22,13 @@ can run on Linux also, installed via deb file. Maybe it won't have all
 the functions of the real sonos player, but if I can browse the library, Spotify
 and manage the queue, I'll be pretty damn happy.
 
-## Install via snap
-
-Since v0.2.0-alpha1 the app gets published to snapcraft.
-
-```
-snap install --edge sonos-controller-unofficial
-```
-
 ## Install via .AppImage file
 
 Find the latest .AppImage on the [release page](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/releases).
 You can right click it on Ubuntu, then under "Permissions" mark is as executable. ALternatively run:
 
 ```bash
-chmod +x sonos-controller-unofficial-amd64-0.3.0.AppImage
+chmod +x sonos-controller-unofficial-amd64-0.3.1.AppImage
 ```
 
 After that it can be launched by double click or via invoking it through the terminal.
@@ -52,7 +44,7 @@ Type=Application
 Categories=Audio;
 Name=sonos-controller-unofficial
 Icon=appimagekit-sonos-controller-unofficial
-Exec="/home/username/Downloads/sonos-controller-unofficial-0.3.0.AppImage" %U
+Exec="/home/username/Downloads/sonos-controller-unofficial-0.3.1.AppImage" %U
 ```
 
 ## Install via .deb file
@@ -61,7 +53,7 @@ Find the latest .deb on the [release page](https://github.com/pascalopitz/unoffi
 On Ubuntu, you can double click the downloaded file to install it via the Software Center. Alternatively run
 
 ```bash
-sudo dpkg -i sonos-controller-unofficial_0.3.0_amd64.deb
+sudo dpkg -i sonos-controller-unofficial_0.3.1_amd64.deb
 ```
 
 ##  and Run locally

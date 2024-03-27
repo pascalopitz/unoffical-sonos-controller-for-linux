@@ -23,13 +23,15 @@ export default function getServiceLogoUrl(id) {
         }
 
         const encodedId = String(7 + Number(id) * 256);
-        const match = (ServiceImageMap?.sized?.service || []).find(
+        const match = find(
+            ServiceImageMap.presentationmap.service,
             (i) => get(i, 'id') === encodedId
         );
-
-        const entry = match.image.find((i) => i.placement === 'square');
-
-        return get(entry, '_');
+    
+        const attBrandMark =  (match?.image || []).find(i => i.placement === 'AttributionBrandmark')?._;
+        const brandLogo =  (match?.image || []).find(i => i.placement === 'BrandLogo-v2')?._;
+    
+        return attBrandMark || brandLogo;
     } catch (e) {
         console.log(e);
     }

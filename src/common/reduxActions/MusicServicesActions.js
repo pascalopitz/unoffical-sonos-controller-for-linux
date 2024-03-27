@@ -3,6 +3,7 @@ import Constants from '../constants';
 
 import store from '../reducers';
 import MusicServiceClient from '../services/MusicServiceClient';
+import { flattenSoapObject } from '../helpers/flattenSoapObject';
 
 let poll;
 
@@ -70,6 +71,8 @@ export const getLink = createAction(
         if (client.auth === 'AppLink') {
             link = await client.getAppLink();
         }
+
+        link = flattenSoapObject(link);
 
         poll = window.setInterval(async () => {
             const authToken = await client.getDeviceAuthToken(

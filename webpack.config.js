@@ -51,6 +51,10 @@ module.exports = [
                 },
             ],
         },
+
+        optimization: {
+            minimize: false
+        }
     },
     {
         name: 'preload',
@@ -87,6 +91,10 @@ module.exports = [
                 },
             ],
         },
+
+        optimization: {
+            minimize: false
+        }
     },
     {
         name: 'ui',
@@ -115,5 +123,9 @@ module.exports = [
                 },
             ],
         },
+
+        optimization: {
+            minimize: false
+        }
     },
 ];
