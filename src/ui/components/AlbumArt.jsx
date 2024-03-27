@@ -213,6 +213,8 @@ export const AlbumArt = (props) => {
     const css = {
         backgroundImage: `url("${srcUrl}")`,
         backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
     };
 
     return (

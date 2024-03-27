@@ -21,18 +21,15 @@ export default function getServiceLogoUrl(id) {
         }
 
         const encodedId = String(7 + Number(id) * 256);
-        const match = ServiceImageMap.presentationmap.service.find(
+        const match = ServiceImageMap.sized.service.find(
             (i) => i.id == encodedId
         );
 
-        const attBrandMark = (match?.image || []).find(
-            (i) => i.placement === 'AttributionBrandmark'
-        )?._;
-        const brandLogo = (match?.image || []).find(
-            (i) => i.placement === 'BrandLogo-v2'
+        const square = (match?.image || []).find(
+            (i) => i.placement === 'square'
         )?._;
 
-        return attBrandMark || brandLogo;
+        return square;
     } catch (e) {
         console.log(e);
     }

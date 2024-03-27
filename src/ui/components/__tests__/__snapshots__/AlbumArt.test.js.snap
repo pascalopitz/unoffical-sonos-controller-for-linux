@@ -7,6 +7,6 @@ exports[`AlbumArt renders and matches snapshot 1`] = `
   data-loaded="false"
   data-loading="false"
   data-src-prop="foo"
-  style="background-image:url(\\"images/browse_missing_album_art.png\\");background-size:contain"
+  style="background-image:url(\\"images/browse_missing_album_art.png\\");background-size:contain;background-repeat:no-repeat;background-position:center"
 />
 `;
