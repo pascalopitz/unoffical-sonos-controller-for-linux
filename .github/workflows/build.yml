@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Set legacy peer deps
+        run: npm config set legacy-peer-deps=true
+
       - name: Install RPM
         run: sudo apt install -y rpm
         if: startsWith(matrix.os, 'ubuntu')
