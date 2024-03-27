@@ -1,5 +1,3 @@
-import get from 'lodash/get';
-
 import { Helpers } from 'sonos';
 
 const SERVICE_LOGOS_URI =
@@ -23,9 +21,8 @@ export default function getServiceLogoUrl(id) {
         }
 
         const encodedId = String(7 + Number(id) * 256);
-        const match = find(
-            ServiceImageMap.presentationmap.service,
-            (i) => get(i, 'id') === encodedId
+        const match = ServiceImageMap.presentationmap.service.find(
+            (i) => i.id == encodedId
         );
 
         const attBrandMark = (match?.image || []).find(
