@@ -27,10 +27,14 @@ export default function getServiceLogoUrl(id) {
             ServiceImageMap.presentationmap.service,
             (i) => get(i, 'id') === encodedId
         );
-    
-        const attBrandMark =  (match?.image || []).find(i => i.placement === 'AttributionBrandmark')?._;
-        const brandLogo =  (match?.image || []).find(i => i.placement === 'BrandLogo-v2')?._;
-    
+
+        const attBrandMark = (match?.image || []).find(
+            (i) => i.placement === 'AttributionBrandmark'
+        )?._;
+        const brandLogo = (match?.image || []).find(
+            (i) => i.placement === 'BrandLogo-v2'
+        )?._;
+
         return attBrandMark || brandLogo;
     } catch (e) {
         console.log(e);
