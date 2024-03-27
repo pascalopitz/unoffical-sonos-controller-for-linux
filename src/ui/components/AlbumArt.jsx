@@ -227,7 +227,7 @@ export const AlbumArt = (props) => {
             data-loading={loading}
             data-loaded={loaded}
             data-failed={failed}
-            data-serviceId={serviceId}
+            data-serviceid={serviceId}
             data-src-computed={src}
             data-src-prop={propsSrc}
         />
