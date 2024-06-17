@@ -54,7 +54,6 @@ function createWindow() {
 
     win.on('closed', () => {
         win = null;
-        
     });
 
     wakeEvent(() => {
@@ -81,7 +80,7 @@ if (!gotTheLock) {
     app.on('ready', createWindow);
 
     app.on('window-all-closed', () => {
-        console.log("All windows closed. Quitting.")
+        console.log('All windows closed. Quitting.');
         app.quit();
     });
 
