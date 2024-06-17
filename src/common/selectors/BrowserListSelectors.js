@@ -73,7 +73,7 @@ export function getSearchSources(state) {
                     label: s.service.Name,
                     client: s,
                 };
-            })
-        )
+            }),
+        ),
     );
 }

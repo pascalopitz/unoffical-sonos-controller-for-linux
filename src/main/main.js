@@ -41,7 +41,7 @@ function createWindow() {
 
     win.webContents.setUserAgent(
         // Thanks SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
-        `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`
+        `Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:${deviceProviderName})`,
     );
 
     win.loadURL(
@@ -49,11 +49,12 @@ function createWindow() {
             pathname: path.join(__dirname, 'window.html'),
             protocol: 'file:',
             slashes: true,
-        })
+        }),
     );
 
     win.on('closed', () => {
         win = null;
+        
     });
 
     wakeEvent(() => {
@@ -80,6 +81,7 @@ if (!gotTheLock) {
     app.on('ready', createWindow);
 
     app.on('window-all-closed', () => {
+        console.log("All windows closed. Quitting.")
         app.quit();
     });
 

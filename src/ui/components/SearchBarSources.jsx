@@ -9,7 +9,7 @@ export default function SearchBarSources({ sources, currentState = {} }) {
                 s.client &&
                 currentState.serviceClient &&
                 s.client.service.Id ===
-                    currentState.serviceClient._serviceDefinition.Id
+                    currentState.serviceClient._serviceDefinition.Id,
         );
     }
 

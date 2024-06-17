@@ -27,7 +27,7 @@ describe('MusicServiceClient', () => {
             const expectedReturn = 'Res';
 
             fetch.mockResponseOnce(
-                mockSoapResponse('getDeviceLinkCode', expectedReturn)
+                mockSoapResponse('getDeviceLinkCode', expectedReturn),
             );
 
             const res = await client.getDeviceLinkCode();
@@ -44,8 +44,8 @@ describe('MusicServiceClient', () => {
                     'getAppLink',
                     `<authorizeAccount>
                             <deviceLink>${expectedReturn}</deviceLink>
-                        </authorizeAccount>`
-                )
+                        </authorizeAccount>`,
+                ),
             );
 
             const res = await client.getAppLink();
@@ -58,12 +58,12 @@ describe('MusicServiceClient', () => {
             const expectedReturn = 'Res';
 
             fetch.mockResponseOnce(
-                mockSoapResponse('getDeviceAuthToken', expectedReturn)
+                mockSoapResponse('getDeviceAuthToken', expectedReturn),
             );
 
             const res = await client.getDeviceAuthToken(
                 'linkCode',
-                'linkDeviceId'
+                'linkDeviceId',
             );
             expect(res).toBe(expectedReturn);
         });
@@ -74,7 +74,7 @@ describe('MusicServiceClient', () => {
             const expectedReturn = 'Res';
 
             fetch.mockResponseOnce(
-                mockSoapResponse('getMetadata', expectedReturn)
+                mockSoapResponse('getMetadata', expectedReturn),
             );
 
             const res = await client.getMetadata('id');
@@ -87,7 +87,7 @@ describe('MusicServiceClient', () => {
             const expectedReturn = 'Res';
 
             fetch.mockResponseOnce(
-                mockSoapResponse('getExtendedMetadata', expectedReturn)
+                mockSoapResponse('getExtendedMetadata', expectedReturn),
             );
 
             const res = await client.getExtendedMetadata('id');
@@ -111,7 +111,7 @@ describe('MusicServiceClient', () => {
             const expectedReturn = 'Res';
 
             fetch.mockResponseOnce(
-                mockSoapResponse('getMediaURI', expectedReturn)
+                mockSoapResponse('getMediaURI', expectedReturn),
             );
 
             const res = await client.getMediaURI('id');
@@ -124,7 +124,7 @@ describe('MusicServiceClient', () => {
             const expectedReturn = 'Res';
 
             fetch.mockResponseOnce(
-                mockSoapResponse('getSessionId', expectedReturn)
+                mockSoapResponse('getSessionId', expectedReturn),
             );
 
             const res = await client.getSessionId('username', 'password');

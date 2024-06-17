@@ -11,7 +11,7 @@ const authTokenReceived = createAction(
     Constants.MUSICSERVICE_AUTH_TOKEN_RECEIVED,
     () => {
         console.log(arguments);
-    }
+    },
 );
 
 export const hideManagement = createAction(
@@ -21,7 +21,7 @@ export const hideManagement = createAction(
             window.clearInterval(poll);
             poll = null;
         }
-    }
+    },
 );
 
 export const getSession = createAction(
@@ -46,12 +46,12 @@ export const getSession = createAction(
             // TODO: fix this
             await SonosService.rememberMusicService(
                 client._serviceDefinition,
-                authToken
+                authToken,
             );
 
             return authToken;
         }
-    }
+    },
 );
 
 export const getLink = createAction(
@@ -77,7 +77,7 @@ export const getLink = createAction(
         poll = window.setInterval(async () => {
             const authToken = await client.getDeviceAuthToken(
                 link.linkCode,
-                link.linkDeviceId
+                link.linkDeviceId,
             );
             if (!authToken) {
                 return;
@@ -86,7 +86,7 @@ export const getLink = createAction(
             // TODO: fix this
             await SonosService.rememberMusicService(
                 client._serviceDefinition,
-                authToken
+                authToken,
             );
 
             store.dispatch(authTokenReceived(authToken));
@@ -94,7 +94,7 @@ export const getLink = createAction(
         }, 5000);
 
         return link;
-    }
+    },
 );
 
 export const addAnonymousService = createAction(
@@ -103,7 +103,7 @@ export const addAnonymousService = createAction(
         // TODO: fix this
         await SonosService.rememberMusicService(
             client._serviceDefinition,
-            null
+            null,
         );
-    }
+    },
 );

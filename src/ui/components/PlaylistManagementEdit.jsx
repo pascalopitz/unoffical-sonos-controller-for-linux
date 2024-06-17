@@ -57,7 +57,7 @@ export class PlaylistManagementEdit extends Component {
             dragOverMode === 'after' ? dragOverPosition + 1 : dragOverPosition;
 
         const trackToMove = tracks.find(
-            (track, idx) => idx + 1 === dragPosition
+            (track, idx) => idx + 1 === dragPosition,
         );
 
         const insertAfter = newPos > dragPosition;

@@ -30,7 +30,7 @@ contextBridge.exposeInMainWorld('CurrentTrackActions', CurrentTrackActions);
 contextBridge.exposeInMainWorld('EqActions', EqActions);
 contextBridge.exposeInMainWorld(
     'GroupManagementActions',
-    GroupManagementActions
+    GroupManagementActions,
 );
 contextBridge.exposeInMainWorld('MusicServicesActions', MusicServicesActions);
 contextBridge.exposeInMainWorld('PlayerActions', PlayerActions);
@@ -43,7 +43,7 @@ contextBridge.exposeInMainWorld('ZoneGroupActions', ZoneGroupActions);
 contextBridge.exposeInMainWorld('BrowserListSelectors', BrowserListSelectors);
 contextBridge.exposeInMainWorld(
     'VolumeControlSelectors',
-    VolumeControlSelectors
+    VolumeControlSelectors,
 );
 
 contextBridge.exposeInMainWorld('getServiceLogoUrl', getServiceLogoUrl);

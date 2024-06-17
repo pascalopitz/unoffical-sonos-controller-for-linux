@@ -235,13 +235,13 @@ export const more = createAction(
                         mappedId,
                         state.term,
                         state.items.length,
-                        state.items.length + 100
+                        state.items.length + 100,
                     );
                 } else {
                     res = await client.getMetadata(
                         get(state, 'parent.id'),
                         state.items.length,
-                        state.items.length + 100
+                        state.items.length + 100,
                     );
 
                     res = _transformSMAPI(res, client);
@@ -256,7 +256,7 @@ export const more = createAction(
                 const result = await sonos.queryMusicLibrary(
                     state.mode,
                     state.term,
-                    params
+                    params,
                 );
 
                 if (!result || !result.items) {
@@ -270,7 +270,7 @@ export const more = createAction(
             const result = await sonos.queryMusicLibrary(
                 state.id || state.searchType,
                 null,
-                params
+                params,
             );
 
             if (!result || !result.items) {
@@ -283,7 +283,7 @@ export const more = createAction(
             console.error(err);
             return prevState;
         }
-    }
+    },
 );
 
 export const exitSearch = createAction(Constants.BROWSER_SEARCH_EXIT);
@@ -315,7 +315,7 @@ export const search = createAction(
 
             if (currentState.serviceClient) {
                 serviceClient = restoreServiceClient(
-                    currentState.serviceClient
+                    currentState.serviceClient,
                 );
                 resolver = _getServiceSearchPromise(serviceClient);
             } else {
@@ -349,7 +349,7 @@ export const search = createAction(
                 mode,
             };
         }
-    }
+    },
 );
 
 export const playCurrentAlbum = createAction(Constants.BROWSER_PLAY);
@@ -371,7 +371,7 @@ const selectBrowseServices = async (item) => {
 const selectService = async (item) => {
     const client = new MusicServiceClient(
         item.service.service,
-        item.service.authToken || {}
+        item.service.authToken || {},
     );
 
     const res = await client.getMetadata('root', 0, 100);
@@ -499,7 +499,7 @@ export const select = createAction(
         }
 
         const { searchTermMap, term } = last(
-            store.getState().browserList.history
+            store.getState().browserList.history,
         );
 
         if (
@@ -537,7 +537,7 @@ export const select = createAction(
         } catch (e) {
             console.error(e);
         }
-    }
+    },
 );
 
 export const playNow = createAction(
@@ -561,7 +561,7 @@ export const playNow = createAction(
         }
 
         SonosService.queryState(sonos);
-    }
+    },
 );
 
 export const playNext = createAction(
@@ -575,7 +575,7 @@ export const playNext = createAction(
         await sonos.queue(item, pos);
 
         SonosService.queryState(sonos);
-    }
+    },
 );
 
 export const addQueue = createAction(
@@ -587,7 +587,7 @@ export const addQueue = createAction(
         await sonos.queue(item);
 
         SonosService.queryState(sonos);
-    }
+    },
 );
 
 export const replaceQueue = createAction(
@@ -601,7 +601,7 @@ export const replaceQueue = createAction(
         await sonos.play();
 
         SonosService.queryState(sonos);
-    }
+    },
 );
 
 export const removeService = createAction(
@@ -609,7 +609,7 @@ export const removeService = createAction(
     async (client) => {
         await SonosService.removeMusicService(client.service);
         return client;
-    }
+    },
 );
 
 export const addService = createAction(Constants.BROWSER_ADD_MUSICSERVICE);
@@ -619,7 +619,7 @@ export const addToPlaylist = createAction(
     async (item) => {
         await store.dispatch(loadPlaylists());
         return item;
-    }
+    },
 );
 
 export const editPlaylist = createAction(
@@ -628,7 +628,7 @@ export const editPlaylist = createAction(
         await store.dispatch(loadPlaylists());
         await store.dispatch(loadPlaylistItems(item._raw.id));
         return item;
-    }
+    },
 );
 
 export const deletePlaylist = createAction(
@@ -639,7 +639,7 @@ export const deletePlaylist = createAction(
         await sonos.deletePlaylist(item.id);
 
         return item;
-    }
+    },
 );
 
 export const deleteFavourite = createAction(
@@ -651,5 +651,5 @@ export const deleteFavourite = createAction(
         await contentDirectoryService.DestroyObject({ ObjectID: item._raw.id });
 
         return item;
-    }
+    },
 );

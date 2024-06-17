@@ -51,5 +51,5 @@ export default handleActions(
         [Constants.MUSICSERVICE_ANONYMOUS]: closeDialogue,
         [Constants.STORE_RESET]: () => initialState,
     },
-    initialState
+    initialState,
 );

@@ -57,6 +57,6 @@ export default createStore(
         catcherMiddleware,
         promiseMiddleware,
         ensureResolvedMiddleware,
-        getStateMiddleware
-    )
+        getStateMiddleware,
+    ),
 );

@@ -141,7 +141,7 @@ export default handleActions(
                     return {
                         ...h,
                         items: (h.items || []).filter(
-                            (i) => !i._raw || i._raw.id !== item._raw.id
+                            (i) => !i._raw || i._raw.id !== item._raw.id,
                         ),
                     };
                 }),
@@ -164,7 +164,7 @@ export default handleActions(
                     return {
                         ...h,
                         items: (h.items || []).filter(
-                            (i) => !i._raw || i._raw.id !== item._raw.id
+                            (i) => !i._raw || i._raw.id !== item._raw.id,
                         ),
                     };
                 }),
@@ -172,5 +172,5 @@ export default handleActions(
         },
         [Constants.STORE_RESET]: () => initialState,
     },
-    initialState
+    initialState,
 );

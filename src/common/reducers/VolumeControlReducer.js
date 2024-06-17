@@ -86,5 +86,5 @@ export default handleActions(
 
         [Constants.STORE_RESET]: () => initialState,
     },
-    initialState
+    initialState,
 );

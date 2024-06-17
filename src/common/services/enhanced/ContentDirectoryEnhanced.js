@@ -16,7 +16,7 @@ export default class ContentDirectoryEnhanced extends Services.ContentDirectory 
                 item,
                 this.host,
                 this.port,
-                get(item, 'res._')
+                get(item, 'res._'),
             );
 
             return {

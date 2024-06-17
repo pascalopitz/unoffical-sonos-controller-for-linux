@@ -23,7 +23,7 @@ export const saveGroups = createAction(
         const allPlayers = getPlayers(state);
 
         const currentGroupMembers = allPlayers.filter(
-            (z) => z.inGroup === currentGroup
+            (z) => z.inGroup === currentGroup,
         );
 
         const currentCoordinator = find(currentGroupMembers, {
@@ -31,16 +31,16 @@ export const saveGroups = createAction(
         });
 
         const targetGroupMembers = allPlayers.filter((z) =>
-            includes(selected, z.UUID)
+            includes(selected, z.UUID),
         );
 
         const removingGroupMembers = difference(
             currentGroupMembers,
-            targetGroupMembers
+            targetGroupMembers,
         );
 
         const addingGroupMembers = targetGroupMembers.filter(
-            (z) => z !== currentCoordinator
+            (z) => z !== currentCoordinator,
         );
 
         try {
@@ -60,5 +60,5 @@ export const saveGroups = createAction(
             console.error(e);
             throw e;
         }
-    }
+    },
 );

@@ -41,7 +41,7 @@ export function getPlayers(state) {
 }
 
 export const getCurrentGroupKeys = createSelector(getPlayers, (players) =>
-    map(players, (p) => p.host)
+    map(players, (p) => p.host),
 );
 
 export const getGroupMuted = createSelector(
@@ -49,7 +49,7 @@ export const getGroupMuted = createSelector(
     (players) =>
         filter(players, {
             muted: false,
-        }).length === 0
+        }).length === 0,
 );
 
 export const getGroupVolume = createSelector(getPlayers, (playersMap) => {
@@ -60,7 +60,7 @@ export const getGroupVolume = createSelector(getPlayers, (playersMap) => {
     }
 
     const volume = Math.floor(
-        sum(map(players, (p) => Number(p.volume))) / players.length
+        sum(map(players, (p) => Number(p.volume))) / players.length,
     );
     return volume;
 });

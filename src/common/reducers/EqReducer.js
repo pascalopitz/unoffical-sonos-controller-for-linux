@@ -23,11 +23,11 @@ export default handleActions(
 
             const bass = parseInt(get(update, 'Bass.val') || hostState.bass);
             const treble = parseInt(
-                get(update, 'Treble.val') || hostState.treble
+                get(update, 'Treble.val') || hostState.treble,
             );
 
             const loudness = parseInt(
-                get(update, 'Loudness.val') || hostState.loudness
+                get(update, 'Loudness.val') || hostState.loudness,
             );
 
             let balance = hostState.balance;
@@ -35,10 +35,10 @@ export default handleActions(
 
             if (volumeUpdate) {
                 const LF = parseInt(
-                    volumeUpdate.find((u) => u.channel === 'LF').val
+                    volumeUpdate.find((u) => u.channel === 'LF').val,
                 );
                 const RF = parseInt(
-                    volumeUpdate.find((u) => u.channel === 'RF').val
+                    volumeUpdate.find((u) => u.channel === 'RF').val,
                 );
 
                 balance = RF - LF;
@@ -109,5 +109,5 @@ export default handleActions(
         },
         [Constants.STORE_RESET]: () => initialState,
     },
-    initialState
+    initialState,
 );

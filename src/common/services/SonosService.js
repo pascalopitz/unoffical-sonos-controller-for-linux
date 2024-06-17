@@ -26,7 +26,7 @@ function getSonosDeviceOrCurrentOrFirst(sonos) {
 
 function getAllDevices() {
     return Object.values(
-        get(store.getState(), 'sonosService.deviceSearches', {})
+        get(store.getState(), 'sonosService.deviceSearches', {}),
     );
 }
 
@@ -89,7 +89,7 @@ const SonosService = {
                 (p, z) => [
                     ...p,
                     ...z.ZoneGroupMember.filter(
-                        (m) => get(m, 'IsZoneBridge') !== '1'
+                        (m) => get(m, 'IsZoneBridge') !== '1',
                     ).map(async (m) => {
                         const uri = new URL(m.Location);
                         const host = uri.hostname;
@@ -98,8 +98,8 @@ const SonosService = {
                         return device;
                     }),
                 ],
-                []
-            )
+                [],
+            ),
         );
 
         const [first] = devices;
@@ -108,11 +108,11 @@ const SonosService = {
         this.deviceId = first.deviceId;
 
         Listener.on('ZonesChanged', (...args) =>
-            this.onZoneGroupTopologyEvent(...args)
+            this.onZoneGroupTopologyEvent(...args),
         );
 
         Listener.on('ContentDirectory', (...args) =>
-            this.onContentDirectoryEvent(...args)
+            this.onContentDirectoryEvent(...args),
         );
 
         Listener.on('AlarmClock', (...args) => this.onAlarmClockEvent(...args));
@@ -123,11 +123,11 @@ const SonosService = {
             sonos.on('Queue', (...args) => this.onQueueEvent(sonos, ...args));
 
             sonos.on('GroupRenderingControl', (...args) =>
-                this.onGroupRenderingControlEvent(sonos, ...args)
+                this.onGroupRenderingControlEvent(sonos, ...args),
             );
 
             sonos.on('RenderingControl', (...args) =>
-                this.onRenderingControlEvent(sonos, ...args)
+                this.onRenderingControlEvent(sonos, ...args),
             );
 
             sonos.on('Muted', (...args) => this.onMutedEvent(sonos, ...args));
@@ -135,19 +135,19 @@ const SonosService = {
             sonos.on('Volume', (...args) => this.onVolumeEvent(sonos, ...args));
 
             sonos.on('PlayState', (...args) =>
-                this.onPlayStateEvent(sonos, ...args)
+                this.onPlayStateEvent(sonos, ...args),
             );
 
             sonos.on('CurrentTrack', (...args) =>
-                this.onCurrentTrackEvent(sonos, ...args)
+                this.onCurrentTrackEvent(sonos, ...args),
             );
 
             sonos.on('NextTrack', (...args) =>
-                this.onNextTrackEvent(sonos, ...args)
+                this.onNextTrackEvent(sonos, ...args),
             );
 
             sonos.on('AvTransport', (...args) =>
-                this.onAvTransportEvent(sonos, ...args)
+                this.onAvTransportEvent(sonos, ...args),
             );
 
             this.queryState(sonos);
@@ -155,7 +155,7 @@ const SonosService = {
 
         const groupAttributes = await getGroupAttributes([...devices]);
         store.dispatch(
-            serviceActions.topologyUpdate(groups, groupAttributes, devices)
+            serviceActions.topologyUpdate(groups, groupAttributes, devices),
         );
 
         const storedZone = window.localStorage.zone;
@@ -186,7 +186,7 @@ const SonosService = {
                 volume,
                 muted,
                 host,
-            })
+            }),
         );
     },
 
@@ -206,7 +206,7 @@ const SonosService = {
             serviceActions.queueUpdate({
                 result,
                 host: sonos.host,
-            })
+            }),
         );
     },
 
@@ -227,7 +227,7 @@ const SonosService = {
                 serviceActions.zoneGroupTrackUpdate({
                     track: track,
                     host: sonos.host,
-                })
+                }),
             );
         } catch (e) {
             console.error(e);
@@ -253,7 +253,7 @@ const SonosService = {
                 mediaInfo.CurrentURIMetaData &&
                 mediaInfo.CurrentURIMetaData !== 'undefined'
                     ? await Helpers.ParseXml(mediaInfo.CurrentURIMetaData).then(
-                          (o) => o['DIDL-Lite'].item
+                          (o) => o['DIDL-Lite'].item,
                       )
                     : null;
 
@@ -261,7 +261,7 @@ const SonosService = {
                 mediaInfo.NextURIMetaData &&
                 mediaInfo.NextURIMetaData !== 'undefined'
                     ? await Helpers.ParseXml(mediaInfo.NextURIMetaData).then(
-                          (o) => o['DIDL-Lite'].item
+                          (o) => o['DIDL-Lite'].item,
                       )
                     : null;
 
@@ -271,7 +271,7 @@ const SonosService = {
                     ...mediaInfo,
                     CurrentURIMetaData,
                     NextURIMetaData,
-                })
+                }),
             );
         } catch (err) {
             console.error(err);
@@ -288,7 +288,7 @@ const SonosService = {
             serviceActions.positionInfoUpdate({
                 host: sonos.host,
                 info,
-            })
+            }),
         );
     },
 
@@ -304,7 +304,7 @@ const SonosService = {
             serviceActions.crossfadeModeUpdate({
                 host: sonos.host,
                 mode: !!Number(mode.CrossfadeMode),
-            })
+            }),
         );
     },
 
@@ -322,7 +322,7 @@ const SonosService = {
             serviceActions.currentPlayModeUpdate({
                 host: sonos.host,
                 mode: currentPlayMode,
-            })
+            }),
         );
     },
 
@@ -356,7 +356,7 @@ const SonosService = {
             serviceActions.libraryIndexingUpdate({
                 status: status,
                 host: sonos.host,
-            })
+            }),
         );
     },
 
@@ -369,7 +369,7 @@ const SonosService = {
             serviceActions.playStateUpdate({
                 playState: state,
                 host: sonos.host,
-            })
+            }),
         );
     },
 
@@ -392,7 +392,7 @@ const SonosService = {
             this.queryState(sonos);
             this._queryTimeout = window.setInterval(
                 () => this.queryState(sonos),
-                SECOND_QUERY_INTERVAL * 1000
+                SECOND_QUERY_INTERVAL * 1000,
             );
         }
     },
@@ -441,7 +441,7 @@ const SonosService = {
         const devices = getAllDevices();
         const groupAttributes = await getGroupAttributes(devices);
         store.dispatch(
-            serviceActions.topologyUpdate(groups, groupAttributes, devices)
+            serviceActions.topologyUpdate(groups, groupAttributes, devices),
         );
     },
 
@@ -461,7 +461,7 @@ const SonosService = {
             serviceActions.renderingControlUpdate({
                 host,
                 update,
-            })
+            }),
         );
     },
 
@@ -476,7 +476,7 @@ const SonosService = {
             serviceActions.mutedUpdate({
                 muted,
                 host,
-            })
+            }),
         );
     },
 
@@ -486,7 +486,7 @@ const SonosService = {
             serviceActions.volumeUpdate({
                 volume,
                 host,
-            })
+            }),
         );
     },
 
@@ -501,7 +501,7 @@ const SonosService = {
             serviceActions.zoneGroupTrackUpdate({
                 track,
                 host,
-            })
+            }),
         );
     },
 
@@ -511,7 +511,7 @@ const SonosService = {
             serviceActions.nextTrackUpdate({
                 host,
                 track,
-            })
+            }),
         );
     },
 
@@ -527,7 +527,7 @@ const SonosService = {
         if (event.ShareIndexInProgress) {
             this.processLibraryIndexingUpdate(
                 sonos,
-                event.ShareIndexInProgress !== '0'
+                event.ShareIndexInProgress !== '0',
             );
         }
     },

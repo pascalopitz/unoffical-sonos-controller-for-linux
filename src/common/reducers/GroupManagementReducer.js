@@ -41,5 +41,5 @@ export default handleActions(
         [Constants.GROUP_MANAGEMENT_SAVE]: resetReducer,
         [Constants.STORE_RESET]: () => initialState,
     },
-    initialState
+    initialState,
 );

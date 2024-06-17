@@ -32,7 +32,7 @@ export const gotoPosition = createAction(
         SonosService.queryState(sonos);
 
         return position;
-    }
+    },
 );
 
 export const changePosition = createAction(
@@ -57,7 +57,7 @@ export const changePosition = createAction(
             position,
             newPosition,
         };
-    }
+    },
 );
 
 export const removeTrack = createAction(
@@ -83,7 +83,7 @@ export const removeTrack = createAction(
         SonosService.queryState(sonos);
 
         return [track.id];
-    }
+    },
 );
 
 export const removeSelectedTracks = createAction(
@@ -117,5 +117,5 @@ export const removeSelectedTracks = createAction(
         SonosService.queryState(sonos);
 
         return selected;
-    }
+    },
 );

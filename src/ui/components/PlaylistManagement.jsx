@@ -58,5 +58,5 @@ export class PlaylistManagementControl extends Component {
 }
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(PlaylistManagementControl);

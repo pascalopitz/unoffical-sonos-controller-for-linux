@@ -50,7 +50,7 @@ export class EqSettings extends Component {
                 p.model === player.model &&
                 p.UUID !== player.UUID &&
                 !p.isPaired &&
-                !p.isSurround
+                !p.isSurround,
         );
 
         const pairWith = ownState.pairWith || (pairablePlayers[0] || {}).UUID;
@@ -142,7 +142,7 @@ export class EqSettings extends Component {
                             dragHandler={(percentage) =>
                                 this._changeValue(
                                     'bass',
-                                    fromPercentage(percentage, -10, +10)
+                                    fromPercentage(percentage, -10, +10),
                                 )
                             }
                         />
@@ -155,7 +155,7 @@ export class EqSettings extends Component {
                             dragHandler={(percentage) =>
                                 this._changeValue(
                                     'treble',
-                                    fromPercentage(percentage, -10, +10)
+                                    fromPercentage(percentage, -10, +10),
                                 )
                             }
                         />
@@ -173,7 +173,7 @@ export class EqSettings extends Component {
                                 dragHandler={(percentage) =>
                                     this._changeValue(
                                         'balance',
-                                        fromPercentage(percentage, -100, +100)
+                                        fromPercentage(percentage, -100, +100),
                                     )
                                 }
                             />
@@ -189,7 +189,7 @@ export class EqSettings extends Component {
                             onChange={(e) => {
                                 this._changeValue(
                                     'loudness',
-                                    e.target.checked ? 1 : 0
+                                    e.target.checked ? 1 : 0,
                                 );
                             }}
                         />

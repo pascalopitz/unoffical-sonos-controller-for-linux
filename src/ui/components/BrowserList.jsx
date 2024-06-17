@@ -88,7 +88,7 @@ export const BrowserList = (props) => {
                 moreThrottled();
             }
         },
-        [props.scroll, currentState]
+        [props.scroll, currentState],
     );
 
     const _searchModeChange = useCallback(
@@ -96,7 +96,7 @@ export const BrowserList = (props) => {
             const mode = e.target.getAttribute('data-mode');
             props.search(props.term, mode);
         },
-        [props.term, props.search]
+        [props.term, props.search],
     );
 
     useEffect(() => {
@@ -119,7 +119,7 @@ export const BrowserList = (props) => {
 
         const updateTimer = window.setTimeout(
             () => setPrevHistory(history),
-            10
+            10,
         );
 
         return () => {

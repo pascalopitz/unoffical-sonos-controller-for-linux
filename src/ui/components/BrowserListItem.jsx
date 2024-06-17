@@ -127,13 +127,13 @@ class InlineMenu extends PureComponent {
 
         const scrollContainerNode = getClosest(
             containerRef.current,
-            '.scrollcontainer'
+            '.scrollcontainer',
         );
 
         const inlineMenutOffset = isPlayNow || isService ? 37 : 37 * 5;
 
         const { top, height: listItemHeight } = getComputedStyle(
-            containerRef.current
+            containerRef.current,
         );
         const { height: scrollContainerHeight } =
             getComputedStyle(scrollContainerNode);

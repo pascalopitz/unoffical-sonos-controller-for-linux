@@ -26,7 +26,6 @@ const handleMessage = async (source, message) => {
     const sonos = SonosService._currentDevice;
 
     switch (message.type) {
-
         case LIBRARY_INDEX: {
             const contentDirectoryService = sonos.contentDirectoryService();
             await contentDirectoryService.RefreshShareIndex();
@@ -43,7 +42,7 @@ const handleMessage = async (source, message) => {
         case VOLUME_DOWN: {
             const groupRenderingService = sonos.groupRenderingControlService();
             await groupRenderingService.SetRelativeGroupVolume(
-                VOLUME_STEP * -1
+                VOLUME_STEP * -1,
             );
             query(sonos);
             break;

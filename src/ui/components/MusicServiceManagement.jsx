@@ -186,5 +186,5 @@ export class MusicServiceManagement extends Component {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(MusicServiceManagement);

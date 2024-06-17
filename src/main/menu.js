@@ -129,7 +129,7 @@ const register = () => {
                                 const value =
                                     await focusedWindow.webContents.executeJavaScript(
                                         'urlPrompt()',
-                                        true
+                                        true,
                                     );
 
                                 value &&
@@ -191,7 +191,7 @@ const register = () => {
                             const result =
                                 await focusedWindow.webContents.executeJavaScript(
                                     'JSON.stringify(store.getState())',
-                                    true
+                                    true,
                                 );
 
                             clipboard.writeText(
@@ -201,8 +201,8 @@ const register = () => {
                                         packageJson,
                                     },
                                     1,
-                                    4
-                                )
+                                    4,
+                                ),
                             );
                         }
                     },
@@ -214,7 +214,7 @@ const register = () => {
                             const choice = await dialog.showSaveDialog({
                                 defaultPath: path.resolve(
                                     process.env.HOME,
-                                    './Downloads/unoffical-sonos-controller.appState.json'
+                                    './Downloads/unoffical-sonos-controller.appState.json',
                                 ),
                             });
 
@@ -225,7 +225,7 @@ const register = () => {
                             const result =
                                 await focusedWindow.webContents.executeJavaScript(
                                     'JSON.stringify(store.getState())',
-                                    true
+                                    true,
                                 );
 
                             await writeFileAsync(
@@ -236,9 +236,9 @@ const register = () => {
                                         packageJson,
                                     },
                                     1,
-                                    4
+                                    4,
                                 ),
-                                'utf8'
+                                'utf8',
                             );
                         }
                     },
@@ -253,7 +253,7 @@ const register = () => {
                             const choice = await dialog.showSaveDialog({
                                 defaultPath: path.resolve(
                                     process.env.HOME,
-                                    './Downloads/unoffical-sonos-controller.settings.json'
+                                    './Downloads/unoffical-sonos-controller.settings.json',
                                 ),
                             });
 
@@ -264,13 +264,13 @@ const register = () => {
                             const result =
                                 await focusedWindow.webContents.executeJavaScript(
                                     'JSON.stringify(window.localStorage, 1, 4)',
-                                    true
+                                    true,
                                 );
 
                             await writeFileAsync(
                                 choice.filePath,
                                 result,
-                                'utf8'
+                                'utf8',
                             );
                         }
                     },
@@ -283,7 +283,7 @@ const register = () => {
                                 properties: ['openFile'],
                                 defaultPath: path.resolve(
                                     process.env.HOME,
-                                    './Downloads/unoffical-sonos-controller.settings.json'
+                                    './Downloads/unoffical-sonos-controller.settings.json',
                                 ),
                             });
 
@@ -293,7 +293,7 @@ const register = () => {
 
                             const json = await readFileAsync(
                                 choice.filePaths[0],
-                                'utf8'
+                                'utf8',
                             );
 
                             await focusedWindow.webContents.executeJavaScript(
@@ -301,7 +301,7 @@ const register = () => {
                                     Object.keys(x).forEach(k => window.localStorage[k] = x[k]);
                                     window.location.reload();
                                 `,
-                                true
+                                true,
                             );
                         }
                     },
@@ -317,7 +317,7 @@ const register = () => {
                                 const value =
                                     await focusedWindow.webContents.executeJavaScript(
                                         'ipPrompt()',
-                                        true
+                                        true,
                                     );
 
                                 value &&
@@ -345,7 +345,7 @@ const register = () => {
                     label: 'Project page',
                     click() {
                         shell.openExternal(
-                            'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux'
+                            'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux',
                         );
                     },
                 },
@@ -353,7 +353,7 @@ const register = () => {
                     label: 'Report an Issue',
                     click() {
                         shell.openExternal(
-                            'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/issues'
+                            'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/issues',
                         );
                     },
                 },
@@ -361,7 +361,7 @@ const register = () => {
                     label: 'Latest Releases',
                     click() {
                         shell.openExternal(
-                            'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/releases'
+                            'https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/releases',
                         );
                     },
                 },

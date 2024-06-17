@@ -45,7 +45,7 @@ export const setPlayMode = createAction(
             mode,
             host: sonos.host,
         };
-    }
+    },
 );
 
 export const setCrossfade = createAction(
@@ -63,12 +63,12 @@ export const setCrossfade = createAction(
             mode,
             host: sonos.host,
         };
-    }
+    },
 );
 
 export const refreshPosition = createAction(
     Constants.SONOS_SERVICE_REFRESHPOSITION,
     async () => {
         SonosService.queryState();
-    }
+    },
 );

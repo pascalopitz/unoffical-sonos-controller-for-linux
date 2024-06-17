@@ -30,7 +30,7 @@ export const setValue = createAction(
         }
 
         return { host, name, value };
-    }
+    },
 );
 
 export const select = createAction(Constants.EQ_SELECT);
@@ -80,7 +80,7 @@ export const breakPair = createAction(
         });
 
         store.dispatch(show());
-    }
+    },
 );
 
 export const createPair = createAction(
@@ -108,7 +108,7 @@ export const createPair = createAction(
         });
 
         store.dispatch(show(leftSonos.host));
-    }
+    },
 );
 
 export const setTruePlay = createAction(
@@ -117,9 +117,8 @@ export const setTruePlay = createAction(
         const sonos = SonosService.getDeviceByHost(host);
         const renderingControl = sonos.renderingControlService();
 
-        const calibration = await renderingControl.SetRoomCalibrationStatus(
-            value
-        );
+        const calibration =
+            await renderingControl.SetRoomCalibrationStatus(value);
 
         store.dispatch(loadPlayer(host));
 
@@ -127,5 +126,5 @@ export const setTruePlay = createAction(
             host,
             calibration,
         };
-    }
+    },
 );

@@ -209,7 +209,7 @@ export const PositionInfo = (props) => {
 
             props.seek(time);
         },
-        [props.info, props.seek]
+        [props.info, props.seek],
     );
 
     useEffect(() => {

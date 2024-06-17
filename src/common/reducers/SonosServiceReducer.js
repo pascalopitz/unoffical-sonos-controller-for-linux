@@ -33,7 +33,7 @@ const getChannels = (ChannelMapSet) => {
         const [id, channelRaw] = entry.split(':');
         const channels = uniq(channelRaw.split(',')).reduce(
             (p, channel) => ({ ...p, [channel]: id }),
-            {}
+            {},
         );
 
         return {
@@ -56,7 +56,7 @@ function topologyReducer(state, action) {
                 .filter(
                     (m) =>
                         !CurrentZonePlayerUUIDsInGroup ||
-                        CurrentZonePlayerUUIDsInGroup.indexOf(m.UUID) !== -1
+                        CurrentZonePlayerUUIDsInGroup.indexOf(m.UUID) !== -1,
                 )
                 .map((m) => {
                     const host = REG.exec(m.Location)?.[1];
@@ -73,7 +73,7 @@ function topologyReducer(state, action) {
                         isPaired || isSurround || !MONO_MODELS[model];
 
                     const Channels = getChannels(
-                        m.ChannelMapSet || m.HTSatChanMapSet
+                        m.ChannelMapSet || m.HTSatChanMapSet,
                     );
 
                     const ZoneName = isPaired
@@ -264,5 +264,5 @@ export default handleActions(
 
         [Constants.STORE_RESET]: () => initialState,
     },
-    initialState
+    initialState,
 );

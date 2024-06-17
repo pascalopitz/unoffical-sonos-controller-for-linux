@@ -66,7 +66,7 @@ class MusicServiceClient {
             ) {
                 const refreshDetails = get(
                     e,
-                    'Envelope.Body.Fault.detail.refreshAuthTokenResult'
+                    'Envelope.Body.Fault.detail.refreshAuthTokenResult',
                 );
                 this.setAuthToken(refreshDetails.authToken);
                 this.setKey(refreshDetails.privateKey);
@@ -109,7 +109,7 @@ class MusicServiceClient {
         if (
             includes(
                 ['playlist', 'playList', 'artistTrackList', 'albumList'],
-                itemType
+                itemType,
             )
         ) {
             return (
@@ -119,7 +119,7 @@ class MusicServiceClient {
 
         if (itemType === 'container') {
             return `x-rincon-cpcontainer:10fe206c${encodeURIComponent(
-                trackId
+                trackId,
             )}?sid=${serviceId}&flags=8300&sn=1`;
         }
 
@@ -137,18 +137,18 @@ class MusicServiceClient {
 
         if (itemType === 'program') {
             return `x-sonosapi-radio:${__esencodeURIComponentcape(
-                trackId
+                trackId,
             )}?sid=${serviceId}&flags=8296&sn=17`;
         }
 
         if (itemType === 'stream') {
             return `x-sonosapi-stream:${encodeURIComponent(
-                trackId
+                trackId,
             )}?sid=${serviceId}&flags=8224&sn=14`;
         }
 
         return `${protocol}:${encodeURIComponent(
-            trackId
+            trackId,
         )}${suffix}?sid=${serviceId}&flags=8224&sn=1`;
     }
 
@@ -237,21 +237,21 @@ class MusicServiceClient {
                 item.mimeType
             }*"
                 duration="${padStart(d.hours(), 2, '0')}:${padStart(
-                d.minutes(),
-                2,
-                '0'
-            )}:${padStart(d.seconds(), 2, '0')}">${__escape(uri)}</res>`;
+                    d.minutes(),
+                    2,
+                    '0',
+                )}:${padStart(d.seconds(), 2, '0')}">${__escape(uri)}</res>`;
         }
 
         if (item.trackMetadata) {
             trackData = `<dc:creator>${__escape(
-                item.trackMetadata.artist
+                item.trackMetadata.artist,
             )}</dc:creator>
             <upnp:albumArtURI>${
                 item.trackMetadata.albumArtURI || ''
             }</upnp:albumArtURI>
             <upnp:album>${__escape(
-                item.trackMetadata.album || ''
+                item.trackMetadata.album || '',
             )}</upnp:album>`;
         } else if (item.albumArtURI) {
             trackData = `<upnp:albumArtURI>${
@@ -302,7 +302,7 @@ class MusicServiceClient {
             this._serviceDefinition.SecureUri,
             'getDeviceLinkCode',
             body,
-            headers
+            headers,
         ).then(async (res) => {
             const resp = await Helpers.ParseXml(stripNamespaces(res));
             const obj =
@@ -328,7 +328,7 @@ class MusicServiceClient {
             this._serviceDefinition.SecureUri,
             'getAppLink',
             body,
-            headers
+            headers,
         ).then(async (res) => {
             const resp = await Helpers.ParseXml(stripNamespaces(res));
             const obj =
@@ -369,7 +369,7 @@ class MusicServiceClient {
             this._serviceDefinition.SecureUri,
             'getDeviceAuthToken',
             body,
-            headers
+            headers,
         )
             .then(async (res) => {
                 const resp = await Helpers.ParseXml(stripNamespaces(res));
@@ -409,7 +409,7 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'getMetadata',
                 body,
-                this.getAuthHeaders
+                this.getAuthHeaders,
             )
                 .then(async (res) => {
                     const resp = await Helpers.ParseXml(stripNamespaces(res));
@@ -439,7 +439,7 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'getExtendedMetadata',
                 body,
-                this.getAuthHeaders
+                this.getAuthHeaders,
             )
                 .then(async (res) => {
                     const resp = await Helpers.ParseXml(stripNamespaces(res));
@@ -478,7 +478,7 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'search',
                 body,
-                this.getAuthHeaders
+                this.getAuthHeaders,
             )
                 .then(async (res) => {
                     const resp = await Helpers.ParseXml(stripNamespaces(res));
@@ -508,7 +508,7 @@ class MusicServiceClient {
                 this._serviceDefinition.SecureUri,
                 'getMediaURI',
                 body,
-                this.getAuthHeaders
+                this.getAuthHeaders,
             )
                 .then(async (res) => {
                     const resp = await Helpers.ParseXml(stripNamespaces(res));
@@ -551,7 +551,7 @@ class MusicServiceClient {
             this._serviceDefinition.SecureUri,
             'getSessionId',
             body,
-            headers
+            headers,
         ).then(async (res) => {
             const resp = await Helpers.ParseXml(stripNamespaces(res));
             const obj =
@@ -636,7 +636,7 @@ class MusicServiceClient {
 
                 const map = find(
                     e.Presentation.PresentationMap,
-                    (m) => !!get(m, 'Match.SearchCategories')
+                    (m) => !!get(m, 'Match.SearchCategories'),
                 );
 
                 let searchCategories = get(map, 'Match.SearchCategories');
@@ -675,7 +675,7 @@ export const getByServiceId = (sid) => {
 
     return new MusicServiceClient(
         serviceDefinition.service,
-        serviceDefinition.authToken || {}
+        serviceDefinition.authToken || {},
     );
 };
 

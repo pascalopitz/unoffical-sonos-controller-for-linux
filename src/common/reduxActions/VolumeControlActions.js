@@ -12,7 +12,7 @@ export const setPlayerMuted = createAction(
             host,
             muted,
         };
-    }
+    },
 );
 
 export const setPlayerVolume = createAction(
@@ -24,7 +24,7 @@ export const setPlayerVolume = createAction(
             host,
             volume,
         };
-    }
+    },
 );
 
 export const setDragging = createAction(Constants.VOLUME_CONTROLS_DRAGGING);
@@ -33,5 +33,5 @@ export const setExpanded = createAction(Constants.VOLUME_CONTROLS_EXPANDED);
 
 export const queryVolumes = createAction(
     Constants.VOLUME_CONTROLS_QUERY_VOLUMES,
-    async () => {}
+    async () => {},
 );

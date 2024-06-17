@@ -79,7 +79,7 @@ export default class SonosEnhanced extends Sonos {
         const data = await this.musicServices().ListAvailableServices();
 
         const servicesObj = await Helpers.ParseXml(
-            data.AvailableServiceDescriptorList
+            data.AvailableServiceDescriptorList,
         );
 
         const serviceDescriptors = servicesObj.Services.Service.map((obj) => {
@@ -110,7 +110,7 @@ export default class SonosEnhanced extends Sonos {
                     match.ServiceIDEncoded = Number(t);
                     services.push(match);
                 }
-            }
+            },
         );
 
         return services;
@@ -120,7 +120,7 @@ export default class SonosEnhanced extends Sonos {
         searchType,
         searchTerm,
         requestOptions = {},
-        separator = ':'
+        separator = ':',
     ) {
         const searchTypes = {
             artists: 'A:ARTIST',
@@ -148,7 +148,7 @@ export default class SonosEnhanced extends Sonos {
 
         if (searchTerm && searchTerm !== '') {
             searches = `${searches}${separator}${encodeURIComponent(
-                searchTerm
+                searchTerm,
             )}`;
         }
 

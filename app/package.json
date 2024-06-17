@@ -26,14 +26,14 @@
     "redux": "^4.1.1",
     "redux-actions": "^2.6.5",
     "redux-promise": "^0.6.0",
-    "reselect": "^4.0.0",
+    "reselect": "^5.1.1",
     "shallow-compare": "^1.2.2",
     "sonos": "^1.15.0-alpha.5",
     "sweetalert2": "^11.6.15",
     "sweetalert2-react-content": "^5.0.6",
-    "url-regex-safe": "^3.0.0",
+    "url-regex-safe": "^4.0.0",
     "use-is-in-viewport": "^1.0.9",
-    "uuid": "^8.3.2",
+    "uuid": "^10.0.0",
     "wake-event": "^0.0.1"
   }
 }

@@ -18,9 +18,9 @@ export const selectGroup = createAction(
         ipcRenderer.send('playstate-update', playState);
 
         return zone;
-    }
+    },
 );
 
 export const showGroupManagement = createAction(
-    Constants.GROUP_MANAGEMENT_SHOW
+    Constants.GROUP_MANAGEMENT_SHOW,
 );

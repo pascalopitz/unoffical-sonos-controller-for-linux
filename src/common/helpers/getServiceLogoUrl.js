@@ -22,11 +22,11 @@ export default function getServiceLogoUrl(id) {
 
         const encodedId = String(7 + Number(id) * 256);
         const match = ServiceImageMap.sized.service.find(
-            (i) => i.id == encodedId
+            (i) => i.id == encodedId,
         );
 
         const square = (match?.image || []).find(
-            (i) => i.placement === 'square'
+            (i) => i.placement === 'square',
         )?._;
 
         return square;

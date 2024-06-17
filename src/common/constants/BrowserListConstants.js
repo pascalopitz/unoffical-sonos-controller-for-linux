@@ -1,5 +1,3 @@
-import { IP_ADDRESS, LOCAL_PORT } from '../../common/helpers';
-
 export const START_STATE_ITEMS = [
     {
         title: 'Sonos Favourites',

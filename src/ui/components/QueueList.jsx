@@ -67,7 +67,7 @@ export const QueueList = (props) => {
                 dragging: true,
             });
         },
-        [setState]
+        [setState],
     );
 
     const _onDragEnd = useCallback(() => {
@@ -117,7 +117,7 @@ export const QueueList = (props) => {
                 });
             }
         },
-        [state, setState]
+        [state, setState],
     );
 
     const { expanded, position, tracks = [] } = props;

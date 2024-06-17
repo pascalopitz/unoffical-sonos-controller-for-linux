@@ -59,7 +59,7 @@ export const AlbumArt = (props) => {
                     : propsSrc;
 
                 const parsed = new URL(
-                    new URL(urlToParse).searchParams.get('u')
+                    new URL(urlToParse).searchParams.get('u'),
                 );
 
                 const sid = parsed.searchParams.get('sid');
@@ -75,12 +75,12 @@ export const AlbumArt = (props) => {
                 }
 
                 const response = await client.getExtendedMetadata(
-                    decodeURIComponent(parsed.pathname).replace('.mp3', '')
+                    decodeURIComponent(parsed.pathname).replace('.mp3', ''),
                 );
 
                 const newSrc = get(
                     response,
-                    'mediaMetadata.trackMetadata.albumArtURI'
+                    'mediaMetadata.trackMetadata.albumArtURI',
                 );
 
                 if (
@@ -130,7 +130,7 @@ export const AlbumArt = (props) => {
             setLoading,
             setLoaded,
             targetRef.current,
-        ]
+        ],
     );
 
     const loadImage = useCallback(
@@ -142,7 +142,7 @@ export const AlbumArt = (props) => {
                 })
                 .catch(loadError);
         },
-        [propsSrc, visible, src]
+        [propsSrc, visible, src],
     );
 
     useEffect(() => {
@@ -166,8 +166,8 @@ export const AlbumArt = (props) => {
                 propsSrc && typeof propsSrc === 'object' && propsSrc._
                     ? propsSrc._
                     : serviceId
-                    ? getServiceLogoUrl(serviceId)
-                    : propsSrc;
+                      ? getServiceLogoUrl(serviceId)
+                      : propsSrc;
 
             if (url && typeof url === 'string') {
                 const { host, port } = getCurrentDevice();
