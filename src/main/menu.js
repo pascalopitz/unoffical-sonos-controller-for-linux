@@ -5,11 +5,7 @@ import path from 'path';
 import { promisify } from 'util';
 import MaskJson from 'mask-json';
 
-import LocalMusic from '../localMusic';
-
 import {
-    LOCAL_MUSIC_SET_FOLDER,
-    LOCAL_MUSIC_TOGGLE,
     LIBRARY_INDEX,
     VOLUME_UP,
     VOLUME_DOWN,
@@ -339,37 +335,6 @@ const register = () => {
             ],
         },
         {
-            label: 'On this Device',
-            submenu: [
-                {
-                    label: 'Enable local files',
-                    enabled: false,
-                },
-                {
-                    label: 'Set local music folder',
-                    async click(item, win) {
-                        const choice = await dialog.showOpenDialog({
-                            properties: ['openDirectory'],
-                        });
-
-                        if (choice.cancelled) {
-                            return;
-                        }
-
-                        const [dir] = choice.filePaths;
-                        LocalMusic.indexPath(dir);
-                        LocalMusic.handlePath(dir);
-
-                        win &&
-                            win.webContents.send('command', {
-                                type: LOCAL_MUSIC_SET_FOLDER,
-                                path: dir,
-                            });
-                    },
-                },
-            ],
-        },
-        {
             role: 'help',
             submenu: [
                 {
@@ -423,51 +388,6 @@ const register = () => {
         const menu = Menu.buildFromTemplate(menuTemplate);
         Menu.setApplicationMenu(menu);
     });
-
-    ipcMain.on(
-        'local-files',
-        (event, { localMusicEnabled, localMusicFolder }) => {
-            menuTemplate[4].submenu[0].enabled = !!localMusicFolder;
-
-            const isEnabled = !!localMusicFolder && localMusicEnabled;
-
-            LocalMusic.handlePath(localMusicFolder);
-
-            if (isEnabled) {
-                LocalMusic.startServer();
-            } else {
-                LocalMusic.stopServer();
-            }
-
-            menuTemplate[4].submenu[0].label = !isEnabled
-                ? 'Enable local files'
-                : 'Disable local files';
-
-            menuTemplate[4].submenu[0].click = async function (item, win) {
-                isEnabled ? LocalMusic.stopServer() : LocalMusic.startServer();
-
-                win.webContents.send('command', {
-                    type: LOCAL_MUSIC_TOGGLE,
-                });
-            };
-
-            if (localMusicFolder) {
-                menuTemplate[4].submenu[2] = {
-                    label: `Currently: ${localMusicFolder}`,
-                    enabled: false,
-                };
-            } else {
-                try {
-                    delete menuTemplate[4].submenu[2];
-                } catch (e) {
-                    // noop
-                }
-            }
-
-            const menu = Menu.buildFromTemplate(menuTemplate);
-            Menu.setApplicationMenu(menu);
-        }
-    );
 };
 
 export default register;

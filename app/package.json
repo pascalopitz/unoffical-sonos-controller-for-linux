@@ -1,7 +1,7 @@
 {
   "name": "sonos-controller-unofficial",
   "description": "Unoffical sonos controller for linux.",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "author": "Pascal Opitz <contact@pascalopitz.com>",
   "main": "main.js",
   "dependencies": {
@@ -11,19 +11,12 @@
     "deep-equal": "^2.0.5",
     "dotenv": "^16.0.0",
     "electron-window-state": "^5.0.3",
-    "file-type": "^17.0.0",
     "ip": "^1.1.5",
     "ip-regex": "^4.3.0",
-    "koa": "^2.13.3",
-    "koa-bodyparser": "^4.3.0",
-    "koa-logger": "^3.2.1",
-    "koa-router": "^10.1.1",
     "lodash": "^4.17.21",
     "mask-json": "^1.0.3",
-    "mime": "^3.0.0",
     "moment": "^2.29.1",
     "mpris-service": "^2.1.2",
-    "music-metadata": "^7.11.4",
     "omit-keys": "^0.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -36,13 +29,11 @@
     "reselect": "^4.0.0",
     "shallow-compare": "^1.2.2",
     "sonos": "^1.15.0-alpha.5",
-    "sql.js": "^1.6.2",
     "sweetalert2": "^11.6.15",
     "sweetalert2-react-content": "^5.0.6",
     "url-regex-safe": "^3.0.0",
     "use-is-in-viewport": "^1.0.9",
     "uuid": "^8.3.2",
-    "wake-event": "^0.0.1",
-    "walkdir": "^0.4.1"
+    "wake-event": "^0.0.1"
   }
 }

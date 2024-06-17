@@ -8,7 +8,6 @@ import getServiceLogoUrl from '../helpers/getServiceLogoUrl';
 import {
     DEFAULT_SEARCH_MODE,
     LIBRARY_SEARCH_MODES,
-    ON_DEVICE_SERVICE,
     BROWSE_AVAILABLE_SERVICES,
 } from '../constants/BrowserListConstants';
 
@@ -23,13 +22,7 @@ export function getServiceItems(state) {
         service: ser,
     }));
 
-    const additional = JSON.parse(
-        window.localStorage.localMusicEnabled || 'false'
-    )
-        ? [ON_DEVICE_SERVICE, BROWSE_AVAILABLE_SERVICES]
-        : [BROWSE_AVAILABLE_SERVICES];
-
-    return [...additional, ...activeServices];
+    return [BROWSE_AVAILABLE_SERVICES, ...activeServices];
 }
 
 export function getHasSearchTerm(state) {

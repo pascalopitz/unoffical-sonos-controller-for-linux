@@ -16,14 +16,6 @@ module.exports = [
                 import: './src/main/main.js',
                 filename: 'main.js',
             },
-            localMusicServer: {
-                import: './src/localMusic/server.js',
-                filename: 'server.js',
-            },
-            localMusicDb: {
-                import: './src/localMusic/db.js',
-                filename: 'db.js',
-            },
         },
 
         target: 'electron-main',

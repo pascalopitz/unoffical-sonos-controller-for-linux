@@ -13,18 +13,6 @@ import SonosService from '../services/SonosService';
 
 import store from '../reducers';
 
-export const localFilesUpdate = createAction(
-    Constants.SONOS_SERVICE_LOCAL_FILES_STATE,
-    async () => {
-        const { localMusicFolder, localMusicEnabled } = window.localStorage;
-
-        ipcRenderer.send('local-files', {
-            localMusicFolder,
-            localMusicEnabled: JSON.parse(localMusicEnabled || 'false'),
-        });
-    }
-);
-
 export const libraryIndexingUpdate = createAction(
     Constants.SONOS_SERVICE_LIBRARY_INDEX_UPDATE,
     async ({ host, status }) => {
