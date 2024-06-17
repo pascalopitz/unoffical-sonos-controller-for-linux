@@ -25,7 +25,7 @@ and manage the queue, I'll be pretty damn happy.
 ## Install via .AppImage file
 
 Find the latest .AppImage on the [release page](https://github.com/pascalopitz/unoffical-sonos-controller-for-linux/releases).
-You can right click it on Ubuntu, then under "Permissions" mark is as executable. ALternatively run:
+You can right click it on Ubuntu, then under "Permissions" mark is as executable. Alternatively run:
 
 ```bash
 chmod +x sonos-controller-unofficial-amd64-0.4.0-rc1.AppImage
